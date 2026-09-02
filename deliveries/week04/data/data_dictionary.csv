@@ -1,0 +1,13 @@
+Atributo,Descripcion,Tipo_Dato,Formato_o_Valores,Admite_Nulos
+REGIÓN,Departamento donde se ubica el recurso turístico,Texto,Cadena de texto,No
+PROVINCIA,Provincia donde se ubica el recurso turístico,Texto,Cadena de texto,No
+DISTRITO,Distrito donde se ubica el recurso turístico,Texto,Cadena de texto,No
+CODIGO DEL RECURSO,Identificador único del recurso en el MINCETUR,Numérico,Entero,No
+NOMBRE DEL RECURSO,Nombre oficial o público del atractivo turístico,Texto,Cadena de texto,No
+CATEGORÍA,Clasificación principal del atractivo,Texto,"SITIOS NATURALES | MANIFESTACIONES CULTURALES | FOLCLORE | ACONTECIMIENTOS PROGRAMADOS | REALIZACIONES TÉCNICAS",No
+TIPO DE CATEGORÍA,Clasificación secundaria (Nivel 1),Texto,Cadena de texto,No
+SUB TIPO CATEGORÍA,Clasificación terciaria (Nivel 2),Texto,Cadena de texto,Sí (1 nulo)
+URL,Enlace web a la ficha oficial del recurso,Texto,Formato URL,No
+LATITUD,Coordenada geográfica de latitud,Numérico,Decimal (Float),Sí (1245 nulos)
+LONGITUD,Coordenada geográfica de longitud,Numérico,Decimal (Float),Sí (1245 nulos)
+FECHA_DE_CORTE,Fecha en la que se extrajo o actualizó el registro,Numérico,Formato YYYYMMDD,No
