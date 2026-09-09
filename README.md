@@ -29,6 +29,9 @@ puede automatizar.
 | **Salida del producto** | Itinerario ordenado con secuencia geográfica coherente, ventana temporal recomendada y costo estimado |
 | **Alcance** | Destinos dentro del territorio peruano |
 
+En el inventario oficial, Lima y Cusco concentran 1 585 recursos (25,7 %). Los **4 575 restantes — el 74,3 %**
+están repartidos en las otras 23 regiones y quedan fuera del circuito que absorbe el grueso de la demanda.
+
 ---
 
 ## Equipo
@@ -52,8 +55,11 @@ Licencia [ODC-BY](https://www.datosabiertos.gob.pe/dataset/inventario-nacional-d
 > intercambiarlas, el 100 %. Sin corregirlo, cualquier análisis espacial falla en silencio, sin lanzar error.
 > El análisis completo está en [`deliveries/week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md).
 
+El dataset enriquecido de la Semana 5 añade `ALTITUD`, `DISTANCIA_CAPITAL_KM`, `INDICE_LEJANIA` y
+`ZONA_CLIMATICA` sobre el inventario base ([`deliveries/week05/data/`](./deliveries/week05/data/)).
+
 Fuentes complementarias previstas: [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto),
-[Open-Meteo](https://open-meteo.com/) (climatología histórica) y
+[Open-Meteo](https://open-meteo.com/) (climatología histórica y modelo de elevación) y
 [OpenStreetMap](https://www.openstreetmap.org/) (geometría vial).
 
 Este repositorio contiene únicamente datos abiertos con licencia que permite su redistribución.
@@ -66,18 +72,43 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 Alejandros-Team/
 ├── README.md
 └── deliveries/
-    └── week04/                     Tema, equipo y selección de dataset
-        ├── README.md
-        ├── code/
-        │   └── data_quality_check.py
+    ├── week04/                     Tema, equipo y selección de dataset
+    │   ├── README.md
+    │   ├── DreemGO_pitch.pdf
+    │   ├── code/
+    │   │   └── data_quality_check.py
+    │   └── data/
+    │       ├── sample.csv          extracción completa del inventario
+    │       ├── data_dictionary.csv
+    │       ├── acquisition.md
+    │       └── data_quality.md
+    └── week05/                     Propuesta, Data Product Canvas y requerimientos
+        ├── ProjectProposal.pdf
+        ├── ProjectProposal.docx    fuente editable de la propuesta
+        ├── DataProductCanvas.pdf
+        ├── DataProductCanvas.md
+        ├── Requirements.md
+        ├── PresentationWeek05.pdf
+        ├── assets/                 wireframes, storyboards y diagrama UML
+        ├── code/                   enriquecimiento, clima, altitud y features
         └── data/
-            ├── sample.csv          extracción completa del inventario
-            ├── data_dictionary.csv
-            ├── acquisition.md
-            └── data_quality.md
+            ├── dataset_enriched.csv
+            └── data_dictionary_v2.csv
 ```
 
 Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`.
+
+---
+
+## Enlaces de la entrega
+
+| Documento | Ruta |
+|---|---|
+| Propuesta de proyecto | [`deliveries/week05/ProjectProposal.pdf`](./deliveries/week05/ProjectProposal.pdf) |
+| Data Product Canvas | [`deliveries/week05/DataProductCanvas.pdf`](./deliveries/week05/DataProductCanvas.pdf) |
+| Requerimientos y diseño | [`deliveries/week05/Requirements.md`](./deliveries/week05/Requirements.md) |
+| Presentación Semana 5 | [`deliveries/week05/PresentationWeek05.pdf`](./deliveries/week05/PresentationWeek05.pdf) |
+| Nota de calidad de datos | [`deliveries/week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md) |
 
 ---
 
@@ -86,11 +117,20 @@ Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`.
 ```bash
 git clone https://github.com/oswaldoaqm/Alejandros-Team.git
 cd Alejandros-Team
-pip install pandas
+pip install pandas requests
+
+# Semana 4 — verificación de calidad del inventario base
 python deliveries/week04/code/data_quality_check.py deliveries/week04/data/sample.csv
+
+# Semana 5 — enriquecimiento geoespacial y climático
+python deliveries/week05/code/enrich_data.py
+python deliveries/week05/code/add_climate.py
+python deliveries/week05/code/build_features.py
+python deliveries/week05/code/verify_enriched.py
 ```
 
-El script regenera todas las cifras reportadas en la nota de calidad de datos.
+El primer script regenera todas las cifras reportadas en la nota de calidad de datos; el último valida el
+dataset enriquecido contra el diccionario de datos v2.
 
 ---
 
@@ -98,9 +138,9 @@ El script regenera todas las cifras reportadas en la nota de calidad de datos.
 
 | Semana | Fecha | Hito | Estado |
 |---|---|---|---|
-| 4 | 2 sep 2026 | Tema, equipo y selección de dataset | Entregadooo |
-| 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | En curso |
-| 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | Pendiente |
+| 4 | 2 sep 2026 | Tema, equipo y selección de dataset | Entregado |
+| 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | Entregado |
+| 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | En curso |
 | 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | Pendiente |
 | 10 | 14 oct 2026 | Prototipo funcional | Pendiente |
 | 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | Pendiente |
