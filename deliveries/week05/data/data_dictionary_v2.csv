@@ -1,0 +1,17 @@
+Atributo,Descripcion,Tipo_Dato,Formato_o_Unidad,Valores_Posibles,Codigo_Faltantes,Nulos_N,Nulos_Pct,Observaciones
+REGIÓN,Departamento donde se ubica el recurso turístico,Texto,Cadena de texto en Title Case,25 valores únicos (24 departamentos + Callao),Sin faltantes,0,0.0%,Formato Title Case; difiere de DISTRITO que viene en mayúsculas
+PROVINCIA,Provincia donde se ubica el recurso turístico,Texto,Cadena de texto en Title Case,190 valores únicos,Sin faltantes,0,0.0%,Formato Title Case
+DISTRITO,Distrito donde se ubica el recurso turístico,Texto,Cadena de texto en MAYÚSCULAS,1004 valores únicos,Sin faltantes,0,0.0%,Viene en mayúsculas; normalizar antes de cruzar con INEI u OpenStreetMap
+CODIGO DEL RECURSO,Identificador único del recurso en el inventario de MINCETUR,Numérico,Entero,Rango 11 a 14665,Sin faltantes,0,0.0%,Clave primaria válida (0 duplicados). No es correlativo: hay saltos por fichas retiradas
+NOMBRE DEL RECURSO,Nombre oficial o público del atractivo turístico,Texto,Cadena de texto en Title Case,6160 valores,Sin faltantes,0,0.0%,687 valores con espacios sobrantes al inicio o final; aplicar strip.
+CATEGORÍA,Clasificación principal del atractivo (nivel 1),Texto,Cadena con prefijo numérico,1 a 5,Sin faltantes,0,0.0%,Distribución: 2164 / 2118 / 824 / 305 / 749
+TIPO DE CATEGORÍA,Clasificación secundaria (nivel 2),Texto,Cadena de texto,35 valores únicos,Sin faltantes,0,0.0%,Taxonomía mixta
+SUB TIPO CATEGORÍA,Clasificación terciaria (nivel 3),Texto,Cadena de texto,187 valores únicos,Celda vacía,1,0.02%,El único nulo es el registro La QOcha Fiesta (Arequipa).
+URL,Enlace a la ficha oficial del recurso en MINCETUR,Texto,URL HTTPS,6160 valores únicos,Sin faltantes,0,0.0%,Integridad verificada
+latitud,Latitud geográfica real,Numérico,Grados decimales (WGS 84),Rango -18.2964 a -0.6111,Celda vacía,1245,20.2%,Corregido: MINCETUR había intercambiado las etiquetas.
+longitud,Longitud geográfica real,Numérico,Grados decimales (WGS 84),Rango -81.3256 a -68.7226,Celda vacía,1245,20.2%,Corregido: MINCETUR había intercambiado las etiquetas.
+FECHA_DE_CORTE,Fecha de extracción o actualización del registro,Numérico,Entero con formato YYYYMMDD,Valor único 20260831,Sin faltantes,0,0.0%,Llega como int64.
+ALTITUD,Elevación topográfica del recurso obtenida vía Open-Meteo DEM,Numérico,Metros sobre el nivel del mar (msnm),Rango 0.0 a 6692.0,Celda vacía,1245,20.2%,Los nulos corresponden a eventos sin punto geográfico.
+DISTANCIA_CAPITAL_KM,Distancia Haversine entre el recurso y su capital regional,Numérico,Kilómetros (km),Rango 0 a 800+,Celda vacía,1245,20.2%,Feature Engineering Espacial.
+INDICE_COSTO_LOGISTICO,Índice derivado matemáticamente de la lejanía logística,Numérico (Categórico Ordinal),Entero (1=Bajo; 2=Medio; 3=Alto),Rango 1 a 3,Celda vacía,1245,20.2%,Reemplaza al proxy heurístico. <20km=1; <80km=2; >80km=3.
+ZONA_CLIMATICA,Clasificación climática inferida mediante pisos ecológicos (Altitud + Región),Texto,Categórico Nominal,6 valores posibles,Celda vacía,1245,20.2%,Feature Engineering determinista basado en los pisos ecológicos del Perú.
