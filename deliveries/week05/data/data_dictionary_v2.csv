@@ -14,3 +14,4 @@ FECHA_DE_CORTE,Fecha de extracción o actualización del registro,Numérico,Ente
 ALTITUD,Elevación topográfica del recurso obtenida vía Open-Meteo DEM,Numérico,Metros sobre el nivel del mar (msnm),Rango 0.0 a 6692.0,Celda vacía,1245,20.2%,Los nulos corresponden a eventos sin punto geográfico.
 DISTANCIA_CAPITAL_KM,Distancia Haversine entre el recurso y su capital regional,Numérico,Kilómetros (km),Rango 0 a 800+,Celda vacía,1245,20.2%,Feature Engineering Espacial.
 INDICE_COSTO_LOGISTICO,Índice derivado matemáticamente de la lejanía logística,Numérico (Categórico Ordinal),Entero (1=Bajo; 2=Medio; 3=Alto),Rango 1 a 3,Celda vacía,1245,20.2%,Reemplaza al proxy heurístico. <20km=1; <80km=2; >80km=3.
+ZONA_CLIMATICA,Clasificación climática inferida mediante pisos ecológicos (Altitud + Región),Texto,Categórico Nominal,6 valores posibles,Celda vacía,1245,20.2%,Feature Engineering determinista basado en los pisos ecológicos del Perú.
