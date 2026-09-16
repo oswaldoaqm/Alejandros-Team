@@ -1,3 +1,21 @@
+"""
+=========================  SCRIPT SUPERADO - NO EJECUTAR  =========================
+
+Genera JERARQUIA_OFICIAL y TIPO_INGRESO con random.choices() y los escribe sobre
+data/processed/dreemgo_master_dataset.csv, que es el MISMO archivo de salida que
+produce scraper_mincetur.py con datos reales de la ficha de MINCETUR.
+
+Ejecutarlo destruye la extraccion real. El dataset que hay hoy en el repositorio
+SI contiene la jerarquia oficial verdadera; esta verificado en
+DataAnalysis.md seccion 3.1 (chi2 contra los pesos del generador, asociacion con
+categoria y region, y revision de recursos concretos: Machu Picchu 4, Chan Chan 4,
+Ventana del Colca 1).
+
+Se conserva solo como registro de un paso intermedio del desarrollo. No forma parte
+del pipeline reproducible descrito en week06/README.md.
+==================================================================================
+"""
+
 import csv
 import random
 
