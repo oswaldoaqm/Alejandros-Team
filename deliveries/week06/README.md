@@ -33,6 +33,10 @@ week06/
 │   ├── ta01_modelo_final.py        v1 · HDBSCAN, perfiles y cobertura
 │   ├── ta01_auditoria_comparacion.py  auditoría de la comparación
 │   ├── ta01_polos_acotados.py      v2 · MODELO ELEGIDO, diámetro acotado
+│   ├── scraper_mincetur_v3.py      extracción por firma de cabecera · la buena
+│   ├── diagnostico_ficha.py        volcado de la estructura real de la ficha
+│   ├── verificar_fichas.py         verificación de jerarquía y cobertura
+│   ├── costo_itinerario.py         presupuesto con banda P20-P80
 │   ├── ta03_score_polo.py          puntaje del polo con término de novedad
 │   ├── fetch_climate_v2.py         clima por región × zona climática (pendiente)
 │   ├── ta01_figura.py              figura v1
@@ -48,6 +52,9 @@ week06/
 │       ├── comercios_ferias_locales.csv    500 filas · SIMULADO
 │       ├── clusters_asignados.csv          v1 · etiqueta de polo por recurso
 │       ├── polos_asignados_v2.csv          v2 · etiqueta de polo por recurso
+│       ├── fichas_mincetur.csv             6 129 fichas oficiales extraídas
+│       ├── puntaje_polos.csv              v2 · puntaje con cobertura de jerarquía
+│       ├── parametros_costo.csv            parámetros del modelo de costo
 │       └── puntos_clima_v2.csv             88 puntos región × zona climática
 └── docs/
     ├── Data_Dictionary.md             diccionario de las tres tablas
@@ -57,8 +64,7 @@ week06/
     ├── barrido_k.csv                  v1 · barrido de K-Means
     ├── perfil_clusters_hdbscan.csv    v1 · perfil de los 81 polos
     ├── comparativa_polos_v2.csv       v2 · comparativa de modelos
-    ├── perfil_polos_v2.csv            v2 · perfil de los 222 polos
-    └── puntaje_polos.csv              v2 · puntaje con término de novedad
+    └── perfil_polos_v2.csv            v2 · perfil de los 222 polos
 ```
 
 ---
@@ -122,7 +128,9 @@ df = pd.read_csv("../data/processed/dreemgo_master_dataset.csv", sep=";")
 
 **`build_master_dataset.py` no debe ejecutarse.** Genera `JERARQUIA_OFICIAL` y `TIPO_INGRESO` con `random.choices()` y escribe sobre el mismo archivo que produce el scraper real. Está marcado en su encabezado y queda solo como registro de un paso intermedio del desarrollo.
 
-**`clean_impute_dataset.py` sobrescribe dos columnas.** Se ejecuta después del scraper y reemplaza `TIPO_INGRESO` y `EPOCA_PROPICIA` por reglas deterministas, con lo que se pierde lo que el scraper había extraído de la ficha. La jerarquía sí sobrevive. El detalle está en `DataAnalysis.md` §3.1 y la corrección está prevista para la Semana 7.
+**`clean_impute_dataset.py` sobrescribe dos columnas.** Se ejecuta después del scraper y reemplaza `TIPO_INGRESO` y `EPOCA_PROPICIA` por reglas deterministas, con lo que se pierde lo que el scraper había extraído de la ficha. El detalle está en `DataAnalysis.md` §3.1.
+
+**`JERARQUIA_OFICIAL` del dataset maestro solo es fiable en el 59,7 %.** Coincide exactamente con la ficha oficial en los 3 660 recursos que MINCETUR jerarquiza, y asigna un número a los 2 469 que la ficha marca «No aplica» o «POR JERARQUIZAR». Para cualquier análisis nuevo, usar `FICHA_JERARQUIA_NUM` de `fichas_mincetur.csv`, que trae el dato o lo deja vacío. `code/verificar_fichas.py` reproduce la comprobación.
 
 **`comercios_ferias_locales.csv` es simulado.** No contiene comercios ni ferias reales y no admite ninguna afirmación empírica sobre el comercio local peruano.
 
@@ -168,9 +176,11 @@ Y un hallazgo de método: **la silueta no es un árbitro neutral.** HDBSCAN gana
 
 ### Dispersión
 
-172 de los 222 polos (73 % de los recursos agrupados) no contienen ningún recurso de Lima ni de Cusco. Y con la jerarquía oficial ya verificada: **hay 451 recursos de jerarquía 3 o 4 fuera del circuito saturado, frente a 203 dentro.**
+172 de los 222 polos (73 % de los recursos agrupados) no contienen ningún recurso de Lima ni de Cusco. Y con la jerarquía verificada fila a fila contra la ficha oficial: **hay 115 recursos de jerarquía 3 o 4 fuera del circuito saturado, frente a 49 dentro.**
 
-Ordenar solo por jerarquía concentraba: el top 10 salía con 60 % de polos con Lima o Cusco sobre una base del 23 %. Con el término de novedad a λ = 0,3 baja a 30 % perdiendo menos del 2 % de jerarquía media.
+En todo el inventario hay **172 recursos de jerarquía 3 o 4**. El patrimonio de primer nivel del país es mucho más escaso de lo que este documento afirmaba hasta ahora, y está repartido 70/30 a favor del resto del país. La cifra anterior (451 contra 203) venía del 40 % de jerarquías sin respaldo en la ficha oficial; el detalle está en `DataAnalysis.md` §3.1.
+
+Ordenar solo por jerarquía concentra: el top 10 sale con 30 % de polos con Lima o Cusco sobre una base del 21 %. Con el término de novedad a λ = 0,3 baja a 10 % perdiendo 1,7 % de jerarquía media.
 
 ---
 
@@ -178,7 +188,10 @@ Ordenar solo por jerarquía concentraba: el top 10 salía con 60 % de polos con 
 
 | Pendiente | Semana |
 |---|---|
-| Re-extraer `TIPO_INGRESO` y `EPOCA_PROPICIA` con columna `ORIGEN_JERARQUIA` | 7 |
+| Integrar `fichas_mincetur.csv` al maestro con columna `ORIGEN_JERARQUIA` | 7 |
+| Reemplazar el supuesto de 40 km/h por los tiempos reales de `ACCESO_MIN` | 7 |
+| Llevar `TARIFA_SOLES` al modelo de costo y calibrar los seis parámetros | 7 |
+| Corregir dos fallos menores del extractor: `TABLAS_RECONOCIDAS` vacía y los 31 errores guardados como `ValueError` | 7 |
 | Ejecutar `fetch_climate_v2.py`: clima por `REGIÓN × ZONA_CLIMATICA`, 88 puntos en vez de 24 | 7 |
 | Decidir qué se hace con el presupuesto: no hay ninguna columna monetaria en el dataset | 7 |
 | Perfilamiento semántico por intereses sobre los 187 subtipos | 7 |

@@ -303,7 +303,9 @@ Los 62 polos multirregionales siguen siendo la evidencia directa contra el basel
 
 ### 6.4 El ordenamiento: jerarquía con término de novedad
 
-La jerarquía oficial (`DataAnalysis.md` §3.1) ordena polos ya formados. Pero al medirlo apareció un problema de dirección: **con 23 % de polos que contienen Lima o Cusco en la base, el top 10 por jerarquía pura salía con 60 % de ellos.** La capa de ordenamiento empujaba en contra de la tesis de dispersión del producto.
+La jerarquía oficial (`DataAnalysis.md` §3.1) ordena polos ya formados. Con la jerarquía verificada fila a fila contra la ficha de MINCETUR, **el top 10 por jerarquía pura sale con 30 % de polos que contienen Lima o Cusco, sobre una base del 21 %.** La sobre-representación existe, pero es moderada.
+
+> **Corrección.** Una versión anterior de esta sección reportaba 60 % sobre una base del 23 %. Esa cifra se calculó con `JERARQUIA_OFICIAL` del dataset maestro, que resultó tener un 40 % de valores sin respaldo en la ficha oficial (`DataAnalysis.md` §3.1). El término de novedad sigue justificado, pero el problema que corrige es la mitad de grande de lo que este documento afirmaba.
 
 El término de novedad no es un adorno del documento; es lo que hace que la promesa sea cierta:
 
@@ -316,13 +318,16 @@ donde *saturación* es la fracción del polo que está en Lima o Cusco y *lejan�
 
 | λ | Lima/Cusco en el top 10 | Jerarquía media del top 10 | Regiones representadas |
 |---:|---:|---:|---:|
-| 0,0 | 60 % | 2,63 | 5 |
-| 0,2 | 40 % | 2,62 | 7 |
-| **0,3** | **30 %** | **2,58 (−1,9 %)** | **7** |
-| 0,4 | 0 % | 2,42 (−8,0 %) | 6 |
-| 0,7 | 0 % | 2,30 (−12,5 %) | 7 |
+| 0,0 | 30 % | 2,14 | 7 |
+| 0,2 | 10 % | 2,11 (−1,4 %) | 7 |
+| **0,3** | **10 %** | **2,10 (−1,7 %)** | **6** |
+| 0,4 | 10 % | 2,07 (−3,3 %) | 6 |
+| 0,5 | 0 % | 2,04 (−4,7 %) | 7 |
+| 0,7 | 0 % | 1,94 (−9,3 %) | 7 |
 
-**λ = 0,3 es el valor por defecto:** reduce a la mitad la concentración en el circuito saturado a cambio de menos del 2 % de calidad media, y pasa de cinco a siete regiones en el top 10. Implementado en `code/ta03_score_polo.py`.
+**λ = 0,3 queda como valor por defecto**, pero con los datos corregidos la elección ya no es evidente. λ = 0,3 baja la concentración del circuito saturado de 30 % a 10 % a cambio de 1,7 % de jerarquía media; λ = 0,5 la elimina por completo y recupera la séptima región a cambio de 4,7 %. Ninguno domina al otro. Se deja expuesto como parámetro en `code/ta03_score_polo.py` y la decisión debería apoyarse en las entrevistas a viajeros, no en esta tabla.
+
+**Qué se hace con los recursos sin jerarquía.** Dentro de los polos hay 1 240 recursos (25,9 %) que la ficha oficial no jerarquiza: 882 marcados «POR JERARQUIZAR», 328 «No aplica» y 30 cuya ficha devolvió error. No se les imputa ningún valor — imputar la mediana reproduciría exactamente el error que esta corrección deshace, y asignarles cero castigaría a los recursos que el Estado todavía no ha evaluado, que son justo los que este producto existe para sacar a la luz. La jerarquía del polo es el promedio **sobre los recursos que sí la tienen**, y se publica junto a `cobertura_jerarquia`: qué fracción del polo sostiene ese promedio. Un polo por debajo del 30 % de cobertura no entra al ranking. Son 9, más 1 sin ningún recurso jerarquizado, de 222; quedan **212 polos rankeables** y la cobertura mediana es del **80 %**.
 
 ### 6.5 Cobertura de catálogo
 
@@ -330,7 +335,8 @@ donde *saturación* es la fracción del polo que está en Lima o Cusco y *lejan�
 |---|---:|
 | Polos sin ningún recurso de Lima o Cusco | 172 de 222 (77 %) |
 | Recursos en esos polos | 3 470 de 4 786 (73 %) |
-| Recursos de jerarquía 3-4 fuera del circuito | 451 contra 203 dentro |
+| Recursos de jerarquía 3-4 fuera del circuito | 115 contra 49 dentro |
+| Recursos de jerarquía 3-4 en todo el inventario | 172 (157 de nivel 3 · 15 de nivel 4) |
 
 ### 6.6 Lo que este modelo NO resuelve
 
