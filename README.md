@@ -106,20 +106,23 @@ Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`.
 
 ## El modelo
 
-**TA-01 · Agrupamiento espacio-temporal.** HDBSCAN (`min_cluster_size=15`) sobre latitud, longitud, altitud e
-índice de lejanía, comparado contra la partición administrativa y contra K-Means al mismo número de grupos:
+**TA-01 · Agrupamiento espacio-temporal.** Enlace completo sobre una distancia de viaje que combina haversine
+y desnivel. El algoritmo **acota el diámetro del polo por construcción**: ningún par de recursos del mismo polo
+supera el umbral de 80 km de viaje efectivo.
 
-| Modelo | Grupos | Silueta ↑ | Davies-Bouldin ↓ | Radio medio ↓ |
-|---|---:|---:|---:|---:|
-| **HDBSCAN mcs=15** | 81 | **0,657** | **0,419** | **30,2 km** |
-| K-Means k=81 | 74 | 0,626 | 0,570 | 39,3 km |
-| Baseline · REGIÓN | 25 | −0,029 | 2,868 | 68,6 km |
+| | v1 · HDBSCAN | **v2 · enlace completo** |
+|---|---:|---:|
+| Polos | 81 | **222** |
+| Recursos utilizables | 3 760 (61,0 %) | **4 786 (77,7 %)** |
+| Diámetro máximo | 427,9 km · **17,1 h** | 79,4 km · **3,2 h** |
+| Desnivel máximo | 4 667 m | **1 296 m** |
 
 La partición por departamento obtiene **silueta negativa**: el recurso promedio queda más cerca de los recursos
 de otro departamento que de los de su propio departamento. La división política del Perú no describe la
 geografía turística, y ese es el motivo de que el producto agrupe.
 
-El detalle, con los barridos de parámetros y la auditoría de la propia comparación, está en
+El detalle —barridos, ablación, la auditoría de la propia comparación y por qué la silueta no puede decidir
+entre los dos modelos— está en
 [`deliveries/week06/ModelSelection.md`](./deliveries/week06/ModelSelection.md).
 
 ---
