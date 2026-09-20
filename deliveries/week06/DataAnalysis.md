@@ -48,7 +48,9 @@ El 100 % del faltante se concentra en las dos categorías que describen **práct
 
 Quedan **4 915 recursos geolocalizables (79,8 %)** como base del modelado.
 
-De esos, el modelo de agrupamiento deja fuera otros 1 155 por estar demasiado aislados para encadenarse con nada (`ModelSelection.md` §6.0). Sumando ambas exclusiones, **2 400 recursos — el 39 % del inventario — no pueden formar parte de un itinerario de varias paradas.** Es el techo real del producto y conviene tenerlo escrito antes que descubrirlo en la defensa.
+De esos, el modelo de agrupamiento deja fuera otros 129 por no alcanzar el tamaño mínimo de polo (`ModelSelection.md` §6). Sumando ambas exclusiones, **1 374 recursos — el 22,3 % del inventario — no pueden formar parte de un itinerario de varias paradas.** Es el techo real del producto y conviene tenerlo escrito antes que descubrirlo en la defensa.
+
+> La primera versión del modelo dejaba fuera 2 400 recursos, el 39 %. El cambio de algoritmo documentado en `ModelSelection.md` §5.7 recuperó 1 026.
 
 ### 2.3 Hallazgo heredado de la Semana 4
 
@@ -244,7 +246,7 @@ Esto define un vacío de datos con una única fuente posible: **el municipio que
 | `TIPO_INGRESO` y `EPOCA_PROPICIA` sobrescritas | Sin aproximación al costo ni estacionalidad por recurso | Re-ejecutar el scraper con trazabilidad de origen · Semana 7 |
 | Fallos del scraper mezclados con jerarquía 1 legítima | No se sabe qué proporción de los 2 577 recursos en jerarquía 1 es real | Añadir columna `ORIGEN_JERARQUIA` · Semana 7 |
 | `build_master_dataset.py` genera datos al azar | Escribe sobre la salida del scraper real; destruye la extracción si se ejecuta | Retirado del pipeline y marcado en el encabezado |
-| Climatología por región, no por piso ecológico | Regiones de gran rango altitudinal quedan mal descritas | Cruce `REGIÓN × ZONA_CLIMATICA` · Semana 7 |
+| Climatología por región, no por piso ecológico | 24 de 81 polos recibían el clima de otro piso ecológico: el polo de la sierra de Lima, a 4 058 m de altitud media, heredaba el clima de la costa limeña | `code/fetch_climate_v2.py` descarga 88 puntos región × zona climática y cubre el 99,3 % de los recursos · pendiente de ejecutar |
 | Altitud del modelo digital de elevación | Hasta +250 m de error en cañón | Contrastar con altitud oficial de la ficha |
 | Distancias geodésicas, no viales | Subestima el tiempo real de traslado | Red vial de OpenStreetMap · Semana 10 |
 | Sin precios por recurso | El costo mostrado es estimación, nunca tarifa | `TIPO_INGRESO` real vía ficha oficial |
