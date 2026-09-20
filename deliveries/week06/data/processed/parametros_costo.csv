@@ -1,0 +1,10 @@
+# DreemGO · parámetros del modelo de costo
+# calibrado = si  -> el valor viene de una fuente real y el Monte Carlo lo mueve solo ±5 %
+# calibrado = no  -> entra el rango completo y ensancha la banda del presupuesto
+parametro;valor;rango_min;rango_max;unidad;calibrado;fuente
+bus_soles_km;0.085;0.055;0.125;S/ por km;no;tarifas publicadas de operadores interprovinciales
+bus_intercepto;12;5;25;S/ fijo por tramo;no;idem
+movilidad_soles_km;0.55;0.30;0.95;S/ por km;no;colectivo y taxi rural · observación de campo
+alojamiento_noche;70;35;140;S/ por noche;no;INEI · Encuesta Mensual de Establecimientos de Hospedaje
+alimentacion_dia;50;25;95;S/ por día;no;MINCETUR datosTurismo · gasto promedio del turista interno
+entrada_pagada;15;5;40;S/ por entrada;no;ficha oficial MINCETUR · tipo de ingreso
