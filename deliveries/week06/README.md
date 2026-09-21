@@ -12,6 +12,9 @@ Entrega: 16 de septiembre de 2026
 2. Se descargaron **diez años de climatología mensual** (2014–2023) de Open-Meteo Archive para las 24 regiones, con lo que la estacionalidad deja de ser una regla inventada y pasa a ser un dato.
 3. Se implementó y evaluó **TA-01**, el agrupamiento espacio-temporal, contra dos baselines. Una auditoría posterior detectó que el modelo elegido producía polos de hasta doce horas de punta a punta, y se rehízo con un algoritmo que acota el diámetro por construcción.
 4. Se prototipó el **componente de eventos con ventana temporal** — el lado de la oferta del producto — sobre un dataset simulado.
+5. Se implementó **TA-04**, el ordenamiento de la ruta dentro del polo, con dos baselines y evaluación sobre los 222 polos. La velocidad de traslado dejó de ser un supuesto: sale de 3 094 tramos de acceso reales de la ficha.
+6. Se implementó **TA-05**, la viabilidad estacional del polo mes a mes, que es lo que hace que el mes de viaje del usuario cambie la recomendación.
+7. Se unió todo en `code/consulta.py`, que resuelve una consulta de punta a punta y **verifica en cada ejecución los criterios de aceptación** de RF-01, RF-02 y RNF-01.
 
 ---
 
@@ -38,6 +41,10 @@ week06/
 │   ├── verificar_fichas.py         verificación de jerarquía y cobertura
 │   ├── costo_itinerario.py         presupuesto con banda P20-P80
 │   ├── ta03_score_polo.py          puntaje del polo con término de novedad
+│   ├── ta04_ordenar_ruta.py        TA-04 · secuencia de paradas por día
+│   ├── ta04_evaluacion.py          TA-04 · evaluación sobre los 222 polos
+│   ├── ta05_estacionalidad.py      TA-05 · viabilidad del polo mes a mes
+│   ├── consulta.py                 consulta de punta a punta
 │   ├── fetch_climate_v2.py         clima por región × zona climática (pendiente)
 │   ├── ta01_figura.py              figura v1
 │   ├── ta01_figura_v2.py           figura v2
@@ -54,6 +61,9 @@ week06/
 │       ├── polos_asignados_v2.csv          v2 · etiqueta de polo por recurso
 │       ├── fichas_mincetur.csv             6 129 fichas oficiales extraídas
 │       ├── puntaje_polos.csv              v2 · puntaje con cobertura de jerarquía
+│       ├── estacionalidad_polo_mes.csv     TA-05 · 222 polos × 12 meses
+│       ├── evaluacion_ta04.csv             TA-04 · comparativa contra baseline
+│       ├── ingreso_por_polo.csv            fracción de paradas pagadas por polo
 │       ├── parametros_costo.csv            parámetros del modelo de costo
 │       └── puntos_clima_v2.csv             88 puntos región × zona climática
 └── docs/
@@ -101,6 +111,16 @@ python ta01_auditoria_comparacion.py ../data/processed/dreemgo_master_dataset.cs
 python ta01_polos_acotados.py        ../data/processed/dreemgo_master_dataset.csv
 python ta03_score_polo.py            ../data/processed/polos_asignados_v2.csv 0.30
 python ta01_figura_v2.py             ../data/processed/dreemgo_master_dataset.csv
+
+# TA-04 · ordenamiento y evaluación
+python ta04_ordenar_ruta.py 201 6
+python ta04_evaluacion.py 6
+
+# TA-05 · estacionalidad
+python ta05_estacionalidad.py
+
+# consulta de punta a punta
+python consulta.py --mes 7 --dias 6 --altitud-max 3500
 ```
 
 Semilla fija (`random_state=42`); el enlace completo es determinista. Regeneran **todas** las cifras de `ModelSelection.md` en un par de minutos, sin volver a tocar la red. El paso de v2 construye una matriz de distancias de 4 915 × 4 915 (97 MB en memoria).
@@ -182,6 +202,36 @@ En todo el inventario hay **172 recursos de jerarquía 3 o 4**. El patrimonio de
 
 Ordenar solo por jerarquía concentra: el top 10 sale con 30 % de polos con Lima o Cusco sobre una base del 21 %. Con el término de novedad a λ = 0,3 baja a 10 % perdiendo 1,7 % de jerarquía media.
 
+### Ordenamiento — TA-04
+
+**El mismo viajero, los mismos seis días, 42 % más lugares.** Evaluado sobre los 222 polos:
+
+| Método | Paradas | Kilómetros |
+|---|---:|---:|
+| Orden por jerarquía | 1 736 | 49 064 km |
+| Vecino más cercano | 2 466 (**+42,1 %**) | 42 271 km (−13,8 %) |
+| Vecino + 2-opt | 2 466 (+42,1 %) | 42 227 km (−13,9 %) |
+
+Y un resultado negativo que también se reporta: **el 2-opt no aporta nada** — 0 paradas
+extra y 0,1 % de kilómetros. Con jornadas de 8 h los tours tienen 3 a 6 paradas y el
+vecino más cercano ya está cerca del óptimo.
+
+La velocidad de traslado se calibró con 3 094 tramos de acceso de la ficha: **32,5 km/h**
+sobre carretera, contra los 40 km/h que suponíamos. Cruzar un polo cuesta 23 % más tiempo
+del que este documento afirmaba, y las horas de `ModelSelection.md` ya están corregidas.
+
+### Estacionalidad — TA-05
+
+222 polos × 12 meses desde diez años de clima. A dónde manda el producto cada mes:
+
+```
+enero      → SAN MARTÍN        abril–noviembre → PASCO
+feb–marzo  → LA LIBERTAD       diciembre       → AREQUIPA
+```
+
+En temporada de lluvias recomienda la costa; en seca, sierra y selva alta. Nadie escribió
+esa regla.
+
 ---
 
 ## Lo que queda pendiente
@@ -189,6 +239,10 @@ Ordenar solo por jerarquía concentra: el top 10 sale con 30 % de polos con Lima
 | Pendiente | Semana |
 |---|---|
 | Integrar `fichas_mincetur.csv` al maestro con columna `ORIGEN_JERARQUIA` | 7 |
+| Alinear la numeración TA-04 y TA-05 en `week05/Requirements.md` | 7 |
+| Usar el origen real del usuario en vez de `dist_origen_km = 450` | 7 |
+| Perfil de intereses de verdad sobre las 63 actividades, no un filtro de texto | 10 |
+| Armado de días no miope: orientación por equipos con presupuesto | 10 |
 | Reemplazar el supuesto de 40 km/h por los tiempos reales de `ACCESO_MIN` | 7 |
 | Llevar `TARIFA_SOLES` al modelo de costo y calibrar los seis parámetros | 7 |
 | Corregir dos fallos menores del extractor: `TABLAS_RECONOCIDAS` vacía y los 31 errores guardados como `ValueError` | 7 |
