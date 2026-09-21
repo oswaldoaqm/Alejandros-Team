@@ -25,7 +25,8 @@ import sys
 import numpy as np
 import pandas as pd
 
-RUTA = sys.argv[1] if len(sys.argv) > 1 else "parametros_costo.csv"
+RUTA = sys.argv[1] if len(sys.argv) > 1 else "../data/processed/parametros_costo.csv"
+POR_POLO = "../data/processed/ingreso_por_polo.csv"
 N_MC = 20000
 SINUOSIDAD = 1.6
 
@@ -43,7 +44,8 @@ def costo(p, itin):
                * max(itin["paradas"] - 1, 0))
     alojamiento = max(itin["dias"] - 1, 0) * p["alojamiento_noche"]
     alimentacion = itin["dias"] * p["alimentacion_dia"]
-    entradas = itin["paradas"] * itin["frac_paradas_pagadas"] * p["entrada_pagada"]
+    frac = itin.get("frac_paradas_pagadas", p["frac_paradas_pagadas"])
+    entradas = itin["paradas"] * frac * p["entrada_pagada"]
     return {
         "transporte interprovincial": transporte,
         "movilidad en el polo": interno,
@@ -71,8 +73,24 @@ def banda(p, itin, n=N_MC, semilla=42):
 
 def main():
     p = cargar(RUTA)
-    itin = dict(dist_origen_km=450, diametro_polo_km=55, dias=6, paradas=5,
-                frac_paradas_pagadas=0.23)
+    itin = dict(dist_origen_km=450, diametro_polo_km=55, dias=6, paradas=5)
+
+    # Si se pasa un polo, su fraccion de paradas pagadas sale de la ficha oficial
+    # de cada recurso del polo, no de un supuesto global. Un polo puede ser
+    # 100 % libre y otro tener el 44 % de sus paradas con boleto; promediar los
+    # dos en una constante le cobra de mas al primero y de menos al segundo.
+    polo = None
+    for i, a in enumerate(sys.argv):
+        if a == "--polo" and i + 1 < len(sys.argv):
+            polo = int(sys.argv[i + 1])
+    if polo is not None:
+        try:
+            ip = pd.read_csv(POR_POLO, sep=";").set_index("POLO")
+            itin["frac_paradas_pagadas"] = float(ip.loc[polo, "frac_paradas_pagadas"])
+            print(f"Polo {polo}: fraccion de paradas pagadas segun ficha = "
+                  f"{itin['frac_paradas_pagadas']:.3f}")
+        except Exception as e:
+            print(f"(no se pudo leer el polo {polo}: {e})")
 
     print("=" * 76)
     print("COSTO ESTIMADO DEL ITINERARIO")
