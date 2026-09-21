@@ -418,4 +418,32 @@ python code/ta03_score_polo.py             ../data/processed/polos_asignados_v2.
 python code/ta01_figura_v2.py              ../data/processed/dreemgo_master_dataset.csv
 ```
 
+<<<<<<< HEAD
+Semilla fija (`random_state=42`). Generan `comparativa_modelos.csv`, `barrido_k.csv`, `perfil_clusters.csv`, `perfil_clusters_hdbscan.csv`, `clusters_asignados.csv` y la figura `ta01_seleccion_modelo.png`. Todas las cifras de este documento salen de esas dos ejecuciones.
+
+## 11. Tareas Analíticas Complementarias: Predicción y Recomendación
+
+Para complementar el agrupamiento espacial (TA-01) y evitar que el producto se limite a la optimización de rutas, el sistema integra dos modelos adicionales de Machine Learning que abordan el pronóstico de riesgo y la monetización del modelo B2B.
+
+### TA-02: Forecasting Predictivo de Viabilidad Climática (Clasificación Multiclase)
+El agrupamiento espacial (TA-01) asume un escenario ideal. Sin embargo, la geografía peruana presenta anomalías climáticas agudas (ej. huaicos por El Niño). Este modelo sustituye las reglas estáticas de temporalidad por un motor predictivo basado en 10 años de historia meteorológica.
+
+*   **Objetivo:** Predecir si un destino es seguro para viajar en un mes futuro específico, penalizando rutas completas en caso de riesgo alto.
+*   **Variable Objetivo (Target):** `NIVEL_RIESGO_CLIMATICO` (Multiclase: `1_Seguro`, `2_Precaucion`, `3_Peligro`).
+*   **Vector de Características (Inputs):** `REGION`, `MES` (cíclico), `TEMPERATURA_MEDIA_C`, y `ZONA_CLIMATICA`.
+*   **Algoritmo Propuesto:** **Random Forest Classifier** o **XGBoost**. Se prefieren métodos de ensamble basados en árboles porque capturan las relaciones no lineales entre los pisos ecológicos y los picos de precipitación que modelos lineales ignorarían.
+*   **Baseline Explícito:** Regla basada en promedios históricos estáticos (Ej: *Si Región = Cusco y Mes = Enero -> Peligro*).
+*   **Estrategia de Evaluación:** Dado que existe un desbalance de clases (los meses de `3_Peligro` son menos frecuentes que los `1_Seguro`), la métrica principal será el **F1-Score Macro**. Secundariamente, se optimizará el **Recall de la clase 3_Peligro**, ya que el costo de negocio de un Falso Negativo (enviar a un turista a una ruta bloqueada por lluvias) es inaceptable.
+
+### TA-03: Motor de Recomendación de Comercio Local (Filtrado Basado en Contenido)
+El modelo de negocio de DreemGO requiere dispersar la economía hacia eventos locales temporales (ferias, festividades), los cuales representan el 12.2% del inventario original (Categoría 5) pero carecen de coordenadas estáticas.
+
+*   **Objetivo:** Inyectar y rankear anuncios de eventos locales dinámicos en el itinerario precalculado del usuario, emparejando la ventana de tiempo del turista con las fechas del evento.
+*   **Variable Objetivo (Target):** Probabilidad de clic / Interés del turista (Proxy actual: `RELEVANCIA_PUBLICIDAD`).
+*   **Vector de Características (Inputs):** `CATEGORIA` del evento, `JERARQUIA_OFICIAL` del conglomerado cercano (de la TA-01), y *Perfil del Usuario* (vector de intereses).
+*   **Algoritmo Propuesto:** **Content-Based Filtering** (Filtrado basado en contenido) utilizando similitud del coseno entre los vectores TF-IDF de las descripciones/categorías de los eventos y el historial de preferencias del usuario.
+*   **Baseline Explícito:** Recomendación por popularidad global (Top-N eventos con mayor jerarquía en la región, ignorando preferencias).
+*   **Estrategia de Evaluación:** En ausencia temporal de interacciones reales (Cold-Start), se evaluará offline mediante **nDCG@K** (Normalized Discounted Cumulative Gain). Esta métrica penaliza fuertemente al modelo si los eventos altamente relevantes no aparecen en las primeras posiciones de la recomendación.
+=======
 Semilla fija (`random_state=42`); el enlace completo es determinista. Generan `polos_asignados_v2.csv`, `perfil_polos_v2.csv`, `comparativa_polos_v2.csv`, `puntaje_polos.csv` y las figuras. Todas las cifras de este documento salen de esas ejecuciones.
+>>>>>>> 21ca2981150cbe438c857c6b240b28d8820ce41d
