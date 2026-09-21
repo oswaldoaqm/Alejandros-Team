@@ -12,7 +12,7 @@ DreemGO no responde "¿qué hay cerca?". Responde **"¿qué conjunto de destinos
 
 | Tarea | Tipo | Estado en esta entrega |
 |---|---|---|
-| **TA-01** Agrupamiento espacio-temporal de destinos | Aprendizaje no supervisado | **Implementada y evaluada** |
+| **TA-01** Agrupamiento espacio-temporal de destinos | Aprendizaje no supervisado | **Implementada, auditada y rehecha (v2)** |
 | **TA-02** Ingeniería de variables geoespaciales | Derivación determinista | Implementada (Semana 5) |
 | **TA-03** Extracción de fichas oficiales | Extracción | Parcial — ver `DataAnalysis.md` §3.1 |
 | **Ordenamiento de la ruta** | Optimización combinatoria | Especificada, Semana 10 |
@@ -32,7 +32,7 @@ Un agrupamiento es útil para este producto si cumple dos cosas a la vez:
 1. **Cohesión estadística** — los recursos de un grupo se parecen entre sí en el espacio de características.
 2. **Recorribilidad** — un viajero puede visitar varios recursos del grupo en un mismo viaje.
 
-La segunda no la miden ni la silueta ni Davies-Bouldin. La añadimos como métrica propia.
+La segunda no la miden ni la silueta ni Davies-Bouldin, y resultó ser la que decide: el modelo que gana en cohesión produce polos de hasta doce horas de punta a punta (§5.7). La medimos con el **diámetro** del polo, y el modelo final la garantiza por construcción en lugar de reportarla después.
 
 ---
 
@@ -46,14 +46,14 @@ La segunda no la miden ni la silueta ni Davies-Bouldin. La añadimos como métri
 | `ALTITUD` | Continua (0–6 692 m) | Separa pisos ecológicos y condiciona el esfuerzo del viaje |
 | `INDICE_COSTO_LOGISTICO` | Ordinal 1–3 | Accesibilidad respecto de la capital regional |
 
-Estandarizadas con `StandardScaler` antes del ajuste, para que la altitud (rango de miles) no quede aplastada por la latitud (rango de decenas).
+Para los candidatos 1 y 2 se estandarizan con `StandardScaler`, de modo que la altitud (rango de miles) no quede aplastada por la latitud (rango de decenas). El candidato 3 no usa ese espacio: opera sobre una matriz de distancias de viaje en kilómetros (§3).
 
 **Variables deliberadamente excluidas del vector de agrupamiento:**
 
 - `TIPO_INGRESO` y `EPOCA_PROPICIA`, por ser funciones deterministas de otras columnas (`DataAnalysis.md` §3.1). Incluirlas sería introducir la misma información dos veces.
 - `JERARQUIA_OFICIAL`, que **sí es un dato real y verificado**, pero mide importancia y no ubicación. Meterla en el espacio de agrupamiento produciría polos de «cosas importantes repartidas por 400 km», que es justo lo que el producto no puede recomendar. Entra en el sistema como capa de ordenamiento sobre polos ya formados (§6.5).
 
-**Salida:** una etiqueta de conglomerado por recurso, más un conjunto de recursos marcados como aislados.
+**Salida:** una etiqueta de polo por recurso, más los recursos que no alcanzan el tamaño mínimo de polo.
 
 ---
 
@@ -75,6 +75,20 @@ Jerárquico basado en densidad. No exige fijar el número de grupos, admite grup
 
 Barrido de `min_cluster_size` en {15, 25, 40, 60, 90}.
 
+### Candidato 3 · Enlace completo sobre distancia de viaje
+
+Agrupamiento jerárquico aglomerativo con **enlace completo**, sobre una distancia que no es la euclídea del espacio de características sino el esfuerzo de viaje entre dos recursos:
+
+```
+d_viaje(i, j) = √( haversine(i, j)²  +  (|altitud_i − altitud_j| · k)² )       k = 0,06 km/m
+```
+
+Con k = 0,06, mil metros de desnivel pesan como sesenta kilómetros de llano. El valor sale de un barrido conjunto de (umbral, k) buscando que ningún polo supere ~1 300 m de rango altitudinal, porque el usuario declara una altitud máxima tolerada y un polo que va de 200 a 4 000 m le sirve a medias.
+
+La propiedad que lo hace candidato: **el enlace completo acota el diámetro del conglomerado por construcción.** Si el umbral es D, ningún par de recursos del mismo polo supera D. No es una métrica que se reporta después del ajuste; es una garantía del algoritmo.
+
+Barrido del umbral en {60, 80, 100, 120} km de viaje efectivo.
+
 ---
 
 ## 4. Métricas
@@ -84,9 +98,14 @@ Barrido de `min_cluster_size` en {15, 25, 40, 60, 90}.
 | **Coeficiente de silueta** | Cohesión interna frente a separación entre grupos | Mayor es mejor (−1 a 1) |
 | **Índice Davies-Bouldin** | Razón entre dispersión interna y separación | **Menor** es mejor |
 | **Calinski-Harabasz** | Razón de varianza entre e intra grupos | Mayor es mejor |
-| **Radio medio (km)** | Distancia Haversine media de cada recurso al centroide geográfico de su grupo, ponderada por tamaño | **Menor** es mejor |
+| **Radio medio (km)** | Distancia Haversine media de cada recurso al centroide geográfico de su grupo | **Menor** es mejor |
+| **Diámetro (km)** | Distancia Haversine entre los dos recursos más separados del grupo | **Menor** es mejor |
 
-La última es la **métrica de producto**. Traduce el resultado a la pregunta que importa: si el radio medio de un polo es de 115 km, no es un polo, es una macrorregión, y un itinerario dentro de él gasta el viaje en carretera.
+Las dos últimas son **métricas de producto**: traducen el resultado a la pregunta que importa, que es si un viajero puede recorrer el polo.
+
+**El radio no basta, y esa fue una equivocación de una versión anterior de este documento.** El radio mide la dispersión alrededor del centro; el diámetro mide el tamaño del polo. Un conglomerado con muchos recursos apiñados cerca del centroide y unos pocos lejos puede tener radio pequeño y diámetro enorme — que es exactamente lo que pasaba (§5.7). Para un itinerario, lo que limita es el diámetro: la parada más lejana de la otra punta.
+
+Para leer el diámetro en términos de viaje usamos una conversión declarada: **40 km/h de velocidad media en carretera andina con factor de sinuosidad 1,6**, es decir unos 25 km geodésicos por hora de viaje real.
 
 ---
 
@@ -188,118 +207,142 @@ Se conservan igual, por dos razones concretas:
 
 Es un intercambio explícito entre cohesión estadística y utilidad, resuelto a favor de la segunda.
 
+### 5.7 El radio escondía la cola
+
+Con el modelo de §5.2 elegido, una revisión adversaria posterior midió el **diámetro** de cada polo, que hasta entonces no se había calculado. El resultado invalidó la lectura optimista del radio:
+
+| | HDBSCAN mcs=15 |
+|---|---:|
+| Radio medio ponderado | 30,2 km |
+| **Diámetro · mediana** | **65,0 km** |
+| **Diámetro · p90** | **215,4 km** |
+| **Diámetro · máximo** | **427,9 km** |
+
+**30 de los 81 polos superaban los 100 km de diámetro**, y los más grandes eran justamente los que concentraban recursos:
+
+| Polo | Recursos | Diámetro | Desnivel | Región dominante | Horas de punta a punta |
+|---:|---:|---:|---:|---|---:|
+| 62 | 234 | 298 km | 2 197 m | Áncash | ~11,9 h |
+| 48 | 204 | 315 km | 2 194 m | Lima | ~12,6 h |
+| 45 | 125 | 271 km | 2 337 m | Cajamarca | ~10,9 h |
+
+Un polo de doce horas de punta a punta y dos mil metros de desnivel no es un polo: es una macrorregión con otro nombre. El titular «radio medio 30,2 km» describía los polos pequeños, que eran la mitad, y no los que contenían los recursos.
+
+La causa es el algoritmo, no el ajuste: **HDBSCAN optimiza densidad, y nada en su criterio acota la extensión de un grupo.** Una cadena de recursos densamente conectados puede estirarse cuatrocientos kilómetros sin que la densidad se rompa.
+
+### 5.8 La silueta no puede decidir esta elección
+
+Al comparar el candidato 3 contra HDBSCAN apareció algo que obliga a reinterpretar toda la §5.2:
+
+| | Espacio estandarizado (lo que optimiza HDBSCAN) | Métrica de viaje (lo que importa al producto) |
+|---|---:|---:|
+| HDBSCAN mcs=15 | **0,657** | 0,366 |
+| Enlace completo D≤80 | 0,160 | **0,462** |
+
+**Cada modelo gana en el espacio que optimiza.** La silueta no es un árbitro neutral entre algoritmos que optimizan cosas distintas: es una medida de cohesión *relativa a una métrica*, y elegir la métrica es elegir el ganador.
+
+Esto no invalida los baselines de §5.3 —la partición administrativa pierde en ambos espacios y también en kilómetros— pero sí obliga a que la elección entre candidatos se decida por criterios de producto, no por el número de silueta.
+
+### 5.9 Barrido del umbral de diámetro
+
+| Umbral (km de viaje) | Polos | Recursos | Cobertura | Diám. mediana | Diám. máximo | Desnivel mediana |
+|---:|---:|---:|---:|---:|---:|---:|
+| 60 | 290 | 4 625 | 75,1 % | 37,0 km | 59,7 km | 460 m |
+| **80** | **222** | **4 786** | **77,7 %** | **52,6 km** | **79,4 km** | **642 m** |
+| 100 | 174 | 4 848 | 78,7 % | 64,5 km | 99,3 km | 808 m |
+| 120 | 141 | 4 871 | 79,1 % | 76,1 km | 117,9 km | 1 004 m |
+
+A 80 km de viaje efectivo ningún polo pasa de **3,2 horas** de punta a punta ni de **1 296 m** de rango altitudinal, y se conserva el 77,7 % del inventario. Subir a 100 gana 0,9 puntos de cobertura a cambio de polos de cuatro horas; bajar a 60 los deja en dos horas y media pero pierde 161 recursos.
+
+---
+
 ## 6. Modelo seleccionado
 
-> **HDBSCAN con `min_cluster_size = 15`** sobre las cuatro variables geoespaciales estandarizadas.
+> **Enlace completo sobre distancia de viaje, umbral 80 km, tamaño mínimo 5 recursos.**
 
-| | |
-|---|---:|
-| Conglomerados | **81** |
-| Recursos agrupados | 3 760 (76,5 %) |
-| Recursos marcados como aislados | 1 155 (23,5 %) |
-| Radio medio ponderado | **30,2 km** |
-| Radio mediano | **13,9 km** |
-| Conglomerados con radio ≤ 30 km | 59 de 81 (73 %) — 2 263 recursos |
-| Conglomerados con radio ≤ 50 km | 73 de 81 (90 %) — 3 025 recursos |
+![Selección de modelo TA-01 v2](./docs/ta01_seleccion_modelo_v2.png)
 
-Frente al baseline administrativo, sobre el mismo subconjunto de recursos: silueta de −0,029 a **0,657**, Davies-Bouldin de 2,87 a **0,42**, radio medio de 68,6 km a **30,2 km**. Frente a K-Means con el mismo número de grupos: 0,626 → 0,657 en silueta y 39,3 → 30,2 km en radio.
-
-### 6.0 Cuánto del inventario queda fuera de un itinerario
-
-Antes de cualquier virtud del modelo, el número que hay que poner encima de la mesa:
-
-| | Recursos | % del inventario |
+| | v1 · HDBSCAN mcs=15 | **v2 · enlace completo D≤80** |
 |---|---:|---:|
-| Sin coordenadas — no ruteables | 1 245 | 20,2 % |
-| Agrupables pero aislados por el modelo | 1 155 | 18,8 % |
-| **No encadenables en una ruta** | **2 400** | **39,0 %** |
-| Sí entran a un polo | 3 760 | 61,0 % |
+| Polos | 81 | **222** |
+| Recursos en un polo | 3 760 (61,0 %) | **4 786 (77,7 %)** |
+| No encadenables en una ruta | 2 400 (39,0 %) | **1 374 (22,3 %)** |
+| Diámetro · mediana | 65,0 km | **52,6 km** |
+| Diámetro · p90 | 215,4 km | **69,5 km** |
+| **Diámetro · máximo** | **427,9 km · 17,1 h** | **79,4 km · 3,2 h** |
+| Desnivel · máximo | 4 667 m | **1 296 m** |
+| Polos de más de 4 h | ~15 | **0** |
+| Tamaño mediano | 32 recursos | 14 recursos |
 
-**Cuatro de cada diez recursos del inventario oficial no pueden formar parte de un itinerario de varias paradas.** Una parte es intrínseca —una danza o una fiesta no tienen coordenada— y otra es una decisión del modelo. Pero el producto no puede prometer «itinerarios sobre los 6 160 recursos del inventario»: opera sobre 3 760.
+**Mil veintiséis recursos más quedan disponibles para el producto.** El techo que documentaba la versión anterior —39 % del inventario fuera de cualquier itinerario— baja a 22,3 %.
 
-### 6.1 Por qué el ruido es una ventaja, no un defecto
+### 6.1 Por qué se cambió de algoritmo
 
-El 23,5 % de recursos marcados como aislados es, en este producto, **información valiosa y no un fallo**. Un recurso que no pertenece a ningún conglomerado denso es un recurso que no se puede encadenar con otros en un itinerario razonable. Forzarlo a un grupo, como haría K-Means, produciría itinerarios que se ven bien en el mapa y no se pueden cumplir.
+No fue un problema de ajuste de parámetros. HDBSCAN con `min_cluster_size=10` seguía dando un diámetro máximo de 404 km. La densidad no acota extensión, y este producto necesita acotar extensión.
 
-En la interfaz, esos recursos no desaparecen: se presentan como **destino único**, no como parada de una ruta. Es la diferencia entre un sistema que sabe lo que no sabe y uno que rellena.
+El enlace completo la acota por definición: la distancia entre dos conglomerados es la de su par más lejano, así que fusionar dos grupos solo ocurre si **todos** sus pares quedan bajo el umbral. Lo que en la mayoría de aplicaciones es una desventaja —el enlace completo es sensible a los extremos— aquí es exactamente la propiedad que se busca, porque el extremo es el viajero que tiene que cruzar el polo.
 
-### 6.2 Los conglomerados son interpretables
+### 6.2 Qué se pierde
 
-Los doce más compactos:
+**La silueta en el espacio estandarizado cae de 0,657 a 0,160.** Es real y hay que decirlo. Los polos de v2 no son «bonitos» en el espacio de características: son compactos en kilómetros de viaje, que es otra cosa.
 
-| Grupo | Recursos | Altitud media | Radio | Región dominante |
-|---:|---:|---:|---:|---|
-| 21 | 17 | 4 m | 0,7 km | Callao |
-| 28 | 56 | 154 m | 0,8 km | Lima |
-| 66 | 23 | 1 506 m | 1,3 km | Pasco |
-| 29 | 49 | 76 m | 1,8 km | Lima |
-| 23 | 15 | 2 516 m | 2,4 km | Apurímac |
-| 25 | 20 | 3 722 m | 2,5 km | Huancavelica |
-| 20 | 23 | 3 117 m | 3,3 km | Áncash |
-| 11 | 17 | 671 m | 4,4 km | Tacna |
-| 13 | 39 | 1 362 m | 4,7 km | Moquegua |
-| 6 | 24 | 30 m | 4,7 km | Piura |
-| 65 | 41 | 1 822 m | 5,0 km | Pasco |
-| 2 | 67 | 98 m | 5,0 km | Loreto |
+En la métrica que el producto usa, la relación se invierte: 0,462 contra 0,366 (§5.8).
 
-Se reconocen a simple vista: centros históricos urbanos, valles interandinos, el núcleo de Iquitos. El modelo no inventó categorías: recuperó corredores que existen.
+**Se pierde también la señal de aislamiento.** HDBSCAN marcaba 1 155 recursos como ruido y eso era información útil: «este recurso no se encadena con nada». En v2 solo quedan fuera 129 recursos, los que no alcanzan el mínimo de cinco. Para recuperar esa señal, un polo de exactamente cinco o seis recursos ya funciona como aviso de que la oferta local es delgada.
 
-**22 de los 81 conglomerados (27 %) cruzan más de una región.** Son polos reales que la partición por departamento no puede ver, y son la evidencia directa de por qué el baseline falla.
-
-### 6.3 Cobertura de catálogo
-
-La tesis de dispersión del producto exige verificación, no declaración:
+### 6.3 Los polos son interpretables y caben en un día
 
 | | |
 |---|---:|
-| Recursos agrupados fuera de Lima y Cusco | 2 929 (77,9 %) |
-| Conglomerados 100 % fuera del circuito | 64 de 81 (79 % de los polos) |
-| Recursos que viven en esos conglomerados | 2 827 de 3 760 (**75 % de los recursos**) |
-| Tamaño medio · polo limpio vs polo con Lima o Cusco | 44,2 vs 54,9 recursos |
+| Diámetro mediano | 52,6 km (~2,1 h) |
+| Diámetro p90 | 69,5 km (~2,8 h) |
+| Desnivel mediano | 642 m |
+| Polos que cruzan más de una región | 62 de 222 (28 %) |
 
-La cifra está ponderada por recursos y no solo por polos, porque contar polos puede engañar si los limpios fueran diminutos. No lo son: 75 % de los recursos agrupados está en polos sin ningún recurso de Lima o Cusco, frente al 79 % de los polos. La diferencia entre ambos porcentajes es pequeña.
+Los 62 polos multirregionales siguen siendo la evidencia directa contra el baseline administrativo: son corredores reales que la partición por departamento no puede ver, y ahora además se sabe que caben en un día de viaje.
 
-Un recomendador que elige **entre conglomerados** —y no entre recursos sueltos ordenados por popularidad— tiene 64 salidas posibles sin un solo recurso del circuito saturado. La capacidad estructural de dispersar existe y está medida.
+### 6.4 El ordenamiento: jerarquía con término de novedad
 
-Esto no garantiza que el producto disperse: eso depende de la función objetivo final, que llevará un término explícito de novedad.
+La jerarquía oficial (`DataAnalysis.md` §3.1) ordena polos ya formados. Con la jerarquía verificada fila a fila contra la ficha de MINCETUR, **el top 10 por jerarquía pura sale con 30 % de polos que contienen Lima o Cusco, sobre una base del 21 %.** La sobre-representación existe, pero es moderada.
 
-### 6.4 La jerarquía oficial como capa de ordenamiento
+> **Corrección.** Una versión anterior de esta sección reportaba 60 % sobre una base del 23 %. Esa cifra se calculó con `JERARQUIA_OFICIAL` del dataset maestro, que resultó tener un 40 % de valores sin respaldo en la ficha oficial (`DataAnalysis.md` §3.1). El término de novedad sigue justificado, pero el problema que corrige es la mitad de grande de lo que este documento afirmaba.
 
-El agrupamiento dice **dónde** se puede ir. `JERARQUIA_OFICIAL` dice **qué vale la pena** dentro de cada sitio, y al estar verificada como dato real (`DataAnalysis.md` §3.1) puede usarse para ordenar.
+El término de novedad no es un adorno del documento; es lo que hace que la promesa sea cierta:
 
-Separa polos de forma útil: la jerarquía media por polo va de **1,08 a 2,37**, con desviación estándar de 0,317 entre polos frente a 0,702 dentro de ellos. Hay polos consistentemente más valiosos que otros y no es ruido.
+```
+puntaje = (1 − λ) · jerarquía_normalizada  +  λ · novedad
+novedad = 0,5 · (1 − saturación)  +  0,5 · lejanía_normalizada
+```
 
-| Polo | Recursos | Jerarquía media | % jerarquía 3-4 | Región dominante |
-|---:|---:|---:|---:|---|
-| 8 | 35 | **2,37** | 37 % | Puno |
-| 22 | 87 | 2,36 | 48 % | Cusco |
-| 80 | 18 | 2,33 | 44 % | Cusco |
-| 76 | 55 | 2,31 | 35 % | Arequipa |
-| 38 | 20 | 2,30 | 30 % | Lambayeque |
-| … | | | | |
-| 67 | 26 | 1,08 | 0 % | Moquegua |
+donde *saturación* es la fracción del polo que está en Lima o Cusco y *lejanía* el índice de distancia al hub logístico regional.
 
-El polo mejor valorado de todo el país según la fuente oficial —el 8, con jerarquía media 2,37— está en **Puno y no contiene ningún recurso de Lima o Cusco**. De los 64 polos completamente fuera del circuito saturado, 12 tienen jerarquía media igual o superior a 2,0.
+| λ | Lima/Cusco en el top 10 | Jerarquía media del top 10 | Regiones representadas |
+|---:|---:|---:|---:|
+| 0,0 | 30 % | 2,14 | 7 |
+| 0,2 | 10 % | 2,11 (−1,4 %) | 7 |
+| **0,3** | **10 %** | **2,10 (−1,7 %)** | **6** |
+| 0,4 | 10 % | 2,07 (−3,3 %) | 6 |
+| 0,5 | 0 % | 2,04 (−4,7 %) | 7 |
+| 0,7 | 0 % | 1,94 (−9,3 %) | 7 |
 
-Esto convierte la tesis de dispersión en algo verificable con el dato del propio Estado: **hay 451 recursos de jerarquía 3 o 4 fuera de Lima y Cusco, frente a 203 dentro.** La concentración de la demanda no se explica por dónde está el patrimonio importante.
+**λ = 0,3 queda como valor por defecto**, pero con los datos corregidos la elección ya no es evidente. λ = 0,3 baja la concentración del circuito saturado de 30 % a 10 % a cambio de 1,7 % de jerarquía media; λ = 0,5 la elimina por completo y recupera la séptima región a cambio de 4,7 %. Ninguno domina al otro. Se deja expuesto como parámetro en `code/ta03_score_polo.py` y la decisión debería apoyarse en las entrevistas a viajeros, no en esta tabla.
 
-**Uso previsto:** puntaje del polo = f(afinidad con los intereses, viabilidad estacional, jerarquía media, término de novedad). La jerarquía pondera; no filtra. Un recurso de jerarquía 1 que está en el camino sigue apareciendo en el itinerario.
+**Qué se hace con los recursos sin jerarquía.** Dentro de los polos hay 1 240 recursos (25,9 %) que la ficha oficial no jerarquiza: 882 marcados «POR JERARQUIZAR», 328 «No aplica» y 30 cuya ficha devolvió error. No se les imputa ningún valor — imputar la mediana reproduciría exactamente el error que esta corrección deshace, y asignarles cero castigaría a los recursos que el Estado todavía no ha evaluado, que son justo los que este producto existe para sacar a la luz. La jerarquía del polo es el promedio **sobre los recursos que sí la tienen**, y se publica junto a `cobertura_jerarquia`: qué fracción del polo sostiene ese promedio. Un polo por debajo del 30 % de cobertura no entra al ranking. Son 9, más 1 sin ningún recurso jerarquizado, de 222; quedan **212 polos rankeables** y la cobertura mediana es del **80 %**.
 
-### 6.5 Lo que este modelo NO resuelve
-
-El agrupamiento es espacial. El nombre «espacio-temporal» viene del pipeline completo, no de TA-01: en el modelo no entra ninguna variable de tiempo, y el mes del usuario actúa después, como ponderación sobre polos ya calculados.
-
-El ordenamiento por importancia sí lo cubre la jerarquía oficial (§6.4). Lo que no resuelve es el perfilamiento por intereses, que es la otra mitad de RF-01. Medimos si los polos se especializan por sí solos en algún tipo de destino, y la respuesta es *poco*:
+### 6.5 Cobertura de catálogo
 
 | | |
 |---|---:|
-| Polos con una categoría por encima del 60 % | 39 de 81 |
-| Mediana de la categoría dominante | 0,60 |
-| Entropía media por polo vs entropía global | 0,864 vs 1,160 |
+| Polos sin ningún recurso de Lima o Cusco | 172 de 222 (77 %) |
+| Recursos en esos polos | 3 470 de 4 786 (73 %) |
+| Recursos de jerarquía 3-4 fuera del circuito | 115 contra 49 dentro |
+| Recursos de jerarquía 3-4 en todo el inventario | 172 (157 de nivel 3 · 15 de nivel 4) |
 
-Hay algo de especialización temática, pero es un efecto colateral de la geografía y no algo que el modelo busque — y el inventario ya está repartido 40/45 entre Sitios Naturales y Manifestaciones Culturales, así que «categoría dominante por encima del 50 %» dice poco por sí solo.
+### 6.6 Lo que este modelo NO resuelve
 
-**Conclusión:** los polos responden a *dónde puedo ir sin perder el viaje en carretera*. No responden a *qué me gusta*. El filtrado por intereses tiene que ocurrir en una capa aparte —perfilamiento semántico sobre los 187 subtipos oficiales y sobre las actividades de la ficha— y esa capa no está implementada en esta entrega.
+El agrupamiento es espacial. El nombre «espacio-temporal» describe el pipeline completo, no TA-01: en el modelo no entra ninguna variable de tiempo, y el mes del usuario actúa después, como ponderación sobre polos ya calculados.
+
+Tampoco resuelve el perfilamiento por intereses. Medimos si los polos se especializan solos por tipo de destino y la respuesta es *poco*: la mediana de la categoría dominante es 0,60 sobre un inventario ya repartido 40/45 entre Sitios Naturales y Manifestaciones Culturales. Los polos responden a **dónde puedo ir**, no a **qué me gusta**. El filtrado por intereses es una capa aparte, aún sin implementar.
 
 ---
 
@@ -311,17 +354,19 @@ Consulta del usuario
         │
         ├─ Filtro duro ─────── altitud máxima tolerada
         │
-        ├─ TA-01 ───────────── conglomerados precalculados (HDBSCAN, offline)
+        ├─ TA-01 ───────────── polos precalculados (enlace completo, offline)
         │
         ├─ Cruce estacional ── REGIÓN × MES → NIVEL_RIESGO_CLIMATICO
         │                      penaliza el puntaje del conglomerado
         │
         ├─ Selección ───────── conglomerado ganador + término de novedad
         │
+        ├─ Puntaje ─────────── jerarquía oficial + término de novedad (λ = 0,3)
+        │
         └─ Ordenamiento ────── secuencia de paradas (Semana 10)
 ```
 
-**El agrupamiento corre offline**, no en tiempo de consulta. El mes del usuario no re-entrena nada: reordena conglomerados ya calculados. De ahí sale el requerimiento no funcional de menos de 5 segundos, que sería insostenible si HDBSCAN corriera en cada petición.
+**El agrupamiento corre offline**, no en tiempo de consulta. El mes del usuario no re-entrena nada: reordena polos ya calculados. De ahí sale el requerimiento no funcional de menos de 5 segundos, que sería insostenible si el agrupamiento corriera en cada petición — la matriz de distancias de 4 915 × 4 915 pesa 97 MB y tarda segundos en construirse.
 
 ---
 
@@ -333,6 +378,8 @@ TA-01 se evalúa con métricas internas porque no hay etiquetas. El componente d
 
 **Implementación prevista:** heurística de construcción más mejora local, con **vecino más cercano como baseline explícito**. Métrica: distancia total del itinerario frente al baseline.
 
+El cambio a polos acotados hace este problema tratable: ordenar catorce paradas dentro de 80 km es resoluble; ordenar doscientas treinta y cuatro repartidas en 298 km no lo era.
+
 **Evaluación de la recomendación sin verdad de campo:** conjunto de consultas etiquetado a mano por los cuatro integrantes, con acuerdo entre anotadores medido por **kappa de Fleiss** — si no hay acuerdo interno, la etiqueta no vale. Sobre ese conjunto: **Precision@5, nDCG@10 y MRR**, más **cobertura de catálogo y novelty@k** para verificar la promesa de dispersión. Es un gold set pequeño y se declarará como tal.
 
 ---
@@ -341,16 +388,16 @@ TA-01 se evalúa con métricas internas porque no hay etiquetas. El componente d
 
 | Limitación | Efecto |
 |---|---|
-| **La ventaja depende del ruido** | Obligado a clasificar los 4 915 recursos, HDBSCAN cae a 0,314 de silueta y K-Means k=81 lo supera con 0,537. La elección se sostiene en el argumento de producto de §6.1, no en la métrica bruta. |
-| **39 % del inventario fuera de ruta** | 1 245 sin coordenada más 1 155 aislados. El producto opera sobre 3 760 recursos, no sobre 6 160. |
-| **El modelo no sabe de intereses** | Los polos responden a *dónde puedo ir*, no a *qué me gusta* (§6.5). El perfilamiento semántico es una capa aparte, aún sin implementar. |
-| **No hay variable temporal en TA-01** | El agrupamiento es espacial; el mes entra después como ponderación. El nombre «espacio-temporal» describe el pipeline, no el modelo. |
-| **La silueta se mide donde el algoritmo optimiza** | Parte de la ventaja sobre los baselines es esperable por construcción. El radio en kilómetros, calculado sobre coordenadas sin estandarizar, es el contraste independiente. |
-| **Altitud e índice bajan la silueta** | Se conservan por cobertura (316 recursos más agrupados) y porque el producto pregunta por altitud (§5.6), no porque mejoren la métrica. |
-| **Fallos del scraper dentro de la jerarquía 1** | La jerarquía es real, pero los recursos donde la extracción falló quedaron mezclados con los de jerarquía 1 legítima. Afecta al ordenamiento de §6.4, no al agrupamiento. Se corrige con la columna `ORIGEN_JERARQUIA`. |
-| **Distancias geodésicas** | Los 30,2 km son una cota inferior del traslado real. Con red vial el número sube. |
-| **Estacionalidad por región** | El polo con 215 recursos a 4 096 m de altitud media y región modal Lima recibiría el perfil climático de la costa limeña. |
-| **`min_cluster_size` elegido por la métrica que se reporta** | Mitigado con el barrido de §5.5 (banda 0,633–0,660 entre 10 y 22), no con validación en datos retenidos. |
+| **Baja silueta en el espacio de características** | 0,160 contra 0,657 de HDBSCAN. Los polos de v2 son compactos en kilómetros de viaje, no en el espacio estandarizado. La elección se sostiene en criterios de producto (§5.8, §6.1). |
+| **22,3 % del inventario fuera de ruta** | 1 245 sin coordenada más 129 aislados. El producto opera sobre 4 786 recursos, no sobre 6 160. Mejor que el 39 % de la v1, pero sigue siendo un techo. |
+| **El umbral de 80 km es una decisión, no un óptimo** | Sale de traducir el diámetro a horas de viaje con supuestos declarados (40 km/h, sinuosidad 1,6). Con red vial real el umbral habrá que recalibrarlo. |
+| **Se perdió la señal de aislamiento** | HDBSCAN marcaba 1 155 recursos como no encadenables; v2 solo 129. Un polo de cinco o seis recursos cumple parcialmente esa función de aviso. |
+| **El modelo no sabe de intereses** | Los polos responden a *dónde puedo ir*, no a *qué me gusta* (§6.6). |
+| **No hay variable temporal en TA-01** | El agrupamiento es espacial; el mes entra después como ponderación. |
+| **Distancias geodésicas** | El diámetro de 80 km es una cota inferior del traslado real. Con red vial el número sube y el umbral baja. |
+| **Estacionalidad por región** | 24 de 81 polos de la v1 recibían un perfil climático que no corresponde a su piso ecológico. `code/fetch_climate_v2.py` descarga 88 puntos (región × zona climática) en lugar de 24 y cubre el 99,3 % de los recursos; queda pendiente ejecutarlo. |
+| **Fallos del scraper dentro de la jerarquía 1** | La jerarquía es real, pero los recursos donde la extracción falló quedaron mezclados con los de jerarquía 1 legítima. Afecta al ordenamiento de §6.4. |
+| **Sin costo real** | El producto pide presupuesto como entrada y no hay ninguna columna monetaria en el dataset. Decisión de producto pendiente. |
 | **Sin validación externa** | Todas las métricas son internas. La validación con usuarios está comprometida para la Delivery 1. |
 
 ---
@@ -360,13 +407,18 @@ TA-01 se evalúa con métricas internas porque no hay etiquetas. El componente d
 ```bash
 pip install pandas scikit-learn matplotlib
 
-# baselines + barrido de k + barrido de min_cluster_size  (secciones 5.1 a 5.4)
-python code/ta01_comparativa_modelos.py data/processed/dreemgo_master_dataset.csv
+# v1 · baselines y barridos de K-Means y HDBSCAN  (secciones 5.1 a 5.6)
+python code/ta01_comparativa_modelos.py    ../data/processed/dreemgo_master_dataset.csv
+python code/ta01_modelo_final.py           ../data/processed/dreemgo_master_dataset.csv
+python code/ta01_auditoria_comparacion.py  ../data/processed/dreemgo_master_dataset.csv
 
-# modelo seleccionado, perfiles, cobertura y figura  (secciones 6.1 a 6.3)
-python code/ta01_modelo_final.py data/processed/dreemgo_master_dataset.csv
+# v2 · modelo seleccionado  (secciones 5.7 a 6.3)
+python code/ta01_polos_acotados.py         ../data/processed/dreemgo_master_dataset.csv
+python code/ta03_score_polo.py             ../data/processed/polos_asignados_v2.csv 0.30
+python code/ta01_figura_v2.py              ../data/processed/dreemgo_master_dataset.csv
 ```
 
+<<<<<<< HEAD
 Semilla fija (`random_state=42`). Generan `comparativa_modelos.csv`, `barrido_k.csv`, `perfil_clusters.csv`, `perfil_clusters_hdbscan.csv`, `clusters_asignados.csv` y la figura `ta01_seleccion_modelo.png`. Todas las cifras de este documento salen de esas dos ejecuciones.
 
 ## 11. Tareas Analíticas Complementarias: Predicción y Recomendación
@@ -392,3 +444,6 @@ El modelo de negocio de DreemGO requiere dispersar la economía hacia eventos lo
 *   **Algoritmo Propuesto:** **Content-Based Filtering** (Filtrado basado en contenido) utilizando similitud del coseno entre los vectores TF-IDF de las descripciones/categorías de los eventos y el historial de preferencias del usuario.
 *   **Baseline Explícito:** Recomendación por popularidad global (Top-N eventos con mayor jerarquía en la región, ignorando preferencias).
 *   **Estrategia de Evaluación:** En ausencia temporal de interacciones reales (Cold-Start), se evaluará offline mediante **nDCG@K** (Normalized Discounted Cumulative Gain). Esta métrica penaliza fuertemente al modelo si los eventos altamente relevantes no aparecen en las primeras posiciones de la recomendación.
+=======
+Semilla fija (`random_state=42`); el enlace completo es determinista. Generan `polos_asignados_v2.csv`, `perfil_polos_v2.csv`, `comparativa_polos_v2.csv`, `puntaje_polos.csv` y las figuras. Todas las cifras de este documento salen de esas ejecuciones.
+>>>>>>> 21ca2981150cbe438c857c6b240b28d8820ce41d

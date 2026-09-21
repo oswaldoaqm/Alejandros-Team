@@ -48,7 +48,9 @@ El 100 % del faltante se concentra en las dos categorías que describen **práct
 
 Quedan **4 915 recursos geolocalizables (79,8 %)** como base del modelado.
 
-De esos, el modelo de agrupamiento deja fuera otros 1 155 por estar demasiado aislados para encadenarse con nada (`ModelSelection.md` §6.0). Sumando ambas exclusiones, **2 400 recursos — el 39 % del inventario — no pueden formar parte de un itinerario de varias paradas.** Es el techo real del producto y conviene tenerlo escrito antes que descubrirlo en la defensa.
+De esos, el modelo de agrupamiento deja fuera otros 129 por no alcanzar el tamaño mínimo de polo (`ModelSelection.md` §6). Sumando ambas exclusiones, **1 374 recursos — el 22,3 % del inventario — no pueden formar parte de un itinerario de varias paradas.** Es el techo real del producto y conviene tenerlo escrito antes que descubrirlo en la defensa.
+
+> La primera versión del modelo dejaba fuera 2 400 recursos, el 39 %. El cambio de algoritmo documentado en `ModelSelection.md` §5.7 recuperó 1 026.
 
 ### 2.3 Hallazgo heredado de la Semana 4
 
@@ -66,7 +68,7 @@ Esta es la tabla que hay que leer con atención, porque separa lo medido de lo i
 | `DISTANCIA_CAPITAL_KM` | Haversine a la capital regional | **Calculada** |
 | `INDICE_COSTO_LOGISTICO` | Discretización ordinal de la anterior | **Calculada** |
 | `ZONA_CLIMATICA` | Regla por pisos ecológicos (altitud + región) | **Inferida** |
-| `JERARQUIA_OFICIAL` | Scraping de la ficha oficial | **Real** — verificada, con relleno parcial |
+| `JERARQUIA_OFICIAL` | Scraping de la ficha oficial | **Real en el 59,7 %** — el 40,3 % restante sin respaldo, ver §3.1 |
 | `TIPO_INGRESO` | Regla sobre `JERARQUIA_OFICIAL` | **Inferida** |
 | `EPOCA_PROPICIA` | Regla sobre `ZONA_CLIMATICA` | **Inferida** |
 
@@ -74,38 +76,55 @@ Esta es la tabla que hay que leer con atención, porque separa lo medido de lo i
 
 El pipeline de esta semana tiene dos scripts que escriben las mismas tres columnas sobre el mismo archivo: `scraper_mincetur.py`, que las extrae de la ficha oficial, y `clean_impute_dataset.py`, que las sobrescribe con reglas. Había que determinar cuál quedó en el archivo final. Lo verificamos columna por columna.
 
-**`JERARQUIA_OFICIAL` es real.** Cuatro comprobaciones independientes:
+**`JERARQUIA_OFICIAL` es real en el 59,7 % del inventario y no tiene respaldo en el 40,3 % restante.** Llegar a esa frase costó tres intentos, y el camino vale más que el resultado.
+
+**Primer intento · pruebas agregadas.** Cuatro comprobaciones indirectas, todas favorables:
 
 | Prueba | Resultado |
 |---|---|
 | ¿Coincide con los pesos del generador aleatorio de `build_master_dataset.py` (0,40 / 0,40 / 0,15 / 0,05)? | **No** — χ² = 89,4 · p = 3 × 10⁻¹⁹ |
 | ¿Está asociada a la categoría del recurso? | **Sí** — V de Cramér = 0,234 · p = 1 × 10⁻²⁰⁹ |
 | ¿Está asociada a la región? | **Sí** — V de Cramér = 0,213 · p = 9 × 10⁻¹³¹ |
-| ¿Los hitos reconocidos reciben jerarquía 4? | **Sí** — ver abajo |
+| ¿Los hitos reconocidos reciben jerarquía 4? | **Sí** — Machu Picchu, Chan Chan, Nasca, Huascarán y el Valle del Colca reciben 4, y sus dependencias bajan: Museo de Sitio Chan Chan 2, Cañón del Colca 2, Ventana del Colca 1 |
 
-Un generador aleatorio produce una columna independiente de todo lo demás. Esta no lo es. Y la comprobación que zanja el asunto es mirar recursos concretos:
+La conclusión fue que la columna era real. Fue prematura: **las cuatro pruebas son agregadas, y una prueba agregada no detecta un subconjunto contaminado cuando el subconjunto limpio domina la muestra.** Con el 60 % de la columna correcto, la asociación con categoría y región aparece igual y el χ² rechaza los pesos del generador igual.
 
-| Recurso | Jerarquía |
-|---|---:|
-| Parque Arqueológico Nacional de Machu Picchu | 4 |
-| Complejo Arqueológico Chan Chan | 4 |
-| Líneas y Geoglifos de Nasca y Palpa | 4 |
-| Parque Nacional Huascarán | 4 |
-| Valle del Colca | 4 |
-| Museo de Sitio Chan Chan | 2 |
-| Cañón del Colca | 2 |
-| Ventana del Colca | 1 |
+**Segundo intento · dos fichas.** Un volcado mostró que el recurso 11 dice «Jerarquía: No aplica» y el 22 «POR JERARQUIZAR», mientras el maestro afirmaba 3 para ambos. Se concluyó lo contrario: que la columna estaba inventada. También prematuro — dos casos no son una muestra, y los dos caían justo en el subconjunto malo.
 
-El atractivo principal recibe 4 y sus dependencias bajan. Eso es exactamente la lógica de la jerarquía oficial de MINCETUR y no algo que una regla ni un generador produzcan por accidente. **La extracción funcionó.**
+**Tercero · comparación fila a fila contra la fuente.** Con las 6 129 fichas ya extraídas la comparación es directa:
 
-Con una salvedad: `clean_impute_dataset.py` convierte en `"1"` cualquier valor que no sea 1-4, de modo que los recursos donde el scraper falló quedaron mezclados con los de jerarquía 1 legítima. No es posible saber cuántos son. Se corrige añadiendo una columna `ORIGEN_JERARQUIA` con valores `scrapeado` / `imputado` al re-ejecutar la extracción.
+| Lo que dice la ficha oficial | Recursos | Qué hace el maestro |
+|---|---:|---|
+| Un número de 1 a 4 | 3 660 (59,7 %) | **coincide en el 100,0 %** |
+| «POR JERARQUIZAR» | 896 (14,6 %) | asigna un número igual |
+| «No aplica» | 1 573 (25,7 %) | asigna un número igual |
+
+La matriz de confusión sobre los 3 660 es una diagonal perfecta — 1 907 / 1 581 / 157 / 15, cero fuera de la diagonal. Donde MINCETUR publica una jerarquía, el maestro la tiene exacta.
+
+Los otros 2 469 son el problema, y su procedencia no la sabemos: no siguen los pesos documentados del generador (0,40 / 0,40 / 0,15 / 0,05) ni la regla de `clean_impute_dataset.py` de mandar a `"1"` todo lo que no sea numérico. Lo verificable es que la ficha no los jerarquiza y el maestro sí.
+
+**El efecto es grande y va en una sola dirección.** Entre esos 2 469, el maestro asigna jerarquía 3 o 4 a **1 265 recursos**. En la realidad hay **172 recursos de jerarquía 3 o 4 en todo el Perú** — 157 de nivel 3 y 15 de nivel 4. El relleno multiplicó por siete el patrimonio de primer nivel del país, y esa inflación sostenía la cifra de dispersión que este documento publicó hasta ahora: 451 contra 203, cuando las reales son 115 contra 49.
+
+**Lección de método.** Cuatro pruebas estadísticas independientes y significativas no equivalen a una comparación contra la fuente. Cuando la fuente existe, la comparación fila a fila es la primera prueba, no la última; las pruebas agregadas se reservan para cuando la fuente no está disponible, y su resultado es una presunción, no una verificación. `code/verificar_fichas.py` reproduce todo lo anterior.
 
 **`TIPO_INGRESO` y `EPOCA_PROPICIA` no sobrevivieron.**
 
 - `TIPO_INGRESO` es hoy una función determinista de `JERARQUIA_OFICIAL`: jerarquía 1-2 → "Libre" (4 721 recursos), jerarquía 3-4 → "Pagado" (1 439). Sin una sola excepción en 6 160 registros. No aporta información independiente; usar ambas variables en un modelo es usar la misma dos veces.
 - `EPOCA_PROPICIA` es una función determinista de `ZONA_CLIMATICA` y toma tres valores. Los 1 245 recursos sin coordenadas caen todos en "Todo el año", lo que declara viable los doce meses a cada fiesta patronal del inventario — lo contrario de lo que se quería modelar.
 
-Ambas quedan fuera del modelado y su extracción real es la prioridad de la Semana 7.
+Ambas quedan fuera del modelado en esta entrega.
+
+**La extracción real ya está hecha.** `code/scraper_mincetur_v3.py` recorrió las 6 160 fichas y `fichas_mincetur.csv` trae `INGRESO_TIPO`, `TARIFA_SOLES` y `EPOCA_PROPICIA` con valores de la ficha. La cobertura es del 74 %, y ese 26 % faltante resultó ser **estructural, no un fallo del extractor**:
+
+| Categoría | Fichas | Sin esos campos | % |
+|---|---:|---:|---:|
+| 5. Acontecimientos programados | 749 | 749 | 100,0 |
+| 3. Folclore | 824 | 820 | 99,5 |
+| 2. Manifestaciones culturales | 2 105 | 11 | 0,5 |
+| 1. Sitios naturales | 2 147 | 9 | 0,4 |
+| 4. Realizaciones técnicas | 304 | 0 | 0,0 |
+
+Una danza o una fiesta patronal no tiene acceso en kilómetros ni época propicia porque no es un lugar. Los tres campos faltan en las mismas fichas con un solapamiento del 96,2 %, que es la firma de una causa estructural y no de un parser que se cae. La integración al dataset maestro, con columna `ORIGEN_JERARQUIA` para distinguir extraído de imputado, es la tarea de la Semana 7.
 
 ### 3.1.1 Un script que hay que retirar del pipeline
 
@@ -234,17 +253,18 @@ Esto define un vacío de datos con una única fuente posible: **el municipio que
 2. **Altitud y lejanía son ejes independientes** (r = −0,088). Ambos entran al modelo.
 3. **La estacionalidad es de primer orden, no un ajuste fino.** Un factor de 28× en Cusco entre enero y junio.
 4. **La división política no describe la geografía turística.** Se demuestra cuantitativamente en `ModelSelection.md`: la partición por región obtiene silueta negativa.
-5. **Hay más patrimonio de primer nivel fuera del circuito que dentro.** El 24,4 % de los recursos de Lima y Cusco son jerarquía 3 o 4, frente al 15,4 % del resto del país — pero como el resto del país tiene 2 929 recursos agrupados y Lima y Cusco 831, en términos absolutos son **451 recursos de jerarquía alta fuera del circuito contra 203 dentro**. El desbalance de la demanda no se explica por dónde está lo importante.
-6. **La extracción de fichas funcionó a medias.** `JERARQUIA_OFICIAL` es real y está verificada (§3.1); `TIPO_INGRESO` y `EPOCA_PROPICIA` fueron sobrescritas por reglas y no lo son. La deuda técnica es re-extraer esas dos con trazabilidad de origen.
+5. **Hay más patrimonio de primer nivel fuera del circuito que dentro, y hay mucho menos del que creíamos.** Con la jerarquía verificada contra la ficha oficial, en todo el inventario hay 172 recursos de jerarquía 3 o 4. De los que caen dentro de un polo, **115 están fuera del circuito saturado y 49 dentro** — un reparto de 70/30 a favor del resto del país. La proporción sostiene la tesis: el desbalance de la demanda no se explica por dónde está lo importante. La magnitud anterior (451 contra 203) venía del 40 % de jerarquías sin respaldo descrito en §3.1.
+6. **La extracción de fichas ya está hecha y cambia el diagnóstico.** `fichas_mincetur.csv` trae 6 129 fichas con jerarquía, tipo de ingreso, tarifa, actividades, accesos y visitantes, con 31 errores (0,5 %). `JERARQUIA_OFICIAL` del maestro resultó real en el 59,7 % y sin respaldo en el resto (§3.1). La deuda técnica pasa de «extraer» a «integrar al maestro con trazabilidad de origen».
 
 ## 8. Limitaciones declaradas
 
 | Limitación | Efecto | Plan |
 |---|---|---|
 | `TIPO_INGRESO` y `EPOCA_PROPICIA` sobrescritas | Sin aproximación al costo ni estacionalidad por recurso | Re-ejecutar el scraper con trazabilidad de origen · Semana 7 |
-| Fallos del scraper mezclados con jerarquía 1 legítima | No se sabe qué proporción de los 2 577 recursos en jerarquía 1 es real | Añadir columna `ORIGEN_JERARQUIA` · Semana 7 |
+| 2 469 jerarquías del maestro sin respaldo en la ficha oficial | Inflaban por siete el patrimonio de jerarquía 3-4; las cifras que dependían de ellas ya están corregidas | Reemplazar la columna por `FICHA_JERARQUIA_NUM` + `ORIGEN_JERARQUIA` · Semana 7 |
+| 1 240 recursos dentro de polos sin jerarquía oficial (25,9 %) | El puntaje del polo promedia sobre los que sí la tienen; 10 de 222 polos quedan fuera del ranking por cobertura insuficiente | Política documentada en `ModelSelection.md` §6.4 · no se imputa |
 | `build_master_dataset.py` genera datos al azar | Escribe sobre la salida del scraper real; destruye la extracción si se ejecuta | Retirado del pipeline y marcado en el encabezado |
-| Climatología por región, no por piso ecológico | Regiones de gran rango altitudinal quedan mal descritas | Cruce `REGIÓN × ZONA_CLIMATICA` · Semana 7 |
+| Climatología por región, no por piso ecológico | 24 de 81 polos recibían el clima de otro piso ecológico: el polo de la sierra de Lima, a 4 058 m de altitud media, heredaba el clima de la costa limeña | `code/fetch_climate_v2.py` descarga 88 puntos región × zona climática y cubre el 99,3 % de los recursos · pendiente de ejecutar |
 | Altitud del modelo digital de elevación | Hasta +250 m de error en cañón | Contrastar con altitud oficial de la ficha |
 | Distancias geodésicas, no viales | Subestima el tiempo real de traslado | Red vial de OpenStreetMap · Semana 10 |
 | Sin precios por recurso | El costo mostrado es estimación, nunca tarifa | `TIPO_INGRESO` real vía ficha oficial |
