@@ -7,4 +7,5 @@ bus_intercepto;12;5;25;S/ fijo por tramo;no;idem
 movilidad_soles_km;0.55;0.30;0.95;S/ por km;no;colectivo y taxi rural · observación de campo
 alojamiento_noche;70;35;140;S/ por noche;no;INEI · Encuesta Mensual de Establecimientos de Hospedaje
 alimentacion_dia;50;25;95;S/ por día;no;MINCETUR datosTurismo · gasto promedio del turista interno
-entrada_pagada;15;5;40;S/ por entrada;no;ficha oficial MINCETUR · tipo de ingreso
+entrada_pagada;17.63;5;20;S/ por entrada;si;ficha oficial MINCETUR · media recortada de 782 tarifas reales · P25-P75
+frac_paradas_pagadas;0.179;0.00;0.44;fraccion;si;ficha oficial MINCETUR · 4 437 recursos con tipo de ingreso · P10-P90 entre polos
