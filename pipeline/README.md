@@ -5,6 +5,7 @@ Convierte lo que bajan los scripts de [`adquisicion/`](./adquisicion/) (en `data
 ```bash
 pip install -e ".[pipeline,dev]"
 pytest tests/pipeline
+python -m pipeline.maestro   # unos 30 segundos
 ```
 
 ## Módulos
@@ -14,6 +15,7 @@ pytest tests/pipeline
 | [`texto.py`](./texto.py) | Lee las cifras que las fichas escriben a mano: distancia y tiempo de cada tramo ("4.4.km/ 7 min", "74 km/ 1 hora con 5 min", "1:30 horas"), altitud ("3,399 m", "3.635 msnm", "150 - 1550"), horario, días de atención y la tarifa de un adulto peruano. Quita teléfonos, correos y el nombre de quien atiende. Funciones puras, sin dependencias |
 | [`fichas.py`](./fichas.py) | Convierte el HTML de una ficha oficial en una `Ficha`: encabezado, textos, rutas de acceso por recorrido, ingreso, época y horario, visitantes, actividades y servicios |
 | [`inventario.py`](./inventario.py) | Lee el CSV del inventario: codificación Windows-1252, latitud y longitud intercambiadas y el punto decimal corrido de la fila 14707, todo marcado en la columna `coordenada` |
+| [`maestro.py`](./maestro.py) | Une inventario, fichas y polos en [`data/procesados/maestro_v3.csv`](../data/procesados/): una fila por recurso, con cada campo derivado marcado con su fuente, las coordenadas y altitudes a revisar, los intereses y si el recurso puede ser parada |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
 ## Qué tan bien lee
