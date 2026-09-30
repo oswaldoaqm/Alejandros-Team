@@ -2,7 +2,7 @@
 
 **El 14 de octubre DreemGO está desplegado y resuelve una consulta real de punta a punta; el 18 de noviembre es un producto que se puede presentar a cualquiera.** Este documento es el estado del plan dentro del repositorio: qué se hace, en qué orden, cuándo está terminado y quién lo defiende. Se actualiza al cerrar cada fase.
 
-Estado al 30 de septiembre de 2026: **fase 0 casi cerrada**; descargas de datos en curso.
+Estado al 30 de septiembre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** adelantada: el maestro v3 y el calendario de eventos ya están en [`data/procesados/`](../data/procesados/); siguen los tiempos por carretera, el clima por polo y el motor.
 
 ## Qué promete el producto
 
@@ -29,7 +29,7 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 | Pieza | Dónde | Qué hace |
 |---|---|---|
 | Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo y red vial |
-| Pipeline | `pipeline/` | Convierte las descargas en artefactos versionados con procedencia |
+| Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/) |
 | Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas: [contrato](./CONTRATO.md) |
 | App | `app/` | React, Vite, TypeScript y MapLibre; en GitHub Pages |
 | Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM |
