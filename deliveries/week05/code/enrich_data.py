@@ -4,8 +4,11 @@ import time
 import numpy as np
 
 # Configuración de rutas (leyendo de week04, guardando en week05)
-INPUT_CSV = "../../week04/data/sample.csv"
-OUTPUT_CSV = "../data/dataset_enriched.csv"
+from pathlib import Path
+
+AQUI = Path(__file__).resolve().parent
+INPUT_CSV = AQUI.parents[1] / "week04" / "data" / "sample.csv"
+OUTPUT_CSV = AQUI.parent / "data" / "dataset_enriched.csv"
 
 def get_elevation_batch(lats, lons):
     """Consulta la API de Open-Meteo para obtener elevación en batches."""

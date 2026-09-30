@@ -3,6 +3,7 @@ import csv
 import time
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 
 # Usamos los mismos Nodos Logísticos (Capitales) que el dataset base para asegurar la relación 1 a 1
 CAPITALES = {
@@ -20,7 +21,7 @@ CAPITALES = {
 # 10 años de data histórica (2014 a 2023 completo)
 START_DATE = "2014-01-01"
 END_DATE = "2023-12-31"
-CSV_OUTPUT = "../data/historial_clima_regiones.csv"
+CSV_OUTPUT = Path(__file__).resolve().parent.parent / "data" / "processed" / "historial_clima_regiones.csv"
 
 def main():
     print("Iniciando descarga histórica del clima (2014-2023)...")

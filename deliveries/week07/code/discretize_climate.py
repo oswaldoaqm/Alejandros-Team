@@ -1,6 +1,7 @@
 import csv
+from pathlib import Path
 
-FILE_PATH = "/home/miguel/Escritorio/UTEC/2026-2/DPD/Proyecto/deliveries/week06/data/processed/historial_clima_regiones.csv"
+FILE_PATH = Path(__file__).resolve().parent.parent / "data" / "processed" / "historial_clima_regiones.csv"
 
 def discretize_rain(mm):
     if mm <= 30: return '1_Seguro'

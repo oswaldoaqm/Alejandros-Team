@@ -174,7 +174,7 @@ caja(cols[3][0], Y + 22, cols[3][1], 128,
      "parametros_costo",
      ["un parámetro por fila", "valor base, mínimo y máximo",
       "origen y estado de calibración", "alimenta la simulación de costo",
-      "6 parámetros · ninguno calibrado aún"], TEAL)
+      "7 parámetros · 2 calibrados con la ficha"], TEAL)
 
 
 # ───────────────────────── 4 · modelos ─────────────────────────
@@ -188,15 +188,15 @@ caja(cols[0][0], Y + 22, cols[0][1], 142,
       "de viaje efectiva  d = √(haversine² + (Δalt·0,06)²)",
       "umbral 80 km · tamaño mínimo 5 recursos",
       "el enlace completo acota el diámetro por",
-      "construcción: 222 polos, máximo 79 km ≈ 3,2 h",
+      "construcción: 222 polos, máximo 79 km ≈ 3,9 h",
       "cobertura 77,7 % del inventario"], MORADO)
 caja(cols[1][0], Y + 22, cols[1][1], 142,
-     "TA-02 · Estacionalidad  ·  TA-03 · Puntaje",
-     ["TA-02: matriz mes × zona climática construida",
+     "TA-05 · Estacionalidad  ·  Puntaje del polo",
+     ["TA-05: veredicto polo × mes construido",
       "con 10 años de clima, no con una regla inventada",
       "",
-      "TA-03: puntaje = (1−λ)·jerarquía + λ·novedad",
-      "λ = 0,30 · top-10 con Lima o Cusco: 60 % → 30 %",
+      "puntaje = (1−λ)·jerarquía + λ·novedad",
+      "λ = 0,30 · top-10 con Lima o Cusco: 30 % → 10 %",
       "perdiendo menos del 2 % de jerarquía media"], MORADO)
 caja(cols[2][0], Y + 22, cols[2][1], 142,
      "Modelo de costo  ·  TA-04 · Ruta",
@@ -205,7 +205,7 @@ caja(cols[2][0], Y + 22, cols[2][1], 142,
       "Monte Carlo → banda P20–P80, no 'bajo/medio/alto'",
       "caso base S/961 · incertidumbre ±15,8 %",
       "",
-      "TA-04 ordenamiento de la ruta (TTDP) — semana 10"], MORADO)
+      "TA-04: ruta por jornada; versión 2 en la semana 10"], MORADO)
 
 
 # ───────────────────────── 5 · servicio ─────────────────────────

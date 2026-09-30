@@ -1,0 +1,17 @@
+# Copiar como infra/samconfig.toml (git lo ignora) y ajustar. sam lo lee solo.
+# La clave de publicación NO va aquí: se pasa al desplegar (ver infra/README.md).
+version = 0.1
+
+[default.global.parameters]
+stack_name = "dreemgo"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+region = "sa-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_image_repos = true
+confirm_changeset = true
+parameter_overrides = "OrigenesCors=https://oswaldoaqm.github.io"

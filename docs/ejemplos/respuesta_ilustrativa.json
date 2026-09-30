@@ -1,0 +1,713 @@
+{
+  "version_contrato": "1.0",
+  "version_datos": "ejemplo",
+  "consulta": {
+    "origen": "lima",
+    "mes": 7,
+    "fecha_inicio": null,
+    "dias": 4,
+    "intereses": [
+      "historia",
+      "naturaleza"
+    ],
+    "presupuesto": 700,
+    "altitud_max": 3500,
+    "sorpresa": false
+  },
+  "rutas": [
+    {
+      "polo": {
+        "id": 70,
+        "nombre": "Norte Chico · Huacho, Supe y Caral",
+        "region": "Lima",
+        "regiones": [
+          "Lima"
+        ],
+        "base": {
+          "nombre": "Huacho",
+          "lat": -11.1067,
+          "lon": -77.605,
+          "altitud_m": 30
+        },
+        "recursos": 44,
+        "fuera_del_circuito": false
+      },
+      "puntaje": 0.81,
+      "motivos": [
+        "Caral, patrimonio de jerarquía 4, a 1 h 15 de la base",
+        "Tres sitios arqueológicos de jerarquía 3 o 4 en el mismo polo",
+        "Sin lluvia en julio"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 0.6,
+        "dias_con_lluvia": 0.4,
+        "horas_sol": 2.1,
+        "temp_min_c": 15.2,
+        "temp_max_c": 19.8,
+        "explicacion": "Julio casi no tiene lluvia, pero es invierno en la costa: cielo cubierto casi todo el día y garúa por las mañanas.",
+        "mejores_meses": [
+          2,
+          3,
+          1,
+          4,
+          12
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 2.7,
+        "dias_de_viaje": 0,
+        "acceso": "terrestre",
+        "fuente": "red_vial"
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida_y_visita",
+          "horas": 7.6,
+          "km": 171.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "3486",
+                "nombre": "Sitio Arqueológico de Vichama",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 3,
+                "lat": -11.03016,
+                "lon": -77.62998,
+                "altitud_m": 27,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 20.0
+              },
+              "llegada": "09:50",
+              "minutos_traslado": 160,
+              "km_desde_anterior": 148.0,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "2054",
+                "nombre": "Isla Don Martín · Reserva Nacional de Islas, Islotes y Puntas Guaneras",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Islas",
+                "jerarquia": 2,
+                "lat": -11.01879,
+                "lon": -77.67103,
+                "altitud_m": 0,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2054",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "11:40",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 9.5,
+              "minutos_visita": 45
+            }
+          ],
+          "nota": "Salida de Lima a las 07:00; 2 h 40 por la Panamericana Norte."
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.8,
+          "km": 118.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "1237",
+                "nombre": "Ciudad Sagrada de Caral",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios arqueológicos",
+                "subtipo": "Zonas arqueológicas",
+                "jerarquia": 4,
+                "lat": -10.89282,
+                "lon": -77.52323,
+                "altitud_m": 349,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 20.0
+              },
+              "llegada": "09:15",
+              "minutos_traslado": 75,
+              "km_desde_anterior": 44.0,
+              "minutos_visita": 180
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "1238",
+                "nombre": "Playa La Isla del Faraón",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Playas",
+                "jerarquia": 2,
+                "lat": -10.80999,
+                "lon": -77.75031,
+                "altitud_m": 0,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1238",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "13:45",
+              "minutos_traslado": 90,
+              "km_desde_anterior": 38.0,
+              "minutos_visita": 90
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 6.9,
+          "km": 142.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "1298",
+                "nombre": "Fortaleza de Paramonga",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 3,
+                "lat": -10.65318,
+                "lon": -77.84139,
+                "altitud_m": 15,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 15.0
+              },
+              "llegada": "09:35",
+              "minutos_traslado": 95,
+              "km_desde_anterior": 61.0,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "11108",
+                "nombre": "Playa Caleta Vidal",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Playas",
+                "jerarquia": 2,
+                "lat": -10.86174,
+                "lon": -77.70484,
+                "altitud_m": 0,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11108",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "12:05",
+              "minutos_traslado": 60,
+              "km_desde_anterior": 23.0,
+              "minutos_visita": 75
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "visita_y_vuelta",
+          "horas": 3.1,
+          "km": 150.0,
+          "paradas": [],
+          "nota": "Mañana libre en Huacho y regreso a Lima: 2 h 40."
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 486,
+        "p50": 548,
+        "p80": 631,
+        "desglose": {
+          "transporte": 118,
+          "alojamiento": 210,
+          "alimentacion": 165,
+          "entradas": 55
+        },
+        "dentro_del_presupuesto": true,
+        "exceso": null,
+        "supuestos": [
+          "Bus interprovincial y colectivos locales",
+          "Hospedaje económico en Huacho, 3 noches",
+          "Tarifas de entrada de la ficha oficial"
+        ]
+      },
+      "eventos": [],
+      "avisos": [],
+      "indicadores": {
+        "paradas": 6,
+        "jerarquia_media": 2.7,
+        "paradas_jerarquia_alta": 3,
+        "altitud_max_m": 349,
+        "km_total": 581.0,
+        "valor_capturado": 0.83
+      }
+    },
+    {
+      "polo": {
+        "id": 105,
+        "nombre": "Lunahuaná y Cañete",
+        "region": "Lima",
+        "regiones": [
+          "Lima"
+        ],
+        "base": {
+          "nombre": "Lunahuaná",
+          "lat": -12.9611,
+          "lon": -76.1392,
+          "altitud_m": 470
+        },
+        "recursos": 38,
+        "fuera_del_circuito": false
+      },
+      "puntaje": 0.64,
+      "motivos": [
+        "Valle de Cañete: bodegas, sitios arqueológicos y costa en un solo polo",
+        "Más sol que la costa en invierno: el valle queda sobre la neblina"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 0.3,
+        "dias_con_lluvia": 0.4,
+        "horas_sol": 4.6,
+        "temp_min_c": 13.9,
+        "temp_max_c": 23.4,
+        "explicacion": "Julio seco. El valle alto de Cañete suele quedar sobre la neblina costera: más horas de sol que Lima.",
+        "mejores_meses": [
+          2,
+          3,
+          1,
+          4,
+          12
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 3.4,
+        "dias_de_viaje": 0,
+        "acceso": "terrestre",
+        "fuente": "red_vial"
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida_y_visita",
+          "horas": 6.5,
+          "km": 214.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "3899",
+                "nombre": "Complejo Arqueológico El Huarco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 2,
+                "lat": -13.0306,
+                "lon": -76.48692,
+                "altitud_m": 28,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3899",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "10:30",
+              "minutos_traslado": 210,
+              "km_desde_anterior": 146.0,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "3495",
+                "nombre": "Muelle de Cerro Azul",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y espacios urbanos",
+                "subtipo": "Muelles",
+                "jerarquia": 2,
+                "lat": -13.0272,
+                "lon": -76.48325,
+                "altitud_m": 0,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3495",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "11:35",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.8,
+              "minutos_visita": 30
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 5.2,
+          "km": 88.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "12068",
+                "nombre": "Casa Hacienda Montalván",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Lugares históricos",
+                "subtipo": "Casas haciendas",
+                "jerarquia": 2,
+                "lat": -13.07866,
+                "lon": -76.39121,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12068",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 2.0
+              },
+              "llegada": "09:05",
+              "minutos_traslado": 65,
+              "km_desde_anterior": 38.0,
+              "minutos_visita": 75
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "1854",
+                "nombre": "Sitio Arqueológico de Incahuasi",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 2,
+                "lat": -13.02361,
+                "lon": -76.17668,
+                "altitud_m": 375,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1854",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "11:35",
+              "minutos_traslado": 75,
+              "km_desde_anterior": 39.0,
+              "minutos_visita": 60
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 2.0,
+          "km": 12.0,
+          "paradas": [],
+          "nota": "Día libre en Lunahuaná: canotaje y bodegas del valle."
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "visita_y_vuelta",
+          "horas": 3.4,
+          "km": 182.0,
+          "paradas": [],
+          "nota": null
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 522,
+        "p50": 596,
+        "p80": 684,
+        "desglose": {
+          "transporte": 96,
+          "alojamiento": 255,
+          "alimentacion": 225,
+          "entradas": 20
+        },
+        "dentro_del_presupuesto": true,
+        "exceso": null,
+        "supuestos": [
+          "Hospedaje en Lunahuaná, 3 noches",
+          "Colectivo Cañete-Lunahuaná"
+        ]
+      },
+      "eventos": [],
+      "avisos": [
+        {
+          "tipo": "datos",
+          "nivel": "info",
+          "mensaje": "Dos de las cuatro paradas piden permiso previo para entrar, según la ficha."
+        }
+      ],
+      "indicadores": {
+        "paradas": 4,
+        "jerarquia_media": 2.0,
+        "paradas_jerarquia_alta": 0,
+        "altitud_max_m": 375,
+        "km_total": 496.0,
+        "valor_capturado": 0.62
+      }
+    },
+    {
+      "polo": {
+        "id": 201,
+        "nombre": "Pozuzo",
+        "region": "Pasco",
+        "regiones": [
+          "Pasco"
+        ],
+        "base": {
+          "nombre": "Pozuzo",
+          "lat": -10.0708,
+          "lon": -75.5507,
+          "altitud_m": 737
+        },
+        "recursos": 14,
+        "fuera_del_circuito": true
+      },
+      "puntaje": 0.58,
+      "motivos": [
+        "Colonia austroalemana en la selva alta, fuera del circuito habitual",
+        "Temporada seca en julio",
+        "El 25 de julio es el Día del Colono"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 38.0,
+        "dias_con_lluvia": 5.1,
+        "horas_sol": 5.8,
+        "temp_min_c": 16.4,
+        "temp_max_c": 29.1,
+        "explicacion": "Julio es temporada seca en la selva alta: lluvias cortas y caminos en mejor estado.",
+        "mejores_meses": [
+          7,
+          8,
+          6,
+          9
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 12.5,
+        "dias_de_viaje": 2,
+        "acceso": "terrestre",
+        "fuente": "red_vial"
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida",
+          "horas": 12.5,
+          "km": 504.0,
+          "paradas": [],
+          "nota": "Lima → La Oroya → La Merced → Oxapampa → Pozuzo."
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 5.9,
+          "km": 4.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "11196",
+                "nombre": "Plaza Los Colonos · Pozuzo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y espacios urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 3,
+                "lat": -10.07084,
+                "lon": -75.55075,
+                "altitud_m": 737,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11196",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "08:05",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.3,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "11365",
+                "nombre": "Museo Schafferer",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Casas museo",
+                "jerarquia": 2,
+                "lat": -10.06814,
+                "lon": -75.5512,
+                "altitud_m": 748,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11365",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 4.0
+              },
+              "llegada": "08:55",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 75
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "11604",
+                "nombre": "Puente Emperador Guillermo I · Pozuzo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y espacios urbanos",
+                "subtipo": "Puentes",
+                "jerarquia": 2,
+                "lat": -10.06811,
+                "lon": -75.54962,
+                "altitud_m": 740,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11604",
+                "descripcion": null,
+                "ingreso": "libre",
+                "tarifa_soles": null
+              },
+              "llegada": "10:15",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.2,
+              "minutos_visita": 30
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 4.6,
+          "km": 42.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "11842",
+                "nombre": "Pozas de Agua y Sal · Pozuzo",
+                "categoria": "Sitios naturales",
+                "tipo": "Manantiales",
+                "subtipo": "Manantiales",
+                "jerarquia": 2,
+                "lat": -10.01248,
+                "lon": -75.36143,
+                "altitud_m": 714,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11842",
+                "descripcion": null,
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "09:05",
+              "minutos_traslado": 65,
+              "km_desde_anterior": 21.0,
+              "minutos_visita": 120
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "vuelta",
+          "horas": 12.5,
+          "km": 504.0,
+          "paradas": [],
+          "nota": null
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 690,
+        "p50": 812,
+        "p80": 951,
+        "desglose": {
+          "transporte": 260,
+          "alojamiento": 240,
+          "alimentacion": 300,
+          "entradas": 12
+        },
+        "dentro_del_presupuesto": false,
+        "exceso": 112,
+        "supuestos": [
+          "Bus Lima-La Merced y colectivo a Pozuzo",
+          "Hospedaje en Pozuzo, 3 noches"
+        ]
+      },
+      "eventos": [
+        {
+          "id": "mincetur-11287",
+          "nombre": "Aniversario de Pozuzo · Día del Colono",
+          "tipo": "Fiestas tradicionales",
+          "fecha_inicio": "2026-07-25",
+          "fecha_fin": "2026-07-25",
+          "precision_fecha": "aproximada",
+          "distrito": "Pozuzo",
+          "provincia": "Oxapampa",
+          "region": "Pasco",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11287"
+        }
+      ],
+      "avisos": [
+        {
+          "tipo": "dias",
+          "nivel": "advertencia",
+          "mensaje": "Dos de los cuatro días se van en la carretera. Con 6 días el viaje rinde el doble."
+        },
+        {
+          "tipo": "presupuesto",
+          "nivel": "advertencia",
+          "mensaje": "Te pasas en unos S/ 112 del presupuesto, sobre el costo típico."
+        }
+      ],
+      "indicadores": {
+        "paradas": 4,
+        "jerarquia_media": 2.25,
+        "paradas_jerarquia_alta": 1,
+        "altitud_max_m": 748,
+        "km_total": 1054.0,
+        "valor_capturado": 0.57
+      }
+    }
+  ],
+  "sin_resultado": null,
+  "atribucion": [
+    "Inventario Nacional de Recursos Turísticos · MINCETUR · ODC-BY",
+    "Clima: Open-Meteo.com, sobre ERA5 de Copernicus · CC BY 4.0",
+    "Red vial: © colaboradores de OpenStreetMap · ODbL"
+  ]
+}

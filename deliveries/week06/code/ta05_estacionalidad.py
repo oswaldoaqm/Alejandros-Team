@@ -115,7 +115,7 @@ est = est[["POLO", "MES", "mes_nombre", "precip_mm", "temp_c", "frac_lluvias",
 est.round(2).to_csv(B + "estacionalidad_polo_mes.csv", sep=";", index=False)
 
 print("=" * 78)
-print("TA-02 · viabilidad estacional polo × mes")
+print("TA-05 · viabilidad estacional polo × mes")
 print("=" * 78)
 print(f"Filas: {len(est)}  ({est.POLO.nunique()} polos × 12 meses)")
 print(f"Umbral absoluto: {UMBRAL_MM:.0f} mm/mes · relativo: top-{N_LLUVIOSOS} "

@@ -128,7 +128,7 @@ Una danza o una fiesta patronal no tiene acceso en kilómetros ni época propici
 
 ### 3.1.1 Un script que hay que retirar del pipeline
 
-`code/build_master_dataset.py` contiene esto:
+`code/legacy/build_master_dataset.py` contiene esto:
 
 ```python
 def infer_mock_scraped_data(zona_climatica, altitud):
@@ -139,7 +139,7 @@ def infer_mock_scraped_data(zona_climatica, altitud):
 
 Genera jerarquía y tipo de ingreso **al azar** y escribe sobre el mismo archivo de salida que el scraper real. Las pruebas de arriba confirman que no es el script que produjo el dataset final — pero sigue en el repositorio, sin aviso, apuntando al mismo destino. Cualquiera que lo ejecute destruye la extracción real, y cualquiera que lo lea concluirá que los datos son inventados.
 
-Queda marcado en su encabezado como código superado y fuera del pipeline reproducible descrito en §9.
+Queda marcado en su encabezado como código superado, fuera del pipeline reproducible descrito en §9, y movido a `code/legacy/` junto con los demás scripts que no se ejecutan.
 
 ### 3.2 Error conocido de la altitud
 
@@ -254,7 +254,7 @@ Esto define un vacío de datos con una única fuente posible: **el municipio que
 3. **La estacionalidad es de primer orden, no un ajuste fino.** Un factor de 28× en Cusco entre enero y junio.
 4. **La división política no describe la geografía turística.** Se demuestra cuantitativamente en `ModelSelection.md`: la partición por región obtiene silueta negativa.
 5. **Hay más patrimonio de primer nivel fuera del circuito que dentro, y hay mucho menos del que creíamos.** Con la jerarquía verificada contra la ficha oficial, en todo el inventario hay 172 recursos de jerarquía 3 o 4. De los que caen dentro de un polo, **115 están fuera del circuito saturado y 49 dentro** — un reparto de 70/30 a favor del resto del país. La proporción sostiene la tesis: el desbalance de la demanda no se explica por dónde está lo importante. La magnitud anterior (451 contra 203) venía del 40 % de jerarquías sin respaldo descrito en §3.1.
-6. **La extracción de fichas ya está hecha y cambia el diagnóstico.** `fichas_mincetur.csv` trae 6 129 fichas con jerarquía, tipo de ingreso, tarifa, actividades, accesos y visitantes, con 31 errores (0,5 %). `JERARQUIA_OFICIAL` del maestro resultó real en el 59,7 % y sin respaldo en el resto (§3.1). La deuda técnica pasa de «extraer» a «integrar al maestro con trazabilidad de origen».
+6. **La extracción de fichas ya está hecha y cambia el diagnóstico.** `fichas_mincetur.csv` trae 6 129 fichas con jerarquía, tipo de ingreso, tarifa, actividades, accesos y visitantes, y 31 que el parser no pudo leer (0,5 %): la página respondió, pero una distancia como «1.200.5 km» detuvo la lectura. `JERARQUIA_OFICIAL` del maestro resultó real en el 59,7 % y sin respaldo en el resto (§3.1). La deuda técnica pasa de «extraer» a «integrar al maestro con trazabilidad de origen».
 
 ## 8. Limitaciones declaradas
 
@@ -263,7 +263,7 @@ Esto define un vacío de datos con una única fuente posible: **el municipio que
 | `TIPO_INGRESO` y `EPOCA_PROPICIA` sobrescritas | Sin aproximación al costo ni estacionalidad por recurso | Re-ejecutar el scraper con trazabilidad de origen · Semana 7 |
 | 2 469 jerarquías del maestro sin respaldo en la ficha oficial | Inflaban por siete el patrimonio de jerarquía 3-4; las cifras que dependían de ellas ya están corregidas | Reemplazar la columna por `FICHA_JERARQUIA_NUM` + `ORIGEN_JERARQUIA` · Semana 7 |
 | 1 240 recursos dentro de polos sin jerarquía oficial (25,9 %) | El puntaje del polo promedia sobre los que sí la tienen; 10 de 222 polos quedan fuera del ranking por cobertura insuficiente | Política documentada en `ModelSelection.md` §6.4 · no se imputa |
-| `build_master_dataset.py` genera datos al azar | Escribe sobre la salida del scraper real; destruye la extracción si se ejecuta | Retirado del pipeline y marcado en el encabezado |
+| `build_master_dataset.py` genera datos al azar | Escribe sobre la salida del scraper real; destruye la extracción si se ejecuta | Movido a `code/legacy/` y marcado en el encabezado |
 | Climatología por región, no por piso ecológico | 24 de 81 polos recibían el clima de otro piso ecológico: el polo de la sierra de Lima, a 4 058 m de altitud media, heredaba el clima de la costa limeña | `code/fetch_climate_v2.py` descarga 88 puntos región × zona climática y cubre el 99,3 % de los recursos · pendiente de ejecutar |
 | Altitud del modelo digital de elevación | Hasta +250 m de error en cañón | Contrastar con altitud oficial de la ficha |
 | Distancias geodésicas, no viales | Subestima el tiempo real de traslado | Red vial de OpenStreetMap · Semana 10 |
@@ -274,15 +274,14 @@ Esto define un vacío de datos con una única fuente posible: **el municipio que
 
 ## 9. Reproducir
 
+Desde `deliveries/week06/code`:
+
 ```bash
-pip install pandas scikit-learn matplotlib requests beautifulsoup4
+pip install pandas "scikit-learn==1.8.0" matplotlib scipy requests
 
-python code/fetch_climate_history.py     # clima histórico de Open-Meteo
-python code/discretize_climate.py        # discretización del riesgo
-python code/build_master_dataset.py      # ensamblado del dataset maestro
-
-python code/ta01_comparativa_modelos.py data/processed/dreemgo_master_dataset.csv
-python code/ta01_modelo_final.py        data/processed/dreemgo_master_dataset.csv
+python fetch_climate_history.py     # clima histórico de Open-Meteo (requiere red)
+python discretize_climate.py        # niveles de lluvia y temperatura
+python verificar_fichas.py          # jerarquía del maestro contra la ficha oficial (§3.1)
 ```
 
-Los dos últimos scripts regeneran todas las cifras de `ModelSelection.md` y la figura `ta01_seleccion_modelo.png`.
+**El dataset maestro no se regenera con los scripts de esta carpeta.** El 40,3 % de su jerarquía no tiene procedencia conocida (§3.1), así que se usa tal como está y queda documentado. El maestro v3 se construye de punta a punta desde las fuentes, con la procedencia de cada campo, en la semana 10. Las cifras del modelo se reproducen con los comandos de `ModelSelection.md` §11.

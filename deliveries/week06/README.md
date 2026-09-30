@@ -4,6 +4,8 @@
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
 Entrega: 16 de septiembre de 2026
 
+> Esta carpeta se siguió trabajando hasta el 20 de septiembre y se corrigió el 30. Lo entregado el 16 está en la etiqueta [`entrega/semana-06`](https://github.com/oswaldoaqm/Alejandros-Team/tree/entrega/semana-06); cada corrección, con su porqué, en [`ERRATA.md`](./ERRATA.md).
+
 ---
 
 ## Qué se hizo esta semana
@@ -25,13 +27,10 @@ week06/
 ├── README.md                       este archivo
 ├── DataAnalysis.md                 comprensión de datos, EDA, hallazgos y limitaciones
 ├── ModelSelection.md               modelos, baselines, métricas y modelo elegido
+├── ERRATA.md                       correcciones posteriores a la entrega
 ├── code/
-│   ├── scraper_mincetur.py         extracción de la ficha oficial (jerarquía)
-│   ├── clean_impute_dataset.py     imputación posterior  ⚠ ver nota abajo
-│   ├── build_master_dataset.py     ⚠ SUPERADO — genera datos al azar, no ejecutar
 │   ├── fetch_climate_history.py    10 años de clima mensual desde Open-Meteo
 │   ├── discretize_climate.py       discretización de lluvia y temperatura
-│   ├── generate_commerce_data.py   generador del dataset SIMULADO de eventos
 │   ├── ta01_comparativa_modelos.py v1 · baselines y barridos
 │   ├── ta01_modelo_final.py        v1 · HDBSCAN, perfiles y cobertura
 │   ├── ta01_auditoria_comparacion.py  auditoría de la comparación
@@ -45,11 +44,13 @@ week06/
 │   ├── ta04_evaluacion.py          TA-04 · evaluación sobre los 222 polos
 │   ├── ta05_estacionalidad.py      TA-05 · viabilidad del polo mes a mes
 │   ├── consulta.py                 consulta de punta a punta
-│   ├── fetch_climate_v2.py         clima por región × zona climática (pendiente)
+│   ├── fetch_climate_v2.py         clima por región × zona climática (nunca se ejecutó)
 │   ├── ta01_figura.py              figura v1
 │   ├── ta01_figura_v2.py           figura v2
 │   ├── DreemGO_Advanced_EDA.ipynb
-│   └── DreemGO_Predictive_Engine.ipynb
+│   ├── DreemGO_Predictive_Engine.ipynb
+│   ├── README_ETL_Scripts.md       qué hace cada script y si sigue vigente
+│   └── legacy/                     scripts que no se ejecutan, con su porqué
 ├── data/
 │   ├── raw/
 │   │   └── dataset_enriched.csv            entrada: salida de la semana 5
@@ -67,7 +68,7 @@ week06/
 │       ├── parametros_costo.csv            parámetros del modelo de costo
 │       └── puntos_clima_v2.csv             88 puntos región × zona climática
 └── docs/
-    ├── Data_Dictionary.md             diccionario de las tres tablas
+    ├── Data_Dictionary.md             diccionario de las diez tablas
     ├── ta01_seleccion_modelo.png      figura v1
     ├── ta01_seleccion_modelo_v2.png   figura v2 · la que va en la entrega
     ├── comparativa_modelos.csv        v1 · métricas de cada modelo
@@ -82,22 +83,23 @@ week06/
 ## Reproducir
 
 ```bash
-pip install pandas scikit-learn matplotlib scipy requests beautifulsoup4
+pip install pandas "scikit-learn==1.8.0" matplotlib scipy requests beautifulsoup4
 ```
 
-El pipeline tiene dos mitades independientes. Los scripts leen rutas relativas desde `code/`.
+Python 3.11 o más. El pipeline tiene dos mitades independientes y los comandos se corren desde `code/`.
 
 ### 1 · Datos
 
 ```bash
 cd deliveries/week06/code
 
-python scraper_mincetur.py        # ~2 h · una petición por segundo a MINCETUR
-python clean_impute_dataset.py    # ver la nota de abajo antes de correrlo
+python scraper_mincetur_v3.py     # ~2 h · una petición por segundo a MINCETUR
 python fetch_climate_history.py   # ~2 min · Open-Meteo Archive
 python discretize_climate.py
-python generate_commerce_data.py  # genera el dataset SIMULADO de eventos
+python verificar_fichas.py        # jerarquía del maestro contra la ficha oficial
 ```
+
+El dataset maestro no se regenera con estos scripts: el 40,3 % de su jerarquía no tiene procedencia conocida (`DataAnalysis.md` §3.1). Se usa tal como está, documentado, hasta el maestro v3 de la semana 10.
 
 ### 2 · Modelo
 
@@ -123,15 +125,11 @@ python ta05_estacionalidad.py
 python consulta.py --mes 7 --dias 6 --altitud-max 3500
 ```
 
-Semilla fija (`random_state=42`); el enlace completo es determinista. Regeneran **todas** las cifras de `ModelSelection.md` en un par de minutos, sin volver a tocar la red. El paso de v2 construye una matriz de distancias de 4 915 × 4 915 (97 MB en memoria).
+Semilla fija (`random_state=42`); el enlace completo es determinista. Regeneran **todas** las cifras de `ModelSelection.md` en un par de minutos, sin volver a tocar la red, y cada archivo se escribe donde está el entregado. Las cifras de HDBSCAN (v1) necesitan scikit-learn 1.8.0: con 1.4 a 1.7 salen 80 polos en vez de 81. El modelo elegido da lo mismo con cualquier versión. El paso de v2 construye una matriz de distancias de 4 915 × 4 915 (97 MB en memoria).
 
-### 3 · Pendiente de ejecutar
+### 3 · Clima por piso ecológico
 
-```bash
-python fetch_climate_v2.py        # ~15 min · 88 puntos región × zona climática
-```
-
-Reemplaza la climatología por región (24 puntos) por una por piso ecológico (88 puntos), que cubre el 99,3 % de los recursos. Ver `DataAnalysis.md` §5.3.
+`fetch_climate_v2.py` (88 puntos región × zona climática) nunca se ejecutó. Lo reemplazó un punto por polo: `pipeline/adquisicion/descargar_clima_polos.py`, en la raíz del repositorio.
 
 ### Cómo leer los CSV
 
@@ -146,9 +144,7 @@ df = pd.read_csv("../data/processed/dreemgo_master_dataset.csv", sep=";")
 
 ## Advertencias sobre el código
 
-**`build_master_dataset.py` no debe ejecutarse.** Genera `JERARQUIA_OFICIAL` y `TIPO_INGRESO` con `random.choices()` y escribe sobre el mismo archivo que produce el scraper real. Está marcado en su encabezado y queda solo como registro de un paso intermedio del desarrollo.
-
-**`clean_impute_dataset.py` sobrescribe dos columnas.** Se ejecuta después del scraper y reemplaza `TIPO_INGRESO` y `EPOCA_PROPICIA` por reglas deterministas, con lo que se pierde lo que el scraper había extraído de la ficha. El detalle está en `DataAnalysis.md` §3.1.
+**Los scripts de `code/legacy/` no deben ejecutarse.** `build_master_dataset.py` genera `JERARQUIA_OFICIAL` y `TIPO_INGRESO` con `random.choices()` y escribe sobre el dataset maestro; `clean_impute_dataset.py` reemplaza `TIPO_INGRESO` y `EPOCA_PROPICIA` por reglas deterministas (`DataAnalysis.md` §3.1). El porqué de cada uno está en `code/legacy/README.md`.
 
 **`JERARQUIA_OFICIAL` del dataset maestro solo es fiable en el 59,7 %.** Coincide exactamente con la ficha oficial en los 3 660 recursos que MINCETUR jerarquiza, y asigna un número a los 2 469 que la ficha marca «No aplica» o «POR JERARQUIZAR». Para cualquier análisis nuevo, usar `FICHA_JERARQUIA_NUM` de `fichas_mincetur.csv`, que trae el dato o lo deja vacío. `code/verificar_fichas.py` reproduce la comprobación.
 
@@ -177,9 +173,9 @@ La estacionalidad resultó ser de primer orden: la precipitación media de Cusco
 |---|---:|---:|
 | Polos | 81 | **222** |
 | Recursos utilizables | 3 760 (61,0 %) | **4 786 (77,7 %)** |
-| Diámetro máximo | 427,9 km · **17,1 h** | 79,4 km · **3,2 h** |
+| Diámetro máximo | 427,9 km · **21,1 h** | 79,4 km · **3,9 h** |
 | Desnivel máximo | 4 667 m | **1 296 m** |
-| Polos de más de 4 h | ~15 | **0** |
+| Polos de más de 4 h | 37 | **0** |
 
 La partición por departamento obtiene **silueta negativa** en cualquier configuración: el recurso promedio está más cerca de los recursos de otro departamento que de los de su propio departamento. La división política no describe la geografía turística.
 
@@ -216,6 +212,10 @@ Y un resultado negativo que también se reporta: **el 2-opt no aporta nada** —
 extra y 0,1 % de kilómetros. Con jornadas de 8 h los tours tienen 3 a 6 paradas y el
 vecino más cercano ya está cerca del óptimo.
 
+> **Corrección.** Esta métrica cuenta paradas y no su valor: en viajes de seis días el vecino más cercano
+> deja fuera 67 de los 157 recursos de jerarquía 3-4 de los polos (43 %). TA-04 v2 (semana 10) maximiza
+> el valor capturado. Detalle en `ModelSelection.md` §8.3.
+
 La velocidad de traslado se calibró con 3 094 tramos de acceso de la ficha: **32,5 km/h**
 sobre carretera, contra los 40 km/h que suponíamos. Cruzar un polo cuesta 23 % más tiempo
 del que este documento afirmaba, y las horas de `ModelSelection.md` ya están corregidas.
@@ -245,13 +245,15 @@ esa regla.
 | Armado de días no miope: orientación por equipos con presupuesto | 10 |
 | Reemplazar el supuesto de 40 km/h por los tiempos reales de `ACCESO_MIN` | 7 |
 | Llevar `TARIFA_SOLES` al modelo de costo y calibrar los seis parámetros | 7 |
-| Corregir dos fallos menores del extractor: `TABLAS_RECONOCIDAS` vacía y los 31 errores guardados como `ValueError` | 7 |
+| Re-leer las fichas: 31 que el parser no pudo leer (distancias como «1.200.5 km») y `ACCESO_KM` con comas mal leídas | 7 |
 | Ejecutar `fetch_climate_v2.py`: clima por `REGIÓN × ZONA_CLIMATICA`, 88 puntos en vez de 24 | 7 |
 | Decidir qué se hace con el presupuesto: no hay ninguna columna monetaria en el dataset | 7 |
 | Perfilamiento semántico por intereses sobre los 187 subtipos | 7 |
 | Sembrar el dataset de eventos con los 749 acontecimientos reales del inventario | 7 |
 | Ordenamiento de la ruta (TTDP) con baseline de vecino más cercano | 10 |
 | Red vial de OpenStreetMap para distancias reales | 10 |
+
+Qué pasó con cada pendiente, al 30 de septiembre: [`ERRATA.md`](./ERRATA.md).
 
 ---
 

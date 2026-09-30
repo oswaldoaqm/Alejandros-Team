@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Lint y pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar
+        run: pip install -e ".[api,dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Formato
+        run: ruff format --check .
+      - name: Pruebas
+        run: pytest
+
+  imagen:
+    name: Imagen del API
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v7
+      - name: Construir
+        run: docker build -f infra/Dockerfile -t dreemgo-api:ci .
+      - name: La imagen arranca y responde
+        run: |
+          docker run -d --name api -p 8080:8080 dreemgo-api:ci
+          for i in $(seq 1 30); do curl -fsS http://localhost:8080/v1/salud > /dev/null && break; sleep 1; done
+          curl -fsS http://localhost:8080/v1/salud | python3 -c "import json, sys; assert json.load(sys.stdin)['estado'] == 'ok'"
+          docker rm -f api

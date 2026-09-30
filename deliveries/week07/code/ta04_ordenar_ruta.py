@@ -36,7 +36,7 @@ tiempo del que documentamos en ModelSelection §5.7.
 
 BASELINES
 ---------
-  0 · orden por jerarquía   — el orden que entrega TA-03 hoy, partido en días
+  0 · orden por jerarquía   — el orden por importancia, partido en días
   1 · vecino más cercano    — heurístico clásico desde la base
   2 · vecino + 2-opt        — mejora local sobre cada día
 
@@ -132,7 +132,7 @@ def dias_vecino(D, pend, base, vis, dias, con_2opt):
 
 
 def dias_jerarquia(D, orden, base, vis, dias):
-    """Baseline 0: el orden que entrega TA-03, partido por jornada."""
+    """Baseline 0: el orden por jerarquía, partido por jornada."""
     pend = list(orden)
     rutas = []
     for _ in range(dias):

@@ -4,6 +4,8 @@
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
 Entrega: 9 de septiembre de 2026
 
+> Corregida el 30 de septiembre. Lo entregado el 9 está en la etiqueta [`entrega/semana-05`](https://github.com/oswaldoaqm/Alejandros-Team/tree/entrega/semana-05); cada corrección, en [`ERRATA.md`](./ERRATA.md).
+
 ---
 
 ## Producto
@@ -34,6 +36,7 @@ La propuesta completa está en [`ProjectProposal.pdf`](./ProjectProposal.pdf).
 ```
 week05/
 ├── README.md                   este archivo
+├── ERRATA.md                   correcciones posteriores a la entrega
 ├── ProjectProposal.pdf         propuesta de proyecto
 ├── ProjectProposal.docx        fuente editable de la propuesta
 ├── DataProductCanvas.pdf       canvas completo
@@ -46,15 +49,14 @@ week05/
 │   ├── storyboard_01.png       recorrido feliz (CU-02)
 │   ├── storyboard_02.png       recorrido con conflicto estacional (CU-01)
 │   └── diagrama_casos_uso.png  modelo UML de casos de uso
-├── code/
+├── code/                       en el orden en que se corren
 │   ├── enrich_data.py          altitud desde el modelo de elevación de Open-Meteo
+│   ├── fix_altitudes.py        reintenta las altitudes que faltaron
+│   ├── build_features.py       distancia a la capital regional
 │   ├── add_climate.py          inferencia de ZONA_CLIMATICA por pisos ecológicos
-│   ├── fix_altitudes.py        corrección de altitudes atípicas
-│   ├── fix_pricing.py          normalización de regiones e índice de lejanía
-│   ├── fix_pricing_native.py   variante sin dependencias externas
-│   ├── build_features.py       ensamblado final de variables derivadas
-│   ├── verify_enriched.py      verificación del dataset contra el diccionario
-│   └── verify_enriched_native.py
+│   ├── fix_pricing.py          índice de lejanía final: 1 <20 km · 2 <80 km · 3 más
+│   ├── verify_enriched.py      verificación del resultado
+│   └── legacy/                 dos variantes sin pandas que quedaron duplicadas
 └── data/
     ├── dataset_enriched.csv    6 160 registros · 16 columnas · separador ";"
     └── data_dictionary_v2.csv  diccionario ampliado con las variables derivadas
@@ -96,7 +98,7 @@ derivadas para resolver la ausencia de altitud, costo y clima en la fuente abier
 | `ALTITUD` | Modelo digital de elevación de Open-Meteo | msnm | 1 245 (20.2 %) |
 | `DISTANCIA_CAPITAL_KM` | Distancia Haversine del recurso a su capital regional | km | 1 245 (20.2 %) |
 | `INDICE_COSTO_LOGISTICO` | Categorización ordinal de la distancia anterior | 1 = <20 km · 2 = <80 km · 3 = >80 km | 1 245 (20.2 %) |
-| `ZONA_CLIMATICA` | Inferencia determinista por pisos ecológicos (altitud + región) | 6 categorías | 1 245 (20.2 %) |
+| `ZONA_CLIMATICA` | Inferencia determinista por pisos ecológicos (altitud + región) | 7 categorías | 1 245 (20.2 %) |
 
 > **Nota de nomenclatura.** En `Requirements.md` y en la presentación esta variable se denomina
 > **`INDICE_LEJANIA`**, porque no contiene unidades monetarias: es una aproximación de lejanía, no un costo.
@@ -118,13 +120,15 @@ suaviza el relieve. Se corregirá con la altitud oficial en TA-03.
 ```bash
 pip install pandas requests
 
-python code/enrich_data.py        # altitud vía Open-Meteo
+python code/enrich_data.py        # altitud vía Open-Meteo (requiere red)
+python code/fix_altitudes.py      # reintenta las altitudes que faltaron (requiere red)
+python code/build_features.py     # distancia a la capital regional
 python code/add_climate.py        # ZONA_CLIMATICA por pisos ecológicos
-python code/fix_altitudes.py      # corrección de altitudes atípicas
-python code/fix_pricing.py        # normalización de regiones e índice de lejanía
-python code/build_features.py     # ensamblado de data/dataset_enriched.csv
-python code/verify_enriched.py    # verificación contra data_dictionary_v2.csv
+python code/fix_pricing.py        # índice de lejanía final
+python code/verify_enriched.py    # verificación del resultado
 ```
+
+Los tres pasos sin red reproducen exactamente las columnas derivadas del CSV entregado (distancia, índice de lejanía y zona climática) en las 6 160 filas; se verificó el 30 de septiembre.
 
 El dataset se lee con separador `;` y codificación UTF-8:
 

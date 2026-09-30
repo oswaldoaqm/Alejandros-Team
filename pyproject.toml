@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dreemgo"
+version = "0.1.0"
+description = "Itinerarios por polos turísticos del Perú: agrupamiento, estacionalidad, rutas y costo"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Alejandro's Team · DS3022 UTEC" }]
+dependencies = [
+    "numpy>=2.0",
+    "pydantic>=2.8",
+]
+
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+]
+pipeline = [
+    "pandas>=2.2",
+    "requests>=2.32",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "scikit-learn==1.8.0",
+]
+dev = [
+    "httpx2>=2.13",
+    "hypothesis>=6.100",
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[project.urls]
+Repositorio = "https://github.com/oswaldoaqm/Alejandros-Team"
+
+[tool.setuptools.packages.find]
+include = ["dreemgo*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["deliveries", "app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["dreemgo"]
+known-local-folder = ["_comun"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
