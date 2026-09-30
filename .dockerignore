@@ -1,0 +1,14 @@
+# La imagen del API solo necesita el paquete dreemgo y sus artefactos.
+.git
+.github
+.venv
+**/__pycache__
+**/*.py[cod]
+app
+data/externos
+deliveries
+docs
+pipeline
+tests
+infra/samconfig.toml
+.aws-sam
