@@ -55,10 +55,11 @@ Licencia [ODC-BY](https://www.datosabiertos.gob.pe/dataset/inventario-nacional-d
 > intercambiarlas, el 100 %. Sin corregirlo, cualquier análisis espacial falla en silencio, sin lanzar error.
 > El análisis completo está en [`deliveries/week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md).
 
-El dataset enriquecido de la Semana 5 añade `ALTITUD`, `DISTANCIA_CAPITAL_KM`, `INDICE_LEJANIA` y
-`ZONA_CLIMATICA` sobre el inventario base ([`deliveries/week05/data/`](./deliveries/week05/data/)).
+El dataset enriquecido de la Semana 5 añade `ALTITUD`, `DISTANCIA_CAPITAL_KM`, el índice de lejanía
+(`INDICE_COSTO_LOGISTICO` en el CSV) y `ZONA_CLIMATICA` sobre el inventario base ([`deliveries/week05/data/`](./deliveries/week05/data/)).
 
-La Semana 6 suma la **jerarquía oficial** de cada recurso, extraída de las fichas de MINCETUR y verificada
+La Semana 6 suma las **6 129 fichas oficiales** de MINCETUR, con la jerarquía de cada recurso verificada
+fila a fila: la columna del dataset maestro solo coincide con la ficha en el 59,7 %
 ([`deliveries/week06/docs/Data_Dictionary.md`](./deliveries/week06/docs/Data_Dictionary.md)), y **diez años de
 climatología mensual** (2014-2023) de [Open-Meteo Archive](https://open-meteo.com/) para las 24 regiones.
 
@@ -75,6 +76,8 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 ```
 Alejandros-Team/
 ├── README.md
+├── pipeline/
+│   └── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
 └── deliveries/
     ├── week04/                     Tema, equipo y selección de dataset
     │   ├── README.md
@@ -91,16 +94,21 @@ Alejandros-Team/
     │   ├── assets/                 wireframes, storyboards y diagrama UML
     │   ├── code/                   enriquecimiento, clima, altitud y features
     │   └── data/                   dataset_enriched.csv · data_dictionary_v2.csv
-    └── week06/                     Análisis exploratorio y selección de modelo
-        ├── README.md
-        ├── DataAnalysis.md         EDA, hallazgos y limitaciones
-        ├── ModelSelection.md       baselines, métricas y modelo elegido
-        ├── code/                   scraping, clima y los scripts de TA-01
-        ├── data/raw/ · data/processed/
-        └── docs/                   diccionario, figura y métricas
+    ├── week06/                     Análisis exploratorio y selección de modelo
+    │   ├── README.md
+    │   ├── DataAnalysis.md         EDA, hallazgos y limitaciones
+    │   ├── ModelSelection.md       baselines, métricas y modelo elegido
+    │   ├── code/                   fichas, clima, TA-01, TA-04, TA-05 y consulta de punta a punta
+    │   ├── data/raw/ · data/processed/
+    │   └── docs/                   diccionario, figuras y métricas
+    └── week07/                     Delivery 1 · definición integrada del proyecto
+        ├── PresentationWeek07.pdf
+        ├── Cloud_Architecture.drawio.png · E-R.png
+        ├── code/ · data/           copia del código y los datos de week06
+        └── docs/                   diccionario, arquitectura y prototipo de baja fidelidad
 ```
 
-Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`.
+Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`. Lo entregado en cada fecha queda intacto en las etiquetas `entrega/semana-XX`, y lo que se corrigió después está en el `ERRATA.md` de cada carpeta.
 
 ---
 
@@ -114,7 +122,7 @@ supera el umbral de 80 km de viaje efectivo.
 |---|---:|---:|
 | Polos | 81 | **222** |
 | Recursos utilizables | 3 760 (61,0 %) | **4 786 (77,7 %)** |
-| Diámetro máximo | 427,9 km · **17,1 h** | 79,4 km · **3,2 h** |
+| Diámetro máximo | 427,9 km · **21,1 h** | 79,4 km · **3,9 h** |
 | Desnivel máximo | 4 667 m | **1 296 m** |
 
 La partición por departamento obtiene **silueta negativa**: el recurso promedio queda más cerca de los recursos
@@ -138,6 +146,7 @@ entre los dos modelos— está en
 | Selección de modelo | [`week06/ModelSelection.md`](./deliveries/week06/ModelSelection.md) |
 | Diccionario de datos | [`week06/docs/Data_Dictionary.md`](./deliveries/week06/docs/Data_Dictionary.md) |
 | Nota de calidad de datos | [`week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md) |
+| Presentación de la Delivery 1 | [`week07/PresentationWeek07.pdf`](./deliveries/week07/PresentationWeek07.pdf) |
 
 ---
 
@@ -151,13 +160,16 @@ pip install pandas scikit-learn matplotlib scipy requests beautifulsoup4
 # Semana 4 — verificación de calidad del inventario base
 python deliveries/week04/code/data_quality_check.py deliveries/week04/data/sample.csv
 
-# Semana 6 — modelo de agrupamiento (no requiere red, < 1 min)
+# Semana 6 — modelo elegido, puntaje, estacionalidad, ruta y consulta (no requiere red, ~1 min)
 cd deliveries/week06/code
-python ta01_comparativa_modelos.py ../data/processed/dreemgo_master_dataset.csv
-python ta01_modelo_final.py        ../data/processed/dreemgo_master_dataset.csv
+python ta01_polos_acotados.py  ../data/processed/dreemgo_master_dataset.csv
+python ta03_score_polo.py      ../data/processed/polos_asignados_v2.csv 0.30
+python ta05_estacionalidad.py
+python ta04_evaluacion.py 6
+python consulta.py --mes 7 --dias 6 --altitud-max 3500
 ```
 
-El primero regenera las cifras de la nota de calidad; los otros dos, todas las de `ModelSelection.md`.
+El primero regenera las cifras de la nota de calidad. Los de la semana 6 regeneran los archivos de `data/processed/` que usa la consulta, y la consulta verifica en cada corrida los criterios de aceptación de RF-01, RF-02 y RNF-01.
 Las instrucciones completas, incluida la parte que sí necesita red, están en
 [`deliveries/week06/README.md`](./deliveries/week06/README.md).
 
@@ -170,7 +182,7 @@ Las instrucciones completas, incluida la parte que sí necesita red, están en
 | 4 | 2 sep 2026 | Tema, equipo y selección de dataset | Entregado |
 | 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | Entregado |
 | 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | Entregado |
-| 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | En curso |
-| 10 | 14 oct 2026 | Prototipo funcional | Pendiente |
+| 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | Entregado |
+| 10 | 14 oct 2026 | Prototipo funcional | En curso |
 | 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | Pendiente |
 | 15 | 18 nov 2026 | Presentación final y **Delivery 2** | Pendiente |
