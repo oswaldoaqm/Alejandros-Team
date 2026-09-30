@@ -588,9 +588,12 @@ def resumen(maestro: pd.DataFrame) -> dict[str, object]:
     }
 
 
-def leer_fichas(carpeta: Path) -> dict[int, Ficha]:
+def leer_fichas(carpeta: Path, codigos: set[int] | None = None) -> dict[int, Ficha]:
+    """Las fichas guardadas en ``carpeta``; solo las de ``codigos`` si se da."""
     fichas = {}
     for ruta in sorted(carpeta.glob("*.html.gz")):
+        if codigos is not None and int(ruta.name.split(".")[0]) not in codigos:
+            continue
         ficha = leer_archivo(ruta)
         fichas[ficha.codigo] = ficha
     return fichas
