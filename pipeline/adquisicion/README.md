@@ -6,14 +6,14 @@ Los únicos scripts del proyecto que salen a internet. Se corren en la máquina 
 |---|---|---|---|
 | `descargar_inventario.py` | Inventario Nacional de Recursos Turísticos (el CSV base), con MD5, manifiesto y comparación contra `deliveries/week04/data/sample.csv` | segundos | ODC-BY |
 | `descargar_osm.py` | Extracto de OpenStreetMap del Perú (Geofabrik), con MD5 verificado y manifiesto | 5-15 min, según la conexión | ODbL 1.0 |
-| `descargar_fichas_html.py` | HTML crudo de las 6 160 fichas del inventario: primero las 31 que fallaron en el scraper v3, luego los 749 acontecimientos y al final el resto | 2-3 h | Datos abiertos de MINCETUR (ODC-BY) |
+| `descargar_fichas_html.py` | HTML crudo de la ficha de cada recurso del inventario vigente: primero los recursos nuevos y las 31 que fallaron en el scraper v3, luego los acontecimientos y al final el resto. Al volver a correrlo baja solo las que faltan | 2-3 h la primera vez | Datos abiertos de MINCETUR (ODC-BY) |
 | `descargar_clima_polos.py` | Clima diario 2016-2025 en el centro de cada uno de los 222 polos: lluvia, horas de lluvia, nieve, horas de sol y temperaturas | ~6 días, limitado por la cuota gratuita de Open-Meteo | CC BY 4.0 |
 
 Los tres retoman donde quedaron si se cortan: basta volver a correr el mismo comando.
 
 ## Cómo correrlos
 
-Desde la raíz del repositorio, con Python 3.10 o más y `requests` instalado:
+Desde la raíz del repositorio, con Python 3.11 o más y `requests` instalado:
 
 ```bash
 # ventana 1: se deja corriendo; si se apaga la PC, se vuelve a lanzar y sigue

@@ -19,6 +19,10 @@ El código de este repositorio es MIT ([`LICENSE`](./LICENSE)). Los datos tienen
 - **Tiempos de viaje** (entre paradas de un polo y desde cada ciudad de origen a cada polo): se calculan sobre OpenStreetMap, así que se publican bajo **ODbL 1.0**, con la atribución de arriba.
 - **Artefactos del motor** que combinan el inventario con el clima (polos, estacionalidad, puntajes): conservan la atribución de ambas fuentes.
 
+## Datos personales
+
+Las fichas oficiales publican el nombre, el correo y el teléfono de quien las llenó, y a veces el celular de un encargado en el texto libre. El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal", y en el resto del texto reemplaza teléfonos, correos y el nombre pegado a ellos (ver [`pipeline/README.md`](./pipeline/README.md#datos-personales)). Nada de eso llega a los artefactos ni al repositorio; las fichas de prueba en `tests/fixtures/fichas/` están saneadas con el mismo criterio.
+
 ## Lo que no se usa
 
 TripAdvisor y Google Places se evaluaron en la semana 4 y se descartaron: sus términos prohíben la extracción automatizada o restringen el almacenamiento y la redistribución. Ningún dato de esas fuentes está en el repositorio.

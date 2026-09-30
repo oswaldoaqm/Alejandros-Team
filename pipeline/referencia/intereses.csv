@@ -1,0 +1,80 @@
+interes;campo;valor;nota
+naturaleza;categoria;1;Todo sitio natural
+naturaleza;excluir_subtipo;Playas;Las playas van a «playa», aunque siguen en «naturaleza» si la ficha registra observación de aves, flora o fauna
+naturaleza;excluir_subtipo;Caletas;Igual que las playas
+naturaleza;subtipo;Centros de rescate o conservación;
+naturaleza;subtipo;Jardines Botánicos y Viveros;
+naturaleza;subtipo;Mariposarios;
+naturaleza;subtipo;Zoológicos;
+naturaleza;subtipo;Acuarios;
+naturaleza;actividad;Observación de aves;
+naturaleza;actividad;Observación de flora;
+naturaleza;actividad;Observación de fauna;
+historia;tipo;Sitios Arqueológicos;
+historia;tipo;Lugares Históricos;
+historia;tipo;Museos y otros;
+historia;subtipo;Piezas con valor histórico;
+historia;subtipo;Históricos;Pueblos históricos
+historia;subtipo;Fortalezas;
+historia;subtipo;Casa-Hacienda;
+historia;subtipo;Convento;
+historia;subtipo;Monasterio;
+historia;subtipo;Lugares paleontológicos(Fósiles);
+gastronomia;subtipo;Bodegas de pisco, vinos y/u otros licores;
+gastronomia;tipo;Explotaciones Agropecuarias y Pesqueras;Fundos, piscigranjas y chacras que reciben visitas
+gastronomia;tipo;Gastronomía;Platos, dulces y bebidas del folclore: cuentan para el polo, no son paradas
+gastronomia;subtipo;Ferias gastronómicas;
+gastronomia;actividad;Degustación y preparación de platos, productos o bebidas típicas;
+caminatas;actividad;Caminata/Trekking;
+caminatas;actividad;Montañismo;
+caminatas;subtipo;Camino Pintoresco;
+caminatas;subtipo;Camino Paisajista;
+playa;subtipo;Playas;
+playa;subtipo;Caletas;
+playa;subtipo;Bahías;
+playa;actividad;Tabla hawaiana (Surfing) o bodyboard;
+playa;actividad;Kitesurf;
+playa;actividad;Vela (Windsurf);
+fiestas;categoria;5;Todo acontecimiento programado
+fiestas;tipo;Músicas y Danzas;
+fiestas;tipo;Creencias Populares;
+fiestas;tipo;Etnias;
+fiestas;tipo;Artesanía y Artes;
+fiestas;tipo;Ferias y Mercados;
+fiestas;subtipo;Tradicionales;Pueblos tradicionales
+fiestas;subtipo;Artesanales;Pueblos artesanales
+fiestas;actividad;Actividades Religiosas o Patronales;
+fiestas;actividad;Rituales místicos o tradicionales;
+fiestas;actividad;Visita y participación en actividades de vida cotidiana de la comunidad;
+fiestas;actividad;Participación y/u observación del proceso de elaboración de productos locales;
+arquitectura;tipo;Arquitectura y Espacios Urbanos;
+arquitectura;subtipo;Centros Históricos;
+arquitectura;subtipo;Casas Históricas;
+arquitectura;subtipo;Casonas;
+arquitectura;subtipo;Palacios;
+arquitectura;subtipo;Puentes Modernos;
+aventura;tipo;Cavidades naturales;
+aventura;tipo;Cañones;
+aventura;tipo;Pongos;
+aventura;subtipo;Dunas;
+aventura;actividad;Escalada en roca;
+aventura;actividad;Escalada en Hielo;
+aventura;actividad;Montañismo;
+aventura;actividad;Canotaje / Rafting;
+aventura;actividad;Zip-Line/Canopy;
+aventura;actividad;Parapente;
+aventura;actividad;Ala delta;
+aventura;actividad;Puenting;
+aventura;actividad;Sandboard (Esquí sobre arena);
+aventura;actividad;Espeleísmo;
+aventura;actividad;Buceo/diving;
+aventura;actividad;Pesca submarina;
+aventura;actividad;Sea Kayac;
+aventura;actividad;Kitesurf;
+aventura;actividad;Motocross;
+aventura;actividad;Ciclismo;
+aventura;actividad;Cabalgatas;
+aventura;actividad;Paseos en cuatrimotos;
+aventura;actividad;Sobrevuelo en aeronaves;
+aventura;actividad;Eco-caminata sobre las copas de los árboles;
+aventura;actividad;Esquí sobre nieve;

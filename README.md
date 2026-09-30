@@ -29,7 +29,7 @@ puede automatizar.
 | **Salida del producto** | Itinerario ordenado con secuencia geográfica coherente, ventana temporal recomendada y costo estimado |
 | **Alcance** | Destinos dentro del territorio peruano |
 
-En el inventario oficial, Lima y Cusco concentran 1 585 recursos (25,7 %). Los **4 575 restantes — el 74,3 %**
+En el inventario oficial, Lima y Cusco concentran 1 605 recursos (25,8 %). Los **4 620 restantes — el 74,2 %**
 están repartidos en las otras 23 regiones y quedan fuera del circuito que absorbe el grueso de la demanda.
 
 ---
@@ -48,12 +48,14 @@ están repartidos en las otras 23 regiones y quedan fuera del circuito que absor
 ## Datos
 
 **Inventario Nacional de Recursos Turísticos** — Ministerio de Comercio Exterior y Turismo (MINCETUR)
-Licencia [ODC-BY](https://www.datosabiertos.gob.pe/dataset/inventario-nacional-de-recursos-tur%C3%ADsticos) · 6 160 registros · 25 regiones · fecha de corte 2026-08-31
+Licencia [ODC-BY](https://www.datosabiertos.gob.pe/dataset/inventario-nacional-de-recursos-tur%C3%ADsticos) · 6 225 registros · 25 regiones · fecha de corte 2026-09-29
 
 > **Advertencia para quien use esta fuente:** las columnas `LATITUD` y `LONGITUD` vienen **intercambiadas desde
 > el origen**. Con las etiquetas originales, el 0 % de los recursos cae dentro del territorio peruano; al
 > intercambiarlas, el 100 %. Sin corregirlo, cualquier análisis espacial falla en silencio, sin lanzar error.
 > El análisis completo está en [`deliveries/week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md).
+> En el corte del 29 de septiembre, además, el recurso 14707 trae corrido el punto decimal;
+> [`pipeline/inventario.py`](./pipeline/inventario.py) corrige las dos cosas y deja marcada cada coordenada.
 
 El dataset enriquecido de la Semana 5 añade `ALTITUD`, `DISTANCIA_CAPITAL_KM`, el índice de lejanía
 (`INDICE_COSTO_LOGISTICO` en el CSV) y `ZONA_CLIMATICA` sobre el inventario base ([`deliveries/week05/data/`](./deliveries/week05/data/)).
@@ -62,6 +64,11 @@ La Semana 6 suma las **6 129 fichas oficiales** de MINCETUR, con la jerarquía d
 fila a fila: la columna del dataset maestro solo coincide con la ficha en el 59,7 %
 ([`deliveries/week06/docs/Data_Dictionary.md`](./deliveries/week06/docs/Data_Dictionary.md)), y **diez años de
 climatología mensual** (2014-2023) de [Open-Meteo Archive](https://open-meteo.com/) para las 24 regiones.
+
+La fase 1 rehace los datos sobre el corte del 29 de septiembre. [`pipeline/`](./pipeline/) lee las 6 225 fichas
+oficiales y deja en [`data/procesados/`](./data/procesados/) el **maestro v3**, una fila por recurso con la
+fuente de cada campo, y el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
+medida sobre una muestra anotada a mano.
 
 Fuentes complementarias previstas: [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto),
 [Open-Meteo](https://open-meteo.com/) (climatología histórica y modelo de elevación) y
@@ -77,11 +84,12 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 Alejandros-Team/
 ├── README.md
 ├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py
-├── pipeline/
+├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro y eventos
 │   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
-│   └── referencia/                 tablas escritas a mano, como las ciudades de origen
+│   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
+├── data/procesados/                maestro v3 y calendario de eventos, con su diccionario
 ├── infra/                          imagen del API y despliegue en AWS con SAM
-├── tests/                          pruebas del contrato y del API
+├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API y registro de decisiones
 └── deliveries/
     ├── week04/                     Tema, equipo y selección de dataset
@@ -179,6 +187,19 @@ python consulta.py --mes 7 --dias 6 --altitud-max 3500
 El primero regenera las cifras de la nota de calidad. Los de la semana 6 regeneran los archivos de `data/processed/` que usa la consulta, y la consulta verifica en cada corrida los criterios de aceptación de RF-01, RF-02 y RNF-01.
 Las instrucciones completas, incluida la parte que sí necesita red, están en
 [`deliveries/week06/README.md`](./deliveries/week06/README.md).
+
+Los datos v3 salen del pipeline. Primero se bajan las fuentes con los scripts de
+[`pipeline/adquisicion/`](./pipeline/adquisicion/), que las dejan fuera de git (las fichas tardan unas horas la
+primera vez):
+
+```bash
+pip install -e ".[pipeline,dev]"
+python pipeline/adquisicion/descargar_inventario.py
+python pipeline/adquisicion/descargar_fichas_html.py
+python -m pipeline.maestro     # data/procesados/maestro_v3.csv
+python -m pipeline.eventos     # data/procesados/eventos_v3.csv
+pytest
+```
 
 ---
 

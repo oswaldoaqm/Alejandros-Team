@@ -2,7 +2,7 @@
 Utilidades compartidas por los scripts de adquisición.
 
 Estos son los únicos scripts del proyecto que salen a internet. Se corren en la
-máquina de un integrante (Git Bash o cualquier terminal con Python 3.10+),
+máquina de un integrante (Git Bash o cualquier terminal con Python 3.11+),
 porque los entornos automatizados donde se desarrolla el resto no alcanzan las
 fuentes: MINCETUR, Open-Meteo y Geofabrik.
 

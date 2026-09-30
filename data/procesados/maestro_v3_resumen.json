@@ -1,0 +1,68 @@
+{
+  "version": "v3",
+  "recursos": 6225,
+  "fecha_corte_inventario": [
+    "20260929"
+  ],
+  "con_ficha": 6225,
+  "paradas_posibles": 4578,
+  "motivo_no_parada": {
+    "—": 4578,
+    "folclore": 834,
+    "acontecimiento": 758,
+    "cumbre": 47,
+    "coordenada_revisar": 8
+  },
+  "coordenada": {
+    "intercambiada": 6224,
+    "reparada": 1
+  },
+  "coordenada_revisar": 12,
+  "coordenada_motivo": {
+    "—": 6213,
+    "lejos_de_su_distrito": 10,
+    "costa_en_altura": 2
+  },
+  "polo_fuente": {
+    "v2": 4751,
+    "asignado_v3": 1267,
+    "v2_sin_polo": 129,
+    "sin_polo_cercano": 39,
+    "v2_revisado": 29,
+    "coordenada_revisar": 9,
+    "salio_de_su_polo": 1
+  },
+  "polos": 222,
+  "altitud_fuente": {
+    "ficha": 5953,
+    "dem_open_meteo": 226,
+    "—": 46
+  },
+  "altitud_revisar": 188,
+  "lugares": {
+    "total": 4633,
+    "con_jerarquia": 3741,
+    "con_tarifa": 3952,
+    "con_horario": 4589,
+    "con_acceso": 4600,
+    "con_visitantes": 4620,
+    "con_intereses": 4596,
+    "ingreso": {
+      "libre": 3062,
+      "boleto": 855,
+      "permiso": 679,
+      "otro": 30,
+      "—": 7
+    }
+  },
+  "intereses": {
+    "naturaleza": 2722,
+    "historia": 977,
+    "gastronomia": 1432,
+    "caminatas": 2066,
+    "playa": 227,
+    "fiestas": 2785,
+    "arquitectura": 1067,
+    "aventura": 560
+  }
+}
