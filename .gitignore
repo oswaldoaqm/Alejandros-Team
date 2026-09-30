@@ -1,17 +1,68 @@
-# Python
+# DreemGO · qué no entra al repositorio
+# Regla general: entra el código, los documentos y los artefactos pequeños que
+# el producto consume. No entran descargas grandes, cachés ni credenciales.
+
+# ── Credenciales: nunca, bajo ninguna forma ──────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials
+credentials.*
+.aws/
+secrets.*
+
+# ── Datos descargados de fuentes externas (se regeneran con pipeline/adquisicion) ──
+data/externos/
+*.osm.pbf
+*.osm.pbf.part
+
+# ── Python ───────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
 .ipynb_checkpoints/
 
-# Entornos
+# ── Entornos virtuales ───────────────────────────────────────────────────────
 .venv/
 venv/
 env/
 
-# Sistema operativo
+# ── App web (Node, Vite, Playwright) ─────────────────────────────────────────
+node_modules/
+app/dist/
+app/.vite/
+*.tsbuildinfo
+playwright-report/
+test-results/
+blob-report/
+
+# ── AWS SAM (se versiona infra/samconfig.example.toml, no la config real) ────
+.aws-sam/
+samconfig.toml
+
+# ── Editores y sistema operativo ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Salidas de trabajo que no son entregables
+# ── Archivos de trabajo local ────────────────────────────────────────────────
+*.log
 diagnostico.txt
-.vscode/
