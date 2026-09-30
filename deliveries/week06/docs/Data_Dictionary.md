@@ -122,22 +122,148 @@ Ordenar por este campo en primer lugar convierte el recomendador en un espacio p
 
 ---
 
+## 4 · `fichas_mincetur.csv` — extracción de la ficha oficial
+
+6 160 filas · una por recurso del inventario · clave `CODIGO`. Producida por
+`code/scraper_mincetur_v3.py`. **6 129 con HTTP 200**; las 31 restantes fallaron y
+guardan el texto del error en `HTTP` (bug conocido: debería guardar el código).
+
+| Columna | Descripción | Relleno |
+|---|---|---:|
+| `CODIGO` · `URL` · `HTTP` | clave, enlace a la ficha y estado de la petición | 100 % |
+| `FICHA_JERARQUIA_TXT` | lo que la ficha dice, literal: `1`…`4`, `No aplica`, `POR JERARQUIZAR` | 100 % |
+| `FICHA_JERARQUIA_NUM` | solo cuando es un número real de 1 a 4; vacío en otro caso | 59,7 % |
+| `FICHA_ALTITUD_M` · `FICHA_TOPONIMIA` | altitud oficial y toponimia | 96 % |
+| `INGRESO_TIPO` · `INGRESO_OBS` · `TARIFA_SOLES` | tipo de ingreso, observaciones y monto en soles | 74 % · 12 % |
+| `EPOCA_PROPICIA` · `EPOCA_ESPECIFICACION` · `HORA_VISITA` | **frecuencia de visita**, no ventana climática — ver nota | 74 % |
+| `N_ACTIVIDADES` · `ACTIVIDADES` | 63 actividades en 6 familias, separadas por `\|`, formato `Familia>Actividad` | 93 % |
+| `N_TRAMOS` · `ACCESO_KM` · `ACCESO_MIN` · `ACCESO_MEDIOS` · `ACCESO_VIAS` | acceso desde el pueblo más cercano | 74 % |
+| `VISITANTES_NAC` · `_EXT` · `_LOC` · `_ANIO` | visitantes declarados y año de referencia | 64 % |
+| `N_SERV_ALOJAMIENTO` · `N_SERV_ALIMENTACION` | servicios registrados en la ficha | 74 % |
+| `TABLAS_RECONOCIDAS` | **columna vacía** — el scraper la declara y no la llena. Bug conocido. | 0 % |
+
+### El 26 % que falta es estructural, no un fallo
+
+| Categoría | Fichas | Sin ingreso/época/acceso | % |
+|---|---:|---:|---:|
+| 5. Acontecimientos programados | 749 | 749 | 100,0 |
+| 3. Folclore | 824 | 820 | 99,5 |
+| 2. Manifestaciones culturales | 2 105 | 11 | 0,5 |
+| 1. Sitios naturales | 2 147 | 9 | 0,4 |
+| 4. Realizaciones técnicas | 304 | 0 | 0,0 |
+
+Una danza o una fiesta patronal no tiene acceso en kilómetros ni época propicia porque no
+es un lugar. Los tres campos faltan en las mismas fichas con un solapamiento del 96,2 %.
+
+### Nota · `EPOCA_PROPICIA` de la ficha ≠ `EPOCA_PROPICIA` del maestro
+
+Miden cosas distintas y comparten nombre, lo que es una trampa. El maestro trae una
+ventana climática derivada por regla (`Abril a Noviembre`, `Todo el año`, `Mayo a
+Octubre`); la ficha trae frecuencia de visita (`Todo el año`, `Esporádicamente - algunos
+meses`, `Fines de semana`). Coinciden en 36 % por la etiqueta compartida, no por acuerdo.
+**La estacionalidad climática sale de TA-05, no de esta columna.**
+
+---
+
+## 5 · `polos_asignados_v2.csv` — etiqueta de polo por recurso
+
+4 915 filas · salida de `code/ta01_polos_acotados.py` · clave `CODIGO DEL RECURSO`.
+
+`POLO` es el identificador del polo, o **−1** para los 129 recursos que no alcanzan el
+mínimo de 5. `JERARQUIA_OFICIAL` viene del maestro y **solo es fiable en el 59,7 %**: usar
+`FICHA_JERARQUIA_NUM` de la tabla 4 para cualquier análisis nuevo.
+
+---
+
+## 6 · `puntaje_polos.csv` — ranking de polos
+
+222 filas · una por polo · salida de `code/ta03_score_polo.py`.
+
+| Columna | Descripción |
+|---|---|
+| `POLO` · `recursos` · `region` · `regiones` | identidad y tamaño |
+| `jerarquia` | media **sobre los recursos que tienen jerarquía real**, no sobre todos |
+| `jer_conocida` · `cobertura_jerarquia` | cuántos la tienen, y qué fracción del polo sostiene el promedio |
+| `lejania` | media de `INDICE_COSTO_LOGISTICO` · **sin validar**, ver `ModelSelection.md` §10 |
+| `saturacion` · `limpio` | fracción del polo en Lima o Cusco · `limpio` = ninguno |
+| `novedad` · `puntaje` | `0,5·(1−saturación) + 0,5·lejanía` · `(1−λ)·jerarquía + λ·novedad`, λ = 0,30 |
+
+`novedad` y `puntaje` quedan **vacíos** en los 10 polos que no entran al ranking: 1 sin
+ningún recurso jerarquizado y 9 con cobertura menor al 30 %.
+
+---
+
+## 7 · `estacionalidad_polo_mes.csv` — TA-05
+
+2 664 filas · 222 polos × 12 meses · salida de `code/ta05_estacionalidad.py`.
+
+| Columna | Descripción |
+|---|---|
+| `POLO` · `MES` · `mes_nombre` | clave compuesta |
+| `precip_mm` · `temp_c` | normal climática del polo en ese mes, ponderada por recursos por región |
+| `frac_lluvias` | fracción del polo cuya región está en su propia temporada de lluvias |
+| `veredicto` | `viable` · `advertencia` · `desaconsejado` |
+| `puesto_mes` | ranking del mes dentro del polo, de más seco a más húmedo |
+
+Esta tabla existe **precisamente para no tocar el maestro**: RNF-01 exige que cambiar de
+mes no altere el dataset base. Criterios del veredicto en `ModelSelection.md` §9.1.
+
+---
+
+## 8 · `ingreso_por_polo.csv` y `parametros_costo.csv` — modelo de costo
+
+`ingreso_por_polo.csv` · 222 filas · `frac_paradas_pagadas` (fracción de paradas del polo
+que cobran entrada, según la ficha) y `tarifa_mediana_soles`. Hay 55 polos donde todo es
+libre y 16 donde más de la mitad cobra: por eso no puede ser una constante.
+
+`parametros_costo.csv` · 7 filas · `parametro`, `valor`, `rango_min`, `rango_max`,
+`unidad`, `calibrado`, `fuente`. **`calibrado = si`** hace que el Monte Carlo mueva el
+parámetro solo ±5 %; **`no`** mete el rango completo y ensancha la banda. Hoy hay 2
+calibrados (entradas, desde 782 tarifas reales) y 5 sin calibrar.
+
+---
+
+## 9 · `evaluacion_ta04.csv` — evaluación del ordenamiento
+
+222 filas · salida de `code/ta04_evaluacion.py`. Para cada polo, paradas visitadas y
+kilómetros recorridos con los tres métodos: `par_jer`/`km_jer` (orden por jerarquía),
+`par_vec`/`km_vec` (vecino más cercano) y `par_2opt`/`km_2opt` (vecino + 2-opt). `base` es
+el índice del recurso elegido como punto base del itinerario.
+
+---
+
+## 10 · `puntos_clima_v2.csv` — puntos de descarga pendientes
+
+88 filas · `REG`, `ZONA_CLIMATICA`, `recursos`, `lat`, `lon`, `alt`. Centroides de cada
+combinación región × zona climática con al menos 5 recursos, que cubren el 99,3 % del
+inventario geolocalizable. Los consume `code/fetch_climate_v2.py`, **aún sin ejecutar**:
+mientras tanto TA-05 trabaja con los 24 puntos regionales.
+
+---
+
 ## Cómo se relacionan
 
 ```
-dreemgo_master_dataset          historial_clima_regiones
-  (recursos, 6 160)               (clima, 2 880)
-        │                                │
-        │  REGIÓN                        │  REGION + MES
-        └────────────┬───────────────────┘
-                     │
-            consulta del usuario
-       intereses · mes · días · presupuesto
-                     │
-                     ├─ TA-01: polo recomendado (81 polos precalculados)
-                     ├─ ponderación por JERARQUIA_OFICIAL
-                     ├─ penalización por NIVEL_RIESGO_CLIMATICO del mes
-                     └─ eventos vigentes ── comercios_ferias_locales (SIMULADO)
+dreemgo_master_dataset        fichas_mincetur          historial_clima_regiones
+   (recursos, 6 160)          (ficha oficial, 6 129)      (clima, 2 880)
+          │                            │                        │
+          │  CODIGO DEL RECURSO ═══════╡                        │ REGION + MES
+          │                                                     │
+   TA-01 ─┴─ polos_asignados_v2 (4 915) ──┬── puntaje_polos (222) ── TA-03
+                                          │
+                                          ├── estacionalidad_polo_mes (2 664) ── TA-05
+                                          ├── ingreso_por_polo (222) ─────────── costo
+                                          └── evaluacion_ta04 (222) ──────────── TA-04
+                                                        │
+                                               consulta del usuario
+                                   origen · mes · días · presupuesto
+                                   altitud máxima · intereses
+                                                        │
+                                    code/consulta.py resuelve y verifica
+                                    los criterios de RF-01, RF-02 y RNF-01
 ```
 
-El agrupamiento corre **offline**. Cambiar el mes de la consulta reordena polos ya calculados y no reentrena nada, que es de donde sale el requerimiento de responder en menos de 5 segundos.
+El agrupamiento corre **offline**. Cambiar el mes de la consulta reordena polos ya
+calculados y no reentrena nada, que es de donde sale el requerimiento de responder en
+menos de 5 segundos. Ninguna de las tablas derivadas escribe sobre el maestro, que es lo
+que RNF-01 exige.
