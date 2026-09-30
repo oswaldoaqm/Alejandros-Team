@@ -1,5 +1,5 @@
 """
-DreemGO · TA-02 — viabilidad estacional del polo, mes a mes
+DreemGO · TA-05 — viabilidad estacional del polo, mes a mes
 
 RF-01 pide cruzar la zona climática del destino con el mes de viaje para
 «penalizar o descartar» recursos cuya temporada no acompañe, ANTES de construir
@@ -48,7 +48,7 @@ baja 88 puntos región × zona climática y cubriría el 99,3 % de los recursos;
 está escrito y sin ejecutar. Hasta entonces, esta capa es más gruesa de lo que
 el diseño pide.
 
-Uso:  python ta02_estacionalidad.py
+Uso:  python ta05_estacionalidad.py
 """
 import unicodedata
 import numpy as np
@@ -115,7 +115,7 @@ est = est[["POLO", "MES", "mes_nombre", "precip_mm", "temp_c", "frac_lluvias",
 est.round(2).to_csv(B + "estacionalidad_polo_mes.csv", sep=";", index=False)
 
 print("=" * 78)
-print("TA-02 · viabilidad estacional polo × mes")
+print("TA-05 · viabilidad estacional polo × mes")
 print("=" * 78)
 print(f"Filas: {len(est)}  ({est.POLO.nunique()} polos × 12 meses)")
 print(f"Umbral absoluto: {UMBRAL_MM:.0f} mm/mes · relativo: top-{N_LLUVIOSOS} "
