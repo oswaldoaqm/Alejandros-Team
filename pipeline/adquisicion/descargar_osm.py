@@ -24,6 +24,7 @@ nueva mientras tanto, empieza de cero en vez de mezclar dos archivos.
 Uso:  python pipeline/adquisicion/descargar_osm.py
       python pipeline/adquisicion/descargar_osm.py --forzar   # versión del día
 """
+
 from __future__ import annotations
 
 import argparse
@@ -68,10 +69,10 @@ def bajar(sesion: requests.Session, intentos: int = 5) -> str:
             cab = {"Range": f"bytes={ya}-", "If-Range": version}
         try:
             with sesion.get(URL, headers=cab, stream=True, timeout=(30, 120)) as r:
-                if r.status_code == 416:            # ya estaba completo
+                if r.status_code == 416:  # ya estaba completo
                     return version
                 r.raise_for_status()
-                if r.status_code != 206:            # de cero: no hay parcial o cambió la versión
+                if r.status_code != 206:  # de cero: no hay parcial o cambió la versión
                     ya = 0
                 version = r.headers.get("Last-Modified", "")
                 escribir_json(PARCIAL_META, {"last_modified": version})
@@ -85,15 +86,16 @@ def bajar(sesion: requests.Session, intentos: int = 5) -> str:
                         fh.write(trozo)
                         hecho += len(trozo)
                         if total and hecho / total >= siguiente:
-                            print(f"  {hecho / total:4.0%}  {miles(hecho / 1e6)} de "
-                                  f"{miles(total / 1e6)} MB", flush=True)
+                            print(
+                                f"  {hecho / total:4.0%}  {miles(hecho / 1e6)} de {miles(total / 1e6)} MB", flush=True
+                            )
                             siguiente = (int(hecho / total * 10) + 1) / 10
             return version
-        except (requests.ConnectionError, requests.Timeout,
-                requests.exceptions.ChunkedEncodingError) as e:
+        except (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError) as e:
             espera = 10 * intento
-            print(f"  se cortó la conexión ({type(e).__name__}); reintento {intento}/{intentos} "
-                  f"en {espera} s", flush=True)
+            print(
+                f"  se cortó la conexión ({type(e).__name__}); reintento {intento}/{intentos} en {espera} s", flush=True
+            )
             time.sleep(espera)
     sys.exit("No se pudo completar la descarga. Vuelve a correr el script: retoma donde quedó.")
 
@@ -101,15 +103,16 @@ def bajar(sesion: requests.Session, intentos: int = 5) -> str:
 def main() -> None:
     utf8_consola()
     ap = argparse.ArgumentParser(description="Descarga el extracto de OpenStreetMap del Perú.")
-    ap.add_argument("--forzar", action="store_true",
-                    help="reemplaza el archivo ya verificado por la versión del día")
+    ap.add_argument("--forzar", action="store_true", help="reemplaza el archivo ya verificado por la versión del día")
     a = ap.parse_args()
 
     previo = leer_json(MANIFIESTO)
     if DESTINO.exists() and not a.forzar and previo.get("md5") == md5_archivo(DESTINO):
-        print(f"Ya está descargado y verificado: datos de OSM del {previo.get('datos_last_modified')}.\n"
-              "Se conserva para que todo el cálculo use el mismo archivo. "
-              "Para bajar la versión del día: --forzar")
+        print(
+            f"Ya está descargado y verificado: datos de OSM del {previo.get('datos_last_modified')}.\n"
+            "Se conserva para que todo el cálculo use el mismo archivo. "
+            "Para bajar la versión del día: --forzar"
+        )
         return
 
     sesion = requests.Session()
@@ -119,27 +122,34 @@ def main() -> None:
     version = bajar(sesion)
 
     real = md5_archivo(PARCIAL)
-    if real not in (antes, md5_publicado(sesion)):   # el .md5 pudo cambiar durante la descarga
+    if real not in (antes, md5_publicado(sesion)):  # el .md5 pudo cambiar durante la descarga
         PARCIAL.unlink(missing_ok=True)
         PARCIAL_META.unlink(missing_ok=True)
-        sys.exit(f"El MD5 no coincide con el publicado (obtenido {real}). Se descartó la descarga; "
-                 "vuelve a correr el script.")
+        sys.exit(
+            f"El MD5 no coincide con el publicado (obtenido {real}). Se descartó la descarga; "
+            "vuelve a correr el script."
+        )
     PARCIAL.replace(DESTINO)
     PARCIAL_META.unlink(missing_ok=True)
 
-    escribir_json(MANIFIESTO, {
-        "fuente": "Geofabrik · extracto de OpenStreetMap",
-        "url": URL,
-        "descargado_utc": ahora_utc(),
-        "datos_last_modified": version,
-        "bytes": DESTINO.stat().st_size,
-        "md5": real,
-        "md5_verificado_contra": URL + ".md5",
-        "licencia": "ODbL 1.0",
-        "atribucion": "© colaboradores de OpenStreetMap",
-    })
-    print(f"\nListo: {miles(DESTINO.stat().st_size / 1e6)} MB · MD5 verificado · "
-          f"datos del {version} · manifiesto en {MANIFIESTO}")
+    escribir_json(
+        MANIFIESTO,
+        {
+            "fuente": "Geofabrik · extracto de OpenStreetMap",
+            "url": URL,
+            "descargado_utc": ahora_utc(),
+            "datos_last_modified": version,
+            "bytes": DESTINO.stat().st_size,
+            "md5": real,
+            "md5_verificado_contra": URL + ".md5",
+            "licencia": "ODbL 1.0",
+            "atribucion": "© colaboradores de OpenStreetMap",
+        },
+    )
+    print(
+        f"\nListo: {miles(DESTINO.stat().st_size / 1e6)} MB · MD5 verificado · "
+        f"datos del {version} · manifiesto en {MANIFIESTO}"
+    )
 
 
 if __name__ == "__main__":

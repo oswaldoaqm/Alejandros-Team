@@ -15,6 +15,7 @@ sample.csv con otro fin de línea.
 
 Uso:  python pipeline/adquisicion/descargar_inventario.py
 """
+
 from __future__ import annotations
 
 import argparse
@@ -65,28 +66,36 @@ def main() -> None:
     salen = sorted(set(previo) - set(nuevo), key=lambda c: int(c) if c.isdigit() else 0)
     cambian = [c for c in set(nuevo) & set(previo) if nuevo[c] != previo[c]]
 
-    escribir_json(MANIFIESTO, {
-        "fuente": "Inventario Nacional de Recursos Turísticos · MINCETUR",
-        "url": URL,
-        "descargado_utc": ahora_utc(),
-        "http_last_modified": r.headers.get("Last-Modified", ""),
-        "bytes": DESTINO.stat().st_size,
-        "md5": md5_archivo(DESTINO),
-        "codificacion": codificacion,
-        "registros": len(nuevo),
-        "contra_week04_sample": {"entran": len(entran), "salen": len(salen), "cambian": len(cambian),
-                                 "codigos_que_entran": entran[:50], "codigos_que_salen": salen[:50]},
-        "licencia": "ODC-BY",
-        "atribucion": ("Inventario Nacional de Recursos Turísticos, "
-                       "Ministerio de Comercio Exterior y Turismo del Perú"),
-    })
+    escribir_json(
+        MANIFIESTO,
+        {
+            "fuente": "Inventario Nacional de Recursos Turísticos · MINCETUR",
+            "url": URL,
+            "descargado_utc": ahora_utc(),
+            "http_last_modified": r.headers.get("Last-Modified", ""),
+            "bytes": DESTINO.stat().st_size,
+            "md5": md5_archivo(DESTINO),
+            "codificacion": codificacion,
+            "registros": len(nuevo),
+            "contra_week04_sample": {
+                "entran": len(entran),
+                "salen": len(salen),
+                "cambian": len(cambian),
+                "codigos_que_entran": entran[:50],
+                "codigos_que_salen": salen[:50],
+            },
+            "licencia": "ODC-BY",
+            "atribucion": (
+                "Inventario Nacional de Recursos Turísticos, Ministerio de Comercio Exterior y Turismo del Perú"
+            ),
+        },
+    )
 
     print(f"\n{miles(len(nuevo))} registros · {codificacion} · {miles(DESTINO.stat().st_size / 1e3)} KB")
     if not (entran or salen or cambian):
         print("Idéntico, registro por registro, a deliveries/week04/data/sample.csv.")
     else:
-        print(f"Contra week04/data/sample.csv: entran {len(entran)} · salen {len(salen)} · "
-              f"cambian {len(cambian)}")
+        print(f"Contra week04/data/sample.csv: entran {len(entran)} · salen {len(salen)} · cambian {len(cambian)}")
         print("MINCETUR publicó una versión nueva. La copia del repositorio no se tocó; avísale a Claude.")
     print(f"Manifiesto: {MANIFIESTO}")
 

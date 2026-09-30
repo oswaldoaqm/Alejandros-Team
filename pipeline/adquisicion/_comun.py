@@ -9,12 +9,13 @@ fuentes: MINCETUR, Open-Meteo y Geofabrik.
 Todo lo que bajan va a data/externos/, que está fuera de git. Lo que sí entra
 al repositorio son los artefactos que el pipeline construye a partir de ahí.
 """
+
 from __future__ import annotations
 
 import hashlib
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[2]
@@ -22,8 +23,7 @@ EXTERNOS = RAIZ / "data" / "externos"
 
 # Agente identificado: quien administra el servidor puede saber quién pide y
 # dónde está el proyecto. Sin correo personal en el código.
-AGENTE = ("DreemGO/1.0 (proyecto academico UTEC DS3022; "
-          "https://github.com/oswaldoaqm/Alejandros-Team)")
+AGENTE = "DreemGO/1.0 (proyecto academico UTEC DS3022; https://github.com/oswaldoaqm/Alejandros-Team)"
 
 
 def utf8_consola() -> None:
@@ -37,7 +37,7 @@ def utf8_consola() -> None:
 
 
 def ahora_utc() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def md5_archivo(ruta: Path, bloque: int = 1 << 20) -> str:

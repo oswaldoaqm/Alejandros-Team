@@ -50,6 +50,7 @@ Uso
   python pipeline/adquisicion/descargar_clima_polos.py --sin-esperar   # para al agotarla
   python pipeline/adquisicion/descargar_clima_polos.py --limite 2      # prueba con 2 polos
 """
+
 from __future__ import annotations
 
 import argparse
@@ -67,12 +68,19 @@ from _comun import AGENTE, EXTERNOS, RAIZ, ahora_utc, escribir_json, miles, utf8
 
 API = "https://archive-api.open-meteo.com/v1/archive"
 INICIO, FIN = "2016-01-01", "2025-12-31"
-VARIABLES = ["precipitation_sum", "precipitation_hours", "snowfall_sum", "sunshine_duration",
-             "temperature_2m_max", "temperature_2m_min", "temperature_2m_mean"]
+VARIABLES = [
+    "precipitation_sum",
+    "precipitation_hours",
+    "snowfall_sum",
+    "sunshine_duration",
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "temperature_2m_mean",
+]
 
-TOPE_MINUTO, TOPE_HORA, TOPE_DIA = 550, 4_800, 9_500   # límites reales: 600, 5 000 y 10 000
+TOPE_MINUTO, TOPE_HORA, TOPE_DIA = 550, 4_800, 9_500  # límites reales: 600, 5 000 y 10 000
 DIAS = (date.fromisoformat(FIN) - date.fromisoformat(INICIO)).days + 1
-PESO = DIAS / 14 * max(1.0, len(VARIABLES) / 10)   # regla de conteo de Open-Meteo
+PESO = DIAS / 14 * max(1.0, len(VARIABLES) / 10)  # regla de conteo de Open-Meteo
 
 POLOS = RAIZ / "deliveries" / "week06" / "data" / "processed" / "polos_asignados_v2.csv"
 PUNTAJE = RAIZ / "deliveries" / "week06" / "data" / "processed" / "puntaje_polos.csv"
@@ -83,6 +91,7 @@ CUOTA = DIR / "cuota.json"
 
 
 # ───────────────────────────── puntos ─────────────────────────────
+
 
 def leer_csv(ruta):
     with open(ruta, encoding="utf-8-sig", newline="") as fh:
@@ -100,15 +109,17 @@ def armar_puntos() -> list[dict]:
 
     puntos = []
     for polo, rs in por_polo.items():
-        puntos.append({
-            "polo": polo,
-            "region": Counter(r["REGIÓN"] for r in rs).most_common(1)[0][0],
-            "lat": round(statistics.fmean(float(r["latitud"]) for r in rs), 5),
-            "lon": round(statistics.fmean(float(r["longitud"]) for r in rs), 5),
-            "altitud_m": round(statistics.median(float(r["ALTITUD"]) for r in rs)),
-            "recursos": len(rs),
-            "puntaje": puntaje.get(polo, ""),
-        })
+        puntos.append(
+            {
+                "polo": polo,
+                "region": Counter(r["REGIÓN"] for r in rs).most_common(1)[0][0],
+                "lat": round(statistics.fmean(float(r["latitud"]) for r in rs), 5),
+                "lon": round(statistics.fmean(float(r["longitud"]) for r in rs), 5),
+                "altitud_m": round(statistics.median(float(r["ALTITUD"]) for r in rs)),
+                "recursos": len(rs),
+                "puntaje": puntaje.get(polo, ""),
+            }
+        )
     # primero lo que más se recomienda; los polos fuera del ranking, al final
     puntos.sort(key=lambda p: (p["puntaje"] == "", -(p["puntaje"] or 0), -p["recursos"]))
     return puntos
@@ -116,7 +127,7 @@ def armar_puntos() -> list[dict]:
 
 def cargar_puntos(regenerar: bool) -> list[dict]:
     if PUNTOS.exists() and not regenerar:
-        return leer_csv(PUNTOS)          # misma lista durante toda la descarga
+        return leer_csv(PUNTOS)  # misma lista durante toda la descarga
     puntos = armar_puntos()
     DIR.mkdir(parents=True, exist_ok=True)
     with open(PUNTOS, "w", encoding="utf-8", newline="") as fh:
@@ -128,6 +139,7 @@ def cargar_puntos(regenerar: bool) -> list[dict]:
 
 # ───────────────────────────── cuota ─────────────────────────────
 
+
 def leer_cuota() -> list[list[float]]:
     if not CUOTA.exists():
         return []
@@ -137,8 +149,7 @@ def leer_cuota() -> list[list[float]]:
 
 def anotar(cuota: list[list[float]], peso: float) -> None:
     cuota.append([time.time(), peso])
-    escribir_json(CUOTA, {"nota": "timestamp unix y peso de cada llamada, ultimas 24 h",
-                          "llamadas": cuota})
+    escribir_json(CUOTA, {"nota": "timestamp unix y peso de cada llamada, ultimas 24 h", "llamadas": cuota})
 
 
 def espera_necesaria(cuota: list[list[float]], peso: float) -> float:
@@ -147,7 +158,7 @@ def espera_necesaria(cuota: list[list[float]], peso: float) -> float:
     for ventana, tope in ((60, TOPE_MINUTO), (3_600, TOPE_HORA), (86_400, TOPE_DIA)):
         dentro = sorted(e for e in cuota if ahora - e[0] < ventana)
         usado = sum(p for _, p in dentro)
-        for t, p in dentro:                       # las más viejas vencen primero
+        for t, p in dentro:  # las más viejas vencen primero
             if usado + peso <= tope:
                 break
             usado -= p
@@ -162,6 +173,7 @@ def usado(cuota, ventana) -> float:
 
 # ───────────────────────────── descarga ─────────────────────────────
 
+
 def ya_bajado(polo: str) -> bool:
     f = CRUDO / f"polo_{polo}.json"
     if not f.exists():
@@ -170,14 +182,19 @@ def ya_bajado(polo: str) -> bool:
         d = json.loads(f.read_text(encoding="utf-8"))
         return len(d["open_meteo"]["daily"]["time"]) == DIAS
     except (ValueError, KeyError, TypeError):
-        return False                               # archivo roto: se vuelve a pedir
+        return False  # archivo roto: se vuelve a pedir
 
 
 def pedir(sesion: requests.Session, p: dict) -> tuple[str, object]:
     """('ok', json) · ('cuota', motivo) · ('rechazo', motivo) · ('red', motivo)"""
-    params = {"latitude": p["lat"], "longitude": p["lon"],
-              "start_date": INICIO, "end_date": FIN, "daily": ",".join(VARIABLES),
-              "timezone": "America/Lima"}
+    params = {
+        "latitude": p["lat"],
+        "longitude": p["lon"],
+        "start_date": INICIO,
+        "end_date": FIN,
+        "daily": ",".join(VARIABLES),
+        "timezone": "America/Lima",
+    }
     for intento in range(1, 4):
         try:
             r = sesion.get(API, params=params, timeout=(20, 120))
@@ -196,15 +213,18 @@ def pedir(sesion: requests.Session, p: dict) -> tuple[str, object]:
             return "cuota", motivo
         if r.status_code == 400:
             return "rechazo", motivo
-        time.sleep(15 * intento)                   # 5xx: el servidor está ocupado
+        time.sleep(15 * intento)  # 5xx: el servidor está ocupado
     return "red", motivo
 
 
 def dormir(segundos: float, por_que: str) -> None:
-    if segundos >= 120:                   # la pausa del tope por minuto no se anuncia
+    if segundos >= 120:  # la pausa del tope por minuto no se anuncia
         fin = datetime.fromtimestamp(time.time() + segundos).strftime("%H:%M")
-        print(f"  {por_que}: espero {segundos / 60:.0f} min y sigo a las {fin}. "
-              "Ctrl+C para cortar; al volver a correrlo retoma.", flush=True)
+        print(
+            f"  {por_que}: espero {segundos / 60:.0f} min y sigo a las {fin}. "
+            "Ctrl+C para cortar; al volver a correrlo retoma.",
+            flush=True,
+        )
     time.sleep(segundos + 5)
 
 
@@ -220,7 +240,7 @@ def main() -> None:
     CRUDO.mkdir(parents=True, exist_ok=True)
     pendientes = [p for p in puntos if not ya_bajado(p["polo"])]
     if a.limite:
-        pendientes = pendientes[:a.limite]
+        pendientes = pendientes[: a.limite]
     hechos = len(puntos) - len([p for p in puntos if not ya_bajado(p["polo"])])
     print(f"{len(puntos)} polos · ya bajados {hechos} · pendientes {len(pendientes)}")
     print(f"Cada polo cuesta {PESO:.0f} llamadas de la cuota (10 años de datos diarios).")
@@ -265,13 +285,15 @@ def main() -> None:
                 if rechazos_seguidos == 3:
                     # tres puntos distintos rechazados seguidos: el problema es la
                     # petición (una variable, una fecha), no los puntos
-                    sys.exit(f"\nOpen-Meteo rechaza la petición misma: {dato}\n"
-                             "No tiene sentido seguir. Pásale este mensaje a Claude.")
+                    sys.exit(
+                        f"\nOpen-Meteo rechaza la petición misma: {dato}\n"
+                        "No tiene sentido seguir. Pásale este mensaje a Claude."
+                    )
                 i += 1
                 continue
 
             rechazos_seguidos = 0
-            anotar(cuota, PESO)                   # Open-Meteo la cobró, sirva o no
+            anotar(cuota, PESO)  # Open-Meteo la cobró, sirva o no
             serie = dato.get("daily", {})
             llegaron = len(serie.get("time", []))
             if llegaron != DIAS:
@@ -282,19 +304,25 @@ def main() -> None:
 
             lluvia = serie.get("precipitation_sum", [])
             nulos = sum(v is None for v in lluvia) / max(len(lluvia), 1)
-            escribir_json(CRUDO / f"polo_{p['polo']}.json", {
-                "polo": p["polo"], "region": p["region"],
-                "punto": {"lat": p["lat"], "lon": p["lon"], "altitud_m": p["altitud_m"],
-                          "recursos": p["recursos"]},
-                "pedido": {"api": API, "inicio": INICIO, "fin": FIN, "variables": VARIABLES},
-                "descargado_utc": ahora_utc(),
-                "open_meteo": dato,
-            })
+            escribir_json(
+                CRUDO / f"polo_{p['polo']}.json",
+                {
+                    "polo": p["polo"],
+                    "region": p["region"],
+                    "punto": {"lat": p["lat"], "lon": p["lon"], "altitud_m": p["altitud_m"], "recursos": p["recursos"]},
+                    "pedido": {"api": API, "inicio": INICIO, "fin": FIN, "variables": VARIABLES},
+                    "descargado_utc": ahora_utc(),
+                    "open_meteo": dato,
+                },
+            )
             hechos += 1
             aviso = f" · ojo: {nulos:.1%} de días sin dato" if nulos > 0.02 else ""
-            print(f"[{hechos:>3}/{len(puntos)}] polo {p['polo']:>3} · {p['region'][:14]:<14} · "
-                  f"{p['altitud_m']:>5} m · cuota hora {miles(usado(cuota, 3_600))}/{miles(TOPE_HORA)} · "
-                  f"día {miles(usado(cuota, 86_400))}/{miles(TOPE_DIA)}{aviso}", flush=True)
+            print(
+                f"[{hechos:>3}/{len(puntos)}] polo {p['polo']:>3} · {p['region'][:14]:<14} · "
+                f"{p['altitud_m']:>5} m · cuota hora {miles(usado(cuota, 3_600))}/{miles(TOPE_HORA)} · "
+                f"día {miles(usado(cuota, 86_400))}/{miles(TOPE_DIA)}{aviso}",
+                flush=True,
+            )
             i += 1
     except KeyboardInterrupt:
         print("\nCortado a mano. Lo bajado queda guardado; vuelve a correrlo para seguir.")

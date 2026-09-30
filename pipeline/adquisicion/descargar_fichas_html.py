@@ -33,6 +33,7 @@ Uso
   python pipeline/adquisicion/descargar_fichas_html.py --limite 10
   python pipeline/adquisicion/descargar_fichas_html.py --codigos 11 22 130
 """
+
 from __future__ import annotations
 
 import argparse
@@ -76,9 +77,7 @@ def objetivo(codigos_pedidos: list[str]) -> list[tuple[str, str, str]]:
     fallidas = {r["CODIGO"].strip() for r in leer_csv(FICHAS_V3) if r["HTTP"].strip() != "200"}
     lista = []
     for cod, r in maestro.items():
-        motivo = ("fallida_v3" if cod in fallidas
-                  else "acontecimiento" if r["CATEGORÍA"].startswith("5.")
-                  else "resto")
+        motivo = "fallida_v3" if cod in fallidas else "acontecimiento" if r["CATEGORÍA"].startswith("5.") else "resto"
         lista.append((cod, r["URL"].strip(), motivo))
     lista.sort(key=lambda x: (PRIORIDAD[x[2]], int(x[0]) if x[0].isdigit() else 0))
     return lista
@@ -97,7 +96,7 @@ def pedir(sesion: requests.Session, url: str) -> tuple[str, bytes]:
             if r.status_code == 200:
                 return estado, r.content
             if r.status_code < 500:
-                return estado, b""                 # 404 y similares: reintentar no cambia nada
+                return estado, b""  # 404 y similares: reintentar no cambia nada
         time.sleep(5 * intento)
     return estado, b""
 
@@ -107,7 +106,7 @@ def guardar(codigo: str, contenido: bytes) -> None:
     tmp = destino.with_suffix(".gz.tmp")
     with gzip.open(tmp, "wb") as g:
         g.write(contenido)
-    tmp.replace(destino)                            # nunca queda un .gz a medias
+    tmp.replace(destino)  # nunca queda un .gz a medias
 
 
 def main() -> None:
@@ -122,17 +121,15 @@ def main() -> None:
     pendientes = [x for x in lista if not archivo(x[0]).exists()]
     ya = len(lista) - len(pendientes)
     if a.limite:
-        pendientes = pendientes[:a.limite]
+        pendientes = pendientes[: a.limite]
 
-    print(f"{miles(len(lista))} fichas objetivo · ya guardadas {miles(ya)} · "
-          f"pendientes {miles(len(pendientes))}")
+    print(f"{miles(len(lista))} fichas objetivo · ya guardadas {miles(ya)} · pendientes {miles(len(pendientes))}")
     if not pendientes:
         print("Nada que hacer: todas las fichas ya están guardadas.")
         return
     reparto = Counter(m for _, _, m in pendientes)
     print("  " + " · ".join(f"{m.replace('_', ' ')} {miles(n)}" for m, n in reparto.items()))
-    print(f"Una por segundo: unos {len(pendientes) * (PAUSA + 0.4) / 60:.0f} min. "
-          "Ctrl+C lo corta sin perder nada.\n")
+    print(f"Una por segundo: unos {len(pendientes) * (PAUSA + 0.4) / 60:.0f} min. Ctrl+C lo corta sin perder nada.\n")
 
     sesion = requests.Session()
     sesion.headers["User-Agent"] = AGENTE
@@ -156,13 +153,18 @@ def main() -> None:
                 w.writerow([cod, motivo, url, estado, len(contenido), ahora_utc()])
                 fh.flush()
                 if i % 100 == 0 or i == len(pendientes):
-                    print(f"[{miles(i)}/{miles(len(pendientes))}] guardadas {miles(ok)} · "
-                          f"con error {err} · ahora: {motivo.replace('_', ' ')}", flush=True)
+                    print(
+                        f"[{miles(i)}/{miles(len(pendientes))}] guardadas {miles(ok)} · "
+                        f"con error {err} · ahora: {motivo.replace('_', ' ')}",
+                        flush=True,
+                    )
         except KeyboardInterrupt:
             print("\nCortado a mano. Lo guardado queda; vuelve a correrlo para seguir.")
 
-    print(f"\nListo: {miles(ok)} fichas guardadas en {DIR}"
-          + (f" · {err} con error (se reintentan al volver a correrlo)" if err else ""))
+    print(
+        f"\nListo: {miles(ok)} fichas guardadas en {DIR}"
+        + (f" · {err} con error (se reintentan al volver a correrlo)" if err else "")
+    )
 
 
 if __name__ == "__main__":
