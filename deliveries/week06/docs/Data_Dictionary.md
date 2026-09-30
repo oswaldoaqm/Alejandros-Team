@@ -2,7 +2,7 @@
 
 **Semana 6** · DS3022 Desarrollo de Producto de Datos · UTEC
 
-Tres tablas en `data/processed/`, unidas por `REGIÓN` y por recurso. Todas con separador `;` y codificación UTF-8.
+Diez tablas en `data/processed/`, unidas por recurso (`CODIGO DEL RECURSO`), por polo (`POLO`) y por región. Todas con separador `;` y codificación UTF-8; `fichas_mincetur.csv` además lleva BOM, así que conviene leer todas con `encoding="utf-8-sig"`.
 
 **Cómo leer la columna «Origen»:**
 
@@ -37,7 +37,7 @@ Tres tablas en `data/processed/`, unidas por `REGIÓN` y por recurso. Todas con 
 | `DISTANCIA_CAPITAL_KM` | Distancia Haversine a la capital regional | Calculada | 1 245 |
 | `INDICE_COSTO_LOGISTICO` | Categorización ordinal de la anterior: 1 = <20 km · 2 = <80 km · 3 = >80 km. **Ver nota de nomenclatura** | Calculada | 1 245 |
 | `ZONA_CLIMATICA` | Piso ecológico peruano deducido de altitud y región (7 valores) | Inferida | 1 245 |
-| `JERARQUIA_OFICIAL` | Importancia oficial del recurso, 1 a 4. **Ver nota de verificación** | Extraída | 0 |
+| `JERARQUIA_OFICIAL` | Importancia oficial del recurso, 1 a 4. **Solo coincide con la ficha oficial en el 59,7 %**: ver nota de verificación | Extraída (59,7 %) · sin respaldo (40,3 %) | 0 |
 | `TIPO_INGRESO` | Libre o Pagado. **No es dato de la ficha** — ver nota | Inferida | 0 |
 | `EPOCA_PROPICIA` | Temporada recomendada. **No es dato de la ficha** — ver nota | Inferida | 0 |
 
@@ -47,16 +47,19 @@ No son ruido ni error de carga. Se concentran al 100 % en las categorías **Folc
 
 ### Nota de verificación · `JERARQUIA_OFICIAL`
 
-La columna **es real**, extraída de la ficha oficial. Se verificó por cuatro vías independientes porque el repositorio contiene también un script que genera esta columna al azar:
+**Es real en el 59,7 % y no tiene respaldo en el 40,3 % restante.** Comparada fila a fila contra las 6 129 fichas oficiales leídas:
 
-- No coincide con los pesos de ese generador (χ² = 89,4 · p = 3 × 10⁻¹⁹).
-- Está asociada a la categoría del recurso (V de Cramér = 0,234 · p = 1 × 10⁻²⁰⁹). Un dato aleatorio sería independiente.
-- Está asociada a la región (V de Cramér = 0,213).
-- Los hitos reconocidos reciben jerarquía 4 y sus dependencias bajan: Machu Picchu 4, Chan Chan 4, Nasca 4, Huascarán 4, Valle del Colca 4 — mientras que Museo de Sitio Chan Chan 2, Cañón del Colca 2, Ventana del Colca 1.
+| Lo que dice la ficha | Recursos | Qué tiene el maestro |
+|---|---:|---|
+| Un número de 1 a 4 | 3 660 (59,7 %) | el mismo número, en el 100 % de los casos |
+| «POR JERARQUIZAR» | 896 (14,6 %) | un número |
+| «No aplica» | 1 573 (25,7 %) | un número |
 
-**Salvedad:** `clean_impute_dataset.py` convierte en `1` cualquier valor no reconocido, de modo que los recursos donde el scraper falló quedaron mezclados con los de jerarquía 1 legítima. No se sabe cuántos son. Se corrige añadiendo `ORIGEN_JERARQUIA` (`scrapeado` / `imputado`) en la Semana 7.
+Una primera verificación con cuatro pruebas agregadas —χ² contra los pesos del generador aleatorio, asociación con la categoría y con la región, hitos con jerarquía 4— concluyó que la columna era real entera. Fue prematura: una prueba agregada no detecta un subconjunto contaminado cuando el limpio domina la muestra. El detalle está en `DataAnalysis.md` §3.1.
 
-Distribución: jerarquía 1 → 2 577 · 2 → 2 144 · 3 → 1 122 · 4 → 317.
+**Para cualquier análisis, usar `FICHA_JERARQUIA_NUM` de `fichas_mincetur.csv`**, que trae el número cuando la ficha lo publica y queda vacía cuando no. `code/verificar_fichas.py` reproduce la comparación.
+
+Distribución en el maestro, con los 2 469 sin respaldo incluidos: jerarquía 1 → 2 577 · 2 → 2 144 · 3 → 1 122 · 4 → 317. En la ficha oficial: 1 907 · 1 581 · 157 · 15.
 
 ### Nota · `TIPO_INGRESO` y `EPOCA_PROPICIA` no son datos de la ficha
 
@@ -125,22 +128,23 @@ Ordenar por este campo en primer lugar convierte el recomendador en un espacio p
 ## 4 · `fichas_mincetur.csv` — extracción de la ficha oficial
 
 6 160 filas · una por recurso del inventario · clave `CODIGO`. Producida por
-`code/scraper_mincetur_v3.py`. **6 129 con HTTP 200**; las 31 restantes fallaron y
-guardan el texto del error en `HTTP` (bug conocido: debería guardar el código).
+`code/scraper_mincetur_v3.py`. **6 129 leídas**. En las 31 restantes la página respondió,
+pero el parser se detuvo leyendo una distancia de acceso como «1.200.5 km» y guardó el
+nombre de la excepción (`ValueError`) en la columna `HTTP`.
 
 | Columna | Descripción | Relleno |
 |---|---|---:|
 | `CODIGO` · `URL` · `HTTP` | clave, enlace a la ficha y estado de la petición | 100 % |
 | `FICHA_JERARQUIA_TXT` | lo que la ficha dice, literal: `1`…`4`, `No aplica`, `POR JERARQUIZAR` | 100 % |
 | `FICHA_JERARQUIA_NUM` | solo cuando es un número real de 1 a 4; vacío en otro caso | 59,7 % |
-| `FICHA_ALTITUD_M` · `FICHA_TOPONIMIA` | altitud oficial y toponimia | 96 % |
-| `INGRESO_TIPO` · `INGRESO_OBS` · `TARIFA_SOLES` | tipo de ingreso, observaciones y monto en soles | 74 % · 12 % |
+| `FICHA_ALTITUD_M` · `FICHA_TOPONIMIA` | altitud oficial y toponimia | 97,8 % · 20,2 % |
+| `INGRESO_TIPO` · `INGRESO_OBS` · `TARIFA_SOLES` | tipo de ingreso, observaciones y monto en soles | 74,8 % · 35,9 % · 13,0 % |
 | `EPOCA_PROPICIA` · `EPOCA_ESPECIFICACION` · `HORA_VISITA` | **frecuencia de visita**, no ventana climática — ver nota | 74 % |
 | `N_ACTIVIDADES` · `ACTIVIDADES` | 63 actividades en 6 familias, separadas por `\|`, formato `Familia>Actividad` | 93 % |
-| `N_TRAMOS` · `ACCESO_KM` · `ACCESO_MIN` · `ACCESO_MEDIOS` · `ACCESO_VIAS` | acceso desde el pueblo más cercano | 74 % |
+| `N_TRAMOS` · `ACCESO_KM` · `ACCESO_MIN` · `ACCESO_MEDIOS` · `ACCESO_VIAS` | acceso desde el pueblo más cercano. **`ACCESO_KM` no es confiable**: el parser lee la coma como separador de miles y suma todas las filas de la tabla de accesos, y 38 fichas pasan de 1 000 km. Se vuelve a leer desde el HTML en la semana 10 | 74 % |
 | `VISITANTES_NAC` · `_EXT` · `_LOC` · `_ANIO` | visitantes declarados y año de referencia | 64 % |
 | `N_SERV_ALOJAMIENTO` · `N_SERV_ALIMENTACION` | servicios registrados en la ficha | 74 % |
-| `TABLAS_RECONOCIDAS` | **columna vacía** — el scraper la declara y no la llena. Bug conocido. | 0 % |
+| `TABLAS_RECONOCIDAS` | tablas de la ficha que el parser reconoció, separadas por `\|`: cabecera, ingreso, epoca, actividades, accesos, visitantes, servicios. Una ficha completa trae las siete; las incompletas, menos de dos en promedio | 100 % |
 
 ### El 26 % que falta es estructural, no un fallo
 
@@ -249,7 +253,7 @@ dreemgo_master_dataset        fichas_mincetur          historial_clima_regiones
           │                            │                        │
           │  CODIGO DEL RECURSO ═══════╡                        │ REGION + MES
           │                                                     │
-   TA-01 ─┴─ polos_asignados_v2 (4 915) ──┬── puntaje_polos (222) ── TA-03
+   TA-01 ─┴─ polos_asignados_v2 (4 915) ──┬── puntaje_polos (222) ── puntaje
                                           │
                                           ├── estacionalidad_polo_mes (2 664) ── TA-05
                                           ├── ingreso_por_polo (222) ─────────── costo
