@@ -49,9 +49,10 @@ extend-exclude = ["deliveries", "app"]
 select = ["E", "F", "W", "B", "UP", "I"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["dreemgo"]
+known-first-party = ["dreemgo", "pipeline"]
 known-local-folder = ["_comun"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-q"
