@@ -18,6 +18,7 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
+from math import fsum
 
 # Celdas con las que la ficha dice "sin dato".
 VACIOS = frozenset({"", "-", "--", "---", "undefined", "null", "none", "s/d", "n/a"})
@@ -285,7 +286,7 @@ class _Lector:
         if self.revisables and self.km and minutos and self.km / (minutos / 60) > VELOCIDAD_IMPOSIBLE_KMH:
             # "85km / 2.30 min", "6.19 km/0.12 min", "1.0 km / 30:00 minutos" al revés: la
             # lectura literal es imposible, así que se usa la otra y queda marcada.
-            minutos += sum(horas - literal for literal, horas in self.revisables)
+            minutos += fsum(horas - literal for literal, horas in self.revisables)
             self.ambigua = True
         return DistanciaTiempo(self.km, round(minutos, 2), self.ambigua)
 
