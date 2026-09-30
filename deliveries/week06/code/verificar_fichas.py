@@ -100,7 +100,8 @@ print("\n  -> cerca del 100 %% significa que es estructural: hay un tipo de fich
 print("     que no trae esas tablas. Por debajo de ~90 %% el parser esta fallando.")
 
 if "TABLAS_RECONOCIDAS" in ok.columns:
-    t = pd.to_numeric(ok["TABLAS_RECONOCIDAS"], errors="coerce")
+    # la columna trae los nombres de las tablas separados por "|", no un número
+    t = ok["TABLAS_RECONOCIDAS"].fillna("").str.split("|").str.len()
     print("\n  tablas reconocidas . fichas completas  : %.2f" % t[~alguno].mean())
     print("  tablas reconocidas . fichas incompletas: %.2f" % t[alguno].mean())
     print("  (si la incompleta reconoce MENOS tablas, la pagina trae menos tablas;")
