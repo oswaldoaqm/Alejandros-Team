@@ -57,7 +57,7 @@ Para los candidatos 1 y 2 se estandarizan con `StandardScaler`, de modo que la a
 **Variables deliberadamente excluidas del vector de agrupamiento:**
 
 - `TIPO_INGRESO` y `EPOCA_PROPICIA`, por ser funciones deterministas de otras columnas (`DataAnalysis.md` §3.1). Incluirlas sería introducir la misma información dos veces.
-- `JERARQUIA_OFICIAL`, que **sí es un dato real y verificado**, pero mide importancia y no ubicación. Meterla en el espacio de agrupamiento produciría polos de «cosas importantes repartidas por 400 km», que es justo lo que el producto no puede recomendar. Entra en el sistema como capa de ordenamiento sobre polos ya formados (§6.5).
+- La jerarquía oficial, que es un dato real de la ficha de MINCETUR (la columna `JERARQUIA_OFICIAL` del maestro solo coincide con la ficha en el 59,7 %, `DataAnalysis.md` §3.1), pero mide importancia y no ubicación. Meterla en el espacio de agrupamiento produciría polos de «cosas importantes repartidas por 400 km», que es justo lo que el producto no puede recomendar. Entra en el sistema como capa de ordenamiento sobre polos ya formados (§6.5).
 
 **Salida:** una etiqueta de polo por recurso, más los recursos que no alcanzan el tamaño mínimo de polo.
 
@@ -111,7 +111,7 @@ Las dos últimas son **métricas de producto**: traducen el resultado a la pregu
 
 **El radio no basta, y esa fue una equivocación de una versión anterior de este documento.** El radio mide la dispersión alrededor del centro; el diámetro mide el tamaño del polo. Un conglomerado con muchos recursos apiñados cerca del centroide y unos pocos lejos puede tener radio pequeño y diámetro enorme — que es exactamente lo que pasaba (§5.7). Para un itinerario, lo que limita es el diámetro: la parada más lejana de la otra punta.
 
-Para leer el diámetro en términos de viaje usamos una conversión declarada: **40 km/h de velocidad media en carretera andina con factor de sinuosidad 1,6**, es decir unos 25 km geodésicos por hora de viaje real.
+Para leer el diámetro en términos de viaje usamos una conversión declarada: **32,5 km/h de velocidad media en carretera, calibrada en §8.2, con factor de sinuosidad 1,6**, es decir unos 20,3 km geodésicos por hora de viaje real. La primera versión de este documento suponía 40 km/h (25 km geodésicos por hora).
 
 ---
 
@@ -262,7 +262,7 @@ Esto no invalida los baselines de §5.3 —la partición administrativa pierde e
 | 100 | 174 | 4 848 | 78,7 % | 64,5 km | 99,3 km | 808 m |
 | 120 | 141 | 4 871 | 79,1 % | 76,1 km | 117,9 km | 1 004 m |
 
-A 80 km de viaje efectivo ningún polo pasa de **3,2 horas** de punta a punta ni de **1 296 m** de rango altitudinal, y se conserva el 77,7 % del inventario. Subir a 100 gana 0,9 puntos de cobertura a cambio de polos de cuatro horas; bajar a 60 los deja en dos horas y media pero pierde 161 recursos.
+A 80 km de viaje efectivo ningún polo pasa de **3,9 horas** de punta a punta ni de **1 296 m** de rango altitudinal, y se conserva el 77,7 % del inventario. Subir a 100 gana 1,0 punto de cobertura a cambio de polos de casi cinco horas; bajar a 60 los deja en unas tres horas pero pierde 161 recursos.
 
 ---
 
@@ -279,9 +279,9 @@ A 80 km de viaje efectivo ningún polo pasa de **3,2 horas** de punta a punta ni
 | No encadenables en una ruta | 2 400 (39,0 %) | **1 374 (22,3 %)** |
 | Diámetro · mediana | 65,0 km | **52,6 km** |
 | Diámetro · p90 | 215,4 km | **69,5 km** |
-| **Diámetro · máximo** | **427,9 km · 17,1 h** | **79,4 km · 3,2 h** |
+| **Diámetro · máximo** | **427,9 km · 21,1 h** | **79,4 km · 3,9 h** |
 | Desnivel · máximo | 4 667 m | **1 296 m** |
-| Polos de más de 4 h | ~15 | **0** |
+| Polos de más de 4 h | 37 | **0** |
 | Tamaño mediano | 32 recursos | 14 recursos |
 
 **Mil veintiséis recursos más quedan disponibles para el producto.** El techo que documentaba la versión anterior —39 % del inventario fuera de cualquier itinerario— baja a 22,3 %.
@@ -371,7 +371,7 @@ Consulta del usuario
         ├─ TA-05 ───────────── estacionalidad polo × mes (precalculada)
         │                      desaconsejado → fuera · advertencia → ×0,75
         │
-        ├─ TA-03 ───────────── puntaje = jerarquía oficial + novedad (λ = 0,3)
+        ├─ Puntaje ─────────── jerarquía oficial + novedad (λ = 0,3), §6.4
         │
         ├─ TA-04 ───────────── secuencia de paradas por día desde el punto base
         │
@@ -432,7 +432,7 @@ mediana, no una promesa).
 | **Efectivo sobre distancia geodésica** | 25,0 km/h | **20,3 km/h** |
 
 Cruzar un polo cuesta **un 23 % más de tiempo** del que este documento afirmaba. Las
-tablas de §5.7 y §6.3 ya están recalculadas.
+cifras de §4, §5.7, §5.9, §6 y §6.3 ya están recalculadas.
 
 La sinuosidad sigue siendo un supuesto: convierte línea recta en carretera y no hay con
 qué contrastarla hasta traer la red vial de OpenStreetMap.
@@ -461,6 +461,14 @@ Por polo: mediana +25 %, P90 +150 %. Mejora en 141 polos, empata en 67, empeora 
 El caso extremo es el polo 139 (La Libertad, 46 recursos): 187 km y 17 paradas ordenando
 por jerarquía, contra 24 km y 21 paradas ordenando por ruta. Ordenar por importancia
 obliga a cruzar la ciudad cinco veces.
+
+> **Corrección posterior.** Esta métrica cuenta paradas y no su valor. Revisada contra la
+> jerarquía de la ficha, en viajes de seis días el vecino más cercano deja fuera 67 de los
+> 157 recursos de jerarquía 3-4 de los polos (43 %), en 36 polos: en Huaraz no pasa por el
+> Parque Nacional Huascarán y en Cusco se salta el Centro Histórico. Más paradas no es mejor
+> viaje si faltan las que justifican ir. TA-04 v2 (semana 10) maximiza el valor capturado
+> —jerarquía por afinidad con los intereses— dentro de la misma jornada de 8 h, y se evalúa
+> con esa métrica.
 
 ### 8.4 El 2-opt no aporta, y conviene decirlo
 
@@ -529,6 +537,7 @@ precipitación son diez años de Open-Meteo y no una suposición sobre el clima 
 | Veredicto | Celdas polo × mes | |
 |---|---:|---:|
 | viable | 1 939 | 72,8 % |
+| advertencia | 362 | 13,6 % |
 | desaconsejado | 363 | 13,6 % |
 
 Todos los polos tienen al menos un mes viable, que es lo que permite cumplir el criterio
@@ -590,56 +599,45 @@ ejecutar**. Hasta entonces esta capa es más gruesa de lo que el diseño pide.
 
 ## 11. Reproducir
 
+Desde `deliveries/week06/code`, con Python 3.11 o más:
+
 ```bash
-pip install pandas scikit-learn matplotlib
+pip install pandas "scikit-learn==1.8.0" matplotlib scipy
 
 # v1 · baselines y barridos de K-Means y HDBSCAN  (secciones 5.1 a 5.6)
-python code/ta01_comparativa_modelos.py    ../data/processed/dreemgo_master_dataset.csv
-python code/ta01_modelo_final.py           ../data/processed/dreemgo_master_dataset.csv
-python code/ta01_auditoria_comparacion.py  ../data/processed/dreemgo_master_dataset.csv
+python ta01_comparativa_modelos.py    ../data/processed/dreemgo_master_dataset.csv
+python ta01_modelo_final.py           ../data/processed/dreemgo_master_dataset.csv
+python ta01_auditoria_comparacion.py  ../data/processed/dreemgo_master_dataset.csv
 
-# v2 · modelo seleccionado  (secciones 5.7 a 6.3)
-python code/ta01_polos_acotados.py         ../data/processed/dreemgo_master_dataset.csv
-python code/ta03_score_polo.py             ../data/processed/polos_asignados_v2.csv 0.30
-python code/ta01_figura_v2.py              ../data/processed/dreemgo_master_dataset.csv
+# v2 · modelo seleccionado  (secciones 5.7 a 6.5)
+python ta01_polos_acotados.py         ../data/processed/dreemgo_master_dataset.csv
+python ta03_score_polo.py             ../data/processed/polos_asignados_v2.csv 0.30
+python ta01_figura_v2.py              ../data/processed/dreemgo_master_dataset.csv
 
 # TA-04 · ordenamiento y evaluación  (sección 8)
-python code/ta04_ordenar_ruta.py 201 6
-python code/ta04_evaluacion.py 6
+python ta04_ordenar_ruta.py 201 6
+python ta04_evaluacion.py 6
 
 # TA-05 · estacionalidad  (sección 9)
-python code/ta05_estacionalidad.py
+python ta05_estacionalidad.py
 
 # consulta de punta a punta, con verificación de criterios de aceptación
-python code/consulta.py --mes 7 --dias 6 --altitud-max 3500
+python consulta.py --mes 7 --dias 6 --altitud-max 3500
 ```
 
-<<<<<<< HEAD
-Semilla fija (`random_state=42`). Generan `comparativa_modelos.csv`, `barrido_k.csv`, `perfil_clusters.csv`, `perfil_clusters_hdbscan.csv`, `clusters_asignados.csv` y la figura `ta01_seleccion_modelo.png`. Todas las cifras de este documento salen de esas dos ejecuciones.
+Semilla fija (`random_state=42`); el enlace completo es determinista. Cada script escribe donde está el archivo que se entregó: las asignaciones por recurso en `data/processed/` y los perfiles, comparativas y figuras en `docs/`. Todas las cifras de este documento salen de esas ejecuciones; las del modelo elegido, de TA-04 y de TA-05 se regeneraron el 30 de septiembre y coinciden con los archivos entregados.
 
-## 11. Tareas Analíticas Complementarias: Predicción y Recomendación
+**Versión de scikit-learn.** Las cifras de HDBSCAN (v1) se obtuvieron con scikit-learn 1.8.0. Con las versiones 1.4 a 1.7 el mismo código da 80 polos en lugar de 81 y un diámetro máximo de 315 km en lugar de 427,9 km, porque la implementación de HDBSCAN cambió entre versiones. La conclusión no cambia —la densidad no acota el diámetro— y el modelo elegido (v2) da el mismo resultado en todas las versiones probadas.
 
-Para complementar el agrupamiento espacial (TA-01) y evitar que el producto se limite a la optimización de rutas, el sistema integra dos modelos adicionales de Machine Learning que abordan el pronóstico de riesgo y la monetización del modelo B2B.
+---
 
-### TA-02: Forecasting Predictivo de Viabilidad Climática (Clasificación Multiclase)
-El agrupamiento espacial (TA-01) asume un escenario ideal. Sin embargo, la geografía peruana presenta anomalías climáticas agudas (ej. huaicos por El Niño). Este modelo sustituye las reglas estáticas de temporalidad por un motor predictivo basado en 10 años de historia meteorológica.
+## 12. Propuestas evaluadas y no adoptadas
 
-*   **Objetivo:** Predecir si un destino es seguro para viajar en un mes futuro específico, penalizando rutas completas en caso de riesgo alto.
-*   **Variable Objetivo (Target):** `NIVEL_RIESGO_CLIMATICO` (Multiclase: `1_Seguro`, `2_Precaucion`, `3_Peligro`).
-*   **Vector de Características (Inputs):** `REGION`, `MES` (cíclico), `TEMPERATURA_MEDIA_C`, y `ZONA_CLIMATICA`.
-*   **Algoritmo Propuesto:** **Random Forest Classifier** o **XGBoost**. Se prefieren métodos de ensamble basados en árboles porque capturan las relaciones no lineales entre los pisos ecológicos y los picos de precipitación que modelos lineales ignorarían.
-*   **Baseline Explícito:** Regla basada en promedios históricos estáticos (Ej: *Si Región = Cusco y Mes = Enero -> Peligro*).
-*   **Estrategia de Evaluación:** Dado que existe un desbalance de clases (los meses de `3_Peligro` son menos frecuentes que los `1_Seguro`), la métrica principal será el **F1-Score Macro**. Secundariamente, se optimizará el **Recall de la clase 3_Peligro**, ya que el costo de negocio de un Falso Negativo (enviar a un turista a una ruta bloqueada por lluvias) es inaceptable.
+Durante la semana 6 se propusieron dos modelos supervisados más. Ninguno se implementó. Quedan aquí con la razón, porque descartar con argumentos también es parte de elegir el modelo.
 
-### TA-03: Motor de Recomendación de Comercio Local (Filtrado Basado en Contenido)
-El modelo de negocio de DreemGO requiere dispersar la economía hacia eventos locales temporales (ferias, festividades), los cuales representan el 12.2% del inventario original (Categoría 5) pero carecen de coordenadas estáticas.
+| Propuesta | Por qué no se adoptó | Qué hace ese trabajo en el producto |
+|---|---|---|
+| **Clasificador de riesgo climático**: Random Forest o XGBoost sobre región, mes, temperatura y zona climática, con `NIVEL_RIESGO_CLIMATICO` como objetivo | La etiqueta es un umbral fijo sobre la lluvia del mes (`discretize_climate.py`: hasta 30 mm, seguro; hasta 100, precaución; más, peligro). Con región y mes como entrada, el modelo solo puede reaprender el promedio de cada región en cada mes, que es la climatología que TA-05 ya usa de forma directa y explicable. Tampoco anticipa anomalías como El Niño: para eso haría falta un pronóstico, no diez años de promedios. | TA-05 (§9): regla declarada de dos ejes sobre la lluvia observada, evaluada polo por polo |
+| **Recomendador de comercio local**: TF-IDF y similitud del coseno, con `RELEVANCIA_PUBLICIDAD` como objetivo | Se entrenaría sobre `comercios_ferias_locales.csv`, que es simulado, y aprendería a ordenar por lo que pagó cada negocio. Un recomendador cuyo orden se compra deja de servirle al viajero (`docs/Data_Dictionary.md` §3). | Calendario de eventos reales: los 749 acontecimientos del inventario de MINCETUR, ligados al polo por distrito (RF-03, semana 10) |
 
-*   **Objetivo:** Inyectar y rankear anuncios de eventos locales dinámicos en el itinerario precalculado del usuario, emparejando la ventana de tiempo del turista con las fechas del evento.
-*   **Variable Objetivo (Target):** Probabilidad de clic / Interés del turista (Proxy actual: `RELEVANCIA_PUBLICIDAD`).
-*   **Vector de Características (Inputs):** `CATEGORIA` del evento, `JERARQUIA_OFICIAL` del conglomerado cercano (de la TA-01), y *Perfil del Usuario* (vector de intereses).
-*   **Algoritmo Propuesto:** **Content-Based Filtering** (Filtrado basado en contenido) utilizando similitud del coseno entre los vectores TF-IDF de las descripciones/categorías de los eventos y el historial de preferencias del usuario.
-*   **Baseline Explícito:** Recomendación por popularidad global (Top-N eventos con mayor jerarquía en la región, ignorando preferencias).
-*   **Estrategia de Evaluación:** En ausencia temporal de interacciones reales (Cold-Start), se evaluará offline mediante **nDCG@K** (Normalized Discounted Cumulative Gain). Esta métrica penaliza fuertemente al modelo si los eventos altamente relevantes no aparecen en las primeras posiciones de la recomendación.
-=======
-Semilla fija (`random_state=42`); el enlace completo es determinista. Generan `polos_asignados_v2.csv`, `perfil_polos_v2.csv`, `comparativa_polos_v2.csv`, `puntaje_polos.csv` y las figuras. Todas las cifras de este documento salen de esas ejecuciones.
->>>>>>> 21ca2981150cbe438c857c6b240b28d8820ce41d
+El enunciado del curso lo contempla de forma explícita: no se exige un modelo complejo de aprendizaje automático cuando un método analítico más simple es el adecuado para el producto.
