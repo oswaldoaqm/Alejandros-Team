@@ -13,7 +13,7 @@ Los tres retoman donde quedaron si se cortan: basta volver a correr el mismo com
 
 ## Cómo correrlos
 
-Desde la raíz del repositorio, con Python 3.10 o más y `requests` instalado:
+Desde la raíz del repositorio, con Python 3.11 o más y `requests` instalado:
 
 ```bash
 # ventana 1: se deja corriendo; si se apaga la PC, se vuelve a lanzar y sigue
