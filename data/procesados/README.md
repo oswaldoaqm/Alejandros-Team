@@ -4,12 +4,14 @@ Lo que construye el pipeline a partir de las descargas de `data/externos/` (fuer
 
 ```bash
 python -m pipeline.maestro
+python -m pipeline.eventos
 ```
 
 | Archivo | Qué es |
 |---|---|
 | `maestro_v3.csv` | Una fila por recurso del inventario, con lo que dice su ficha oficial, su polo y las marcas de calidad. Separador `;`, UTF-8 con BOM para que Excel muestre bien las tildes (en pandas: `encoding="utf-8-sig"`) |
 | `maestro_v3_resumen.json` | Cuántos recursos tiene cada campo y de dónde sale cada valor. Las cifras de este documento salen de aquí |
+| `eventos_v3.csv` | Una fila por acontecimiento programado, con la regla de su fecha. Mismo formato que el maestro |
 
 ## `maestro_v3.csv`
 
@@ -111,3 +113,19 @@ De los 4 633 lugares (categorías 1, 2 y 4):
 | Acceso completo | 4 600 (99 %) |
 | Visitantes | 4 620 (100 %) |
 | Intereses | 4 596 (99 %) |
+
+## `eventos_v3.csv`
+
+Los 758 acontecimientos programados del inventario (categoría 5) con cuándo se celebran, leído de su ficha por [`pipeline/eventos.py`](../../pipeline/eventos.py). La fecha se guarda como una **regla** y no como un día, porque muchas fiestas cambian de fecha cada año; [`dreemgo/calendario.py`](../../dreemgo/calendario.py) la convierte en fechas para el año del viaje.
+
+| Columna | Qué es |
+|---|---|
+| `codigo`, `nombre`, `tipo`, `subtipo`, `region`, `provincia`, `distrito`, `lat`, `lon`, `url_ficha` | Como en el maestro |
+| `polo` | El polo al que se asocia el acontecimiento; −1 en los 13 que no tienen |
+| `regla` | `fija 07-25` (un día), `fija 07-24..07-30` (un rango, que puede cruzar el año: `fija 12-24..01-06`), `pascua -7..0` (días contados desde el Domingo de Pascua), `nesimo 04 2 dom` (el segundo domingo de abril; `-1` es el último), `mes 09` (todo el mes). Vacía si la fecha está por confirmar |
+| `dia_central` | El día o los días que la ficha llama centrales dentro del rango: `07-16` o `07-28..07-29` (113 acontecimientos) |
+| `precision_fecha` | `exacta` (518): la ficha publica el día. `aproximada` (221): calculada desde la Pascua o el santoral, solo el mes, o la fecha de una edición reciente. `por_confirmar` (19): sin fecha |
+| `fuente_fecha` | `texto_ficha` (545), `nombre_movil` (120: Semana Santa, Carnaval, Corpus Christi… por su nombre), `mes_texto` (45), `texto_movil` (24: "un día después de la Octava de Corpus"), `santoral` (5) |
+| `evidencia` | La frase de la ficha que respalda la regla, o el patrón del santoral que la dio |
+
+En una muestra al azar de 40 acontecimientos cuyas fechas se leyeron a mano, 38 de las 39 reglas caen en días de fiesta. El detalle está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-fecha-los-acontecimientos).
