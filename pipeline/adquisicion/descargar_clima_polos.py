@@ -11,11 +11,11 @@ de 80 km de diámetro.
 
 La cuota, y por qué este script tarda días
 ------------------------------------------
-Open-Meteo es gratis para uso no comercial con 10 000 llamadas al día y 5 000
-por hora. Pedir 10 años de datos diarios de un punto cuenta como ~261 llamadas
-(una por cada 14 días de datos). Por eso el script:
+Open-Meteo es gratis para uso no comercial con 10 000 llamadas al día, 5 000
+por hora y 600 por minuto. Pedir 10 años de datos diarios de un punto cuenta como
+~261 llamadas (una por cada 14 días de datos). Por eso el script:
   - pide un polo por vez y anota lo gastado en cuota.json;
-  - no pasa de 4 800 por hora ni de 9 500 por día, con margen bajo el límite;
+  - no pasa de 550 por minuto (dos polos), 4 800 por hora ni 9 500 por día;
   - cuando se acaba la cuota, espera solo y sigue (Ctrl+C lo corta sin perder
     nada: al volver a correrlo retoma donde quedó);
   - baja primero los polos que más se recomiendan, así lo parcial ya sirve.
@@ -70,7 +70,7 @@ INICIO, FIN = "2016-01-01", "2025-12-31"
 VARIABLES = ["precipitation_sum", "precipitation_hours", "snowfall_sum", "sunshine_duration",
              "temperature_2m_max", "temperature_2m_min", "temperature_2m_mean"]
 
-TOPE_HORA, TOPE_DIA = 4_800, 9_500          # límites reales: 5 000 y 10 000
+TOPE_MINUTO, TOPE_HORA, TOPE_DIA = 550, 4_800, 9_500   # límites reales: 600, 5 000 y 10 000
 DIAS = (date.fromisoformat(FIN) - date.fromisoformat(INICIO)).days + 1
 PESO = DIAS / 14 * max(1.0, len(VARIABLES) / 10)   # regla de conteo de Open-Meteo
 
@@ -144,7 +144,7 @@ def anotar(cuota: list[list[float]], peso: float) -> None:
 def espera_necesaria(cuota: list[list[float]], peso: float) -> float:
     """Segundos hasta que caben `peso` llamadas sin pasar los topes."""
     ahora, espera = time.time(), 0.0
-    for ventana, tope in ((3_600, TOPE_HORA), (86_400, TOPE_DIA)):
+    for ventana, tope in ((60, TOPE_MINUTO), (3_600, TOPE_HORA), (86_400, TOPE_DIA)):
         dentro = sorted(e for e in cuota if ahora - e[0] < ventana)
         usado = sum(p for _, p in dentro)
         for t, p in dentro:                       # las más viejas vencen primero
@@ -201,9 +201,10 @@ def pedir(sesion: requests.Session, p: dict) -> tuple[str, object]:
 
 
 def dormir(segundos: float, por_que: str) -> None:
-    fin = datetime.fromtimestamp(time.time() + segundos).strftime("%H:%M")
-    print(f"  {por_que}: espero {segundos / 60:.0f} min y sigo a las {fin}. "
-          "Ctrl+C para cortar; al volver a correrlo retoma.", flush=True)
+    if segundos >= 120:                   # la pausa del tope por minuto no se anuncia
+        fin = datetime.fromtimestamp(time.time() + segundos).strftime("%H:%M")
+        print(f"  {por_que}: espero {segundos / 60:.0f} min y sigo a las {fin}. "
+              "Ctrl+C para cortar; al volver a correrlo retoma.", flush=True)
     time.sleep(segundos + 5)
 
 
@@ -241,7 +242,7 @@ def main() -> None:
             p = pendientes[i]
             espera = espera_necesaria(cuota, PESO)
             if espera > 0:
-                if a.sin_esperar:
+                if a.sin_esperar and espera >= 120:
                     print("\nCuota agotada por ahora. Vuelve a correrlo más tarde: retoma donde quedó.")
                     break
                 dormir(espera, "Cuota de Open-Meteo al tope")
@@ -253,7 +254,9 @@ def main() -> None:
                 if a.sin_esperar:
                     print(f"\nOpen-Meteo dice que se acabó la cuota ({dato}). Retoma más tarde.")
                     break
-                dormir(3_600 if "daily" in str(dato).lower() else 600, f"Open-Meteo pidió pausa ({dato})")
+                motivo = str(dato).lower()
+                pausa = 3_600 if "daily" in motivo else 65 if "minute" in motivo else 600
+                dormir(pausa, f"Open-Meteo pidió pausa ({dato})")
                 continue
             if estado != "ok":
                 print(f"  polo {p['polo']}: {estado} ({dato}); se salta en esta corrida")
