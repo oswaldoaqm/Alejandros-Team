@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Instalar
-        run: pip install -e ".[api,dev]"
+        run: pip install -e ".[api,dev,pipeline]"
       - name: Lint
         run: ruff check .
       - name: Formato
