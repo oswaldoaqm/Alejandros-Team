@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.cluster import AgglomerativeClustering, HDBSCAN
 from sklearn.preprocessing import StandardScaler
+from pathlib import Path
+DOCS = Path(__file__).resolve().parent.parent / "docs"
 warnings.filterwarnings("ignore")
 
 R = 6371.0; K = 0.06; UMBRAL = 80; MIN = 5
@@ -122,5 +124,5 @@ fig.text(.007, .012,
          "distancia de viaje = haversine ⊕ desnivel × 0,06 km/m · horas a 40 km/h con factor de sinuosidad 1,6",
          fontsize=8.8, color=MUTE)
 fig.tight_layout(rect=[0, .035, 1, .948])
-fig.savefig("ta01_seleccion_modelo_v2.png", dpi=170, facecolor=SURF)
+fig.savefig(DOCS / "ta01_seleccion_modelo_v2.png", dpi=170, facecolor=SURF)
 print("ok")
