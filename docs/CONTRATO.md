@@ -111,7 +111,7 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 |---|---|---|
 | `RECURSO`, `POLO`, `CLIMA_ESTACIONALIDAD` | Artefactos de solo lectura que el pipeline genera y el motor carga al arrancar | Cambian cuando se recalcula el modelo, no cuando alguien usa la app. Una base relacional para datos de solo lectura suma costo y latencia sin ganar nada ([decisión 0003](./decisiones/0003-artefactos-precalculados.md)) |
 | `CLIMA_ESTACIONALIDAD.veredicto_predictivo` | `estacionalidad.veredicto` | Es una regla declarada sobre diez años de clima, no una predicción ([decisión 0004](./decisiones/0004-sin-modelos-supervisados.md)) |
-| `EVENTO_COMERCIO` | `Evento`: los 749 acontecimientos del inventario más los que publican los municipios, en DynamoDB | `relevancia_publicidad` no existe: el orden no se vende. Los comercios simulados no entran al producto |
+| `EVENTO_COMERCIO` | `Evento`: los 758 acontecimientos del inventario más los que publican los municipios, en DynamoDB | `relevancia_publicidad` no existe: el orden no se vende. Los comercios simulados no entran al producto |
 | `ITINERARIO`, `ITINERARIO_PARADA` | No se guardan | El itinerario es función de la consulta y la versión de datos; el enlace lo reconstruye |
 | `USUARIO` | No existe | Sin cuentas ([decisión 0001](./decisiones/0001-sin-login-y-enlace-compartible.md)): sin contraseñas ni datos personales que proteger |
 
