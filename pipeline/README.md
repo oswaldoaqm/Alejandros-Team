@@ -20,15 +20,15 @@ python -m pipeline.maestro   # unos 30 segundos
 
 ## Qué tan bien lee
 
-Sobre las 6 160 fichas descargadas el 30 de septiembre de 2026:
+Sobre las 6 225 fichas descargadas el 30 de septiembre de 2026:
 
 - Se leen todas, sin errores, en unos 25 segundos.
-- **Tramos de acceso:** de las 14 453 celdas de distancia y tiempo con texto, 14 295 (98,9 %) dan kilómetros y minutos. Las demás no traen uno de los dos datos ("40 minutos") o lo traen sin unidad ("151 km / 3"), y ese dato queda en `null`. 289 lecturas son posibles pero no seguras, como "1.30 horas" (¿1 h 30 min o 1,3 h?) o "85 km / 2.30 min", y quedan marcadas como `ambigua`.
-- **Tarifa:** 828 de las 854 fichas con boleto (97 %) dan una tarifa de adulto peruano. En una muestra al azar de 60, revisada a mano, coincide en 58. Las dos que no:
+- **Tramos de acceso:** de las 14 561 celdas de distancia y tiempo con texto, 14 402 (98,9 %) dan kilómetros y minutos. Las demás no traen uno de los dos datos ("40 minutos") o lo traen sin unidad ("151 km / 3"), y ese dato queda en `null`. 293 lecturas son posibles pero no seguras, como "1.30 horas" (¿1 h 30 min o 1,3 h?) o "85 km / 2.30 min", y quedan marcadas como `ambigua`.
+- **Tarifa:** 832 de las 858 fichas con boleto (97 %) dan una tarifa de adulto peruano. En una muestra al azar de 60, revisada a mano, coincide en 58. Las dos que no:
   - una ficha que solo da el precio del Boleto Turístico del Cusco para extranjeros;
   - una que ofrece varias pozas termales, donde la regla elige la privada en vez de la común.
-- **Altitud:** la de 6 070 fichas; 85 no la traen y 5 traen un valor imposible ("8548773").
-- **Horario:** el de apertura y cierre en 4 552.
+- **Altitud:** la de 6 135 fichas; 85 no la traen y 5 traen un valor imposible ("8548773").
+- **Horario:** el de apertura y cierre en 4 598.
 
 ## Datos personales
 
