@@ -1,6 +1,11 @@
 """
-Guarda el HTML crudo de las 6 160 fichas oficiales de MINCETUR, para leerlas
-las veces que haga falta sin volver a pedirlas.
+Guarda el HTML crudo de las fichas oficiales de MINCETUR, una por recurso del
+inventario, para leerlas las veces que haga falta sin volver a pedirlas.
+
+La lista sale del inventario vigente que baja descargar_inventario.py (6 225
+recursos en el corte del 29 de septiembre de 2026). Si todavía no se bajó, usa
+los 6 160 del maestro de la semana 6. Cuando MINCETUR agrega recursos, volver a
+correr este script baja solo las fichas nuevas.
 
 Por qué todas y no solo las que faltan
 --------------------------------------
@@ -19,9 +24,10 @@ guardaba nada. Tres cosas obligan a volver a la fuente:
 Con el HTML guardado, el parser se corrige con pruebas sobre páginas reales y
 se vuelve a correr en minutos, sin volver a tocar el servidor de MINCETUR.
 
-Orden: primero las 31 fallidas, luego los 749 acontecimientos y al final el
-resto, así una corrida parcial ya sirve. Una petición por segundo: unas 2 a
-3 horas en total. Si se corta, al volver a correrlo retoma donde quedó.
+Orden: primero los recursos nuevos del inventario y las 31 fallidas, luego los
+acontecimientos y al final el resto, así una corrida parcial ya sirve. Una
+petición por segundo: unas 2 a 3 horas la primera vez. Si se corta, al volver a
+correrlo retoma donde quedó.
 
 Salida (fuera de git)
   data/externos/fichas_html/<codigo>.html.gz   la página tal cual llegó, comprimida
@@ -51,14 +57,23 @@ PAUSA, TIMEOUT = 1.0, 25
 PROCESADOS = RAIZ / "deliveries" / "week06" / "data" / "processed"
 MAESTRO = PROCESADOS / "dreemgo_master_dataset.csv"
 FICHAS_V3 = PROCESADOS / "fichas_mincetur.csv"
+INVENTARIO = EXTERNOS / "inventario" / "Inventario_recursos_turisticos.csv"
 DIR = EXTERNOS / "fichas_html"
 INDICE = DIR / "indice.csv"
-PRIORIDAD = {"pedido": 0, "fallida_v3": 0, "acontecimiento": 1, "resto": 2}
+PRIORIDAD = {"pedido": 0, "nuevo": 0, "fallida_v3": 0, "acontecimiento": 1, "resto": 2}
 
 
-def leer_csv(ruta: Path) -> list[dict]:
-    with open(ruta, encoding="utf-8-sig", newline="") as fh:
+def leer_csv(ruta: Path, codificacion: str = "utf-8-sig") -> list[dict]:
+    with open(ruta, encoding=codificacion, newline="") as fh:
         return list(csv.DictReader(fh, delimiter=";"))
+
+
+def recursos() -> dict[str, dict]:
+    """{código: fila} del inventario vigente o, si no se ha bajado, del maestro de la semana 6."""
+    if INVENTARIO.exists():
+        return {r["CODIGO DEL RECURSO"].strip(): r for r in leer_csv(INVENTARIO, "cp1252")}
+    print(f"No encuentro {INVENTARIO.relative_to(RAIZ)}; uso el maestro de la semana 6.")
+    return {r["CODIGO DEL RECURSO"].strip(): r for r in leer_csv(MAESTRO)}
 
 
 def archivo(codigo: str) -> Path:
@@ -67,17 +82,25 @@ def archivo(codigo: str) -> Path:
 
 def objetivo(codigos_pedidos: list[str]) -> list[tuple[str, str, str]]:
     """(código, url, motivo) de las fichas a bajar, en orden de prioridad."""
-    maestro = {r["CODIGO DEL RECURSO"].strip(): r for r in leer_csv(MAESTRO)}
+    inventario = recursos()
     if codigos_pedidos:
-        fuera = [c for c in codigos_pedidos if c not in maestro]
+        fuera = [c for c in codigos_pedidos if c not in inventario]
         if fuera:
             print(f"No están en el inventario, se ignoran: {', '.join(fuera)}")
-        return [(c, maestro[c]["URL"].strip(), "pedido") for c in codigos_pedidos if c in maestro]
+        return [(c, inventario[c]["URL"].strip(), "pedido") for c in codigos_pedidos if c in inventario]
 
+    semana6 = {r["CODIGO DEL RECURSO"].strip() for r in leer_csv(MAESTRO)}
     fallidas = {r["CODIGO"].strip() for r in leer_csv(FICHAS_V3) if r["HTTP"].strip() != "200"}
     lista = []
-    for cod, r in maestro.items():
-        motivo = "fallida_v3" if cod in fallidas else "acontecimiento" if r["CATEGORÍA"].startswith("5.") else "resto"
+    for cod, r in inventario.items():
+        if cod not in semana6:
+            motivo = "nuevo"
+        elif cod in fallidas:
+            motivo = "fallida_v3"
+        elif r["CATEGORÍA"].startswith("5."):
+            motivo = "acontecimiento"
+        else:
+            motivo = "resto"
         lista.append((cod, r["URL"].strip(), motivo))
     lista.sort(key=lambda x: (PRIORIDAD[x[2]], int(x[0]) if x[0].isdigit() else 0))
     return lista
