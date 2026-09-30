@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
 import math
+import unicodedata
 
-CSV_PATH = "../data/dataset_enriched.csv"
+from pathlib import Path
+
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "dataset_enriched.csv"
 
 # Coordenadas aproximadas de las 25 capitales regionales del Perú
 CAPITALES = {
@@ -16,6 +19,12 @@ CAPITALES = {
     'SAN MARTIN': (-6.4878, -76.3597), 'TACNA': (-18.0146, -70.2536), 'TUMBES': (-3.5669, -80.4515),
     'UCAYALI': (-8.3791, -74.5539)
 }
+
+
+def sin_tildes(texto):
+    """Junín -> JUNIN: las claves de CAPITALES van sin tilde. Sin esto, cinco regiones
+    (Junín, Áncash, Huánuco, Apurímac, San Martín) se quedan sin distancia."""
+    return unicodedata.normalize("NFD", texto).encode("ascii", "ignore").decode().upper()
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calcula la distancia en km entre dos puntos de la tierra."""
@@ -37,7 +46,7 @@ def main():
         
     distancias = []
     for idx, row in df.iterrows():
-        region = str(row['REGIÓN']).upper()
+        region = sin_tildes(str(row['REGIÓN']))
         if region in CAPITALES and pd.notna(row['latitud']):
             lat_cap, lon_cap = CAPITALES[region]
             dist = haversine(row['latitud'], row['longitud'], lat_cap, lon_cap)

@@ -1,6 +1,8 @@
 import csv
 
-CSV_PATH = "deliveries/week05/data/dataset_enriched.csv"
+from pathlib import Path
+
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "dataset_enriched.csv"
 
 def clasificar_clima(altitud, region):
     if altitud == "":
