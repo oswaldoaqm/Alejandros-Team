@@ -76,8 +76,13 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 ```
 Alejandros-Team/
 ├── README.md
+├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py
 ├── pipeline/
-│   └── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
+│   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
+│   └── referencia/                 tablas escritas a mano, como las ciudades de origen
+├── infra/                          imagen del API y despliegue en AWS con SAM
+├── tests/                          pruebas del contrato y del API
+├── docs/                           plan, contrato de la API y registro de decisiones
 └── deliveries/
     ├── week04/                     Tema, equipo y selección de dataset
     │   ├── README.md
@@ -107,6 +112,8 @@ Alejandros-Team/
         ├── code/ · data/           copia del código y los datos de week06
         └── docs/                   diccionario, arquitectura y prototipo de baja fidelidad
 ```
+
+El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
 
 Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`. Lo entregado en cada fecha queda intacto en las etiquetas `entrega/semana-XX`, y lo que se corrigió después está en el `ERRATA.md` de cada carpeta.
 
