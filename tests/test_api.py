@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from dreemgo import __version__
 from dreemgo.api.app import app
+from dreemgo.contrato import VERSION_CONTRATO
 
 
 @pytest.fixture(scope="module")
@@ -17,7 +18,12 @@ def cliente():
 def test_salud(cliente):
     r = cliente.get("/v1/salud")
     assert r.status_code == 200
-    assert r.json() == {"estado": "ok", "version": __version__, "version_contrato": "1.0", "version_datos": None}
+    assert r.json() == {
+        "estado": "ok",
+        "version": __version__,
+        "version_contrato": VERSION_CONTRATO,
+        "version_datos": None,
+    }
 
 
 def test_el_esquema_publica_el_contrato(cliente):

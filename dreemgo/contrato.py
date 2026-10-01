@@ -20,7 +20,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.0"
+VERSION_CONTRATO = "1.1"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -178,7 +178,9 @@ class Parada(_Modelo):
 class Dia(_Modelo):
     numero: int = Field(ge=1)
     fecha: date | None = None
-    tipo: Literal["ida", "visita", "vuelta", "ida_y_visita", "visita_y_vuelta"]
+    tipo: Literal["ida", "visita", "vuelta", "ida_y_visita", "visita_y_vuelta", "ida_visita_y_vuelta"] = Field(
+        description="ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.",
+    )
     horas: float = Field(ge=0, description="Horas ocupadas entre traslados y visitas.")
     km: float = Field(ge=0)
     paradas: list[Parada] = Field(default_factory=list)
@@ -190,11 +192,21 @@ class Estacionalidad(_Modelo):
     veredicto: Literal["viable", "advertencia", "desaconsejado"]
     lluvia_mm: float = Field(ge=0, description="Lluvia media del mes, diez años de datos.")
     dias_con_lluvia: float | None = Field(None, ge=0, le=31)
-    horas_sol: float | None = Field(None, ge=0, le=24, description="Horas de sol por día, promedio del mes.")
+    horas_sol: float | None = Field(
+        None,
+        ge=0,
+        le=24,
+        description="Horas de sol por día, promedio del mes. null mientras no haya un dato confiable: "
+        "el reanálisis no ve la neblina de la costa.",
+    )
     temp_min_c: float | None = None
     temp_max_c: float | None = None
     explicacion: str
-    mejores_meses: list[int] = Field(default_factory=list, description="Meses viables del polo, de mejor a peor.")
+    mejores_meses: list[int] = Field(
+        default_factory=list,
+        description="Los meses con mejor veredicto del polo, de menos a más lluvia: los viables o, si no "
+        "hay ninguno, los de advertencia.",
+    )
 
 
 class Traslado(_Modelo):
@@ -348,6 +360,59 @@ class EventoNuevo(_Modelo):
         if (self.lat is None) != (self.lon is None):
             raise ValueError("Latitud y longitud van juntas.")
         return self
+
+
+# ─────────────────────────────── consultas de apoyo (desde 1.1) ───────────────────────────────
+
+
+class Rango(_Modelo):
+    minimo: int
+    maximo: int
+    defecto: int | None = None
+
+
+class OpcionOrigen(_Modelo):
+    id: str = Field(description="El valor que viaja en `origen`.")
+    nombre: str
+    region: str
+
+
+class OpcionInteres(_Modelo):
+    id: Interes
+    etiqueta: str
+    paradas: int = Field(ge=0, description="Paradas posibles que atiende el interés en todo el inventario.")
+
+
+class Opciones(_Modelo):
+    """Lo que la app necesita para armar el formulario sin fijar nada en su código."""
+
+    version_contrato: str = VERSION_CONTRATO
+    version_datos: str
+    origenes: list[OpcionOrigen]
+    intereses: list[OpcionInteres]
+    dias: Rango
+    presupuesto: Rango
+    altitud_max: Rango
+
+
+class PoloDetalle(_Modelo):
+    """Ficha de un polo: sus recursos, su clima mes a mes y sus eventos del año."""
+
+    version_contrato: str = VERSION_CONTRATO
+    version_datos: str
+    polo: Polo
+    recursos: list[Recurso] = Field(description="Las paradas posibles del polo, de mayor a menor jerarquía.")
+    clima: list[Estacionalidad] = Field(description="Los doce meses, de enero a diciembre.")
+    eventos: list[Evento] = Field(description="Los acontecimientos del polo en los próximos doce meses.")
+    atribucion: list[str]
+
+
+class Eventos(_Modelo):
+    version_contrato: str = VERSION_CONTRATO
+    version_datos: str
+    desde: date
+    hasta: date
+    eventos: list[Evento]
 
 
 # ─────────────────────────────── servicio ───────────────────────────────
