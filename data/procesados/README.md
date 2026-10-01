@@ -6,7 +6,10 @@ Lo que construye el pipeline a partir de las descargas de `data/externos/` (fuer
 python -m pipeline.maestro
 python -m pipeline.eventos
 python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
+python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
 ```
+
+`python -m pipeline.artefactos` junta después estas tablas en lo que carga el motor, en [`dreemgo/datos/`](../../dreemgo/datos/).
 
 | Archivo | Qué es |
 |---|---|
@@ -18,6 +21,10 @@ python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline
 | `red_paradas.csv` | A cuántos metros de la red vial queda cada parada |
 | `red_calibracion.json` | Velocidades calibradas de la red y su error, medido por validación cruzada |
 | `red_calibracion_recorridos.csv` | Cada recorrido de ficha usado para calibrar, con su tiempo en la ficha y en la red |
+| `polos_bases.csv` | Dónde se duerme en cada polo, por qué y a qué altitud |
+| `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
+| `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo |
+| `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
 
 ## `maestro_v3.csv`
 
@@ -153,6 +160,8 @@ La caminata final que registra la ficha (`caminata_min` del maestro) no está in
 | `tiempos_origen.csv` | `origen` (el `id` de [`origenes.csv`](../../pipeline/referencia/origenes.csv)), `codigo` de la parada, `minutos`, `km` | 109 872: las 24 ciudades por las 4 578 paradas |
 | `tiempos_polo.csv` | `polo`, `desde`, `hasta` (códigos de parada), `minutos`, `km`. En los dos sentidos | 176 570, en los 221 polos con dos paradas o más |
 | `red_paradas.csv` | `codigo`, `polo`, `metros_a_la_red`, `lejos_de_la_red` (más de 5 km de cualquier vía) | 4 578 |
+| `tiempos_base.csv` | `polo`, `codigo` de la parada, `minutos`, `km`. Valen igual de vuelta: en la red cada tramo cuesta lo mismo en los dos sentidos | 4 465: cada parada de un polo |
+| `tiempos_origen_base.csv` | `origen`, `polo`, `minutos`, `km` | 5 328: las 24 ciudades por los 222 polos |
 
 `minutos` y `km` quedan vacíos cuando no hay camino por carretera. Pasa en tres casos:
 
@@ -160,6 +169,37 @@ La caminata final que registra la ficha (`caminata_min` del maestro) no está in
 - **Paradas lejos de la red:** 173 están a más de 5 km de cualquier vía.
 - **Paradas de un mismo polo sin unión por carretera:** son 4 202 pares, el 2 %.
 
-Desde Lima quedan sin camino 259 paradas.
+Desde Lima quedan sin camino 259 paradas y 9 bases. De la base a sus propias paradas, 144 de 4 465.
+
+### `polos_bases.csv`
+
+Cómo se elige está en [`pipeline/bases.py`](../../pipeline/bases.py) y el resumen en [`pipeline/README.md`](../../pipeline/README.md#dónde-duerme-cada-polo). También es obra derivada de OpenStreetMap.
+
+| Columna | Qué es |
+|---|---|
+| `polo` | Número del polo |
+| `base`, `lat`, `lon` | El lugar de OSM donde se duerme |
+| `lugar` | `ciudad`, `pueblo`, `barrio` o `caserío`, según OSM (`place`) |
+| `capital_de_distrito` | Si OSM lo marca como capital de su distrito |
+| `hospedajes_osm` | Hoteles, hostales, casas de huéspedes y alojamientos que OSM registra a menos de 3 km |
+| `criterio` | `carretera` (218): el de menor costo por carretera. `linea_recta` (4): ninguna parada del polo está a menos de 5 km de una vía |
+| `paradas`, `paradas_con_camino` | Paradas del polo y cuántas tienen camino por carretera desde la base |
+| `minutos_medios` | Minutos de la base a sus paradas, en promedio pesado por jerarquía |
+| `altitud_m`, `altitud_fuente` | `osm` (194): la que declara el lugar. `recursos_a_2_km` (13): la mediana de los recursos del inventario a menos de 2 km. Vacía en 15 |
+
+## `clima_polo_mes.csv`
+
+Doce filas por polo, del clima diario 2016-2025 de Open-Meteo en el centro del polo ([`pipeline/clima.py`](../../pipeline/clima.py), [decisión 0006](../../docs/decisiones/0006-clima-por-polo.md)). **Licencia CC BY 4.0**: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus.
+
+| Columna | Qué es |
+|---|---|
+| `polo`, `mes` | |
+| `lluvia_mm` | Lluvia del mes, promedio de diez años |
+| `dias_con_lluvia` | Días con 1 mm o más (definición de la OMM) |
+| `temp_min_c`, `temp_max_c` | Promedio de las mínimas y de las máximas diarias, llevadas a la altitud de la base con 6,5 °C por km |
+| `puesto_lluvia` | 1 es el mes más lluvioso del polo |
+| `veredicto` | `viable`, `advertencia` o `desaconsejado`: 150 mm o más en el mes, y estar entre los 3 más lluviosos del polo con más de 50 mm. Los dos, desaconsejado; uno, advertencia |
+| `fuente` | `open_meteo_polo` (36 polos al 1 de octubre) o `region_semana6`: mientras la descarga no termina, la capa regional de la semana 6, sin días de lluvia ni temperaturas |
+| `altitud_clima_m`, `altitud_base_m` | La altitud del punto de clima según Open-Meteo y la de la base, para ver el ajuste de temperatura |
 
 `red_calibracion.json` guarda las velocidades por clase de vía, los recargos y el error por tramo de distancia; el resumen está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-estima-los-tiempos-de-viaje). `red_calibracion_recorridos.csv` tiene los 2 259 recorridos de fichas que se consideraron. Por cada uno trae los km y minutos de la ficha y los de la red, y si ambos describen el mismo camino (`misma_distancia`); solo esos entraron al ajuste.
