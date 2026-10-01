@@ -78,7 +78,7 @@ Los 222 polos del modelo v2 se mantienen, con sus mismos números. Cada uno sigu
 
 ### Acceso
 
-Salen del recorrido más rápido de la ficha entre los que tienen todos sus tiempos.
+Salen del recorrido más rápido de la ficha entre los que tienen todos sus tiempos. Cuando la ficha repite un tramo con otro medio (en auto, en bus o a pie), son alternativas y no tramos seguidos: cuenta la más rápida.
 
 | Columna | Qué es |
 |---|---|
@@ -110,7 +110,7 @@ De los 4 633 lugares (categorías 1, 2 y 4):
 | Jerarquía | 3 741 (81 %) |
 | Tarifa, incluido el 0 del ingreso libre | 3 952 (85 %) |
 | Horario | 4 589 (99 %) |
-| Acceso completo | 4 600 (99 %) |
+| Acceso completo | 4 603 (99 %) |
 | Visitantes | 4 620 (100 %) |
 | Intereses | 4 596 (99 %) |
 
