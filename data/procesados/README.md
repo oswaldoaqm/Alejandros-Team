@@ -5,6 +5,7 @@ Lo que construye el pipeline a partir de las descargas de `data/externos/` (fuer
 ```bash
 python -m pipeline.maestro
 python -m pipeline.eventos
+python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
 ```
 
 | Archivo | Qué es |
@@ -12,6 +13,11 @@ python -m pipeline.eventos
 | `maestro_v3.csv` | Una fila por recurso del inventario, con lo que dice su ficha oficial, su polo y las marcas de calidad. Separador `;`, UTF-8 con BOM para que Excel muestre bien las tildes (en pandas: `encoding="utf-8-sig"`) |
 | `maestro_v3_resumen.json` | Cuántos recursos tiene cada campo y de dónde sale cada valor. Las cifras de este documento salen de aquí |
 | `eventos_v3.csv` | Una fila por acontecimiento programado, con la regla de su fecha. Mismo formato que el maestro |
+| `tiempos_origen.csv` | Minutos y km por carretera de cada ciudad de origen a cada parada |
+| `tiempos_polo.csv` | Minutos y km por carretera entre las paradas de cada polo |
+| `red_paradas.csv` | A cuántos metros de la red vial queda cada parada |
+| `red_calibracion.json` | Velocidades calibradas de la red y su error, medido por validación cruzada |
+| `red_calibracion_recorridos.csv` | Cada recorrido de ficha usado para calibrar, con su tiempo en la ficha y en la red |
 
 ## `maestro_v3.csv`
 
@@ -129,3 +135,31 @@ Los 758 acontecimientos programados del inventario (categoría 5) con cuándo se
 | `evidencia` | La frase de la ficha que respalda la regla, o el patrón del santoral que la dio |
 
 En una muestra al azar de 40 acontecimientos cuyas fechas se leyeron a mano, 38 de las 39 reglas caen en días de fiesta. El detalle está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-fecha-los-acontecimientos).
+
+## Tiempos por carretera
+
+Salen de la red vial del extracto de OpenStreetMap del 30 de septiembre de 2026, con las velocidades calibradas contra los recorridos de las fichas ([`pipeline/tiempos.py`](../../pipeline/tiempos.py)). Son **obra derivada de OpenStreetMap: se publican bajo ODbL 1.0**, © colaboradores de OpenStreetMap ([DATA_LICENSES.md](../../DATA_LICENSES.md)).
+
+Cada tiempo es de puerta a puerta en auto o bus:
+
+- el camino más rápido por la red;
+- lo que falta de cada punta a la vía más cercana, contado 1,3 veces la línea recta y al ritmo de una trocha;
+- y 7 minutos fijos por traslado.
+
+La caminata final que registra la ficha (`caminata_min` del maestro) no está incluida. El motor la suma aparte.
+
+| Archivo | Columnas | Filas |
+|---|---|---|
+| `tiempos_origen.csv` | `origen` (el `id` de [`origenes.csv`](../../pipeline/referencia/origenes.csv)), `codigo` de la parada, `minutos`, `km` | 109 872: las 24 ciudades por las 4 578 paradas |
+| `tiempos_polo.csv` | `polo`, `desde`, `hasta` (códigos de parada), `minutos`, `km`. En los dos sentidos | 176 570, en los 221 polos con dos paradas o más |
+| `red_paradas.csv` | `codigo`, `polo`, `metros_a_la_red`, `lejos_de_la_red` (más de 5 km de cualquier vía) | 4 578 |
+
+`minutos` y `km` quedan vacíos cuando no hay camino por carretera. Pasa en tres casos:
+
+- **Iquitos y la selva baja:** ninguna carretera las une con el resto del país, así que el viaje necesita avión o bote.
+- **Paradas lejos de la red:** 173 están a más de 5 km de cualquier vía.
+- **Paradas de un mismo polo sin unión por carretera:** son 4 202 pares, el 2 %.
+
+Desde Lima quedan sin camino 259 paradas.
+
+`red_calibracion.json` guarda las velocidades por clase de vía, los recargos y el error por tramo de distancia; el resumen está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-estima-los-tiempos-de-viaje). `red_calibracion_recorridos.csv` tiene los 2 259 recorridos de fichas que se consideraron. Por cada uno trae los km y minutos de la ficha y los de la red, y si ambos describen el mismo camino (`misma_distancia`); solo esos entraron al ajuste.
