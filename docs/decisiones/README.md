@@ -9,7 +9,7 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0003](./0003-artefactos-precalculados.md) | El motor carga artefactos precalculados; no hay base relacional | Vigente |
 | [0004](./0004-sin-modelos-supervisados.md) | Sin modelos supervisados: agrupamiento, reglas de clima y optimización | Vigente |
 | [0005](./0005-historial-y-erratas.md) | Las entregas se etiquetan y se corrigen en su sitio con erratas | Vigente |
-| [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente |
+| [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente; sin horas de sol (actualización del 1 de octubre) |
 | [0007](./0007-red-vial-propia.md) | Tiempos de viaje sobre un extracto propio de OpenStreetMap | Vigente; su calibración la precisa la 0008 |
 | [0008](./0008-calibrar-con-las-fichas.md) | Calibrar la red vial con los recorridos de las fichas | Vigente |
 

@@ -18,4 +18,8 @@ Un punto por polo, en su centro: clima diario 2016-2025 de Open-Meteo (reanális
 ## Consecuencias
 
 - La cuota gratuita de Open-Meteo (10 000 llamadas al día, 600 por minuto) alcanza para 36 polos por día: seis días para los 222, empezando por los más recomendados.
-- Las horas de sol permiten distinguir el invierno gris de la costa, que casi no registra lluvia.
+- ~~Las horas de sol permiten distinguir el invierno gris de la costa, que casi no registra lluvia.~~ No lo permiten: ver la actualización.
+
+## Actualización · 1 de octubre de 2026
+
+Con los primeros 36 polos descargados, el reanálisis da más de 9 horas de sol al día en la costa de Lima en julio, cuando el cielo pasa cubierto casi todo el mes: ERA5 no ve la neblina baja que entra del mar. Por eso las horas de sol no se publican (`horas_sol` viaja en `null`) y el invierno de la costa sigue contando como temporada seca. Los días con lluvia sí se publican, con la definición de la OMM (1 mm o más); conviene leerlos como «días en que llovió algo»: en enero el reanálisis da 26 en Puno y 30 alrededor de Machu Picchu. Mientras la descarga no termina, un polo sin su archivo usa la capa regional de la semana 6 y la respuesta lo avisa ([`pipeline/clima.py`](../../pipeline/clima.py)).
