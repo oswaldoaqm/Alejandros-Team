@@ -67,12 +67,15 @@ climatología mensual** (2014-2023) de [Open-Meteo Archive](https://open-meteo.c
 
 La fase 1 rehace los datos sobre el corte del 29 de septiembre. [`pipeline/`](./pipeline/) lee las 6 225 fichas
 oficiales y deja en [`data/procesados/`](./data/procesados/) el **maestro v3**, una fila por recurso con la
-fuente de cada campo, y el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
-medida sobre una muestra anotada a mano.
+fuente de cada campo; el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
+medida sobre una muestra anotada a mano; los **tiempos por carretera** sobre la red vial de OpenStreetMap,
+calibrada con los recorridos de las fichas (22 % de error medio); **dónde se duerme en cada polo**, y el
+**clima de cada polo mes a mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde
+`/v1/viajes` según el [contrato](./docs/CONTRATO.md).
 
-Fuentes complementarias previstas: [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto),
-[Open-Meteo](https://open-meteo.com/) (climatología histórica y modelo de elevación) y
-[OpenStreetMap](https://www.openstreetmap.org/) (geometría vial).
+Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo) y
+[OpenStreetMap](https://www.openstreetmap.org/) (red vial, pueblos y hospedajes). Prevista:
+[datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto).
 
 Este repositorio contiene únicamente datos abiertos con licencia que permite su redistribución.
 
@@ -84,10 +87,13 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 Alejandros-Team/
 ├── README.md
 ├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py
-├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro y eventos
+│   ├── motor/                      del pedido al viaje: valor, días, itinerario, costo y avisos
+│   └── datos/                      los artefactos que carga el motor, con su manifiesto
+├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro, eventos,
+│                                   red vial, bases, clima y artefactos
 │   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
-├── data/procesados/                maestro v3 y calendario de eventos, con su diccionario
+├── data/procesados/                maestro v3, eventos, tiempos por carretera, bases y clima, con su diccionario
 ├── infra/                          imagen del API y despliegue en AWS con SAM
 ├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API y registro de decisiones
@@ -193,12 +199,18 @@ Los datos v3 salen del pipeline. Primero se bajan las fuentes con los scripts de
 primera vez):
 
 ```bash
-pip install -e ".[pipeline,dev]"
+pip install -e ".[api,pipeline,dev]"
 python pipeline/adquisicion/descargar_inventario.py
 python pipeline/adquisicion/descargar_fichas_html.py
+python pipeline/adquisicion/descargar_osm.py
+python pipeline/adquisicion/descargar_clima_polos.py   # días: respeta la cuota gratuita de Open-Meteo
 python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
+python -m pipeline.tiempos     # tiempos por carretera y bases, unos 6 minutos
+python -m pipeline.clima       # clima por polo y mes
+python -m pipeline.artefactos --version 2026.10.1   # dreemgo/datos/
 pytest
+uvicorn dreemgo.api.app:app    # http://localhost:8000/v1/docs
 ```
 
 ---
