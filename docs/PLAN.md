@@ -2,7 +2,7 @@
 
 **El 14 de octubre DreemGO está desplegado y resuelve una consulta real de punta a punta; el 18 de noviembre es un producto que se puede presentar a cualquiera.** Este documento es el estado del plan dentro del repositorio: qué se hace, en qué orden, cuándo está terminado y quién lo defiende. Se actualiza al cerrar cada fase.
 
-Estado al 30 de septiembre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** adelantada: el maestro v3 y el calendario de eventos ya están en [`data/procesados/`](../data/procesados/); siguen los tiempos por carretera, el clima por polo y el motor.
+Estado al 1 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.1](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar; falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. Sigue la **fase 2**: la app y el despliegue.
 
 ## Qué promete el producto
 

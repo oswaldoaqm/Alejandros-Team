@@ -1,0 +1,102 @@
+{
+  "osm": {
+    "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+    "md5": "faea114a828e7a306a5010f985c1320b"
+  },
+  "recorridos": {
+    "solo_por_carretera": 2588,
+    "distritos_de_partida": 389,
+    "distritos_ubicados": 385,
+    "con_partida_ubicada": 2574,
+    "plausibles": 2259,
+    "con_ruta": 2254,
+    "misma_distancia": 1780
+  },
+  "ritmo_min_por_km": {
+    "autopista": 1.244,
+    "troncal": 1.039,
+    "primaria": 1.148,
+    "secundaria": 1.131,
+    "terciaria": 1.584,
+    "local": 1.986,
+    "trocha": 1.903,
+    "balsa": 6.0
+  },
+  "velocidad_kmh": {
+    "autopista": 48.2,
+    "troncal": 57.8,
+    "primaria": 52.3,
+    "secundaria": 53.0,
+    "terciaria": 37.9,
+    "local": 30.2,
+    "trocha": 31.5,
+    "balsa": 10.0
+  },
+  "recargo_sin_asfaltar_min_por_km": 0.321,
+  "recargo_curvas_min_por_km_cada_100_grados": 0.119,
+  "minutos_por_traslado": 7.2,
+  "validacion_cruzada": {
+    "recorridos": 1780,
+    "error_medio": 0.223,
+    "error_mediano": 0.173,
+    "dentro_del_25": 0.662,
+    "sesgo_mediano": 0.01,
+    "minutos_de_error_mediano": 11.0,
+    "por_distancia": {
+      "0-10 km": {
+        "recorridos": 291,
+        "error_medio": 0.305,
+        "error_mediano": 0.251,
+        "dentro_del_25": 0.498,
+        "sesgo_mediano": 0.089,
+        "minutos_de_error_mediano": 4.1
+      },
+      "10-30 km": {
+        "recorridos": 427,
+        "error_medio": 0.269,
+        "error_mediano": 0.228,
+        "dentro_del_25": 0.532,
+        "sesgo_mediano": -0.014,
+        "minutos_de_error_mediano": 7.9
+      },
+      "30-100 km": {
+        "recorridos": 560,
+        "error_medio": 0.212,
+        "error_mediano": 0.157,
+        "dentro_del_25": 0.691,
+        "sesgo_mediano": 0.022,
+        "minutos_de_error_mediano": 12.9
+      },
+      "100-300 km": {
+        "recorridos": 434,
+        "error_medio": 0.15,
+        "error_mediano": 0.128,
+        "dentro_del_25": 0.855,
+        "sesgo_mediano": -0.007,
+        "minutos_de_error_mediano": 27.5
+      },
+      "300-2000 km": {
+        "recorridos": 68,
+        "error_medio": 0.149,
+        "error_mediano": 0.124,
+        "dentro_del_25": 0.706,
+        "sesgo_mediano": 0.005,
+        "minutos_de_error_mediano": 63.6
+      }
+    }
+  },
+  "error_medio_sin_cada_termino": {
+    "sin_curvas": 0.235,
+    "sin_minutos_fijos": 0.251,
+    "sin_recargo_sin_asfaltar": 0.224,
+    "un_solo_ritmo": 0.224
+  },
+  "formula_semana_6": {
+    "recorridos": 1780,
+    "error_medio": 0.48,
+    "error_mediano": 0.354,
+    "dentro_del_25": 0.361,
+    "sesgo_mediano": 0.127,
+    "minutos_de_error_mediano": 23.9
+  }
+}

@@ -35,6 +35,7 @@ import pandas as pd
 from dreemgo.contrato import Interes
 from pipeline.fichas import URL_FICHA, Ficha, Tramo, leer_archivo
 from pipeline.inventario import leer_inventario
+from pipeline.texto import sin_tildes
 
 RAIZ = Path(__file__).resolve().parents[1]
 EXTERNOS = RAIZ / "data" / "externos"
@@ -136,7 +137,33 @@ def _recorridos(tramos: tuple[Tramo, ...]) -> list[list[Tramo]]:
     grupos: dict[int | None, list[Tramo]] = {}
     for t in tramos:
         grupos.setdefault(t.recorrido, []).append(t)
-    return list(grupos.values())
+    return [_sin_alternativas(r) for r in grupos.values()]
+
+
+def _sin_alternativas(recorrido: list[Tramo]) -> list[Tramo]:
+    """Muchas fichas repiten un mismo tramo con otro medio: "Paracas – Reserva: 7 min en
+    auto, 10 en bus, 52 a pie". Son alternativas, no tramos seguidos: sumarlas daría el
+    triple de distancia y una caminata que nadie hace. Un tramo repetido tiene el mismo
+    inicio y fin y la misma distancia o la misma descripción; queda el más rápido."""
+    elegidos: list[Tramo] = []
+    for t in recorrido:
+        for i, e in enumerate(elegidos):
+            mismo_tramo = (e.desde, e.hasta) == (t.desde, t.hasta) and (
+                e.km == t.km or (_detalle(e) is not None and _detalle(e) == _detalle(t))
+            )
+            if mismo_tramo:
+                if t.minutos is not None and (e.minutos is None or t.minutos < e.minutos):
+                    elegidos[i] = t
+                break
+        else:
+            elegidos.append(t)
+    return elegidos
+
+
+def _detalle(t: Tramo) -> str | None:
+    """La descripción del tramo sin espacios, tildes ni signos: "Nasca- Museo" = "Nasca - Museo"."""
+    texto = re.sub(r"[^a-z0-9]", "", sin_tildes(t.detalle or ""))
+    return texto or None
 
 
 def resumen_acceso(tramos: tuple[Tramo, ...]) -> dict[str, object]:

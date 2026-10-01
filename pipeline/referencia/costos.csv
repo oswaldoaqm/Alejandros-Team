@@ -1,0 +1,7 @@
+parametro;valor;minimo;maximo;unidad;fuente
+bus_intercepto;12;5;25;S/ por persona y tramo;Tarifas publicadas de operadores interprovinciales, recogidas en la semana 6. Sin calibrar: el rango entero entra a la banda
+bus_soles_km;0.085;0.055;0.125;S/ por persona y km;Igual que bus_intercepto
+movilidad_soles_km;0.55;0.30;0.95;S/ por persona y km;Colectivo y taxi rural, observación de campo de la semana 6. Sin calibrar
+alojamiento_noche;70;35;140;S/ por persona y noche;INEI, Encuesta Mensual de Establecimientos de Hospedaje, recogida en la semana 6. Sin calibrar
+alimentacion_dia;50;25;95;S/ por persona y día;MINCETUR, gasto promedio del turista interno, recogido en la semana 6. Sin calibrar
+entrada_sin_tarifa;17.63;5;20;S/ por entrada;Fichas oficiales: media recortada y percentiles 25 a 75 de 782 tarifas reales (semana 6). Solo para las paradas con boleto cuya ficha no publica el monto

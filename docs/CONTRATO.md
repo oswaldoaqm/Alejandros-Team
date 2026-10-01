@@ -2,7 +2,7 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), y la app genera sus tipos de ese esquema. Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.0** · revisión del equipo antes del 5 de octubre de 2026.
+**Versión 1.1** · 1 de octubre de 2026. La 1.1 conecta el motor y suma, sin quitar nada de la 1.0, el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). La revisión del equipo sigue antes del 5 de octubre.
 
 ## 1 · La consulta
 
@@ -37,7 +37,7 @@ Respuesta
 │   ├── puntaje, motivos[]               por qué este polo, en frases cortas
 │   ├── estacionalidad veredicto del mes, lluvia, días con lluvia, horas de sol, temperaturas, mejores meses
 │   ├── traslado       horas desde el origen, días que se van en la carretera, acceso terrestre o no
-│   ├── dias[]         número, fecha, tipo (ida, visita, vuelta…), horas, km
+│   ├── dias[]         número, fecha, tipo (ida, visita, vuelta… o ida_visita_y_vuelta en un viaje de un día), horas, km
 │   │   └── paradas[]  orden, recurso (con su ficha oficial), hora de llegada, traslado y visita en minutos
 │   ├── costo          banda P20-P50-P80 en soles, desglose, si entra en el presupuesto
 │   ├── eventos[]      fiestas y ferias que caen en las fechas, con la precisión de la fecha
@@ -47,7 +47,21 @@ Respuesta
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
-[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta completa con recursos reales del inventario y un itinerario armado a mano, para construir la app antes de que el motor esté conectado. No es salida del motor. Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.1`. Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+
+Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por carretera.
+
+### Cómo decide el motor
+
+El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en la [decisión 0009](./decisiones/0009-viaje-en-estrella.md). En corto:
+
+- **Un viaje es una estrella:** se duerme en la base del polo y cada día sale un paseo que vuelve a ella. La base es un pueblo real de OpenStreetMap, elegido por lo cerca que deja las paradas y por el hospedaje que registra ([`pipeline/bases.py`](../pipeline/bases.py)).
+- **Valor de una parada:** 2^(jerarquía − 1), es decir 1, 2, 4 u 8; 2 si MINCETUR no la jerarquizó. Si la consulta trae intereses, la que no atiende ninguno vale la cuarta parte.
+- **Días:** la ida y la vuelta por carretera; si pasan de 8 horas se parten en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida tienen visitas si sobran al menos 90 minutos. Como máximo seis paradas por día.
+- **Qué y en qué orden:** orientación por equipos con inserción voraz, 2-opt y tres arranques; se queda el de más valor.
+- **Puntaje:** (1 − λ) · calidad · temporada + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
+- **Un viaje sale de su ciudad:** no se propone dormir en un polo cuya base queda a menos de media hora del origen, y un viaje de un día no cuenta las paradas de la misma ciudad.
+- **Tres rutas con bases distintas:** dos polos pueden dormir en el mismo pueblo (Huaraz sirve a cuatro); la respuesta no repite base.
 
 ## 3 · Lo que el motor garantiza en cada respuesta
 
@@ -59,7 +73,7 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 4. Toda parada enlaza a su ficha oficial de MINCETUR (RNF-01).
 5. Un mes desaconsejado nunca aparece sin aviso, y si se descarta hay una alternativa (RF-01).
 6. Un evento solo aparece si cae dentro de las fechas o del mes del viaje (RF-03).
-7. El presupuesto ordena y advierte, pero nunca esconde una ruta: el viajero decide.
+7. El presupuesto ordena y advierte, pero nunca esconde una ruta: las tres rutas son las mismas con o sin presupuesto; cambian su orden y sus avisos. El viajero decide.
 8. La misma consulta con la misma `version_datos` devuelve exactamente la misma respuesta.
 9. Las rutas son de polos distintos.
 10. Un dato que la fuente no trae viaja como `null`, nunca como un número inventado: la jerarquía que MINCETUR no asignó, la tarifa que la ficha no publica.
@@ -69,11 +83,13 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 | Método y ruta | Qué hace | Desde |
 |---|---|---|
 | `GET /v1/salud` | Estado, versión del servicio y de los datos | Ya |
-| `GET /v1/viajes` | Hasta tres viajes para una consulta. Hoy responde 503 hasta que el motor se conecte | Contrato ya; motor en la semana 10 |
-| `GET /v1/opciones` | Orígenes, intereses con sus etiquetas y rangos del formulario, para no fijarlos en la app | Semana 10 |
-| `GET /v1/polos/{id}` | Ficha de un polo: sus recursos, su clima mes a mes y sus eventos | Semana 10 |
-| `GET /v1/eventos` | Eventos por polo y rango de fechas | Semana 10 |
-| `POST /v1/eventos` | Un municipio u oficina de destino publica un evento. Exige la cabecera `X-Clave-Publicador` | Semana 10 |
+| `GET /v1/viajes` | Hasta tres viajes para una consulta | 1.1 |
+| `GET /v1/opciones` | Orígenes, intereses con sus etiquetas y cuántas paradas atienden, y rangos del formulario, para no fijarlos en la app | 1.1 |
+| `GET /v1/polos/{id}` | Ficha de un polo: sus paradas de mayor a menor jerarquía, su clima mes a mes y sus eventos de los próximos doce meses | 1.1 |
+| `GET /v1/eventos?desde=…&hasta=…&polo=…` | Eventos entre dos fechas (hasta un año), de un polo o de todos. Hoy, los del inventario | 1.1 |
+| `POST /v1/eventos` | Un municipio u oficina de destino publica un evento. Exige la cabecera `X-Clave-Publicador` | Semana 10, con la tabla de DynamoDB |
+
+Sin los artefactos del motor (`dreemgo/datos/`), las consultas de datos responden 503 y `/v1/salud` dice `version_datos: null`.
 
 ## 5 · Cómo encaja con lo que ya diseñamos
 

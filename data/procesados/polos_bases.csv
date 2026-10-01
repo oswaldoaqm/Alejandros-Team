@@ -1,0 +1,223 @@
+﻿polo;base;lat;lon;lugar;capital_de_distrito;hospedajes_osm;criterio;paradas;paradas_con_camino;minutos_medios;altitud_m;altitud_fuente
+0;Tingo María;-9.3;-76.0;pueblo;True;16;carretera;44;44;54.8;647.0;osm
+1;Canchaque;-5.4;-79.6;caserío;True;12;carretera;28;28;118.4;1199.0;osm
+2;Cajamarca;-7.2;-78.5;ciudad;True;54;carretera;15;15;91.3;2722.0;osm
+3;Challhuahuacho;-14.1;-72.2;pueblo;True;1;carretera;18;18;154.1;3698.0;osm
+4;Machupicchu Pueblo;-13.2;-72.5;pueblo;True;112;carretera;19;17;75.0;2047.0;osm
+5;Picoy;-10.9;-76.7;caserío;False;1;carretera;18;18;153.5;2856.0;recursos_a_2_km
+6;Máncora;-4.1;-81.0;pueblo;True;81;carretera;21;20;135.3;8.0;osm
+7;Chachapoyas;-6.2;-77.9;pueblo;True;32;carretera;21;20;85.7;2338.0;osm
+8;San Marcos;-9.5;-77.2;pueblo;True;13;carretera;21;21;76.9;2964.0;osm
+9;Paucartambo;-10.8;-75.8;pueblo;True;2;carretera;8;8;29.9;2931.0;osm
+10;Ayacucho;-13.2;-74.2;ciudad;True;125;carretera;31;31;84.9;2750.0;osm
+11;Puno;-15.8;-70.0;ciudad;True;114;carretera;46;45;44.1;3830.0;osm
+12;Macusani;-14.1;-70.4;pueblo;True;2;carretera;3;3;93.9;4321.0;osm
+13;Huallchancca;-13.6;-74.2;caserío;False;1;carretera;20;18;112.7;;
+14;Huaraz;-9.5;-77.5;ciudad;True;156;carretera;16;14;82.7;3061.0;osm
+15;Huánuco;-9.9;-76.2;ciudad;True;85;carretera;15;15;57.7;1899.0;osm
+16;San Juan del Oro;-14.2;-69.2;caserío;True;1;carretera;11;11;70.4;1318.0;osm
+17;Vilcas Huamán;-13.7;-74.0;pueblo;True;4;carretera;30;30;128.2;3476.0;osm
+18;Abancay;-13.6;-72.9;ciudad;True;34;carretera;34;31;89.0;2380.0;osm
+19;Huamachuco;-7.8;-78.0;pueblo;True;11;carretera;30;30;80.8;3176.0;osm
+20;Quesquere;-17.1;-70.2;caserío;False;0;carretera;11;11;54.0;;
+21;Tarapoto;-6.5;-76.4;ciudad;True;79;carretera;34;34;45.8;332.0;osm
+22;Jesús;-10.1;-76.6;pueblo;True;3;carretera;35;35;118.1;3484.0;osm
+23;Sibayo;-15.5;-71.5;caserío;True;9;carretera;15;15;36.6;3819.0;osm
+24;Pispitayoc;-12.8;-72.6;caserío;False;2;carretera;20;20;89.1;;
+25;Íllimo;-6.5;-79.9;pueblo;True;1;carretera;35;34;36.6;56.0;osm
+26;San Miguel de Coroise;-16.4;-70.7;caserío;False;1;carretera;30;29;79.6;3524.0;recursos_a_2_km
+27;Nasca;-14.8;-74.9;pueblo;True;41;carretera;25;25;51.5;593.0;osm
+28;Marcapomacocha;-11.4;-76.3;caserío;True;2;carretera;34;33;87.8;4421.0;osm
+29;Virginniyoc;-15.0;-71.6;caserío;True;1;carretera;11;11;37.9;4089.0;osm
+30;Cerro de Pasco;-10.7;-76.3;pueblo;True;11;carretera;40;40;42.2;4340.0;osm
+31;Miraflores;-12.1;-77.0;barrio;True;310;carretera;217;216;23.3;94.0;osm
+32;Nuevo Chimbote;-9.1;-78.5;ciudad;True;41;carretera;24;24;31.3;23.0;osm
+33;Huancayo;-12.1;-75.2;ciudad;True;102;carretera;113;113;33.3;3256.0;osm
+34;Moquegua;-17.2;-70.9;ciudad;True;17;carretera;13;13;129.5;1427.0;osm
+36;Cuzco;-13.5;-72.0;ciudad;True;442;carretera;88;88;43.5;3400.0;osm
+37;Huarmey;-10.1;-78.2;pueblo;True;28;carretera;27;27;48.2;11.0;osm
+38;Ayaviri;-14.9;-70.6;pueblo;True;10;carretera;28;28;57.0;3918.0;osm
+39;Pillcopata;-12.9;-71.4;caserío;True;10;carretera;7;3;30.4;524.0;osm
+40;Arequipa;-16.4;-71.5;ciudad;True;270;carretera;17;17;81.3;2347.0;osm
+41;Pedro Ruiz Gallo;-5.9;-78.0;pueblo;True;6;carretera;14;14;86.5;1307.0;osm
+42;Chilete;-7.2;-78.8;caserío;True;1;carretera;21;21;113.5;850.0;osm
+43;Huaraz;-9.5;-77.5;ciudad;True;156;carretera;37;34;93.0;3061.0;osm
+45;Caballococha;-3.9;-70.5;pueblo;True;2;carretera;10;4;17.6;76.0;osm
+46;Yunguyo;-16.2;-69.1;pueblo;True;3;carretera;47;45;39.3;3845.0;osm
+47;Juanjuí;-7.2;-76.7;pueblo;True;1;carretera;10;10;40.4;275.0;osm
+48;Llochegua;-12.4;-73.9;pueblo;True;2;carretera;15;14;55.0;518.0;osm
+49;Víctor Andrés Belaúnde;-16.4;-73.1;caserío;False;2;carretera;5;5;47.2;12.0;recursos_a_2_km
+50;Huánuco;-9.9;-76.2;ciudad;True;85;carretera;31;31;54.3;1899.0;osm
+51;Montero;-4.6;-79.8;caserío;True;3;carretera;12;12;121.2;1065.0;osm
+52;Cachicadán;-8.1;-78.1;caserío;True;2;carretera;22;22;128.0;2887.0;osm
+53;San Jerónimo de Surco;-11.9;-76.4;caserío;True;1;carretera;13;13;55.3;2017.0;osm
+54;Huancavelica;-12.8;-75.0;pueblo;True;14;carretera;31;31;60.2;3681.0;osm
+55;Arequipa;-16.4;-71.5;ciudad;True;270;carretera;50;50;19.6;2347.0;osm
+56;Tinco - Alis;-12.3;-75.8;caserío;False;3;carretera;16;16;83.7;;
+59;Cuzco;-13.5;-72.0;ciudad;True;442;carretera;51;51;57.4;3400.0;osm
+60;Chulucanas;-5.1;-80.2;pueblo;True;7;carretera;25;25;41.3;99.0;osm
+61;Yurimaguas;-5.9;-76.1;pueblo;True;10;carretera;12;10;49.6;150.0;osm
+62;Puerto Maldonado;-12.6;-69.2;ciudad;True;19;carretera;19;17;31.7;205.0;osm
+63;Chavín de Huántar;-9.6;-77.2;caserío;True;11;carretera;14;14;75.0;3143.0;osm
+65;Pucallpa;-8.4;-74.5;ciudad;True;53;carretera;13;12;91.6;153.0;osm
+66;Iscozacín;-10.2;-75.1;caserío;True;2;carretera;11;10;96.8;282.0;osm
+67;Cascas;-7.5;-78.8;pueblo;True;5;carretera;6;6;35.8;1276.0;osm
+68;Tacna;-18.0;-70.3;ciudad;True;142;carretera;26;26;30.8;577.0;osm
+69;Agallpampa;-8.0;-78.5;caserío;True;2;carretera;16;16;64.5;3125.0;osm
+70;Huacho;-11.1;-77.6;ciudad;True;46;carretera;36;36;32.1;35.0;osm
+71;Yanque;-15.6;-71.7;caserío;True;19;carretera;42;42;33.6;3428.0;osm
+72;Carhuaz;-9.3;-77.6;pueblo;True;18;carretera;14;14;34.2;2640.0;osm
+73;Santa Ines;-13.2;-75.1;caserío;False;1;carretera;5;4;60.4;;
+74;Jaén;-5.7;-78.8;ciudad;True;21;carretera;8;8;57.4;731.0;osm
+75;Andagua;-15.5;-72.4;caserío;True;4;carretera;16;16;97.5;3573.0;osm
+77;Huayhuay;-11.7;-75.9;caserío;True;0;carretera;9;9;46.1;3974.0;osm
+78;Queropalca;-10.2;-76.8;caserío;True;0;carretera;3;1;52.5;3824.0;osm
+79;Andahuaylas;-13.7;-73.4;ciudad;True;21;carretera;27;27;30.0;2930.0;osm
+82;Aguaytía;-9.0;-75.5;pueblo;True;8;carretera;11;11;50.2;279.0;osm
+83;Urcos;-13.7;-71.6;pueblo;True;10;carretera;29;29;99.9;3152.0;osm
+84;Chirumpiari;-12.8;-73.6;caserío;True;0;carretera;17;17;98.9;;
+85;Los Órganos;-4.2;-81.1;pueblo;True;15;carretera;25;25;44.8;9.0;osm
+86;Moyobamba;-6.0;-77.0;pueblo;True;48;carretera;47;47;40.1;874.0;osm
+87;Lampa;-15.4;-70.4;pueblo;True;7;carretera;6;6;76.1;3873.0;osm
+88;Cotaruse;-14.4;-73.2;caserío;True;1;carretera;14;14;91.1;3254.0;osm
+89;Celendín;-6.9;-78.1;pueblo;True;15;carretera;7;7;166.5;2628.0;osm
+90;Pucayacu;-8.7;-76.1;caserío;True;0;carretera;11;11;47.6;553.0;osm
+91;Iñapari;-10.9;-69.6;pueblo;True;5;carretera;10;10;54.6;236.0;osm
+92;Bambamarca;-6.7;-78.5;pueblo;True;2;carretera;18;18;81.3;2532.0;osm
+93;Quispillacta;-13.6;-74.4;caserío;False;3;carretera;15;15;116.5;3143.0;recursos_a_2_km
+94;Bajo Pichanaqui;-10.9;-74.9;pueblo;True;1;carretera;33;33;53.6;505.0;osm
+95;Chuquibambilla;-14.1;-72.7;pueblo;True;0;carretera;8;8;93.9;3327.0;osm
+96;Oxapampa;-10.6;-75.4;pueblo;True;24;carretera;39;39;35.6;1814.0;osm
+97;Cuchumbaya;-16.8;-70.7;caserío;True;0;carretera;8;8;25.6;3145.0;osm
+98;Ayacucho;-13.2;-74.2;ciudad;True;125;carretera;74;74;39.9;2750.0;osm
+99;Chiclayo;-6.8;-79.8;ciudad;True;86;carretera;61;61;32.4;35.0;osm
+100;Catac;-9.8;-77.4;caserío;True;5;carretera;15;15;66.8;3556.0;osm
+101;Tocache;-8.2;-76.5;pueblo;True;2;carretera;7;7;47.7;501.0;osm
+102;Usicayos;-14.1;-70.0;caserío;True;0;carretera;9;9;97.5;3771.0;osm
+103;Ollantaytambo;-13.3;-72.3;pueblo;True;105;carretera;7;7;125.9;2846.0;osm
+104;Vitis;-12.2;-75.8;caserío;True;11;carretera;32;32;54.6;3602.0;osm
+105;Lunahuaná;-13.0;-76.1;pueblo;True;25;carretera;39;39;39.6;480.0;osm
+106;La Pampa;-16.6;-72.7;pueblo;True;18;carretera;20;20;46.3;23.0;osm
+107;Pausa;-15.3;-73.3;pueblo;True;4;carretera;5;5;77.3;2507.0;osm
+108;Otuzco;-7.9;-78.6;pueblo;True;1;carretera;10;10;98.5;2652.0;osm
+109;Contamana;-7.4;-75.0;pueblo;True;1;carretera;11;9;37.7;133.0;osm
+110;Huayllay;-11.0;-76.4;pueblo;True;8;carretera;16;16;114.0;4312.0;osm
+111;Mazamari;-11.3;-74.5;pueblo;True;3;carretera;20;20;31.1;678.0;osm
+112;Huaraz;-9.5;-77.5;ciudad;True;156;carretera;1;1;87.7;3061.0;osm
+113;Caravelí;-15.8;-73.4;pueblo;True;0;carretera;11;11;25.4;1766.0;osm
+114;Tarma;-11.4;-75.7;pueblo;True;6;carretera;12;12;45.4;3061.0;osm
+115;Moquegua;-17.2;-70.9;ciudad;True;17;carretera;44;44;32.2;1427.0;osm
+116;Tinco - Alis;-12.3;-75.8;caserío;False;3;carretera;12;9;96.7;;
+117;Colán;-5.0;-81.1;caserío;False;7;carretera;27;27;32.6;9.0;recursos_a_2_km
+120;Yauca;-15.7;-74.5;caserío;True;2;carretera;12;12;48.0;24.0;osm
+121;Tumbes;-3.6;-80.5;ciudad;True;31;carretera;41;41;39.1;9.0;osm
+122;Pacaipampa;-5.0;-79.7;caserío;True;0;carretera;13;13;133.2;1971.0;osm
+123;Atalaya;-10.7;-73.8;pueblo;True;3;carretera;7;7;102.9;219.0;osm
+124;Curahuasi;-13.5;-72.7;pueblo;True;16;carretera;8;8;126.2;2691.0;osm
+125;Piura;-5.2;-80.6;ciudad;True;96;carretera;28;28;38.0;36.0;osm
+126;La Unión;-9.8;-76.8;pueblo;True;19;carretera;14;14;45.3;3210.0;osm
+128;Moho;-15.4;-69.5;pueblo;True;3;carretera;21;19;38.9;3892.0;osm
+129;Puerto Maldonado;-12.6;-69.2;ciudad;True;19;carretera;10;1;94.7;205.0;osm
+131;Lanlacuni Bajo;-13.4;-70.4;caserío;True;0;carretera;12;10;60.5;629.0;osm
+132;Ayabaca;-4.6;-79.7;pueblo;True;12;carretera;5;5;70.9;2714.0;osm
+133;San Ignacio;-5.1;-79.0;pueblo;True;11;carretera;18;18;60.3;1281.0;osm
+134;Chiquián;-10.2;-77.2;pueblo;True;6;carretera;5;5;159.1;3384.0;osm
+135;Motupe;-6.2;-79.7;pueblo;True;8;carretera;10;10;35.9;132.0;osm
+136;Fundo El Castillo;-16.0;-72.5;caserío;False;1;carretera;12;12;31.5;;
+137;Tinki;-13.7;-71.3;caserío;False;3;carretera;31;28;118.7;3865.0;recursos_a_2_km
+138;Sicuani;-14.3;-71.2;pueblo;True;18;carretera;16;16;62.1;3554.0;osm
+139;Trujillo;-8.1;-79.0;ciudad;True;188;carretera;32;32;17.1;37.0;osm
+140;Juli;-16.2;-69.5;pueblo;True;4;carretera;35;35;32.9;3887.0;osm
+141;Shivankoreni;-11.7;-72.9;caserío;False;1;linea_recta;12;0;;324.0;recursos_a_2_km
+142;Ñacoreque Chico;-14.4;-69.5;caserío;False;1;carretera;5;5;70.2;;
+146;San Juan de Marcona;-15.4;-75.2;pueblo;True;6;carretera;11;11;29.6;32.0;osm
+147;Sangalle;-15.6;-72.0;caserío;False;29;carretera;5;5;73.9;2215.0;recursos_a_2_km
+148;Chalhuanca;-14.3;-73.2;pueblo;True;2;carretera;10;10;122.6;2910.0;osm
+149;Cajamarca;-7.2;-78.5;ciudad;True;54;carretera;42;42;22.7;2722.0;osm
+150;Iquitos;-3.7;-73.2;ciudad;True;86;carretera;57;54;18.7;106.0;osm
+151;La Merced;-11.1;-75.3;pueblo;True;5;carretera;54;54;60.3;777.0;osm
+152;Sicre;-13.0;-72.5;caserío;False;9;carretera;9;9;123.9;1731.0;recursos_a_2_km
+153;Huancabamba;-5.2;-79.5;pueblo;True;3;carretera;9;9;98.9;1937.0;osm
+157;Jaén;-5.7;-78.8;ciudad;True;21;carretera;8;8;121.3;731.0;osm
+158;Sapalache;-5.1;-79.4;caserío;True;1;carretera;22;14;84.9;2461.0;osm
+160;Huacrachuco;-8.6;-77.1;pueblo;True;11;carretera;6;6;167.7;2898.0;osm
+161;Pacasmayo;-7.4;-79.6;pueblo;True;27;carretera;25;25;18.5;13.0;osm
+162;Imata;-15.8;-71.1;caserío;False;1;carretera;7;7;75.4;;
+163;Sicuani;-14.3;-71.2;pueblo;True;18;carretera;6;6;70.2;3554.0;osm
+164;Chilcas;-13.2;-73.9;caserío;True;0;carretera;16;16;108.3;3194.0;osm
+165;San Andrés de Tupicocha;-12.0;-76.5;caserío;True;3;carretera;45;45;129.5;3302.0;osm
+166;Santa Cruz de Succhabamba;-6.6;-78.9;pueblo;True;0;carretera;10;10;80.2;2025.0;osm
+167;Andamarca;-14.4;-74.0;caserío;True;2;carretera;25;25;57.5;3453.0;osm
+168;Sayán;-11.1;-77.2;pueblo;True;0;carretera;10;10;14.4;675.0;osm
+169;Caraz;-9.0;-77.8;pueblo;True;89;carretera;14;10;145.1;2264.0;osm
+170;Huánuco;-9.9;-76.2;ciudad;True;85;carretera;10;10;114.6;1899.0;osm
+171;Huanta;-12.9;-74.2;pueblo;True;8;carretera;10;10;119.4;2633.0;osm
+172;Jauja;-11.8;-75.5;pueblo;True;13;carretera;65;65;47.7;3392.0;osm
+173;Urubamba;-13.3;-72.1;pueblo;True;93;carretera;22;20;50.2;2872.0;osm
+176;Omate;-16.7;-71.0;pueblo;True;2;carretera;8;8;31.0;2183.0;osm
+177;Mollendo;-17.0;-72.0;pueblo;True;14;carretera;34;34;27.6;38.0;osm
+178;Chincha Alta;-13.4;-76.1;ciudad;True;27;carretera;13;13;29.3;103.0;osm
+180;Paracas;-13.8;-76.2;pueblo;True;59;carretera;23;22;27.7;8.0;osm
+181;Macusani;-14.1;-70.4;pueblo;True;2;carretera;14;14;81.1;4321.0;osm
+183;Puerto Inca;-9.4;-75.0;caserío;True;1;carretera;14;12;39.9;209.0;osm
+184;Concepción;-11.9;-75.3;pueblo;True;8;carretera;7;7;89.3;3286.0;osm
+185;Cahuacho;-15.5;-73.5;caserío;True;0;carretera;5;5;122.5;3409.0;osm
+187;Ilo;-17.6;-71.3;pueblo;True;7;carretera;30;29;23.3;22.0;osm
+188;Sihuas;-8.6;-77.6;pueblo;True;6;carretera;7;7;81.3;2730.0;osm
+189;Nauta;-4.5;-73.6;pueblo;True;9;carretera;9;5;28.1;101.0;osm
+190;Mazo Cruz;-16.7;-69.7;caserío;True;3;carretera;5;5;76.8;3981.0;osm
+192;Naranjos;-5.7;-77.5;pueblo;True;0;carretera;5;4;28.4;958.0;osm
+193;Sausacocha;-7.8;-78.0;caserío;False;2;carretera;10;10;109.9;3200.0;recursos_a_2_km
+194;Condorccocha;-13.4;-74.2;caserío;False;1;carretera;10;10;73.9;;
+195;La Curva;-16.5;-71.8;caserío;False;1;carretera;5;5;58.9;;
+198;Boca Manu;-12.3;-70.9;caserío;True;3;carretera;7;1;12.5;284.0;osm
+199;Mala;-12.7;-76.6;pueblo;True;7;carretera;38;38;24.9;34.0;osm
+201;Pozuzo;-10.1;-75.6;caserío;True;13;carretera;14;14;35.6;731.0;osm
+202;Pucallpa;-8.4;-74.5;ciudad;True;53;carretera;26;25;34.9;153.0;osm
+203;Abancay;-13.6;-72.9;ciudad;True;34;carretera;21;21;26.1;2380.0;osm
+204;Cerro de Pasco;-10.7;-76.3;pueblo;True;11;carretera;36;36;82.1;4340.0;osm
+205;Lima;-12.0;-77.0;ciudad;True;126;carretera;7;7;59.0;161.0;osm
+206;Pampa Baja;-17.9;-71.0;caserío;False;1;carretera;5;5;36.7;40.0;recursos_a_2_km
+207;Chachapoyas;-6.2;-77.9;pueblo;True;32;carretera;21;21;47.2;2338.0;osm
+208;Kimbiri;-12.6;-73.8;pueblo;True;8;carretera;56;56;40.3;580.0;osm
+211;Tarata;-17.5;-70.0;pueblo;True;4;carretera;10;10;52.9;3082.0;osm
+213;Huaraz;-9.5;-77.5;ciudad;True;156;carretera;27;27;27.8;3061.0;osm
+214;Chancay;-11.6;-77.3;pueblo;True;20;carretera;20;19;24.2;45.0;osm
+217;Santa Eulalia;-11.9;-76.7;pueblo;True;4;carretera;13;13;118.2;1024.0;osm
+218;Sullana;-4.9;-80.7;ciudad;True;12;carretera;8;8;27.2;61.0;osm
+219;Canta;-11.5;-76.6;pueblo;True;3;carretera;10;10;97.5;2838.0;osm
+221;Puerto Maldonado;-12.6;-69.2;ciudad;True;19;carretera;6;2;104.3;205.0;osm
+222;Omia;-6.5;-77.4;caserío;True;0;carretera;7;7;97.3;1365.0;osm
+223;Uripa;-13.5;-73.7;pueblo;True;6;carretera;7;7;85.9;3210.0;osm
+224;Saniriato;-12.3;-72.9;caserío;False;1;linea_recta;9;0;;;
+225;Sepahua;-11.1;-73.0;pueblo;True;3;carretera;10;7;24.2;280.0;osm
+226;Imperial;-12.3;-75.1;caserío;False;1;carretera;13;13;84.5;3676.0;recursos_a_2_km
+227;Pisac;-13.4;-71.9;pueblo;True;42;carretera;10;10;66.1;2977.0;osm
+230;Codo de Pozuzo;-9.7;-75.5;caserío;True;0;carretera;7;7;29.5;373.0;osm
+232;Putina;-14.9;-69.9;pueblo;True;8;carretera;11;11;34.7;3868.0;osm
+233;Chongos Alto;-12.3;-75.3;caserío;True;0;carretera;25;25;49.7;3542.0;osm
+234;Pampas;-8.2;-77.9;caserío;True;3;carretera;13;13;120.7;3199.0;osm
+235;Quillabamba;-12.9;-72.7;pueblo;True;14;carretera;18;18;38.3;1053.0;osm
+238;San Juan de Churín;-10.8;-76.9;caserío;True;8;carretera;7;7;36.4;2264.0;osm
+239;San Martín de Pangoa;-11.4;-74.5;pueblo;True;2;carretera;8;8;53.5;773.0;osm
+240;Ica;-14.1;-75.7;ciudad;True;102;carretera;25;25;19.3;418.0;osm
+241;Omate;-16.7;-71.0;pueblo;True;2;linea_recta;2;0;;2183.0;osm
+244;Chacas;-9.2;-77.4;pueblo;True;9;carretera;13;13;106.3;3367.0;osm
+245;Mazán;-3.5;-73.1;pueblo;True;2;linea_recta;6;0;;94.0;osm
+246;Quilca;-16.7;-72.4;caserío;True;1;carretera;10;10;32.7;76.0;osm
+248;La Florida;-16.2;-73.6;caserío;False;7;carretera;7;7;13.4;4.0;recursos_a_2_km
+249;Moquegua;-17.2;-70.9;ciudad;True;17;carretera;9;9;75.9;1427.0;osm
+251;Sihuas;-8.6;-77.6;pueblo;True;6;carretera;6;6;113.0;2730.0;osm
+252;Chalhuanca;-14.3;-73.2;pueblo;True;2;carretera;5;5;23.5;2910.0;osm
+253;Ayacucho;-13.2;-74.2;ciudad;True;125;carretera;11;11;154.2;2750.0;osm
+254;Cajatambo;-10.5;-77.0;pueblo;True;3;carretera;11;10;252.5;3386.0;osm
+256;Combapata;-14.1;-71.4;caserío;True;6;carretera;25;25;41.5;3480.0;osm
+257;Chirumpiari;-12.8;-73.6;caserío;True;0;carretera;24;23;123.5;;
+258;Huicungo;-7.3;-76.8;pueblo;True;0;carretera;13;6;14.6;297.0;osm
+259;Villa Pampilla;-12.1;-76.5;caserío;False;8;carretera;16;16;123.5;;
+261;Junín;-11.2;-76.0;pueblo;True;6;carretera;9;9;57.0;4118.0;osm
+264;Andamarca;-14.4;-74.0;caserío;True;2;carretera;6;6;56.8;3453.0;osm
+265;Cotahuasi;-15.2;-72.9;pueblo;True;11;carretera;4;4;23.8;2687.0;osm
+268;Tanta;-12.1;-76.0;caserío;True;2;carretera;18;18;73.6;4271.0;osm
+273;Patambuco;-14.4;-69.6;caserío;True;0;carretera;5;5;77.6;3582.0;osm
+274;Puno;-15.8;-70.0;ciudad;True;114;carretera;35;32;56.1;3830.0;osm

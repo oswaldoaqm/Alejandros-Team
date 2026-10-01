@@ -1,0 +1,62 @@
+{
+  "archivos": {
+    "costos.json": "ef1a2aa92c805da5504048b508cbb7ce3d94d476f010c8649fdbed36a4a8a48a",
+    "eventos.json.gz": "29c5754d7313cd50cf9d46e8ad98d1454233f288a87667ab95e0dc6bd629df8c",
+    "origenes.json.gz": "b7fd55ec6da065812655facd6927093bbc750936cb244f68a71fa1ee9ff7a57b",
+    "polos.json.gz": "8f302ccfb1934acea466147b068b64a014a6f6ccebcf623f83da35d210bf9401",
+    "recursos.json.gz": "47874016d9f849404e0dd19400664054f44edd751ea4de08aae6570ae886993e"
+  },
+  "atribucion": [
+    "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
+    "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
+    "Red vial, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
+  ],
+  "fuentes": {
+    "clima": {
+      "polos_con_clima_regional": 186,
+      "polos_con_su_clima": 36
+    },
+    "inventario": {
+      "fecha_corte": "2026-09-29"
+    },
+    "osm": {
+      "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+      "md5": "faea114a828e7a306a5010f985c1320b"
+    }
+  },
+  "intereses": {
+    "arquitectura": {
+      "etiqueta": "Arquitectura urbana",
+      "paradas": 1059
+    },
+    "aventura": {
+      "etiqueta": "Aventura",
+      "paradas": 487
+    },
+    "caminatas": {
+      "etiqueta": "Caminatas",
+      "paradas": 1915
+    },
+    "fiestas": {
+      "etiqueta": "Fiestas y cultura viva",
+      "paradas": 1393
+    },
+    "gastronomia": {
+      "etiqueta": "Gastronomía",
+      "paradas": 534
+    },
+    "historia": {
+      "etiqueta": "Historia y arqueología",
+      "paradas": 956
+    },
+    "naturaleza": {
+      "etiqueta": "Naturaleza",
+      "paradas": 2562
+    },
+    "playa": {
+      "etiqueta": "Playa",
+      "paradas": 214
+    }
+  },
+  "version_datos": "2026.10.1"
+}

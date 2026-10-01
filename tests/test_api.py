@@ -7,6 +7,10 @@ from fastapi.testclient import TestClient
 
 from dreemgo import __version__
 from dreemgo.api.app import app
+from dreemgo.contrato import VERSION_CONTRATO, PoloDetalle, Respuesta
+from dreemgo.motor import datos as artefactos
+
+con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 
 
 @pytest.fixture(scope="module")
@@ -17,12 +21,18 @@ def cliente():
 def test_salud(cliente):
     r = cliente.get("/v1/salud")
     assert r.status_code == 200
-    assert r.json() == {"estado": "ok", "version": __version__, "version_contrato": "1.0", "version_datos": None}
+    version_datos = artefactos.cargar().version if artefactos.hay_datos() else None
+    assert r.json() == {
+        "estado": "ok",
+        "version": __version__,
+        "version_contrato": VERSION_CONTRATO,
+        "version_datos": version_datos,
+    }
 
 
 def test_el_esquema_publica_el_contrato(cliente):
     esquemas = cliente.get("/v1/openapi.json").json()["components"]["schemas"]
-    for modelo in ("Respuesta", "Ruta", "Dia", "Parada", "Recurso", "Costo", "Evento"):
+    for modelo in ("Respuesta", "Ruta", "Dia", "Parada", "Recurso", "Costo", "Evento", "Opciones", "PoloDetalle"):
         assert modelo in esquemas
 
 
@@ -58,7 +68,56 @@ def test_parametro_desconocido(cliente):
 
 def test_intereses_repetidos_en_la_url(cliente):
     r = cliente.get("/v1/viajes", params=[("mes", 7), ("intereses", "playa"), ("intereses", "historia")])
-    assert r.status_code == 503  # consulta válida; el motor aún no está conectado
+    if artefactos.hay_datos():
+        assert r.status_code == 200
+        assert r.json()["consulta"]["intereses"] == ["playa", "historia"]
+    else:
+        assert r.status_code == 503
+
+
+@con_datos
+def test_viaje_cumple_el_contrato(cliente):
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 4, "intereses": "historia"})
+    assert r.status_code == 200
+    respuesta = Respuesta.model_validate(r.json())
+    assert 1 <= len(respuesta.rutas) <= 3
+    assert respuesta.version_datos == artefactos.cargar().version
+
+
+@con_datos
+def test_origen_desconocido(cliente):
+    r = cliente.get("/v1/viajes", params={"origen": "marte", "mes": 7})
+    assert r.status_code == 422
+    assert r.json()["detail"][0]["campo"] == "origen"
+
+
+@con_datos
+def test_opciones(cliente):
+    r = cliente.get("/v1/opciones").json()
+    assert len(r["origenes"]) == 24 and r["origenes"][0]["id"] == "lima"
+    assert [i["id"] for i in r["intereses"]][:2] == ["naturaleza", "historia"]
+    assert r["dias"] == {"minimo": 1, "maximo": 14, "defecto": 6}
+
+
+@con_datos
+def test_ficha_de_un_polo(cliente):
+    r = cliente.get("/v1/polos/70")
+    assert r.status_code == 200
+    detalle = PoloDetalle.model_validate(r.json())
+    assert [c.mes for c in detalle.clima] == list(range(1, 13))
+    jerarquias = [x.jerarquia or 0 for x in detalle.recursos]
+    assert jerarquias == sorted(jerarquias, reverse=True)
+    assert cliente.get("/v1/polos/99999").status_code == 404
+
+
+@con_datos
+def test_eventos_entre_dos_fechas(cliente):
+    r = cliente.get("/v1/eventos", params={"desde": "2027-07-01", "hasta": "2027-07-31"})
+    assert r.status_code == 200
+    eventos = r.json()["eventos"]
+    assert eventos and all(e["fecha_inicio"] <= "2027-07-31" and e["fecha_fin"] >= "2027-07-01" for e in eventos)
+    assert cliente.get("/v1/eventos", params={"desde": "2027-07-31", "hasta": "2027-07-01"}).status_code == 422
+    assert cliente.get("/v1/eventos", params={"desde": "2027-01-01", "hasta": "2028-06-01"}).status_code == 422
 
 
 def test_cors_para_la_app(cliente):

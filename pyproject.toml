@@ -25,6 +25,8 @@ pipeline = [
     "requests>=2.32",
     "lxml>=5.0",
     "scikit-learn==1.8.0",
+    "scipy>=1.13",
+    "osmium>=4.0",
 ]
 dev = [
     "httpx2>=2.13",
@@ -38,6 +40,9 @@ Repositorio = "https://github.com/oswaldoaqm/Alejandros-Team"
 
 [tool.setuptools.packages.find]
 include = ["dreemgo*"]
+
+[tool.setuptools.package-data]
+dreemgo = ["datos/*.json", "datos/*.json.gz"]
 
 [tool.ruff]
 line-length = 120
