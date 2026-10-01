@@ -1,0 +1,27 @@
+# 0009 · El viaje es una estrella desde la base de un polo
+
+**Fecha:** 1 de octubre de 2026 · **Estado:** vigente
+
+## Contexto
+
+TA-04 (semana 6) armaba los días desde un «punto base» que era el recurso con menor tiempo de acceso de su ficha: un museo o una laguna, no un lugar donde dormir. Con la red vial ya se puede medir cuánto cuesta salir de cada pueblo a cada parada, y OpenStreetMap registra unos 8 000 hoteles, hostales y casas de huéspedes en el Perú. Hacía falta decidir dónde se duerme, cómo se reparten los días y cómo se ordenan los polos.
+
+## Decisión
+
+- **Una base por polo**, un pueblo real de OSM: el que deja las paradas más cerca en minutos por carretera (promedio pesado por jerarquía), con 5 minutos a favor por cada vez que se duplica el hospedaje registrado a menos de 3 km, hasta 25, y un recargo si no hay ninguno ([`pipeline/bases.py`](../../pipeline/bases.py)). Así el polo de Machu Picchu duerme en Machupicchu Pueblo y no en un caserío mejor centrado.
+- **El viaje es una estrella:** ida, días de paseo que salen de la base y vuelven, y vuelta. Más de 8 horas de carretera se parten en partes iguales y se duerme a mitad de camino. Ninguna jornada pasa de 8 horas ni de seis paradas.
+- **Qué visitar y en qué orden** es orientación por equipos: inserción voraz por valor por minuto, 2-opt y tres arranques, de los que queda el de más valor.
+- **El puntaje** es el de la semana 6 con la calidad medida sobre el itinerario: (1 − λ) · calidad · temporada + λ · novedad, λ = 0,3. La lejanía de la novedad es el tiempo por carretera desde la ciudad de origen de la región del polo.
+- **Un viaje sale de su ciudad:** no se duerme a menos de media hora del origen.
+
+## Alternativas descartadas
+
+- **Cambiar de hospedaje cada noche** (un camino abierto): en polos de menos de 80 km de diámetro nadie lo hace, y multiplica las combinaciones.
+- **Dormir en la capital de distrito más central**: muchas no registran ningún hospedaje y otras quedan a horas de las paradas que valen más.
+- **Resolver el problema exacto** en cada consulta: con 40 candidatas y hasta 14 días no cabe en el segundo de respuesta. La brecha contra el óptimo exacto se mide en la evaluación de la semana 12.
+
+## Consecuencias
+
+- Un viaje recorre un solo polo. Combinar polos vecinos (el Valle Sagrado y Machu Picchu) es trabajo de la fase 4.
+- Lo que no se alcanza por carretera queda fuera: las islas del Titicaca, el tren a Machu Picchu, los ríos de la Amazonía. Sumar los botes y el tren que registra OSM es la mejora siguiente de la red.
+- Dos polos pueden compartir base (Huaraz sirve a cuatro); la respuesta no repite base entre sus tres rutas.
