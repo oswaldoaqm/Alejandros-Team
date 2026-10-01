@@ -21,6 +21,7 @@
   <node id="40" version="1" lat="-12.005" lon="-76.985">
     <tag k="place" v="village"/>
     <tag k="name" v="Pueblo Prueba"/>
+    <tag k="ele" v="3399"/>
   </node>
   <node id="41" version="1" lat="-12.020" lon="-77.010">
     <tag k="place" v="town"/>
@@ -28,6 +29,17 @@
   </node>
   <node id="42" version="1" lat="-12.030" lon="-77.020">
     <tag k="place" v="hamlet"/>
+  </node>
+  <node id="60" version="1" lat="-12.006" lon="-76.986">
+    <tag k="tourism" v="hotel"/>
+    <tag k="name" v="Hotel Prueba"/>
+  </node>
+  <node id="61" version="1" lat="-12.0200" lon="-77.0120"/>
+  <node id="62" version="1" lat="-12.0200" lon="-77.0110"/>
+  <node id="63" version="1" lat="-12.0210" lon="-77.0110"/>
+  <node id="64" version="1" lat="-12.0210" lon="-77.0120"/>
+  <node id="65" version="1" lat="-12.004" lon="-76.984">
+    <tag k="tourism" v="viewpoint"/>
   </node>
   <way id="10" version="1">
     <nd ref="1"/><nd ref="2"/><nd ref="3"/><nd ref="4"/>
@@ -76,6 +88,11 @@
   <way id="23" version="1">
     <nd ref="50"/><nd ref="51"/><nd ref="52"/>
     <tag k="highway" v="unclassified"/>
+  </way>
+  <way id="24" version="1">
+    <nd ref="61"/><nd ref="62"/><nd ref="63"/><nd ref="64"/><nd ref="61"/>
+    <tag k="tourism" v="hostel"/>
+    <tag k="building" v="yes"/>
   </way>
   <relation id="100" version="1">
     <member type="node" ref="40" role="admin_centre"/>

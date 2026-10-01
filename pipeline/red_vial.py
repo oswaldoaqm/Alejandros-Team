@@ -256,7 +256,7 @@ def _rumbo(lat1, lon1, lat2, lon2):
     return np.degrees(np.arctan2(x, y))
 
 
-# --- Dónde queda cada distrito --------------------------------------------------------
+# --- Capitales, pueblos y hospedajes ----------------------------------------------------
 
 RANGO_LUGAR = {"city": 0, "town": 1, "suburb": 2, "village": 3, "hamlet": 4, "neighbourhood": 5, "locality": 6}
 
@@ -292,17 +292,53 @@ def leer_capitales(pbf: Path):
 
 def leer_lugares(pbf: Path):
     """Nodos ``place`` de OSM con nombre: ciudades, pueblos, caseríos. DataFrame con
-    nombre, lat, lon y rango (0 = ciudad… 6 = paraje)."""
+    nombre, lat, lon, rango (0 = ciudad… 6 = paraje) y la altitud que declara el nodo
+    (``ele``: la tienen todas las ciudades y el 84 % de los pueblos)."""
     import osmium
     import pandas as pd
+
+    from pipeline.texto import leer_altitud
 
     filas = []
     for nodo in osmium.FileProcessor(str(pbf), osmium.osm.NODE).with_filter(osmium.filter.KeyFilter("place")):
         rango = RANGO_LUGAR.get(nodo.tags.get("place", ""))
         nombre = nodo.tags.get("name")
         if rango is not None and nombre and nodo.location.valid():
-            filas.append((nombre, nodo.location.lat, nodo.location.lon, rango))
-    return pd.DataFrame(filas, columns=["nombre", "lat", "lon", "rango"])
+            altitud = leer_altitud(nodo.tags.get("ele"))[0]
+            filas.append((nombre, nodo.location.lat, nodo.location.lon, rango, altitud))
+    return pd.DataFrame(filas, columns=["nombre", "lat", "lon", "rango", "altitud_m"])
+
+
+HOSPEDAJE = ("hotel", "hostel", "guest_house", "motel", "apartment", "chalet")
+
+
+def leer_hospedajes(pbf: Path, indice: str = "flex_mem"):
+    """Hoteles, hostales, casas de huéspedes, moteles y alojamientos turísticos que
+    registra OSM (``tourism``): un punto por establecimiento, el nodo o el promedio de
+    los nodos de su contorno. Sirve para saber en qué pueblos hay dónde dormir.
+
+    DataFrame con tipo, lat y lon."""
+    import osmium
+    import pandas as pd
+
+    filas = []
+    procesador = (
+        osmium.FileProcessor(str(pbf), osmium.osm.NODE | osmium.osm.WAY)
+        .with_locations(indice)
+        .with_filter(osmium.filter.TagFilter(*(("tourism", tipo) for tipo in HOSPEDAJE)))
+    )
+    for objeto in procesador:
+        if objeto.is_node():
+            if objeto.location.valid():
+                filas.append((objeto.tags.get("tourism"), objeto.location.lat, objeto.location.lon))
+            continue
+        puntos = [(nd.lat, nd.lon) for nd in objeto.nodes if nd.location.valid()]
+        if len(puntos) > 1 and puntos[0] == puntos[-1]:
+            puntos = puntos[:-1]  # un contorno cerrado repite su primer nodo al final
+        if puntos:
+            lat, lon = np.mean(puntos, axis=0)
+            filas.append((objeto.tags.get("tourism"), float(lat), float(lon)))
+    return pd.DataFrame(filas, columns=["tipo", "lat", "lon"])
 
 
 # --- Tiempo de cada arista ------------------------------------------------------------
@@ -326,6 +362,17 @@ def _unitarios(lat, lon) -> np.ndarray:
     """Puntos de la esfera como vectores 3D: la distancia euclídea entre ellos crece con la real."""
     p, lam = np.radians(np.asarray(lat, dtype=float)), np.radians(np.asarray(lon, dtype=float))
     return np.column_stack([np.cos(p) * np.cos(lam), np.cos(p) * np.sin(lam), np.sin(p)])
+
+
+def cercanos(lat, lon, puntos_lat, puntos_lon, radio_m: float) -> list[list[int]]:
+    """Para cada (lat, lon), los índices de los ``puntos`` a menos de ``radio_m`` metros."""
+    from scipy.spatial import cKDTree
+
+    if len(puntos_lat) == 0:
+        return [[] for _ in range(len(lat))]
+    arbol = cKDTree(_unitarios(puntos_lat, puntos_lon))
+    cuerda = 2 * np.sin(radio_m / (2 * RADIO_TIERRA_M))
+    return list(arbol.query_ball_point(_unitarios(lat, lon), cuerda))
 
 
 class Ruteador:

@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from pipeline.red_vial import (
@@ -11,6 +12,7 @@ from pipeline.red_vial import (
     Ruteador,
     haversine_m,
     leer_capitales,
+    leer_hospedajes,
     leer_lugares,
     leer_red,
     minutos_por_arista,
@@ -113,4 +115,15 @@ def test_capitales_y_pueblos():
     assert capitales.to_dict("records") == [
         {"distrito": "Distrito de Prueba", "capital": "Pueblo Prueba", "lat": -12.005, "lon": -76.985}
     ]
-    assert sorted(leer_lugares(MINI)["nombre"]) == ["Otro Pueblo", "Pueblo Prueba"]  # sin el caserío sin nombre
+    lugares = leer_lugares(MINI).set_index("nombre")
+    assert sorted(lugares.index) == ["Otro Pueblo", "Pueblo Prueba"]  # sin el caserío sin nombre
+    assert lugares.at["Pueblo Prueba", "altitud_m"] == 3399
+    assert pd.isna(lugares.at["Otro Pueblo", "altitud_m"])
+
+
+def test_hospedajes():
+    hospedajes = leer_hospedajes(MINI)
+    assert sorted(hospedajes["tipo"]) == ["hostel", "hotel"]  # el mirador no es hospedaje
+    hostal = hospedajes[hospedajes["tipo"] == "hostel"].iloc[0]
+    # El centro de su contorno, sin contar dos veces el nodo que lo cierra.
+    assert (hostal["lat"], hostal["lon"]) == pytest.approx((-12.0205, -77.0115))
