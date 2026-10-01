@@ -72,6 +72,15 @@ def test_acceso_cuenta_la_caminata_final():
     assert acceso["ultimo_medio"] == "A pie"
 
 
+def test_acceso_no_suma_las_alternativas_de_un_tramo():
+    # Paracas: el mismo tramo en auto (7 min), en bus (10) o a pie (52) no son tres tramos seguidos
+    acceso = resumen_acceso(ficha(257).tramos)
+    assert (acceso["acceso_km"], acceso["acceso_min"], acceso["caminata_min"]) == (4.4, 7, 0)
+    # Iquitos: 14 km a pie, en mototaxi, en bus o en auto
+    acceso = resumen_acceso(ficha(151).tramos)
+    assert (acceso["acceso_km"], acceso["acceso_min"], acceso["ultimo_medio"]) == (14.0, 35, "Mototaxi")
+
+
 def test_acceso_sin_tramos():
     assert resumen_acceso(ficha(104).tramos)["recorridos"] == 0
 
