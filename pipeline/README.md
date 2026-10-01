@@ -7,6 +7,7 @@ pip install -e ".[pipeline,dev]"
 pytest tests/pipeline
 python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
+python -m pipeline.tiempos   # después del maestro, unos 6 minutos; necesita el extracto de OpenStreetMap
 ```
 
 ## Módulos
@@ -18,6 +19,9 @@ python -m pipeline.eventos   # después del maestro, unos 10 segundos
 | [`inventario.py`](./inventario.py) | Lee el CSV del inventario: codificación Windows-1252, latitud y longitud intercambiadas y el punto decimal corrido de la fila 14707, todo marcado en la columna `coordenada` |
 | [`maestro.py`](./maestro.py) | Une inventario, fichas y polos en [`data/procesados/maestro_v3.csv`](../data/procesados/): una fila por recurso, con cada campo derivado marcado con su fuente, las coordenadas y altitudes a revisar, los intereses y si el recurso puede ser parada |
 | [`eventos.py`](./eventos.py) | Lee en la ficha de cada acontecimiento cuándo se celebra y lo guarda como una regla (un día, un rango, días desde la Pascua, el segundo domingo de abril, un mes), con su precisión, su día central y la frase que la respalda, en [`data/procesados/eventos_v3.csv`](../data/procesados/). [`dreemgo/calendario.py`](../dreemgo/calendario.py) convierte la regla en fechas para el año del viaje |
+| [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red vial: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Ubica la capital de cada distrito y busca el camino más rápido |
+| [`red_calibracion.py`](./red_calibracion.py) | Calibra la velocidad de cada clase de vía con los recorridos de acceso de las fichas y mide el error por validación cruzada |
+| [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): de cada ciudad de origen a cada parada y entre las paradas de cada polo |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
 ## Qué tan bien lee
@@ -49,6 +53,33 @@ Lo que todavía no se lee:
 - Un acontecimiento con dos temporadas al año (la feria de Pacora, en enero y en junio) queda con la primera que da la ficha.
 - Las fechas relativas a otra fiesta ("una semana antes del aniversario") y las lunares.
 - El día central que la ficha nombra sin fecha ("el sábado es el día central").
+
+## Qué tan bien estima los tiempos de viaje
+
+La red del extracto del 30 de septiembre tiene 1,45 millones de vértices y 1,9 millones de aristas: 421 000 km de vías que puede recorrer un auto. Se calibra con los recorridos de acceso de las fichas que van enteros por carretera, sin caminata, bote ni avión (2 588). La partida se ubica en la capital del distrito según OpenStreetMap, y así se ubican 385 de los 389 distritos. Quedan 2 259 recorridos tras quitar los muy cortos (menos de 3 km o 5 minutos) y los de velocidad imposible. En 1 780 la red y la ficha dan casi la misma distancia (la de la red está entre 0,67 y 1,5 veces la de la ficha). En el resto no describen el mismo camino: casi siempre la ficha pone como partida el distrito del recurso, aunque el tramo empiece en otra ciudad.
+
+El error de la red contra el tiempo de la ficha se mide por validación cruzada por distrito de partida: se calibra sin un grupo de distritos y se mide en ellos.
+
+| Distancia | Recorridos | Error medio | Error mediano | Minutos de error (mediana) |
+|---|---:|---:|---:|---:|
+| Hasta 10 km | 291 | 31 % | 25 % | 4 |
+| 10 a 30 km | 427 | 27 % | 23 % | 8 |
+| 30 a 100 km | 560 | 21 % | 16 % | 13 |
+| 100 a 300 km | 434 | 15 % | 13 % | 28 |
+| Más de 300 km | 68 | 15 % | 12 % | 64 |
+| **Todos** | **1 780** | **22 %** | **17 %** | **11** |
+
+Con los mismos recorridos, la fórmula de la semana 6 (línea recta × 1,6 a 32,5 km/h) se equivoca en 48 % en promedio. En los viajes cortos el error relativo es mayor porque las fichas redondean a 5 o 10 minutos, pero en minutos es poco.
+
+Lo calibrado, en [`data/procesados/red_calibracion.json`](../data/procesados/red_calibracion.json):
+
+- **Velocidad por clase de vía:** troncal 58 km/h, primaria 52, secundaria 53, terciaria 38, local 30 y trocha 32. La autopista sale en 48 porque son las vías expresas de Lima, con su tráfico.
+- **Recargos:** 0,3 minutos más por km sin asfaltar y 0,1 por km por cada 100° de giro por km, que es lo que frena en la sierra.
+- **Tiempo fijo:** 7 minutos por traslado, para salir del pueblo, estacionar o subir al bus.
+
+Sin las curvas, el error medio sube a 23,5 %, y sin los minutos fijos, a 25 %: los viajes cortos quedan muy por debajo. Un solo ritmo para todas las vías, o quitar el recargo por km sin asfaltar, casi no cambia el error sobre rutas ya elegidas (22,4 %). Pero las clases hacen falta para elegir la ruta: con un solo ritmo, el camino más rápido sería casi siempre el más corto, aunque fuera una trocha.
+
+La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino por carretera es más de 2,7 veces la distancia en línea recta, y 4 202 pares (2 %) no se unen por carretera. El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
 
 ## Datos personales
 
