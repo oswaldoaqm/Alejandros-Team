@@ -11,7 +11,8 @@ calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-p
 2. Las velocidades por clase se calibran con los recorridos de acceso que publican las
    fichas oficiales (``pipeline/red_calibracion.py``).
 3. Con la red calibrada se calculan los tiempos que usa el motor: de cada ciudad de
-   origen a cada parada, y entre las paradas de cada polo.
+   origen a cada parada y a la base de cada polo, y entre las paradas de cada polo y su
+   base (``pipeline/tiempos.py``).
 
 La red y las tablas que salen de ella son obra derivada de OpenStreetMap (ODbL 1.0,
 © colaboradores de OpenStreetMap).
@@ -432,18 +433,24 @@ class Ruteador:
         a, b = camino[:-1], camino[1:]
         return np.asarray(self._arista[a, b]).ravel().astype(np.int64) - 1
 
-    def entre(self, fuentes, destinos, margen: float | None = 1.0) -> tuple[np.ndarray, np.ndarray]:
+    def entre(self, fuentes, destinos, margen: float | None = 1.0, obligatorios=None) -> tuple[np.ndarray, np.ndarray]:
         """Minutos y km del camino más rápido de cada fuente a cada destino (vértices).
 
         Con ``margen`` (grados), la búsqueda se hace solo en la parte de la red que cae en
         el rectángulo de los puntos más ese margen: para las paradas de un polo, que están a
         menos de 80 km entre sí, es igual de exacta y cien veces más rápida. Si una fuente
         no llega a algún destino dentro del rectángulo, se repite con toda la red.
+
+        ``obligatorios`` (booleano por destino; por defecto, todos) separa los destinos que
+        importan de los que se miden de paso, como los pueblos que podrían ser base: solo
+        los obligatorios fijan el rectángulo y obligan a repetir con toda la red. Un destino
+        de paso que queda fuera del rectángulo o sin camino dentro de él vale ``inf``.
         """
         fuentes, destinos = np.asarray(fuentes), np.asarray(destinos)
+        obligatorios = np.ones(len(destinos), dtype=bool) if obligatorios is None else np.asarray(obligatorios, bool)
         if margen is None:
             return self._entre(np.arange(self.red.vertices), fuentes, destinos)
-        todos = np.r_[fuentes, destinos]
+        todos = np.r_[fuentes, destinos[obligatorios]]
         lat, lon = self.red.lat, self.red.lon
         dentro = np.flatnonzero(
             (lat >= lat[todos].min() - margen)
@@ -452,7 +459,7 @@ class Ruteador:
             & (lon <= lon[todos].max() + margen)
         )
         minutos, km = self._entre(dentro, fuentes, destinos)
-        for i in np.flatnonzero(~np.isfinite(minutos).all(axis=1)):
+        for i in np.flatnonzero(~np.isfinite(minutos[:, obligatorios]).all(axis=1)):
             minutos[i], km[i] = self._entre(np.arange(self.red.vertices), fuentes[i : i + 1], destinos)
         return minutos, km
 
@@ -474,4 +481,7 @@ class Ruteador:
             peso = np.asarray(metros[padres, hijos]).ravel()
             arbol = csr_matrix((np.maximum(peso, 1e-3), (padres, hijos)), shape=grafo.shape)
             km[i] = dijkstra(arbol, directed=True, indices=fuente) / 1000
-        return minutos[:, local[destinos]], km[:, local[destinos]]
+        j = local[destinos]
+        minutos, km = minutos[:, j], km[:, j]
+        minutos[:, j < 0] = km[:, j < 0] = np.inf  # destinos fuera de la parte buscada
+        return minutos, km

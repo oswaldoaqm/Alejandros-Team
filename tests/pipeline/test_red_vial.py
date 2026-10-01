@@ -127,3 +127,23 @@ def test_hospedajes():
     hostal = hospedajes[hospedajes["tipo"] == "hostel"].iloc[0]
     # El centro de su contorno, sin contar dos veces el nodo que lo cierra.
     assert (hostal["lat"], hostal["lon"]) == pytest.approx((-12.0205, -77.0115))
+
+
+def test_los_destinos_de_paso_no_agrandan_ni_repiten_la_busqueda(red, monkeypatch):
+    ruteador = Ruteador(red, minutos_por_arista(red, RITMOS), vertices_minimos=4)
+    (inicio,), _ = ruteador.ubicar([-12.0], [-77.0])
+    (cerca,), _ = ruteador.ubicar([-12.0], [-76.982])
+    (pasando_la_balsa,), _ = ruteador.ubicar([-12.0], [-76.964])  # fuera del rectángulo de 0,01°
+    en_toda_la_red = ruteador.entre([inicio], [cerca, pasando_la_balsa], margen=None)
+    busquedas = []
+    original = ruteador._entre
+    monkeypatch.setattr(ruteador, "_entre", lambda *a: busquedas.append(len(a[0])) or original(*a))
+
+    minutos, km = ruteador.entre([inicio], [cerca, pasando_la_balsa], margen=0.01, obligatorios=[True, False])
+    assert minutos[0, 0] == pytest.approx(en_toda_la_red[0][0, 0])
+    assert np.isinf(minutos[0, 1]) and np.isinf(km[0, 1])  # fuera de lo buscado: sin camino, no otro vértice
+    assert len(busquedas) == 1 and busquedas[0] < red.vertices
+
+    # Si es obligatorio, el rectángulo lo incluye y el resultado es el de toda la red.
+    minutos, km = ruteador.entre([inicio], [cerca, pasando_la_balsa], margen=0.01)
+    assert np.allclose(minutos, en_toda_la_red[0]) and np.allclose(km, en_toda_la_red[1])
