@@ -55,7 +55,8 @@ Resources:
       DockerTag: v1
 
   # Los eventos publicados. La clave es el id del evento: publicarlo otra vez lo reemplaza.
-  # El API la lee entera, a lo más una vez por minuto por cada servidor despierto.
+  # Cada servidor despierto mira el ítem «#marca» cada dos segundos, mientras atiende pedidos,
+  # y lee la tabla entera cuando cambió; si no cambia, una vez por minuto.
   TablaEventos:
     Type: AWS::DynamoDB::Table
     Properties:

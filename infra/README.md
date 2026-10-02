@@ -55,15 +55,16 @@ Responde 201 con el evento, y `/v1/salud` pasa a decir `version_datos: "2026.10.
   aws dynamodb delete-item --table-name <TablaEventos> --key '{"id": {"S": "p-…"}}'
   ```
 
-  Deja de salir en las respuestas en un minuto, que es lo que el API recuerda la tabla.
+  Deja de salir en las respuestas en un minuto: borrar a mano no les avisa a los servidores, que de todos modos vuelven a leer la tabla cada minuto.
 - **Los que ya pasaron** los borra DynamoDB sola unos días después de su último día: el API le pone a cada evento cuándo expira.
 - **Cambiar la clave:** se despliega otra vez con otro valor en `ClavePublicador`.
+- **El ítem `#marca`** de la tabla no es un evento: cambia con cada publicación y es lo que cada servidor mira para enterarse de lo que publicó otro. No vence y no hay que borrarlo.
 
 ## Costo esperado
 
 Con el tráfico del curso, cero o centavos. Lambda incluye 1 millón de peticiones y 400 000 GB-segundo al mes sin costo; la tabla usa capacidad provisionada de 5 lecturas y 1 escritura por segundo, muy por debajo de las 25 y 25 que DynamoDB incluye sin costo; la HTTP API está limitada a 10 peticiones por segundo para que un abuso no se convierta en factura. Las condiciones de la capa gratuita cambian: conviene mirarlas en la consola de facturación al crear la cuenta, y para eso está la alarma de USD 1. Lo único que puede costar algo es guardar imágenes viejas en ECR: se borran las que ya no se usan.
 
-El API lee la tabla entera, a lo más una vez por minuto por cada servidor despierto. Con el tope de 500 eventos por venir, y eventos como el del ejemplo, son unas 60 unidades de lectura por minuto y por servidor; la tabla da 300.
+Mientras atiende pedidos, cada servidor despierto le pregunta a la tabla cada dos segundos si alguien publicó (una unidad de lectura cada vez), y la lee entera cuando la respuesta cambió y, de todos modos, una vez por minuto. Con el tope de 500 eventos por venir, y eventos como el del ejemplo, son unas 90 unidades de lectura por minuto y por servidor; la tabla da 300. Cada publicación son dos escrituras: el evento y la marca.
 
 ## Quitar todo
 
@@ -98,4 +99,4 @@ docker run -p 8080:8080 -e DREEMGO_CORS=http://localhost:5173 \
 | `DREEMGO_CORS` | Orígenes que pueden llamar al API desde el navegador, separados por comas | La app publicada y `http://localhost:5173` |
 | `DREEMGO_CLAVE_PUBLICADOR` | La clave que exige `POST /v1/eventos` | Nadie publica |
 | `DREEMGO_TABLA_EVENTOS` | La tabla de DynamoDB donde se guardan los eventos publicados. La pone `template.yaml` | Se mira la variable siguiente |
-| `DREEMGO_EVENTOS_ARCHIVO` | El archivo donde se guardan, una línea de JSON por evento | Quedan en memoria y se pierden al reiniciar: sirve para desarrollar |
+| `DREEMGO_EVENTOS_ARCHIVO` | El archivo donde se guardan, una línea de JSON por evento. Lo pueden compartir varios procesos del API | Quedan en memoria y se pierden al reiniciar: sirve para desarrollar, con un solo proceso |
