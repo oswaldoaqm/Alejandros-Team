@@ -488,6 +488,130 @@
         "title": "Evento",
         "type": "object"
       },
+      "EventoNuevo": {
+        "additionalProperties": false,
+        "description": "Un evento que publica un municipio o una oficina de destino (RF-03).\n\nLos textos se limpian antes de validarse: lo que se mide es lo que se va a mostrar.",
+        "properties": {
+          "descripcion": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "distrito": {
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Distrito",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "maximum": 0.1,
+                "minimum": -18.4,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Dentro del Perú.",
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "maximum": -68.6,
+                "minimum": -81.4,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Dentro del Perú.",
+            "title": "Lon"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "provincia": {
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Provincia",
+            "type": "string"
+          },
+          "publicado_por": {
+            "description": "Entidad que publica.",
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Publicado Por",
+            "type": "string"
+          },
+          "region": {
+            "maxLength": 40,
+            "minLength": 2,
+            "title": "Region",
+            "type": "string"
+          },
+          "tipo": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tipo"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "nombre",
+          "fecha_inicio",
+          "fecha_fin",
+          "distrito",
+          "provincia",
+          "region",
+          "publicado_por"
+        ],
+        "title": "EventoNuevo",
+        "type": "object"
+      },
       "Eventos": {
         "additionalProperties": false,
         "properties": {
@@ -1401,6 +1525,14 @@
         "title": "ValidationError",
         "type": "object"
       }
+    },
+    "securitySchemes": {
+      "ClavePublicador": {
+        "description": "La clave que el equipo de DreemGO entrega a los municipios y oficinas de destino que publican.",
+        "in": "header",
+        "name": "X-Clave-Publicador",
+        "type": "apiKey"
+      }
     }
   },
   "info": {
@@ -1481,6 +1613,53 @@
           }
         },
         "summary": "Eventos entre dos fechas, de un polo o de todos",
+        "tags": [
+          "eventos"
+        ]
+      },
+      "post": {
+        "description": "Lo usan los municipios y las oficinas de destino. El evento se suma al calendario y, si\ntrae coordenadas, a las rutas de los polos que duermen o tienen algún lugar a 10 km o menos.\nNo cambia qué polos se proponen ni en qué orden.\n\nPublicar otra vez el mismo evento (mismo nombre, fechas, lugar y entidad) lo corrige: no lo\nduplica. La respuesta es el evento tal como lo verá el viajero.",
+        "operationId": "publicar_v1_eventos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoNuevo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            },
+            "description": "El evento, como lo verá el viajero."
+          },
+          "401": {
+            "description": "Falta la cabecera `X-Clave-Publicador` o la clave no es la correcta."
+          },
+          "403": {
+            "description": "Este servidor no tiene una clave de publicador: no acepta publicaciones."
+          },
+          "422": {
+            "description": "El evento no cumple el contrato, su región no es una del país, ya terminó o falta más de un año para que empiece. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`."
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados, el evento no se pudo guardar o el calendario publicado está lleno."
+          }
+        },
+        "security": [
+          {
+            "ClavePublicador": []
+          }
+        ],
+        "summary": "Publicar un evento",
         "tags": [
           "eventos"
         ]

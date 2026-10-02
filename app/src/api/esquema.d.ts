@@ -17,7 +17,16 @@ export interface paths {
          */
         get: operations["eventos_v1_eventos_get"];
         put?: never;
-        post?: never;
+        /**
+         * Publicar un evento
+         * @description Lo usan los municipios y las oficinas de destino. El evento se suma al calendario y, si
+         *     trae coordenadas, a las rutas de los polos que duermen o tienen algún lugar a 10 km o menos.
+         *     No cambia qué polos se proponen ni en qué orden.
+         *
+         *     Publicar otra vez el mismo evento (mismo nombre, fechas, lugar y entidad) lo corrige: no lo
+         *     duplica. La respuesta es el evento tal como lo verá el viajero.
+         */
+        post: operations["publicar_v1_eventos_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -287,6 +296,53 @@ export interface components {
             provincia: string;
             /** Publicado Por */
             publicado_por?: string | null;
+            /** Region */
+            region: string;
+            /** Tipo */
+            tipo?: string | null;
+            /** Url */
+            url?: string | null;
+        };
+        /**
+         * EventoNuevo
+         * @description Un evento que publica un municipio o una oficina de destino (RF-03).
+         *
+         *     Los textos se limpian antes de validarse: lo que se mide es lo que se va a mostrar.
+         */
+        EventoNuevo: {
+            /** Descripcion */
+            descripcion?: string | null;
+            /** Distrito */
+            distrito: string;
+            /**
+             * Fecha Fin
+             * Format: date
+             */
+            fecha_fin: string;
+            /**
+             * Fecha Inicio
+             * Format: date
+             */
+            fecha_inicio: string;
+            /**
+             * Lat
+             * @description Dentro del Perú.
+             */
+            lat?: number | null;
+            /**
+             * Lon
+             * @description Dentro del Perú.
+             */
+            lon?: number | null;
+            /** Nombre */
+            nombre: string;
+            /** Provincia */
+            provincia: string;
+            /**
+             * Publicado Por
+             * @description Entidad que publica.
+             */
+            publicado_por: string;
             /** Region */
             region: string;
             /** Tipo */
@@ -730,6 +786,58 @@ export interface operations {
                 content?: never;
             };
             /** @description El motor no tiene sus artefactos cargados. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    publicar_v1_eventos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventoNuevo"];
+            };
+        };
+        responses: {
+            /** @description El evento, como lo verá el viajero. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Evento"];
+                };
+            };
+            /** @description Falta la cabecera `X-Clave-Publicador` o la clave no es la correcta. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Este servidor no tiene una clave de publicador: no acepta publicaciones. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El evento no cumple el contrato, su región no es una del país, ya terminó o falta más de un año para que empiece. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El motor no tiene sus artefactos cargados, el evento no se pudo guardar o el calendario publicado está lleno. */
             503: {
                 headers: {
                     [name: string]: unknown;
