@@ -1,6 +1,6 @@
 # La app de DreemGO
 
-La web que usa el viajero: pregunta qué viaje quiere, muestra hasta tres rutas para comparar y abre el itinerario de la que elija, con su mapa, su costo, su mes y sus fiestas. Está pensada primero para celular, en español, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
+La web que usa el viajero: pregunta qué viaje quiere, muestra hasta tres rutas para comparar y abre el itinerario de la que elija, con su mapa, su costo, su mes y sus fiestas. Tiene además una página para que una municipalidad publique un evento. Está pensada primero para celular, en español, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
 
 React 19, Vite, TypeScript y MapLibre GL. Sin librería de rutas ni de estado: la consulta vive en la URL, que es también el enlace para compartir ([decisión 0001](../docs/decisiones/0001-sin-login-y-enlace-compartible.md)).
 
@@ -20,6 +20,19 @@ npm run dev          # http://localhost:5173
 ```
 
 La app busca el API en `http://localhost:8000`. Para apuntarla a otro, copia `.env.example` como `.env.local` y cambia `VITE_API_URL`. El API solo acepta pedidos de los orígenes de su lista (`DREEMGO_CORS`); ya trae `http://localhost:5173` y la dirección de GitHub Pages.
+
+Para probar «Publicar un evento», el API tiene que arrancar con una clave de publicador; sin ella responde que no acepta publicaciones. La clave es la que después se escribe en el formulario, y lo publicado queda en memoria hasta que el API se cierra:
+
+```bash
+# macOS, Linux o Git Bash
+DREEMGO_CLAVE_PUBLICADOR=una-clave-para-probar uvicorn dreemgo.api.app:app --port 8000
+```
+
+```powershell
+# PowerShell, en Windows
+$env:DREEMGO_CLAVE_PUBLICADOR = "una-clave-para-probar"
+uvicorn dreemgo.api.app:app --port 8000
+```
 
 ### Verla en un celular antes de desplegar
 
@@ -53,11 +66,12 @@ Así, sin `https`, el navegador no deja copiar ni usar el menú de compartir: «
 | `…#/ruta/2` | Lo mismo, con la segunda ruta abierta | |
 | `…#/editar` | El formulario con esa consulta | |
 | `…#/polo/33` | La ficha de un polo: clima de los doce meses, lugares y fiestas | `GET /v1/polos/{id}` |
-| `…#/calendario` | Fiestas y eventos de un mes | `GET /v1/eventos` |
+| `…#/calendario` | Fiestas y eventos de un mes; `#/calendario/11` lo abre en noviembre | `GET /v1/eventos` |
 | `./#/mis-viajes` | Los viajes guardados en este navegador | `localStorage` |
 | `./#/acerca` | Cómo funciona y de dónde salen los datos | |
+| `./#/publicar` | Para municipalidades: publicar un evento, con su lugar marcado en un mapa | `POST /v1/eventos` |
 
-Los parámetros son los de la consulta del contrato, más `v`, la versión de datos con que se calculó. Si el enlace trae una versión que ya no es la vigente, la app lo avisa en vez de mostrar otro viaje en silencio. Lo que va después de `#` es de la app: GitHub Pages lo sirve sin configurar nada.
+Los parámetros son los de la consulta del contrato, más `v`, la versión de datos con que se calculó. Si el enlace trae una versión que ya no es la vigente, la app lo avisa en vez de mostrar otro viaje en silencio. Si lo único que cambió son los eventos que publicaron los municipios (la parte `-e…` de la versión), las rutas son las mismas: no avisa y pone en el enlace la versión vigente. Lo que va después de `#` es de la app: GitHub Pages lo sirve sin configurar nada.
 
 ## Cómo está hecha
 
@@ -69,28 +83,31 @@ src/
 ├── formato.ts · textos.ts números, fechas y frases, escritos como los escribe el motor
 ├── itinerario.ts          paradas numeradas de corrido: el mismo número en la lista y en el mapa
 ├── eventos.ts             en qué día del viaje cae un evento
+├── version.ts             la versión de datos: qué parte es de los artefactos y cuál de lo publicado
+├── regiones.ts            las 25 regiones, cada una con su ciudad, para el mapa de publicar
 ├── almacen.ts             «Mis viajes», en el navegador
 ├── api/                   cliente del API y tipos generados del contrato
 ├── estado/                navegación, pedidos al API y título de la pestaña
-├── piezas/                tarjeta de ruta, itinerario, mapa, banda de costo, clima…
+├── piezas/                tarjeta de ruta, itinerario, los dos mapas, banda de costo, clima…
 ├── vistas/                una por pantalla
 └── pruebas/               el API de mentira y la preparación de las pruebas
 ```
 
 - **Los tipos salen del contrato.** `src/api/esquema.d.ts` se genera de `docs/openapi.json`, y ese archivo, del API. Si el contrato cambia: `python docs/generar_openapi.py` en la raíz y `npm run tipos` aquí. Las pruebas del API fallan si `docs/openapi.json` queda atrás.
 - **Lo que escribe el motor no se reescribe.** Motivos, avisos, notas de cada día y explicaciones del mes se muestran tal como llegan.
-- **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo o el mapa fallan, el itinerario dice lo mismo con palabras.
+- **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo o el mapa fallan, el itinerario dice lo mismo con palabras; y al publicar un evento, el lugar se puede escribir en coordenadas.
+- **La clave de publicador no se guarda.** Vive en la página mientras está abierta y viaja solo en la cabecera del pedido que publica.
 - **El estado no va solo en el color.** El veredicto del mes y los avisos llevan siempre su ícono y su palabra.
 
 ### Cuánto pesa
 
-Con gzip, lo que se baja al abrir la app son unos 95 kB (89 de JavaScript y 5 de estilos). El mapa suma unos 440 kB la primera vez que se abre una ruta (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
+Con gzip, lo que se baja al abrir la app son unos 99 kB (94 de JavaScript y 6 de estilos). El mapa suma unos 440 kB la primera vez que se abre una ruta (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
 
 ## Pruebas
 
 `npm test` corre las pruebas de la lógica y de cada pantalla en jsdom, con un API de mentira que responde con [`docs/ejemplos/respuesta_ilustrativa.json`](../docs/ejemplos/respuesta_ilustrativa.json), una respuesta real del motor: si el contrato cambia y el ejemplo se regenera, las pruebas corren contra la forma nueva.
 
-`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar rutas, abrir el mapa, compartir el enlace, guardar el viaje. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario). Levanta el API y la app por su cuenta, o usa los que ya estén corriendo. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
+`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar rutas, abrir el mapa, compartir el enlace, guardar el viaje. Y lo que hace una municipalidad: publicar un evento marcando su lugar en el mapa y verlo en el calendario. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario). Levanta el API y la app por su cuenta, o usa los que ya estén corriendo; si el API ya estaba corriendo sin la clave de la prueba, la de publicar se salta y lo dice. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
 
 ```bash
 (cd .. && pip install -e ".[api]")   # el API que van a usar las pruebas
