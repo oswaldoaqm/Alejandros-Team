@@ -11,6 +11,12 @@ Lo entregado el 23 de septiembre está intacto en la etiqueta [`entrega/semana-0
 | `docs/arquitectura_dreemgo.png` y `.svg` | «TA-02 · Estacionalidad · TA-03 · Puntaje»; polos de «≈ 3,2 h»; top-10 con Lima o Cusco «60 % → 30 %»; «6 parámetros · ninguno calibrado aún»; TA-04 «semana 10» | TA-05 y puntaje del polo; ≈ 3,9 h; 30 % → 10 %; 7 parámetros, 2 calibrados con la ficha; TA-04 por jornada, con la versión 2 en la semana 10 | Numeración anterior, horas con 40 km/h y cifras calculadas con la jerarquía sin respaldo. Los parámetros calibrados y TA-04 ya existían el 20 de septiembre, la fecha del diagrama. Se regeneró con `code/arquitectura_dreemgo.py` |
 | `PresentationWeek07.pdf`, diapositiva 17 | Polos 62, 48 y 45 de HDBSCAN con ~11,9 h, ~12,6 h y ~10,9 h de punta a punta | 14,7 h, 15,5 h y 13,3 h | Se calcularon con 40 km/h; la velocidad calibrada es 32,5 km/h. El PDF no se edita: la corrección vale desde aquí |
 
+## Correcciones del 2 de octubre
+
+| Dónde | Qué decía | Qué dice ahora | Por qué |
+|---|---|---|---|
+| `data/processed/fichas_mincetur.csv`, columna `INGRESO_OBS` | Los teléfonos, los correos y los nombres de quienes atienden cada lugar, como en la copia de `week06` | `[contacto en la ficha oficial]` y `[encargado]` en su lugar | Son datos de personas. El detalle está en [`../week06/ERRATA.md`](../week06/ERRATA.md) |
+
 ## Falta en esta carpeta
 
 `Delivery1Report.pdf` con su fuente editable, `DataProductCanvas.pdf` y los requisitos se entregaron por la plataforma del curso el 23 de septiembre. El enunciado también los pide dentro de `deliveries/week07/`, así que se suben aquí.
