@@ -97,7 +97,8 @@ Alejandros-Team/
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
 ├── app/                            la app web: React, Vite, TypeScript y MapLibre
-├── infra/                          imagen del API y despliegue en AWS con SAM, con la tabla de eventos publicados
+├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
+│                                   publicados, o gratis en un Space de Hugging Face
 ├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
 └── deliveries/

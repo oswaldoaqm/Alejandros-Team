@@ -1,6 +1,6 @@
 # Infraestructura
 
-El API corre como una función **AWS Lambda con imagen de contenedor**, detrás de una **HTTP API**, con una tabla **DynamoDB** para los eventos que publican los municipios. Está descrito en [`template.yaml`](./template.yaml) con AWS SAM. La app web es estática y se publica en **GitHub Pages**, fuera de AWS.
+El API corre como una función **AWS Lambda con imagen de contenedor**, detrás de una **HTTP API**, con una tabla **DynamoDB** para los eventos que publican los municipios. Está descrito en [`template.yaml`](./template.yaml) con AWS SAM. La app web es estática y se publica en **GitHub Pages**, fuera de AWS. Mientras no haya cuenta de AWS, el mismo API corre gratis en un Space de Hugging Face ([más abajo](#sin-cuenta-de-aws)).
 
 La decisión y sus alternativas están en [`../docs/decisiones/0002-stack-y-despliegue.md`](../docs/decisiones/0002-stack-y-despliegue.md).
 
@@ -79,7 +79,25 @@ Pregunta antes de borrar cada cosa. Se lleva el API, la tabla con los eventos pu
 
 ## Sin cuenta de AWS
 
-La imagen es la misma en cualquier parte. Mientras no haya cuenta, o si algo falla, corre en local o en un host de contenedores:
+### En un Space de Hugging Face
+
+Un Space gratuito corre un contenedor con 2 CPU y 16 GB y le da una dirección pública. Sirve para que la app publicada tenga un API mientras no haya cuenta de AWS, y de respaldo el día de una demostración.
+
+1. En [huggingface.co](https://huggingface.co), crear un Space con SDK **Docker**, sin plantilla, en el hardware gratuito y público.
+2. En los archivos del Space, crear `Dockerfile` con el contenido de [`huggingface/Dockerfile`](./huggingface/Dockerfile). No hace falta subir nada más: el código se instala desde este repositorio.
+3. En la configuración del Space, crear el secreto `DREEMGO_CLAVE_PUBLICADOR` con la clave de publicación. Sin él, el API responde consultas y no acepta publicaciones.
+4. Cuando el Space diga que está corriendo, el API está en `https://<usuario>-<nombre-del-space>.hf.space`. Se comprueba abriendo `/v1/salud`, y esa dirección es la que va a la variable `API_URL` del repositorio.
+
+Para publicar una versión nueva se cambia, en el `Dockerfile` del Space, `ARG VERSION=main` por el commit de `main` que se quiere: el Space se reconstruye solo.
+
+Lo que cambia frente a AWS:
+
+- **Lo publicado no dura.** Se guarda en un archivo dentro del contenedor, que se pierde cuando el Space se reinicia o se reconstruye. Para una demostración alcanza; para que dure, la tabla de DynamoDB.
+- **Se duerme.** Un Space gratuito que nadie usa en 48 horas se detiene, y arranca solo con la siguiente visita, que tiene que esperar. Antes de una demostración conviene abrir `/v1/salud`.
+
+### En local o en otro host de contenedores
+
+La imagen de [`Dockerfile`](./Dockerfile) es la misma en cualquier parte. Desde la raíz del repositorio:
 
 ```bash
 docker build -f infra/Dockerfile -t dreemgo-api .
