@@ -287,7 +287,7 @@ def main() -> None:
                     # petición (una variable, una fecha), no los puntos
                     sys.exit(
                         f"\nOpen-Meteo rechaza la petición misma: {dato}\n"
-                        "No tiene sentido seguir. Pásale este mensaje a Claude."
+                        "No tiene sentido seguir: hay que revisar las variables y las fechas que pide este script."
                     )
                 i += 1
                 continue
@@ -334,7 +334,7 @@ def main() -> None:
     if faltan:
         print("Falta terminar: vuelve a correr el mismo comando.")
     else:
-        print("Listo. Avísale a Claude para armar la climatología mensual por polo.")
+        print("Listo. Lo que sigue: python -m pipeline.clima, que arma el clima de cada polo mes a mes.")
 
 
 if __name__ == "__main__":
