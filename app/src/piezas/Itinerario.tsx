@@ -84,7 +84,8 @@ export function Itinerario({ dias, eventos, desde, verEnMapa }: Props) {
                 <span>
                   Ese día: {e.url ? <EnlaceExterno href={e.url}>{e.nombre}</EnlaceExterno> : e.nombre}, en{" "}
                   {e.distrito}
-                  {e.precision_fecha === "aproximada" ? " (fecha aproximada)" : ""}.
+                  {e.precision_fecha === "aproximada" ? " (fecha aproximada)" : ""}
+                  {e.fuente === "publicado" && e.publicado_por ? ` (publicado por ${e.publicado_por})` : ""}.
                 </span>
               </p>
             ))}
