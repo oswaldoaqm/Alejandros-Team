@@ -7,10 +7,14 @@ pip install -e ".[pipeline,dev]"
 pytest tests/pipeline
 python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
-python -m pipeline.tiempos   # después del maestro, unos 6 minutos; necesita el extracto de OpenStreetMap
+python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.1   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.10.2   # al final: lo que carga el motor
 ```
+
+Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
+
+La versión `2026.10.2` usa el clima de los 36 polos que ya estaban descargados el 30 de septiembre, copiados aparte para que la descarga en curso no cambie el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`. Con los 222 polos sale la versión siguiente.
 
 ## Módulos
 
@@ -21,9 +25,10 @@ python -m pipeline.artefactos --version 2026.10.1   # al final: lo que carga el 
 | [`inventario.py`](./inventario.py) | Lee el CSV del inventario: codificación Windows-1252, latitud y longitud intercambiadas y el punto decimal corrido de la fila 14707, todo marcado en la columna `coordenada` |
 | [`maestro.py`](./maestro.py) | Une inventario, fichas y polos en [`data/procesados/maestro_v3.csv`](../data/procesados/): una fila por recurso, con cada campo derivado marcado con su fuente, las coordenadas y altitudes a revisar, los intereses y si el recurso puede ser parada |
 | [`eventos.py`](./eventos.py) | Lee en la ficha de cada acontecimiento cuándo se celebra y lo guarda como una regla (un día, un rango, días desde la Pascua, el segundo domingo de abril, un mes), con su precisión, su día central y la frase que la respalda, en [`data/procesados/eventos_v3.csv`](../data/procesados/). [`dreemgo/calendario.py`](../dreemgo/calendario.py) convierte la regla en fechas para el año del viaje |
-| [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red vial: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Ubica la capital de cada distrito y busca el camino más rápido |
+| [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Encima van el tren de pasajeros y los botes, unidos a las vías en las estaciones y en las orillas. Ubica cada punto en la red y busca el camino más rápido |
 | [`red_calibracion.py`](./red_calibracion.py) | Calibra la velocidad de cada clase de vía con los recorridos de acceso de las fichas y mide el error por validación cruzada |
-| [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base. Una sola búsqueda por polo da las tres primeras |
+| [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base, con los km de cada camino que van en tren y en bote. Una sola búsqueda por polo da las tres primeras |
+| [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2) |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo |
@@ -84,7 +89,40 @@ Lo calibrado, en [`data/procesados/red_calibracion.json`](../data/procesados/red
 
 Sin las curvas, el error medio sube a 23,5 %, y sin los minutos fijos, a 25 %: los viajes cortos quedan muy por debajo. Un solo ritmo para todas las vías, o quitar el recargo por km sin asfaltar, casi no cambia el error sobre rutas ya elegidas (22,4 %). Pero las clases hacen falta para elegir la ruta: con un solo ritmo, el camino más rápido sería casi siempre el más corto, aunque fuera una trocha.
 
-La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino por carretera es más de 2,7 veces la distancia en línea recta, y 4 202 pares (2 %) no se unen por carretera. El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
+La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino es más de 2,7 veces la distancia en línea recta, y 3 166 pares (2 %) no se unen ni con el tren y los botes (4 202 solo por carretera). El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
+
+## El tren y los botes
+
+Sobre las vías van dos capas ([decisión 0010](../docs/decisiones/0010-tren-y-botes.md)):
+
+- **Tren:** 1 042 km de rieles con 87 estaciones. Son las rutas de tren de pasajeros de OpenStreetMap, sin los ramales mineros, más los rieles de uso turístico que no tienen ruta, como el tramo de Machu Picchu a la Hidroeléctrica.
+- **Bote:** 2 426 km de rutas: el Titicaca, las Ballestas, las islas frente al Callao y los ríos de la Amazonía. Son los ferris de más de 3 km; los más cortos son balsas y van con las vías.
+
+Cómo se viaja por ellas:
+
+- **Ritmo:** el tren va a 2,14 minutos por km y el bote a 3,0, que son las medianas de los tramos en tren (15) y en bote (273) de las fichas ([`referencia/ritmos_fijos.csv`](./referencia/ritmos_fijos.csv)).
+- **Subir y bajar:** cuesta 15 minutos cada vez, un supuesto del equipo. Al tren se sube en una estación; a un bote, en cualquier punto de su ruta a menos de 1 km de una vía, como las lanchas que paran en cada pueblo de la orilla. Son 392 uniones entre las capas y las vías.
+- **Dónde queda cada parada:** en la ruta de bote más cercana si su ficha dice que se llega en bote (168 paradas) y esa ruta está a menos de 5 km; en la vía en los demás casos. Así quedan 30 paradas en el agua: a las demás no llega ninguna ruta de bote de OpenStreetMap, o tienen una vía al lado.
+
+Lo que cambia frente a la red de solo carreteras:
+
+| | Solo carreteras | Con tren y botes |
+|---|---:|---:|
+| Pares origen–base sin camino, de 5 328 | 427 | 24 |
+| Paradas a más de 5 km de la red, de 4 578 | 173 | 128 |
+| Paradas sin camino desde su base, de 4 465 | 144 | 106 |
+| Pares de paradas de un mismo polo sin camino | 4 202 | 3 166 |
+| Cusco → Machupicchu Pueblo | 5 h 38 | 3 h 17 |
+| Puno → isla Taquile | sin camino | 2 h 33 |
+| Paracas → islas Ballestas | sin camino | 1 h 48 |
+
+Ningún par pierde su camino, y lo que empeora tiene explicación. `comparar_tiempos.py` reconoce los pares en los que la base o la parada cambiaron de lugar en la red y deja 14 para mirar a mano, todos del primer caso:
+
+- **Machu Picchu desde las ocho ciudades que llegan por la Hidroeléctrica** (el centro del país, Tarapoto y Chachapoyas), y a seis paradas de ese polo que quedan del lado de la Hidroeléctrica: 45 minutos más. Antes la red llegaba a Machupicchu Pueblo desde la Hidroeléctrica con 10 minutos para 4,2 km de trocha que no existe; ahora ese tramo va en tren.
+- **Paradas a las que se llega en bote:** ahora pagan subir y bajar. A los Uros, por ejemplo, 58 minutos desde Puno en vez de 32.
+- **La Amazonía:** cruzar un río cuesta 30 minutos, y donde OpenStreetMap no registra la ruta local (las comunidades alrededor de Nauta) el camino da un rodeo y el tiempo sale mayor que el de la ficha.
+
+Lo que sigue fuera: los recursos que son un área y tienen su coordenada en medio del agua (la Reserva Nacional del Titicaca, el lago Titicaca), y Madre de Dios, donde OpenStreetMap no registra rutas de bote (el lago Sandoval, los lagos del Tambopata).
 
 ## Dónde duerme cada polo
 
@@ -92,17 +130,17 @@ La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas 
 
 Resultado, en [`data/procesados/polos_bases.csv`](../data/procesados/):
 
-- **218 de los 222 polos** duermen en un lugar al que llegan por carretera sus paradas; los otros 4 no tienen ninguna parada a menos de 5 km de una vía y su base se elige en línea recta.
-- **200 bases tienen hospedaje registrado** a menos de 3 km (la mediana, 7). Son 103 pueblos, 73 caseríos, 45 ciudades y un barrio (Miraflores, en Lima); 196 son capital de distrito.
-- **Altitud:** la del nodo de OSM en 194 bases y la mediana de los recursos a menos de 2 km en 13; 15 caseríos quedan sin altitud.
-- **Distancia:** desde la base, la parada típica queda a 40 minutos (la mediana de las 4 465; el 90 % a menos de 2 h 17). El promedio pesado por polo va de 13 minutos a 4 horas en los polos de trekking, como Huayhuash.
+- **221 de los 222 polos** duermen en un lugar desde el que se llega a sus paradas por carretera, en tren o en bote; el otro no tiene ninguna parada a menos de 5 km de la red y su base se elige en línea recta.
+- **200 bases tienen hospedaje registrado** a menos de 3 km (la mediana, 7). Son 103 pueblos, 73 caseríos, 45 ciudades y un barrio (Miraflores, en Lima); 198 son capital de distrito.
+- **Altitud:** la del nodo de OSM en 196 bases y la mediana de los recursos a menos de 2 km en 11; 15 caseríos quedan sin altitud.
+- **Distancia:** desde la base, la parada típica queda a 40 minutos (la mediana de las 4 465; el 90 % a menos de 2 h 19). El promedio pesado por polo va de 13 minutos a 4 horas en los polos de trekking, como Huayhuash.
 - 22 lugares son base de más de un polo: Huaraz de cuatro; Ayacucho, Huánuco, Moquegua y Puerto Maldonado de tres. El motor no repite base entre sus tres rutas.
 
-Lo que esta elección no ve: la red vial no tiene trenes ni botes, así que las islas del Titicaca y los ríos amazónicos no se alcanzan. A Machupicchu Pueblo sí llega una trocha registrada en OSM por la ruta de Hidroeléctrica, y por ella el polo de Machu Picchu queda a 5 h 38 del Cusco.
+Todas las bases quedan sobre una vía, también Machupicchu Pueblo, cuyas calles se unen con el resto del país por el tren. Frente a la red de solo carreteras cambian dos bases: la del bajo Urubamba pasa a Camisea, desde donde ahora se llega en bote a 9 de sus 12 paradas, y la de Santa Teresa reemplaza a Sicre.
 
 ## Clima por polo
 
-`clima.py` promedia los diez años de cada polo mes por mes y aplica la regla de dos ejes de la semana 6, ahora con el clima del propio polo: 150 mm o más en el mes, y estar entre los tres meses más lluviosos del polo con más de 50 mm. Con los 36 polos descargados al 1 de octubre, 250 de sus 432 meses quedan viables, 100 con advertencia y 82 desaconsejados. Los otros 186 polos usan, hasta que terminen de bajar, la capa regional de la semana 6, y la respuesta del motor lo avisa. Las horas de sol no se publican: el reanálisis no ve la neblina de la costa ([decisión 0006](../docs/decisiones/0006-clima-por-polo.md)).
+`clima.py` promedia los diez años de cada polo mes por mes y aplica la regla de dos ejes de la semana 6, ahora con el clima del propio polo: 150 mm o más en el mes, y estar entre los tres meses más lluviosos del polo con más de 50 mm. Con los 36 polos descargados al 30 de septiembre, 250 de sus 432 meses quedan viables, 100 con advertencia y 82 desaconsejados. Los otros 186 polos usan, hasta que terminen de bajar, la capa regional de la semana 6, y la respuesta del motor lo avisa. Las horas de sol no se publican: el reanálisis no ve la neblina de la costa ([decisión 0006](../docs/decisiones/0006-clima-por-polo.md)).
 
 ## Datos personales
 
