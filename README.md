@@ -87,7 +87,8 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 ```
 Alejandros-Team/
 ├── README.md
-├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py
+├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py. Los eventos
+│                                   que publican los municipios: publicados.py y almacen.py
 │   ├── motor/                      del pedido al viaje: valor, días, itinerario, costo y avisos
 │   └── datos/                      los artefactos que carga el motor, con su manifiesto
 ├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro, eventos,
@@ -96,7 +97,7 @@ Alejandros-Team/
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
 ├── app/                            la app web: React, Vite, TypeScript y MapLibre
-├── infra/                          imagen del API y despliegue en AWS con SAM
+├── infra/                          imagen del API y despliegue en AWS con SAM, con la tabla de eventos publicados
 ├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
 └── deliveries/
@@ -224,6 +225,12 @@ npm run dev                    # http://localhost:5173
 ```
 
 Sus pantallas, sus pruebas y cómo se publica están en [`app/README.md`](./app/README.md).
+
+Una municipalidad o una oficina de destino puede publicar un evento desde la app («Para municipios: publicar
+un evento») o con `POST /v1/eventos` y la clave que le da el equipo. Lo publicado sale en el calendario y en
+las rutas que pasan cerca en esas fechas, con el nombre de quien lo publicó, y no cambia qué rutas se proponen
+ni en qué orden. El porqué está en la [decisión 0011](./docs/decisiones/0011-eventos-publicados.md), y cómo se
+guarda en cada entorno, en [`infra/README.md`](./infra/README.md).
 
 ---
 
