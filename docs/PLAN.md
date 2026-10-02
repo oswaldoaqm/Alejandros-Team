@@ -2,7 +2,7 @@
 
 **El 14 de octubre DreemGO está desplegado y resuelve una consulta real de punta a punta; el 18 de noviembre es un producto que se puede presentar a cualquiera.** Este documento es el estado del plan dentro del repositorio: qué se hace, en qué orden, cuándo está terminado y quién lo defiende. Se actualiza al cerrar cada fase.
 
-Estado al 1 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. De la **fase 2** ya está la [app](../app/): el formulario, tres rutas para comparar, el itinerario con su mapa, su costo, su mes y sus fiestas, la ficha de cada polo y el calendario, con sus pruebas en CI. Falta desplegar el API y publicarla.
+Estado al 2 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. De la **fase 2** ya está la [app](../app/), publicada en GitHub Pages: el formulario, tres rutas para comparar, el itinerario con su mapa, su costo, su mes y sus fiestas, la ficha de cada polo y el calendario, con sus pruebas en CI. Y el lado de la oferta: una municipalidad publica un evento (`POST /v1/eventos` y la página «Publicar un evento») y sale en el calendario y en las rutas que pasan cerca, sin mover ninguna ([decisión 0011](./decisiones/0011-eventos-publicados.md)). Falta desplegar el API: hasta entonces la app publicada no tiene a quién preguntarle.
 
 ## Qué promete el producto
 
@@ -14,7 +14,7 @@ El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué
 |---|---|---|---|
 | 0 · Cimientos | 30 sep – 3 oct | Descargas de datos; erratas y etiquetas de las entregas 4 a 7; esqueleto del repositorio; [contrato de la API](./CONTRATO.md); CI; infraestructura lista para AWS | CI en verde y el contrato revisado por los cuatro |
 | 1 · Datos v3 y motor | 3 – 9 oct | Maestro v3 con procedencia por campo; calendario de eventos real; clima por polo; tiempos de viaje por carretera, tren y bote; motor v2 detrás del API | `GET /v1/viajes` devuelve el contrato y las 10 propiedades de [CONTRATO §3](./CONTRATO.md) se cumplen en 1 000 consultas |
-| 2 · App y despliegue | 6 – 12 oct | App web contra el contrato; API desplegada | La app abre en un celular con datos móviles y resuelve una consulta |
+| 2 · App y despliegue | 6 – 12 oct | App web contra el contrato; eventos que publican los municipios; API desplegada | La app abre en un celular con datos móviles y resuelve una consulta |
 | 3 · Entrega de la semana 10 | 12 – 14 oct | `PrototypeReport`, presentación, capturas y video, README con instalación y despliegue | Carpeta `deliveries/week10/` completa |
 | **Semana 10 · prototipo** | **14 oct** | | |
 | 4 · Refinar y evaluar | 15 – 27 oct | Viajes de varios polos; TA-01 v3 sobre horas reales; evaluación: brecha contra el óptimo, sensibilidad, consultas anotadas con acuerdo medido, prueba de usabilidad con cinco personas, tres casos de estudio | `EvaluationReport` con cada cifra reproducible |
@@ -30,9 +30,9 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 |---|---|---|
 | Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo y red vial |
 | Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/) |
-| Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas: [contrato](./CONTRATO.md) |
+| Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas, y recibe los eventos que publican los municipios: [contrato](./CONTRATO.md) |
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
-| Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM |
+| Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados |
 | Pruebas | [`tests/`](../tests/) | Contrato, API y, con el motor, propiedades sobre miles de consultas |
 | Decisiones | [`docs/decisiones/`](./decisiones/) | Por qué cada cosa es como es |
 | Entregas | [`deliveries/`](../deliveries/) | Lo que pide cada semana del curso, con sus erratas |
