@@ -95,9 +95,10 @@ Alejandros-Team/
 │   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
+├── app/                            la app web: React, Vite, TypeScript y MapLibre
 ├── infra/                          imagen del API y despliegue en AWS con SAM
 ├── tests/                          pruebas del contrato, del API y del pipeline
-├── docs/                           plan, contrato de la API y registro de decisiones
+├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
 └── deliveries/
     ├── week04/                     Tema, equipo y selección de dataset
     │   ├── README.md
@@ -213,6 +214,16 @@ python -m pipeline.artefactos --version 2026.10.2   # dreemgo/datos/
 pytest
 uvicorn dreemgo.api.app:app    # http://localhost:8000/v1/docs
 ```
+
+La app corre contra ese API, en otra terminal (Node 22.12 o más nuevo):
+
+```bash
+cd app
+npm ci
+npm run dev                    # http://localhost:5173
+```
+
+Sus pantallas, sus pruebas y cómo se publica están en [`app/README.md`](./app/README.md).
 
 ---
 
