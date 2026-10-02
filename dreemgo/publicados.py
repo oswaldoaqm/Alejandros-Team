@@ -4,6 +4,9 @@ Los eventos que publican los municipios y las oficinas de destino (RF-03).
 Se guarda lo que dijo quien publica y nada más. Publicar otra vez el mismo evento lo corrige
 en vez de duplicarlo: su identificador sale de su nombre, sus fechas, su lugar y la entidad.
 
+A qué polos toca un evento no se guarda: se calcula con los artefactos del momento. Si los
+polos cambian con una versión nueva de los datos, lo publicado los sigue.
+
 Aquí no hay red ni disco: guardar y leer es cosa del almacén.
 """
 
@@ -12,10 +15,19 @@ from __future__ import annotations
 import hashlib
 import json
 import unicodedata
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
 
+import numpy as np
+
 from dreemgo.contrato import Evento, EventoNuevo
+from dreemgo.motor.datos import Datos
+
+# Un evento sale en las rutas de un polo si queda a esta distancia, en línea recta, de donde
+# se duerme en ese polo o de alguno de sus lugares del inventario.
+RADIO_KM = 10.0
+RADIO_TIERRA_KM = 6371.0
 
 # Lo que identifica a un evento: publicarlo otra vez con esto igual lo corrige, no lo duplica.
 IDENTIDAD = ("nombre", "fecha_inicio", "fecha_fin", "distrito", "provincia", "region", "publicado_por")
@@ -93,3 +105,30 @@ class Publicado:
             publicado_por=self.publicado_por,
             url=self.url,
         )
+
+
+def _km(lat: float, lon: float, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
+    """Distancia en línea recta sobre la esfera (haversine) de un punto a muchos, en radianes."""
+    a = np.sin((lats - lat) / 2) ** 2 + np.cos(lat) * np.cos(lats) * np.sin((lons - lon) / 2) ** 2
+    return 2 * RADIO_TIERRA_KM * np.arcsin(np.sqrt(a))
+
+
+def polos_cercanos(publicados: Iterable[Publicado], datos: Datos) -> list[frozenset[int]]:
+    """Por cada evento, los polos en cuyas rutas sale: los que duermen o tienen algún lugar
+    del inventario a ``RADIO_KM`` o menos. Sin coordenadas, ninguno."""
+    puntos = [(r["lat"], r["lon"], r["polo"]) for r in datos.recursos.values() if r.get("polo") is not None]
+    puntos += [(p.base["lat"], p.base["lon"], p.id) for p in datos.polos.values()]
+    puntos = [(lat, lon, polo) for lat, lon, polo in puntos if lat is not None and lon is not None]
+    if not puntos:
+        return [frozenset() for _ in publicados]
+    lats = np.radians(np.array([p[0] for p in puntos], dtype=float))
+    lons = np.radians(np.array([p[1] for p in puntos], dtype=float))
+    polos = np.array([p[2] for p in puntos], dtype=int)
+    salida = []
+    for p in publicados:
+        if p.lat is None or p.lon is None:
+            salida.append(frozenset())
+            continue
+        cerca = _km(float(np.radians(p.lat)), float(np.radians(p.lon)), lats, lons) <= RADIO_KM
+        salida.append(frozenset(int(x) for x in polos[cerca]))
+    return salida

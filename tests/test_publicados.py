@@ -1,17 +1,23 @@
-"""Los eventos publicados: qué los identifica y cómo se guardan."""
+"""Los eventos publicados: qué los identifica y en qué polos salen."""
 
 from __future__ import annotations
 
 import json
 from datetime import date, datetime, timedelta, timezone
+from types import SimpleNamespace
 
 import pytest
 
 from dreemgo.contrato import Evento, EventoNuevo
+from dreemgo.motor import datos as artefactos
 from dreemgo.publicados import (
+    RADIO_KM,
     Publicado,
     plegar,
+    polos_cercanos,
 )
+
+con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 
 AHORA = datetime(2026, 10, 2, 9, 30, 15, 123456, tzinfo=timezone(timedelta(hours=-5)))
 FESTIVAL = {
@@ -32,6 +38,23 @@ FESTIVAL = {
 
 def publicado(ahora: datetime = AHORA, **cambios) -> Publicado:
     return Publicado.nuevo(EventoNuevo(**{**FESTIVAL, **cambios}), ahora)
+
+
+# Un país de juguete: dos polos que duermen en el mismo pueblo y uno lejos. Un grado de
+# latitud son 111 km, así que 0,05° son unos 5,6 km y 0,2° unos 22 km.
+PAIS = SimpleNamespace(
+    polos={
+        1: SimpleNamespace(id=1, base={"lat": -10.0, "lon": -75.0}, regiones=("Pasco",)),
+        2: SimpleNamespace(id=2, base={"lat": -10.0, "lon": -75.0}, regiones=("Pasco", "Junín")),
+        3: SimpleNamespace(id=3, base={"lat": -12.0, "lon": -77.0}, regiones=("Lima",)),
+    },
+    recursos={
+        "a": {"lat": -10.01, "lon": -75.0, "polo": 1},
+        "b": {"lat": -10.5, "lon": -75.0, "polo": 2},
+        "c": {"lat": -12.0, "lon": -77.01, "polo": 3},
+        "sin-polo": {"lat": -11.0, "lon": -76.0, "polo": None},
+    },
+)
 
 
 class TestIdentidad:
@@ -111,3 +134,47 @@ class TestRegistro:
         assert (evento.fecha_inicio, evento.fecha_fin) == (date(2026, 11, 13), date(2026, 11, 15))
         assert str(evento.url) == "https://www.munivillarica.gob.pe/festival"
         assert "descripcion" not in evento.model_dump()  # el contrato 1.2 todavía no la muestra
+
+
+class TestPolos:
+    def polos(self, lat: float | None, lon: float | None) -> frozenset[int]:
+        return polos_cercanos([publicado(lat=lat, lon=lon)], PAIS)[0]
+
+    def test_en_el_pueblo_donde_se_duerme_sale_en_todos_los_polos_que_duermen_ahi(self):
+        assert self.polos(-10.0, -75.0) == {1, 2}
+        assert self.polos(-10.05, -75.0) == {1, 2}
+
+    def test_cerca_de_un_lugar_de_un_polo_sale_en_ese_polo(self):
+        assert self.polos(-10.5, -75.0) == {2}
+        assert self.polos(-12.0, -77.05) == {3}
+
+    def test_lejos_de_todo_no_sale_en_ninguna_ruta(self):
+        assert self.polos(-10.25, -75.0) == frozenset()  # a 27 km de la base y del lugar más cercano
+        assert self.polos(-11.0, -76.0) == frozenset()  # junto a un recurso que no es de ningún polo
+
+    def test_sin_coordenadas_no_sale_en_ninguna_ruta(self):
+        assert self.polos(None, None) == frozenset()
+
+    def test_el_radio_es_el_que_dice(self):
+        justo_dentro = -10.0 - (RADIO_KM - 0.2) / 111.19
+        justo_fuera = -10.0 - (RADIO_KM + 1.4) / 111.19  # el lugar «a» queda 1,1 km más cerca que la base
+        assert self.polos(justo_dentro, -75.0) == {1, 2}
+        assert self.polos(justo_fuera, -75.0) == frozenset()
+
+    def test_sin_polos_no_falla(self):
+        vacio = SimpleNamespace(polos={}, recursos={})
+        assert polos_cercanos([publicado()], vacio) == [frozenset()]
+
+
+@con_datos
+class TestConElInventario:
+    def test_un_evento_en_huaraz_sale_en_los_polos_que_duermen_en_huaraz(self):
+        datos = artefactos.cargar()
+        duermen_en_huaraz = {p.id for p in datos.polos.values() if p.base["nombre"] == "Huaraz"}
+        assert len(duermen_en_huaraz) > 1, "el caso que justifica mirar la base y no solo el lugar más cercano"
+        plaza = next(p for p in datos.polos.values() if p.base["nombre"] == "Huaraz").base
+        [polos] = polos_cercanos([publicado(lat=plaza["lat"], lon=plaza["lon"])], datos)
+        assert duermen_en_huaraz <= polos
+
+    def test_un_evento_en_medio_del_mar_no_sale_en_ninguna_ruta(self):
+        assert polos_cercanos([publicado(lat=-12.0, lon=-80.5)], artefactos.cargar()) == [frozenset()]
