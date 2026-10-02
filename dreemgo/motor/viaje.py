@@ -22,6 +22,10 @@ Un viaje sale de su ciudad: un polo cuya base queda a menos de media hora del or
 propone para dormir (desde Lima, Lima no es un destino), y en un viaje de un día no entran
 las paradas a menos de media hora del origen.
 
+Los eventos que publican los municipios (``dreemgo/publicados.py``) se suman a los del
+calendario oficial en cada ruta, y nada más: no entran al puntaje ni a los motivos, así que
+publicar un evento no mueve ningún polo de su lugar.
+
 Determinista: no hay azar sin semilla ni orden que dependa de un diccionario o un conjunto.
 """
 
@@ -61,6 +65,7 @@ from dreemgo.motor import textos
 from dreemgo.motor.datos import Datos, Origen
 from dreemgo.motor.datos import Polo as PoloDatos
 from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, mejor_plan, valor_visitado
+from dreemgo.publicados import SIN_PUBLICADOS, Instantanea
 
 JORNADA_MIN = 8 * 60
 SALIDA_DEL_ORIGEN = 7 * 60
@@ -729,7 +734,9 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
     )
 
 
-def resolver(consulta: Consulta, datos: Datos, sugerir: bool = True) -> Respuesta:
+def resolver(
+    consulta: Consulta, datos: Datos, publicados: Instantanea = SIN_PUBLICADOS, sugerir: bool = True
+) -> Respuesta:
     origen = datos.origenes.get(consulta.origen)
     if origen is None:
         raise OrigenDesconocido(consulta.origen)
@@ -781,6 +788,8 @@ def resolver(consulta: Consulta, datos: Datos, sugerir: bool = True) -> Respuest
         costo = costo_del_viaje(it, consulta, datos, dias)
         est = estacionalidad(it.polo, consulta.mes)
         eventos = eventos_del_polo(it.polo, desde, hasta, datos)
+        # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.
+        todos = sorted(eventos + publicados.entre(desde, hasta, it.polo.id), key=lambda e: (e.fecha_inicio, e.id))
         presupuesto = 1.0 if not costo.exceso else (consulta.presupuesto / costo.p50) ** 2
         puntaje = (1 - lam) * calidad * presupuesto + lam * it.polo.novedad
         elegidas.append(
@@ -792,7 +801,7 @@ def resolver(consulta: Consulta, datos: Datos, sugerir: bool = True) -> Respuest
                 traslado=_traslado(it, origen),
                 dias=dias,
                 costo=costo,
-                eventos=eventos,
+                eventos=todos,
                 avisos=avisos(it, consulta, est, costo, dias, datos),
                 indicadores=indicadores(it, dias, datos, sum(c.valor for c in p.candidatas)),
             )
@@ -803,7 +812,7 @@ def resolver(consulta: Consulta, datos: Datos, sugerir: bool = True) -> Respuest
 
     sin_resultado = None if elegidas else _sin_resultado(consulta, origen, datos, sugerir)
     return Respuesta(
-        version_datos=datos.version,
+        version_datos=publicados.version(datos.version),
         consulta=consulta,
         rutas=elegidas,
         sin_resultado=sin_resultado,

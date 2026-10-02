@@ -1,5 +1,6 @@
 """
-Las diez propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar.
+Las diez propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar, y lo que
+esas propiedades piden cuando además hay eventos publicados por los municipios.
 
 Corren contra los artefactos de dreemgo/datos. Por defecto, 100 consultas (las mismas en
 cada corrida: hypothesis va en modo determinista). Las mil del plan:
@@ -9,17 +10,28 @@ cada corrida: hypothesis va en modo determinista). Las mil del plan:
 
 from __future__ import annotations
 
+import math
 import os
 import re
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 
 import pytest
-from hypothesis import HealthCheck, given, settings
+from hypothesis import HealthCheck, event, given, settings
 from hypothesis import strategies as st
 
-from dreemgo.contrato import ALTITUD_MAX_M, DIAS_MAX, DIAS_MIN, PRESUPUESTO_MAX, PRESUPUESTO_MIN, Consulta, Interes
+from dreemgo.contrato import (
+    ALTITUD_MAX_M,
+    DIAS_MAX,
+    DIAS_MIN,
+    PRESUPUESTO_MAX,
+    PRESUPUESTO_MIN,
+    Consulta,
+    EventoNuevo,
+    Interes,
+)
 from dreemgo.motor import datos as artefactos
 from dreemgo.motor.viaje import resolver, ventana
+from dreemgo.publicados import RADIO_KM, Instantanea, Publicado
 
 pytestmark = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 CONSULTAS = int(os.environ.get("DREEMGO_PROPIEDADES", "100"))
@@ -108,3 +120,116 @@ def test_las_diez_propiedades(consulta):
         for ruta in respuesta.rutas:
             if ruta.costo.exceso:
                 assert any(a.tipo == "presupuesto" for a in ruta.avisos)
+
+
+# ─────────────────────────────── con eventos publicados ───────────────────────────────
+
+PUBLICADO_EL = datetime(2026, 10, 2, 9, 0, tzinfo=timezone(timedelta(hours=-5)))
+
+
+def _km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Haversine, punto a punto: otra cuenta que la del motor, para comprobarla."""
+    f1, f2 = math.radians(lat1), math.radians(lat2)
+    a = math.sin((f2 - f1) / 2) ** 2 + math.cos(f1) * math.cos(f2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    return 2 * 6371.0 * math.asin(math.sqrt(a))
+
+
+def _le_toca(publicado: Publicado, polo: int, datos) -> bool:
+    """Si el evento queda a RADIO_KM o menos de donde se duerme en el polo o de alguno de sus lugares."""
+    if publicado.lat is None or publicado.lon is None:
+        return False
+    base = datos.polos[polo].base
+    lugares = [(base["lat"], base["lon"])]
+    lugares += [(r["lat"], r["lon"]) for r in datos.recursos.values() if r["polo"] == polo]
+    return any(_km(publicado.lat, publicado.lon, lat, lon) <= RADIO_KM for lat, lon in lugares)
+
+
+@st.composite
+def publicados(draw, desde: date, hasta: date, bases: list[dict]) -> list[Publicado]:
+    """Eventos alrededor de las fechas del viaje: unos donde se duerme en las rutas propuestas
+    (para que caigan en ellas), otros junto a cualquier lugar del inventario y otros sin lugar."""
+    datos = artefactos.cargar()
+    codigos = sorted(datos.recursos)
+    lista = []
+    for n in range(draw(st.integers(1, 6))):
+        donde = draw(st.sampled_from(["base", "lugar", "sin lugar"] if bases else ["lugar", "sin lugar"]))
+        if donde == "base":
+            punto = draw(st.sampled_from(bases))
+        elif donde == "lugar":
+            punto = datos.recursos[draw(st.sampled_from(codigos))]
+        else:
+            punto = {"lat": None, "lon": None}
+        corrido = draw(st.floats(-0.12, 0.12)) if punto["lat"] is not None else 0.0  # hasta unos 13 km
+        inicio = desde + timedelta(days=draw(st.integers(-5, (hasta - desde).days + 5)))
+        lista.append(
+            Publicado.nuevo(
+                EventoNuevo(
+                    nombre=f"Evento de prueba {n}",
+                    fecha_inicio=inicio,
+                    fecha_fin=inicio + timedelta(days=draw(st.integers(0, 6))),
+                    distrito="Distrito",
+                    provincia="Provincia",
+                    region="Lima",
+                    lat=None if punto["lat"] is None else max(-18.4, min(0.1, punto["lat"] + corrido)),
+                    lon=punto["lon"],
+                    publicado_por="Municipalidad de prueba",
+                ),
+                PUBLICADO_EL,
+            )
+        )
+    return lista
+
+
+def _sin_lo_publicado(respuesta) -> dict:
+    """La respuesta sin los eventos publicados y sin la versión de datos, que es lo único que
+    publicar puede cambiar."""
+    contenido = respuesta.model_dump(mode="json")
+    for ruta in contenido["rutas"]:
+        ruta["eventos"] = [e for e in ruta["eventos"] if e["fuente"] != "publicado"]
+    del contenido["version_datos"]
+    return contenido
+
+
+@settings(
+    max_examples=max(10, CONSULTAS // 4),
+    deadline=None,
+    derandomize=True,
+    suppress_health_check=[HealthCheck.too_slow, HealthCheck.data_too_large],
+)
+@given(consultas(), st.data())
+def test_lo_publicado_se_suma_sin_mover_las_rutas(consulta, data):
+    datos = artefactos.cargar()
+    sin_publicar = resolver(consulta, datos)
+    desde, hasta = ventana(consulta, datos.version)
+    bases = [r.polo.base.model_dump() for r in sin_publicar.rutas]
+    lista = data.draw(publicados(desde, hasta, bases))
+    instantanea = Instantanea.de(lista, datos)
+
+    respuesta = resolver(consulta, datos, instantanea)
+
+    # Publicar no cambia qué polos se proponen, ni su orden, ni sus motivos, días o costos.
+    assert _sin_lo_publicado(respuesta) == _sin_lo_publicado(sin_publicar)
+    assert sin_publicar.version_datos == datos.version
+    assert respuesta.version_datos == instantanea.version(datos.version) != datos.version
+
+    for ruta in respuesta.rutas:
+        en_la_ruta = {e.id for e in ruta.eventos if e.fuente == "publicado"}
+        # 6. Solo los que caen en las fechas del viaje; y de esos, los que quedan cerca de este polo y nada más.
+        esperados = {
+            p.id
+            for p in instantanea.eventos
+            if p.fecha_inicio <= hasta and p.fecha_fin >= desde and _le_toca(p, ruta.polo.id, datos)
+        }
+        assert en_la_ruta == esperados
+        assert all(e.publicado_por and e.precision_fecha == "exacta" for e in ruta.eventos if e.fuente == "publicado")
+        orden = [(e.fecha_inicio, e.id) for e in ruta.eventos]
+        assert orden == sorted(orden) and len(set(orden)) == len(orden)
+
+    # Para ver con `pytest --hypothesis-show-statistics` que la prueba no pasa en vacío.
+    en_rutas = sum(1 for ruta in respuesta.rutas for e in ruta.eventos if e.fuente == "publicado")
+    event(f"eventos publicados que salen en alguna ruta: {'ninguno' if en_rutas == 0 else 'alguno'}")
+
+    # 8. La misma consulta con la misma versión de datos da exactamente la misma respuesta,
+    # lleguen los eventos del almacén en el orden en que lleguen.
+    otra_vez = resolver(consulta, datos, Instantanea.de(reversed(lista), datos))
+    assert otra_vez.model_dump_json() == respuesta.model_dump_json()
