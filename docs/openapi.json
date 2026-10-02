@@ -1412,6 +1412,7 @@
   "paths": {
     "/v1/eventos": {
       "get": {
+        "description": "Los del calendario oficial y los que publicaron los municipios (`fuente: \"publicado\"`).",
         "operationId": "eventos_v1_eventos_get",
         "parameters": [
           {

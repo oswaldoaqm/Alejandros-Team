@@ -11,7 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Eventos entre dos fechas, de un polo o de todos */
+        /**
+         * Eventos entre dos fechas, de un polo o de todos
+         * @description Los del calendario oficial y los que publicaron los municipios (`fuente: "publicado"`).
+         */
         get: operations["eventos_v1_eventos_get"];
         put?: never;
         post?: never;
