@@ -63,6 +63,10 @@ samconfig.toml
 Thumbs.db
 desktop.ini
 
+# ── Office y LibreOffice: el candado que dejan junto a un archivo abierto ────
+~$*
+.~lock.*
+
 # ── Archivos de trabajo local ────────────────────────────────────────────────
 *.log
 diagnostico.txt
