@@ -4,7 +4,15 @@
 
 import { vi } from "vitest";
 import ejemplo from "../../../docs/ejemplos/respuesta_ilustrativa.json";
-import type { Estacionalidad, Eventos, Opciones, PoloDetalle, Recurso, Respuesta } from "../api/tipos";
+import type {
+  Estacionalidad,
+  Evento,
+  Eventos,
+  Opciones,
+  PoloDetalle,
+  Recurso,
+  Respuesta,
+} from "../api/tipos";
 import { olvidarPedidos } from "../estado/pedido";
 
 export const RESPUESTA = ejemplo as unknown as Respuesta;
@@ -65,11 +73,37 @@ export const EVENTOS: Eventos = {
   eventos: RESPUESTA.rutas.flatMap((ruta) => ruta.eventos ?? []),
 };
 
+/**
+ * Un evento como los que publican los municipios: el que devuelve POST /v1/eventos. Con un
+ * nombre que no se confunda con ninguno del ejemplo del contrato.
+ */
+export const PUBLICADO: Evento = {
+  id: "p-0123456789ab",
+  nombre: "Feria de Productores",
+  tipo: "Feria gastronómica",
+  fecha_inicio: "2026-11-13",
+  fecha_fin: "2026-11-15",
+  precision_fecha: "exacta",
+  distrito: "Villa Rica",
+  provincia: "Oxapampa",
+  region: "Pasco",
+  fuente: "publicado",
+  publicado_por: "Municipalidad Distrital de Villa Rica",
+  url: "https://www.munivillarica.gob.pe/festival",
+};
+
 interface Contestacion {
   estado?: number;
   cuerpo: unknown;
 }
-type Contestar = (url: URL) => Contestacion;
+/** Lo que el falso API sabe de un pedido además de su URL. */
+export interface PedidoRecibido {
+  metodo: string;
+  cabeceras: Headers;
+  /** El cuerpo, ya leído como JSON; undefined si el pedido no trae. */
+  cuerpo: unknown;
+}
+type Contestar = (url: URL, pedido: PedidoRecibido) => Contestacion;
 
 /** La consulta de una URL, con los valores por defecto del contrato: lo que el motor devuelve en `consulta`. */
 export function consultaDe(url: URL): Respuesta["consulta"] {
@@ -107,11 +141,16 @@ const POR_DEFECTO: Record<string, Contestar> = {
 export function ponerApi(rutas: Record<string, Contestar | Contestacion> = {}) {
   olvidarPedidos(); // lo que respondió el API anterior no vale para este
   const tabla: Record<string, Contestar | Contestacion> = { ...POR_DEFECTO, ...rutas };
-  const falso = vi.fn(async (entrada: RequestInfo | URL): Promise<Response> => {
+  const falso = vi.fn(async (entrada: RequestInfo | URL, opciones?: RequestInit): Promise<Response> => {
     const url = new URL(String(entrada));
     const contestar = tabla[url.pathname];
     if (!contestar) return new Response(JSON.stringify({ detail: "No existe." }), { status: 404 });
-    const { estado = 200, cuerpo } = typeof contestar === "function" ? contestar(url) : contestar;
+    const pedido: PedidoRecibido = {
+      metodo: opciones?.method ?? "GET",
+      cabeceras: new Headers(opciones?.headers),
+      cuerpo: typeof opciones?.body === "string" ? JSON.parse(opciones.body) : undefined,
+    };
+    const { estado = 200, cuerpo } = typeof contestar === "function" ? contestar(url, pedido) : contestar;
     return new Response(JSON.stringify(cuerpo), {
       status: estado,
       headers: { "Content-Type": "application/json" },
@@ -121,12 +160,28 @@ export function ponerApi(rutas: Record<string, Contestar | Contestacion> = {}) {
   return falso;
 }
 
-/** Lo que se pidió a una ruta del API, como «ruta?parámetros», en orden. */
-export function pedidosA(falso: ReturnType<typeof ponerApi>, ruta: string): string[] {
+/** Lo que se pidió a una ruta del API, como «ruta?parámetros», en orden. Sin `metodo`, solo las lecturas. */
+export function pedidosA(falso: ReturnType<typeof ponerApi>, ruta: string, metodo = "GET"): string[] {
   return falso.mock.calls
+    .filter(([, opciones]) => (opciones?.method ?? "GET") === metodo)
     .map(([entrada]) => new URL(String(entrada)))
     .filter((url) => url.pathname === ruta)
     .map((url) => `${url.pathname}${url.search}`);
+}
+
+/**
+ * Un `/v1/eventos` que también publica: guarda lo que le llega en `recibidos` y contesta lo
+ * que diga `alPublicar` (por defecto, 201 con el evento de muestra).
+ */
+export function eventosQuePublican(
+  recibidos: PedidoRecibido[],
+  alPublicar: Contestacion = { estado: 201, cuerpo: PUBLICADO },
+): Contestar {
+  return (_url, pedido) => {
+    if (pedido.metodo !== "POST") return { cuerpo: EVENTOS };
+    recibidos.push(pedido);
+    return alPublicar;
+  };
 }
 
 /** Abre la app en una dirección, como si se hubiera escrito en la barra del navegador. */
