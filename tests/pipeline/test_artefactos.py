@@ -85,6 +85,34 @@ def test_un_polo_guarda_los_km_en_bote_solo_si_algun_camino_va_en_bote():
     assert not motor._polo(sin_bote).entre_km_bote.any() and motor._polo(sin_bote).entre_km_bote.shape == (2, 2)
 
 
+def test_la_lejania_de_la_novedad_se_mide_en_la_escala_de_la_carretera():
+    maestro, bases, clima, entre, desde_base, a_base, eventos, origenes = _tablas_de_dos_polos()
+    # Un tercer polo, a dos días de río de la capital de su región.
+    maestro = pd.concat([maestro, maestro.iloc[:2].assign(codigo=[30, 31], polo=3)], ignore_index=True)
+    bases = pd.concat([bases, bases.iloc[:1].assign(polo=3, base="Contamana")], ignore_index=True)
+    clima = pd.concat([clima, clima.iloc[:1].assign(polo=3)], ignore_index=True)
+    a_base = a_base.assign(km_tren=0.0, km_bote=0.0)
+    lejano = pd.DataFrame({"origen": "puno", "polo": [3], "minutos": [3000.0], "km_tren": 0.0, "km_bote": 900.0})
+    polos = artefactos.polos(
+        maestro, bases, clima, entre, desde_base, pd.concat([a_base, lejano], ignore_index=True), eventos, origenes
+    )
+    # A 5 minutos, a 90 por carretera y a 3 000 por río: el más lejano por carretera ya vale 1,
+    # y el del río no lo deja en 0,5 + 0,5 · 85 / 2 995.
+    assert [polo["novedad"] for polo in polos] == [0.5, 1.0, 1.0]
+    # Sin saber qué va en bote (las tablas de antes), la escala es la de todos.
+    polos = artefactos.polos(
+        maestro,
+        bases,
+        clima,
+        entre,
+        desde_base,
+        pd.concat([a_base, lejano], ignore_index=True)[["origen", "polo", "minutos"]],
+        eventos,
+        origenes,
+    )
+    assert [polo["novedad"] for polo in polos] == [0.5, 0.5142, 1.0]
+
+
 def test_las_tablas_de_antes_del_tren_y_los_botes_tambien_sirven():
     maestro, bases, clima, entre, desde_base, *resto = _tablas_de_dos_polos()
     capas = ["km_tren", "km_bote"]

@@ -163,17 +163,24 @@ def polos(
     }
 
     # Novedad (semana 6, §6.4): 0,5 · (1 − saturación) + 0,5 · lejanía. La lejanía es el
-    # tiempo por carretera desde la ciudad de origen de la región del polo hasta su base.
+    # tiempo desde la ciudad de origen de la región del polo hasta su base, en la escala de la
+    # carretera: va de 0 a 1, y el 1 es el polo más lejano al que se llega sin tren ni bote.
+    # Los que quedan más lejos que ese (a días de río) o sin camino también valen 1, como
+    # cuando la red solo tenía carreteras: un río muy largo no achica la lejanía de los demás.
     region_origen = _region_origen(origenes)
-    a_base = tiempos_origen_base.set_index(["origen", "polo"])["minutos"]
+    a_base = tiempos_origen_base.set_index(["origen", "polo"])
+    capas = [c for c in MEDIOS_KM[1:] if c in a_base]
     region = en_polo.groupby("polo")["region"].agg(lambda s: s.value_counts().sort_index().idxmax())
-    lejos = {}
+    lejos, por_carretera = {}, {}
     for p, r in region.items():
-        origen = region_origen.get(sin_tildes(r).lower())
-        lejos[p] = a_base.get((origen, p), np.nan) if origen else np.nan
+        clave = (region_origen.get(sin_tildes(r).lower()), p)
+        hay = clave in a_base.index
+        lejos[p] = a_base.at[clave, "minutos"] if hay else np.nan
+        por_carretera[p] = not (hay and a_base.loc[clave, capas].sum() > 0)
     lejos = pd.Series(lejos, dtype=float)
-    tope = lejos.max()
-    lejos = lejos.fillna(tope)  # sin carretera desde su capital: lo más lejano
+    tope = lejos[pd.Series(por_carretera)].max()
+    tope = lejos.max() if pd.isna(tope) else tope  # ninguno por carretera: la escala es la de todos
+    lejos = lejos.fillna(tope).clip(upper=tope)
     lejania = (lejos - lejos.min()) / (tope - lejos.min())
     saturacion = en_polo.groupby("polo")["region"].agg(lambda s: s.isin(SATURADAS).mean())
     novedad = 0.5 * (1 - saturacion) + 0.5 * lejania
