@@ -451,3 +451,62 @@ def test_el_nombre_del_encargado_no_se_lee_como_un_dia():
     texto = "Lunes a sábado. Con orientación del presidente de la junta, sr. Santos Domingo Mengano al cel. 987654321."
     assert leer_dias(texto) == (0, 1, 2, 3, 4, 5, 6)
     assert leer_dias(sin_contactos(texto)) == (0, 1, 2, 3, 4, 5)
+
+
+@pytest.mark.parametrize(
+    ("texto", "esperado"),
+    [
+        (  # 11345: un fijo sin nada que lo anuncie
+            "Previo aviso y pago de ticket. Contacto: Sr. Fulano Mengano Zutano 076123456.",
+            f"Previo aviso y pago de ticket. Contacto: [encargado] {OMITIDO}.",
+        ),
+        (  # 13675: un celular al que le falta una cifra
+            "te invitamos a contactar directamente al propietario, Fulano Mengano, al 98765432",
+            f"te invitamos a contactar directamente al propietario, [encargado], al {OMITIDO}",
+        ),
+        (  # 13755: con su código de ciudad y entre paréntesis
+            "Comunicarse con la secretaría del Obispado (073-123456).",
+            f"Comunicarse con la secretaría del Obispado ({OMITIDO}).",
+        ),
+        ("084 123456, despacho parroquial", f"{OMITIDO}, despacho parroquial"),  # 903
+        (  # 11762: sin teléfono, con tratamiento
+            "Coordinar con el Sr. Fulano Mengano Zutano, presidente del barrio.",
+            "Coordinar con el [encargado], presidente del barrio.",
+        ),
+        (  # 11837
+            "Coordinar con el señor Fulano, encargado de la iglesia.",
+            "Coordinar con el [encargado], encargado de la iglesia.",
+        ),
+        ("Previa coordinación con la familia Mengano.", "Previa coordinación con la familia [encargado]."),  # 327
+        ("Coordinación con el párroco; Fulano Mengano Zutano", "Coordinación con el párroco; [encargado]"),  # 431
+        (  # 5282: sin tratamiento ni cargo, el nombre completo de quien da el permiso
+            "Previa autorización de la Comunidad San Jacinto - Fulano Mengano Zutano.",
+            "Previa autorización de la Comunidad San Jacinto - [encargado].",
+        ),
+    ],
+)
+def test_en_un_aviso_el_nombre_y_el_numero_son_un_contacto(texto, esperado):
+    assert sin_contactos(texto, aviso=True) == esperado
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "Asimismo es necesario adquirir el servicio de un Guía Oficial de Alta Montaña.",  # 1330
+        "Durante Semana Santa y la fiesta del Señor de los Milagros.",
+        "Al formar parte del Camino Inca, se paga un boleto turístico.",  # 13698
+        "Lunes a Domingo de 9 am a 5 pm.",
+        "Adulto Nacional S/ 15.00, Niño Nacional S/ 7.50",  # 13101
+        "Menores de edad: ingreso gratuito según Resolución Ministerial N° 000092-2024-MC.",  # 3792
+        "Observación externa desde Jr. Próspero Nº 401-437 Esq. Jr. Morona Nº 181-199",  # 8384
+        "Visitas según el Artículo N°10 de la Ordenanza Municipal N°01-2020-MDCF/A.",  # 11154
+        "Previa coordinación con la empresa: SOUTHERN PERU COPPER CORPORATION",  # 513
+    ],
+)
+def test_un_aviso_sin_contactos_queda_como_esta(texto):
+    assert sin_contactos(texto, aviso=True) == texto
+
+
+def test_fuera_de_un_aviso_un_nombre_sin_telefono_no_es_un_contacto():
+    for texto in ("Coordinar con el Sr. Fulano Mengano.", "La festividad del Señor Cautivo de Ayabaca es en octubre."):
+        assert sin_contactos(texto) == texto

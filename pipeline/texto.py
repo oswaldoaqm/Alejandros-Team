@@ -86,6 +86,12 @@ _FIJO_CON_AVISO = re.compile(
     r"(?i)(\b(?:n[uú]meros?|informes|consultas|reservas|reservaciones|coordinaciones|contactos?|informaci[oó]n"
     rf"|llamar|llamando|comunicarse|contactar|contactarse)\b[^\d\[\n°º]{{0,20}}?)(?<![\w/-]){_FIJO}(?!\d)(?![-/]\w)"
 )
+# En las observaciones de ingreso y de época, que son avisos de cómo se visita, no hay otros
+# números largos: uno de siete a diez cifras, o uno con su código de ciudad delante, es un
+# teléfono aunque nada lo anuncie.
+_NUMERO_EN_AVISO = re.compile(
+    rf"(?<![\w/.,-])(?:\d{{7,10}}|{_CODIGO}[\s–-]+\d{{3}}[\s-]?\d{{3,4}})(?![\w/-])(?![.,]\d)"
+)
 
 
 # El nombre de quien atiende ese teléfono ("coordinar con el Sr. Nombre Apellido al
@@ -97,6 +103,11 @@ _FIJO_CON_AVISO = re.compile(
 # tratamiento o de un cargo ("el señor Neyra", "el párroco Juan") o pegada al contacto
 # ("con Marisol al cel. …"). Ante la duda se quita: aquí es mejor perder el nombre de un
 # caserío que dejar el de una persona.
+#
+# Un aviso ("coordinar con el Sr. Nombre Apellido") nombra a quien atiende aunque no traiga
+# su teléfono. Sin un contacto al lado, las mayúsculas solas no bastan —"Semana Santa",
+# "Camino Inca"—, así que ahí solo se quita lo que sigue a un tratamiento o a un cargo, y el
+# nombre completo —tres palabras o más— de un aviso que pide permiso o coordinación.
 NOMBRE_OMITIDO = "[encargado]"
 
 # Tratamientos: se van con el nombre.
@@ -113,6 +124,13 @@ _CARGOS = frozenset(
     "tesorera fiscal mayordomo comunero comunera tecnico tecnica ingeniero ingeniera profesor profesora "
     "licenciado licenciada biologo biologa arqueologo arqueologa contacto contactos capitan comandante".split()
 )
+# En un aviso sin teléfono solo cuentan los cargos de quien abre la puerta, no "Guía Oficial".
+_CARGOS_DE_AVISO = frozenset(
+    "propietario propietaria dueño dueña familia familias parroco padre sacerdote administrador "
+    "administradora presidente presidenta alcalde alcaldesa economo sacristan secretario secretaria "
+    "tesorero tesorera jefe jefa".split()
+)
+_PIDE_PERMISO = re.compile(r"(?i)\b(?:autorizaci[oó]n|permiso|coordina\w*|contactar\w*|comunicarse|solicitar)\b")
 # Lo que suele ir delante del nombre de un lugar: "Catarata X", "Fundo X Y", "Parque Nacional X".
 _ANTE_UN_LUGAR = frozenset(
     "catarata cascada cascadas laguna lago rio cerro cerros nevado bosque isla islas playa mirador gruta "
@@ -200,14 +218,15 @@ def _clase(palabra: str, llana: str, con_punto: bool) -> str:
 
 
 def _quitar_nombres(t: str) -> str:
-    """Quita del texto, que ya trae un contacto omitido, los nombres de persona."""
+    """Quita los nombres de persona de un texto que trae un contacto omitido, o de un aviso."""
     contactos = [(m.start(), m.end()) for m in re.finditer(_OMITIDO, t)]
     letras = [c for c in t.replace(CONTACTO_OMITIDO, "") if c.isalpha()]
     en_mayusculas = bool(letras) and sum(c.isupper() for c in letras) > 0.6 * len(letras)
     antes, despues = (_PEGADO, _PEGADO) if en_mayusculas else (_CERCA_ANTES, _CERCA_DESPUES)
+    pide_permiso = _PIDE_PERMISO.search(t) is not None
 
     def cerca(inicio: int, fin: int) -> bool:
-        if len(t) <= _TEXTO_CORTO and not en_mayusculas:
+        if not contactos or (len(t) <= _TEXTO_CORTO and not en_mayusculas):
             return True
         return any(c_ini - antes <= fin <= c_ini or c_fin <= inicio <= c_fin + despues for c_ini, c_fin in contactos)
 
@@ -258,7 +277,13 @@ def _quitar_nombres(t: str) -> str:
                 previa[3] in "NSALI" or previa[2] in _PARTICULAS | _ANTE_UN_LUGAR | _INSTITUCIONES
             ):
                 suelto = None  # "comunidad de Huayhuay - Cel. …", "Isla Juspique al …"
-        if tratamiento or cargo:
+        if not contactos:  # un aviso sin teléfono: solo lo que es claramente una persona
+            de_un_cargo = pegada and previa[2] in _CARGOS_DE_AVISO
+            de_un_cargo = de_un_cargo and (con_mayuscula >= 2 or previa[2] in ("familia", "familias"))
+            completo = pide_permiso and len(rango) >= 3 and all(p[3] in "NS" for p in rango)
+            completo = completo and not t[inicio:fin].isupper()
+            es_persona = tratamiento or de_un_cargo or completo
+        elif tratamiento or cargo:
             es_persona = True
         elif lugar and con_mayuscula <= 2:
             es_persona = False
@@ -275,8 +300,12 @@ def _quitar_nombres(t: str) -> str:
     return t
 
 
-def sin_contactos(texto: str | None) -> str | None:
-    """El texto sin correos, celulares, teléfonos, DNI ni el nombre de quien atiende."""
+def sin_contactos(texto: str | None, *, aviso: bool = False) -> str | None:
+    """El texto sin correos, celulares, teléfonos, DNI ni el nombre de quien atiende.
+
+    ``aviso`` dice que el texto es una observación de ingreso o de época: ahí un número largo
+    es un teléfono y un nombre con su tratamiento es un contacto, aunque no traiga teléfono.
+    """
     if texto is None:
         return None
     t = _CORREO.sub(CONTACTO_OMITIDO, texto)
@@ -286,13 +315,15 @@ def sin_contactos(texto: str | None) -> str | None:
     t = _CELULAR.sub(CONTACTO_OMITIDO, t)
     t = _FIJO_CON_ANEXO.sub(CONTACTO_OMITIDO, t)
     t = _FIJO_CON_AVISO.sub(lambda m: m.group(1) + CONTACTO_OMITIDO, t)
+    if aviso:
+        t = _NUMERO_EN_AVISO.sub(CONTACTO_OMITIDO, t)
     while CONTACTO_OMITIDO in t:  # una lista de teléfonos: cada uno delata al de al lado
         nuevo = _FIJO_TRAS_CONTACTO.sub(lambda m: m.group(1) + CONTACTO_OMITIDO, t)
         nuevo = _FIJO_ANTES_DE_CONTACTO.sub(lambda m: CONTACTO_OMITIDO + m.group(1), nuevo)
         if nuevo == t:
             break
         t = nuevo
-    return _quitar_nombres(t) if CONTACTO_OMITIDO in t else t
+    return _quitar_nombres(t) if aviso or CONTACTO_OMITIDO in t else t
 
 
 # ── Altitud ──────────────────────────────────────────────────────────────────────────
