@@ -59,7 +59,7 @@ El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en l
 - **Valor de una parada:** 2^(jerarquía − 1), es decir 1, 2, 4 u 8; 2 si MINCETUR no la jerarquizó. Si la consulta trae intereses, la que no atiende ninguno vale la cuarta parte.
 - **Días:** la ida y la vuelta por carretera; si pasan de 8 horas se parten en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida tienen visitas si sobran al menos 90 minutos. Como máximo seis paradas por día.
 - **Qué y en qué orden:** orientación por equipos con inserción voraz, 2-opt y tres arranques; se queda el de más valor.
-- **Puntaje:** (1 − λ) · calidad · temporada + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
+- **Puntaje:** (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. El presupuesto multiplica por (presupuesto / costo)² cuando el costo central lo pasa, y por 1 si no: reordena, pero no esconde (§3). «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
 - **Un viaje sale de su ciudad:** no se propone dormir en un polo cuya base queda a menos de media hora del origen, y un viaje de un día no cuenta las paradas de la misma ciudad.
 - **Tres rutas con bases distintas:** dos polos pueden dormir en el mismo pueblo (Huaraz sirve a cuatro); la respuesta no repite base.
 
