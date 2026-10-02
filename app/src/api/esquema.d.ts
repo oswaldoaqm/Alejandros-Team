@@ -712,6 +712,13 @@ export interface operations {
                     "application/json": components["schemas"]["Eventos"];
                 };
             };
+            /** @description No hay un polo con ese número. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             /** @description La consulta no cumple el contrato. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`. */
             422: {
                 headers: {

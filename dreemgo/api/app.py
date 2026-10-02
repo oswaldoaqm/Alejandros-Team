@@ -168,7 +168,7 @@ def polo(polo_id: Annotated[int, Path(ge=0)]) -> PoloDetalle:
     response_model=Eventos,
     tags=["eventos"],
     summary="Eventos entre dos fechas, de un polo o de todos",
-    responses={**VALIDACION, **SIN_DATOS},
+    responses={404: {"description": "No hay un polo con ese número."}, **VALIDACION, **SIN_DATOS},
 )
 def eventos(
     desde: Annotated[date, Query(description="Primer día, AAAA-MM-DD.")],
