@@ -21,7 +21,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY dreemgo ./dreemgo
-RUN pip install ".[api]" && useradd --create-home --uid 1000 dreemgo
+# «aws» trae boto3, para la tabla de eventos publicados; fuera de AWS no se usa.
+RUN pip install ".[api,aws]" && useradd --create-home --uid 1000 dreemgo
 USER dreemgo
 
 EXPOSE 8080
