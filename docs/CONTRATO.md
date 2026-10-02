@@ -1,6 +1,6 @@
 # Contrato de la API
 
-Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), y la app genera sus tipos de ese esquema. Si este documento y el código no coinciden, manda el código y este documento tiene un error.
+Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
 **Versión 1.2** · 1 de octubre de 2026. La 1.2 suma el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). La revisión del equipo sigue antes del 5 de octubre.
 
@@ -149,8 +149,8 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.2
 ```
 
-Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («resultados con datos actualizados al …») en vez de mostrar otro viaje en silencio.
+Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.1. Lo que ves está calculado con los datos 2026.10.2…») en vez de mostrar otro viaje en silencio.
 
 ## 7 · Cómo se cambia el contrato
 
-En un PR que toque a la vez `dreemgo/contrato.py`, este documento y, si hace falta, el ejemplo ilustrativo. Un campo nuevo opcional sube la versión menor (de 1.1 a 1.2, por ejemplo); quitar o renombrar un campo sube la mayor (2.0) y se avisa a quien construye la app antes de fusionar.
+En un PR que toque a la vez `dreemgo/contrato.py`, este documento, el esquema del que salen los tipos de la app (`python docs/generar_openapi.py` y, en `app/`, `npm run tipos`) y, si hace falta, el ejemplo ilustrativo. Las pruebas fallan si el esquema guardado queda atrás del contrato. Un campo nuevo opcional sube la versión menor (de 1.1 a 1.2, por ejemplo); quitar o renombrar un campo sube la mayor (2.0) y se avisa a quien construye la app antes de fusionar.
