@@ -2,7 +2,8 @@
 Los artefactos que arma ``pipeline/artefactos.py``, cargados una vez al arrancar.
 
 Todo queda en memoria y de solo lectura: recursos y eventos en diccionarios, y los tiempos
-de cada polo en matrices de numpy (minutos y km, con ``nan`` donde no hay carretera).
+de cada polo en matrices de numpy (minutos y km, con ``nan`` donde no hay camino; y cuántos
+de esos km van en tren y en bote, con 0 donde no van).
 """
 
 from __future__ import annotations
@@ -35,6 +36,10 @@ class Polo:
     entre_km: np.ndarray
     clima: tuple[dict, ...]  # 12 meses, de enero a diciembre
     eventos: tuple[str, ...]
+    base_km_tren: np.ndarray  # de los km de la base a cada parada, los que van en tren
+    base_km_bote: np.ndarray
+    entre_km_tren: np.ndarray
+    entre_km_bote: np.ndarray
 
     def indice(self) -> dict[str, int]:
         return {c: i for i, c in enumerate(self.paradas)}
@@ -47,8 +52,10 @@ class Origen:
     region: str
     lat: float
     lon: float
-    a_base: dict[int, tuple[float, float]]  # polo → (minutos, km); nan si no hay carretera
+    a_base: dict[int, tuple[float, float]]  # polo → (minutos, km); nan si no hay camino
     a_parada: dict[str, tuple[float, float]]  # solo las paradas a menos de 4 horas
+    a_base_en_capa: dict[int, tuple[float, float]]  # polo → (km en tren, km en bote)
+    a_parada_en_capa: dict[str, tuple[float, float]]
 
 
 @dataclass(frozen=True)
@@ -79,7 +86,16 @@ def _matriz(filas) -> np.ndarray:
     return np.array([[np.nan if v is None else v for v in fila] for fila in filas], dtype=float)
 
 
+def _en_capa(p: dict, clave: str, forma: tuple[int, ...]) -> np.ndarray:
+    """Los km en tren o en bote de un polo; ceros si ningún camino suyo va en ellos."""
+    if clave not in p:
+        return np.zeros(forma)
+    valores = p[clave]
+    return _matriz(valores) if len(forma) == 2 else _arreglo(valores)
+
+
 def _polo(p: dict) -> Polo:
+    n = len(p["paradas"])
     return Polo(
         id=p["id"],
         nombre=p["nombre"],
@@ -96,12 +112,19 @@ def _polo(p: dict) -> Polo:
         entre_km=_matriz(p["entre_km"]),
         clima=tuple(p["clima"]),
         eventos=tuple(p["eventos"]),
+        base_km_tren=_en_capa(p, "base_km_tren", (n,)),
+        base_km_bote=_en_capa(p, "base_km_bote", (n,)),
+        entre_km_tren=_en_capa(p, "entre_km_tren", (n, n)),
+        entre_km_bote=_en_capa(p, "entre_km_bote", (n, n)),
     )
 
 
 def _origen(o: dict) -> Origen:
     def par(v):
         return (np.nan if v[0] is None else v[0], np.nan if v[1] is None else v[1])
+
+    def en_capa(v):  # [minutos, km, km en tren, km en bote]; los de antes no traen los dos últimos
+        return tuple(0.0 if len(v) <= k or v[k] is None else v[k] for k in (2, 3))
 
     return Origen(
         id=o["id"],
@@ -111,6 +134,8 @@ def _origen(o: dict) -> Origen:
         lon=o["lon"],
         a_base={int(k): par(v) for k, v in o["a_base"].items()},
         a_parada={k: par(v) for k, v in o["a_parada"].items()},
+        a_base_en_capa={int(k): en_capa(v) for k, v in o["a_base"].items()},
+        a_parada_en_capa={k: en_capa(v) for k, v in o["a_parada"].items()},
     )
 
 
