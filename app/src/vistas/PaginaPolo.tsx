@@ -83,7 +83,7 @@ function Ficha({ detalle, consulta }: { detalle: PoloDetalle; consulta: Consulta
         <h2 className="rotulo" id="polo-eventos">
           Fiestas y eventos de los próximos doce meses
         </h2>
-        <ListaEventos eventos={eventos} vacio="El calendario oficial no registra eventos en este polo." />
+        <ListaEventos eventos={eventos} vacio="No hay eventos registrados en este polo." />
       </section>
 
       <footer className="fuentes">
