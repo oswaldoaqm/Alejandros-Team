@@ -8,9 +8,11 @@ que entran a la imagen del API:
   recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos y lo que
                       el motor necesita para programarlos
   polos.json.gz       cada polo: base, novedad, clima mes a mes, sus paradas y los tiempos
-                      entre ellas y desde la base
+                      entre ellas y desde la base; si algún camino va en tren o en bote, cuántos
+                      de sus km van en cada uno
   origenes.json.gz    las 24 ciudades de partida, con sus tiempos a cada base y a las paradas a
-                      menos de 4 horas, que son las que caben en un viaje de un día
+                      menos de 4 horas, que son las que caben en un viaje de un día: minutos, km,
+                      km en tren y km en bote
   eventos.json.gz     los acontecimientos programados con la regla de su fecha
   costos.json         los parámetros del costo (pipeline/referencia/costos.csv)
 
@@ -18,7 +20,7 @@ Los archivos son deterministas: con las mismas tablas salen los mismos bytes (JS
 claves ordenadas y gzip sin fecha), así que su huella sirve para comprobar que dos máquinas
 construyeron lo mismo.
 
-Uso:  python -m pipeline.artefactos --version 2026.10.1
+Uso:  python -m pipeline.artefactos --version 2026.10.2
       (después de maestro, eventos, tiempos y clima)
 """
 
@@ -40,14 +42,15 @@ from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.1"
+VERSION_DATOS = "2026.10.2"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
+MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote
 
 ATRIBUCION = [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red vial, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0",
 ]
 
 
@@ -184,14 +187,24 @@ def polos(
         codigos = sorted(paradas.loc[paradas["polo"] == p, "codigo"].astype(int))
         posicion = {c: i for i, c in enumerate(codigos)}
         n = len(codigos)
-        minutos, km = np.full((n, n), np.nan), np.full((n, n), np.nan)
-        np.fill_diagonal(minutos, 0.0)
-        np.fill_diagonal(km, 0.0)
         pares = tiempos_polo[tiempos_polo["polo"] == p]
         i = pares["desde"].map(posicion).to_numpy()
         j = pares["hasta"].map(posicion).to_numpy()
-        minutos[i, j], km[i, j] = pares["minutos"].to_numpy(), pares["km"].to_numpy()
+        entre = {}
+        for columna in ("minutos", *MEDIOS_KM):
+            matriz = np.full((n, n), np.nan)
+            np.fill_diagonal(matriz, 0.0)
+            if columna in pares:
+                matriz[i, j] = pares[columna].to_numpy()
+            entre[columna] = matriz
         desde_base = tiempos_base[tiempos_base["polo"] == p].set_index("codigo")
+        # Cuántos km de cada camino van en tren y en bote: solo en los polos donde alguno va.
+        en_capa = {}
+        for columna in MEDIOS_KM[1:]:
+            base_km = [_redondo(desde_base[columna].get(c)) if columna in desde_base else None for c in codigos]
+            if any((x or 0) > 0 for x in base_km) or np.nansum(entre[columna]) > 0:
+                en_capa[f"base_{columna}"] = base_km
+                en_capa[f"entre_{columna}"] = [[_redondo(x) for x in fila] for fila in entre[columna]]
         regiones = mios["region"].value_counts()
         salida.append(
             {
@@ -215,8 +228,9 @@ def polos(
                 "paradas": [str(c) for c in codigos],
                 "base_minutos": [_redondo(desde_base["minutos"].get(c)) for c in codigos],
                 "base_km": [_redondo(desde_base["km"].get(c)) for c in codigos],
-                "entre_minutos": [[_redondo(x) for x in fila] for fila in minutos],
-                "entre_km": [[_redondo(x) for x in fila] for fila in km],
+                "entre_minutos": [[_redondo(x) for x in fila] for fila in entre["minutos"]],
+                "entre_km": [[_redondo(x) for x in fila] for fila in entre["km"]],
+                **en_capa,
                 "clima": [
                     {
                         "mes": int(c.mes),
@@ -236,6 +250,12 @@ def polos(
     return salida
 
 
+def _tiempos(fila) -> list:
+    """[minutos, km, km en tren, km en bote] de un camino; los dos últimos en 0 si la tabla no
+    los trae (las de antes del tren y los botes)."""
+    return [_redondo(getattr(fila, c, 0.0)) for c in ("minutos", *MEDIOS_KM)]
+
+
 def origenes_(origenes: pd.DataFrame, tiempos_origen_base: pd.DataFrame, tiempos_origen: pd.DataFrame) -> list[dict]:
     salida = []
     for o in origenes.itertuples():
@@ -249,14 +269,8 @@ def origenes_(origenes: pd.DataFrame, tiempos_origen_base: pd.DataFrame, tiempos
                 "region": o.region,
                 "lat": o.lat,
                 "lon": o.lon,
-                "a_base": {
-                    str(p): [_redondo(m), _redondo(k)]
-                    for p, m, k in zip(a_base["polo"], a_base["minutos"], a_base["km"], strict=True)
-                },
-                "a_parada": {
-                    str(c): [_redondo(m), _redondo(k)]
-                    for c, m, k in zip(cerca["codigo"], cerca["minutos"], cerca["km"], strict=True)
-                },
+                "a_base": {str(p): _tiempos(f) for p, f in zip(a_base["polo"], a_base.itertuples(), strict=True)},
+                "a_parada": {str(c): _tiempos(f) for c, f in zip(cerca["codigo"], cerca.itertuples(), strict=True)},
             }
         )
     return salida
