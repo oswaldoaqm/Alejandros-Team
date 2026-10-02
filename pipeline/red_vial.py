@@ -1,5 +1,5 @@
 """
-Red vial del Perú desde OpenStreetMap y tiempos de viaje por carretera.
+Red vial del Perú desde OpenStreetMap, con el tren y los botes encima, y tiempos de viaje.
 
 Reemplaza la fórmula de semanas anteriores (línea recta × 1,6 a 32,5 km/h, nunca
 calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-propia.md.
@@ -8,6 +8,11 @@ calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-p
    extremo de vía, una arista por tramo entre cruces, con su largo, su clase (troncal,
    primaria… trocha), si es sin asfaltar y cuántas curvas tiene por kilómetro. Se guarda
    en data/externos/osm/red_vial.npz (fuera de git: se reconstruye en un minuto).
+   Encima de las vías van dos capas que no se cruzan con ellas: los trenes de pasajeros
+   (las rutas ``route=train`` sin sus ramales mineros) y los botes (los ferris de más de
+   3 km: el Titicaca, las Ballestas, los ríos de la Amazonía). Solo se sube o se baja en
+   una estación o un muelle, unidos a la vía más cercana por un trasbordo que cuesta
+   minutos fijos.
 2. Las velocidades por clase se calibran con los recorridos de acceso que publican las
    fichas oficiales (``pipeline/red_calibracion.py``).
 3. Con la red calibrada se calculan los tiempos que usa el motor: de cada ciudad de
@@ -28,7 +33,21 @@ import numpy as np
 # Clases de vía que puede recorrer un bus o un auto. Las de enlace ("_link") van con su
 # vía madre. "track" es la trocha carrozable; "service" son accesos a fundos, minas y
 # recursos, sin los pasillos de estacionamiento.
-CLASES = ("autopista", "troncal", "primaria", "secundaria", "terciaria", "local", "trocha", "balsa")
+CLASES = (
+    "autopista",
+    "troncal",
+    "primaria",
+    "secundaria",
+    "terciaria",
+    "local",
+    "trocha",
+    "balsa",
+    "tren",
+    "bote",
+    "transbordo",
+)
+VIALES = CLASES[: CLASES.index("balsa") + 1]  # lo que recorre un auto o un bus
+CAPAS = ("vial", "tren", "bote")  # cada vértice es de una
 _CLASE_DE = {
     "motorway": "autopista",
     "motorway_link": "autopista",
@@ -68,6 +87,11 @@ SIN_ASFALTAR = {
 }
 BALSA_MAX_M = 3_000  # un ferry más largo que esto no es parte de la red vial: es un viaje en bote
 TRAMO_MAX_M = 1_000  # las vías largas se parten cada kilómetro (ver _armar)
+CONEXION_MAX_M = 1_000  # una estación o un muelle se une a la vía más cercana si está a menos de esto
+_RIELES = {"rail", "narrow_gauge"}
+_RIEL_EXCLUIDO = {"industrial", "military", "test"}  # usage: el tren minero no lleva pasajeros
+_SERVICIO_RIEL_EXCLUIDO = {"yard", "siding", "spur", "crossover"}
+_DESPLAZAMIENTO = {"tren": 10**12, "bote": 2 * 10**12}  # nodos de una capa: nunca coinciden con los de las vías
 
 RADIO_TIERRA_M = 6_371_008.8
 
@@ -84,6 +108,7 @@ class Red:
     clase: np.ndarray  # int8, índice en CLASES
     sin_asfaltar: np.ndarray  # bool
     curvas: np.ndarray  # float32, grados de giro por kilómetro
+    capa: np.ndarray | None = None  # int8 por vértice, índice en CAPAS; None si todo es vial
     fecha_osm: str = ""
 
     @property
@@ -105,7 +130,26 @@ class Red:
             clase=self.clase,
             sin_asfaltar=self.sin_asfaltar,
             curvas=self.curvas,
+            capa=np.zeros(self.vertices, dtype=np.int8) if self.capa is None else self.capa,
             fecha_osm=np.array(self.fecha_osm),
+        )
+
+    def vial(self) -> Red:
+        """Solo las vías, sin el tren, los botes ni sus trasbordos (para calibrar)."""
+        if self.capa is None or not (self.capa > 0).any():
+            return self
+        n = int((self.capa == 0).sum())  # los vértices de las vías van primero (ver _unir)
+        e = self.clase < len(VIALES)
+        return Red(
+            lat=self.lat[:n],
+            lon=self.lon[:n],
+            desde=self.desde[e],
+            hasta=self.hasta[e],
+            metros=self.metros[e],
+            clase=self.clase[e],
+            sin_asfaltar=self.sin_asfaltar[e],
+            curvas=self.curvas[e],
+            fecha_osm=self.fecha_osm,
         )
 
     @classmethod
@@ -138,50 +182,171 @@ def _clase_de_via(tags) -> str | None:
 
 
 def leer_red(pbf: Path, indice: str = "flex_mem") -> Red:
-    """Lee el extracto .osm.pbf y arma el grafo vial simplificado (ver el módulo).
+    """Lee el extracto .osm.pbf y arma el grafo: las vías, y encima el tren y los botes
+    (ver el módulo).
 
     ``indice`` es donde pyosmium guarda la ubicación de los nodos mientras lee: en memoria
     (~1 GB para el Perú) o, en una máquina con poca, en un archivo:
     ``"sparse_file_array,/tmp/nodos.idx"``.
     """
-    from array import array
-
     import osmium  # solo lo necesita quien construye la red
 
-    refs, lats, lons = array("q"), array("d"), array("d")
-    inicios, clases, sin_asf = array("q"), array("b"), array("b")
+    vias_de_tren, paradas = _rutas_de_tren(pbf)
+    vial, capas = _Vias(), _Vias()
+    rieles: list[list[tuple[int, float, float]]] = []
     procesador = (
         osmium.FileProcessor(str(pbf), osmium.osm.NODE | osmium.osm.WAY)
         .with_locations(indice)
         .with_filter(osmium.filter.EntityFilter(osmium.osm.WAY))
-        .with_filter(osmium.filter.KeyFilter("highway", "route"))
+        .with_filter(osmium.filter.KeyFilter("highway", "route", "railway"))
     )
     for via in procesador:
-        clase = _clase_de_via(via.tags)
+        tags = via.tags
+        if via.id in vias_de_tren and "highway" not in tags:
+            if (
+                tags.get("railway") in _RIELES
+                and tags.get("usage") not in _RIEL_EXCLUIDO
+                and tags.get("service") not in _SERVICIO_RIEL_EXCLUIDO
+            ):
+                rieles.append([(nd.ref, nd.lat, nd.lon) for nd in via.nodes if nd.location.valid()])
+            continue
+        clase = _clase_de_via(tags)
         if clase is None:
             continue
         nodos = [(nd.ref, nd.lat, nd.lon) for nd in via.nodes if nd.location.valid()]
         if len(nodos) < 2:
             continue
-        r, la, lo = zip(*nodos, strict=True)
         if clase == "balsa":
+            _, la, lo = zip(*nodos, strict=True)
             largo = haversine_m(np.array(la[:-1]), np.array(lo[:-1]), np.array(la[1:]), np.array(lo[1:])).sum()
             if largo > BALSA_MAX_M:
+                capas.agregar(nodos, "bote", False, _DESPLAZAMIENTO["bote"])
                 continue
-        inicios.append(len(refs))
-        refs.extend(r)
-        lats.extend(la)
-        lons.extend(lo)
-        clases.append(CODIGO[clase])
-        sin_asf.append(via.tags.get("surface", "") in SIN_ASFALTAR)
+        vial.agregar(nodos, clase, tags.get("surface", "") in SIN_ASFALTAR)
     del procesador  # libera el índice de nodos antes de armar el grafo
-    return _armar(
-        np.frombuffer(refs, dtype=np.int64),
-        np.frombuffer(lats, dtype=np.float64),
-        np.frombuffer(lons, dtype=np.float64),
-        np.frombuffer(inicios, dtype=np.int64),
-        np.frombuffer(clases, dtype=np.int8),
-        np.frombuffer(sin_asf, dtype=np.int8).astype(bool),
+
+    # Las estaciones parten el riel: así cada una es un vértice donde se sube y se baja.
+    estaciones = _estaciones(pbf, {r for riel in rieles for r, _, _ in riel}, paradas)
+    for riel in rieles:
+        tramo = []
+        for nodo in riel:
+            tramo.append(nodo)
+            if nodo[0] in estaciones and len(tramo) > 1:
+                capas.agregar(tramo, "tren", False, _DESPLAZAMIENTO["tren"])
+                tramo = [nodo]
+        if len(tramo) > 1:
+            capas.agregar(tramo, "tren", False, _DESPLAZAMIENTO["tren"])
+    muelles = [p for e in capas.extremos("bote") for p in e]
+    return _unir(vial.armar(), capas.armar(), list(estaciones.values()) + muelles)
+
+
+class _Vias:
+    """Las vías que se van leyendo, en arreglos planos para ``_armar``."""
+
+    def __init__(self):
+        from array import array
+
+        self.refs, self.lats, self.lons = array("q"), array("d"), array("d")
+        self.inicios, self.clases, self.sin_asf = array("q"), array("b"), array("b")
+
+    def agregar(self, nodos, clase: str, sin_asfaltar: bool, desplazamiento: int = 0) -> None:
+        if len(nodos) < 2:
+            return
+        r, la, lo = zip(*nodos, strict=True)
+        self.inicios.append(len(self.refs))
+        self.refs.extend(x + desplazamiento for x in r)
+        self.lats.extend(la)
+        self.lons.extend(lo)
+        self.clases.append(CODIGO[clase])
+        self.sin_asf.append(sin_asfaltar)
+
+    def extremos(self, clase: str) -> list[tuple[tuple[float, float], tuple[float, float]]]:
+        """Primer y último punto de cada vía de esa clase."""
+        fin = list(self.inicios[1:]) + [len(self.refs)]
+        return [
+            ((self.lats[a], self.lons[a]), (self.lats[b - 1], self.lons[b - 1]))
+            for a, b, c in zip(self.inicios, fin, self.clases, strict=True)
+            if c == CODIGO[clase]
+        ]
+
+    def armar(self) -> Red | None:
+        if not self.inicios:
+            return None
+        return _armar(
+            np.frombuffer(self.refs, dtype=np.int64),
+            np.frombuffer(self.lats, dtype=np.float64),
+            np.frombuffer(self.lons, dtype=np.float64),
+            np.frombuffer(self.inicios, dtype=np.int64),
+            np.frombuffer(self.clases, dtype=np.int8),
+            np.frombuffer(self.sin_asf, dtype=np.int8).astype(bool),
+        )
+
+
+def _rutas_de_tren(pbf: Path) -> tuple[set[int], set[int]]:
+    """(vías, nodos de parada) de las rutas de tren (``route=train``) del extracto."""
+    import osmium
+
+    vias, paradas = set(), set()
+    relaciones = osmium.FileProcessor(str(pbf), osmium.osm.RELATION).with_filter(
+        osmium.filter.TagFilter(("route", "train"))
+    )
+    for rel in relaciones:
+        for m in rel.members:
+            if m.type == "w":
+                vias.add(m.ref)
+            elif m.type == "n":
+                paradas.add(m.ref)
+    return vias, paradas
+
+
+def _estaciones(pbf: Path, refs_de_riel: set[int], paradas: set[int]) -> dict[int, tuple[float, float]]:
+    """Nodo → (lat, lon) de cada estación, paradero o parada de ruta que está sobre el riel."""
+    import osmium
+
+    salida = {}
+    for nodo in osmium.FileProcessor(str(pbf), osmium.osm.NODE).with_filter(osmium.filter.IdFilter(refs_de_riel)):
+        t = nodo.tags
+        es_estacion = t.get("railway") in ("station", "halt") or t.get("public_transport") in (
+            "stop_position",
+            "station",
+        )
+        if (es_estacion or nodo.id in paradas) and nodo.location.valid():
+            salida[nodo.id] = (nodo.location.lat, nodo.location.lon)
+    return salida
+
+
+def _unir(vial: Red, capas: Red | None, puntos: list[tuple[float, float]]) -> Red:
+    """La red vial con las capas encima, unidas por un trasbordo entre cada estación o muelle
+    y el vértice vial más cercano (a menos de CONEXION_MAX_M)."""
+    if capas is None:
+        return vial
+    from scipy.spatial import cKDTree
+
+    n = vial.vertices
+    capa = np.zeros(n + capas.vertices, dtype=np.int8)
+    for nombre in ("tren", "bote"):
+        de_la_capa = capas.clase == CODIGO[nombre]
+        capa[n + capas.desde[de_la_capa]] = CAPAS.index(nombre)
+        capa[n + capas.hasta[de_la_capa]] = CAPAS.index(nombre)
+    vertice_de = {(la, lo): i for i, (la, lo) in enumerate(zip(capas.lat.tolist(), capas.lon.tolist(), strict=True))}
+    en_capa = sorted({vertice_de[p] for p in puntos if p in vertice_de})
+    arbol = cKDTree(_unitarios(vial.lat, vial.lon))
+    cuerda, cercano = arbol.query(_unitarios(capas.lat[en_capa], capas.lon[en_capa]))
+    metros = 2 * RADIO_TIERRA_M * np.arcsin(np.clip(cuerda / 2, 0.0, 1.0))
+    une = metros <= CONEXION_MAX_M
+    desde = cercano[une].astype(np.int32)
+    hasta = (n + np.asarray(en_capa)[une]).astype(np.int32)
+    k = int(une.sum())
+    return Red(
+        lat=np.r_[vial.lat, capas.lat],
+        lon=np.r_[vial.lon, capas.lon],
+        desde=np.r_[vial.desde, capas.desde + n, desde].astype(np.int32),
+        hasta=np.r_[vial.hasta, capas.hasta + n, hasta].astype(np.int32),
+        metros=np.r_[vial.metros, capas.metros, np.maximum(metros[une], 1.0)].astype(np.float32),
+        clase=np.r_[vial.clase, capas.clase, np.full(k, CODIGO["transbordo"])].astype(np.int8),
+        sin_asfaltar=np.r_[vial.sin_asfaltar, capas.sin_asfaltar, np.zeros(k, dtype=bool)],
+        curvas=np.r_[vial.curvas, capas.curvas, np.zeros(k)].astype(np.float32),
+        capa=capa,
     )
 
 
@@ -349,11 +514,15 @@ CURVAS_TOPE = 1_000.0  # grados de giro por km; más que eso es ruido del trazad
 
 def minutos_por_arista(red: Red, ritmos: dict[str, float]) -> np.ndarray:
     """Minutos para recorrer cada arista: km × (ritmo de su clase + recargo si no está
-    asfaltada + recargo por sus curvas). ``ritmos`` sale de pipeline/red_calibracion.py."""
-    ritmo = np.array([ritmos[c] for c in CLASES])[red.clase]
+    asfaltada + recargo por sus curvas). Los recargos son de las vías; el tren y el bote
+    van a su ritmo, y cada trasbordo suma además ``ritmos["transbordo_min"]``. Los ritmos de
+    las vías salen de pipeline/red_calibracion.py; los demás, de pipeline/referencia/ritmos_fijos.csv."""
+    ritmo = np.array([ritmos.get(c, np.inf) for c in CLASES])[red.clase]
     km = red.metros.astype(np.float64) / 1000
     curvas = np.minimum(red.curvas, CURVAS_TOPE) / 100
-    return km * (ritmo + ritmos["sin_asfaltar"] * red.sin_asfaltar + ritmos["curvas"] * curvas)
+    vial = (red.clase < len(VIALES)).astype(np.float64)  # multiplicar por 1 no cambia ni un bit
+    minutos = km * (ritmo + ritmos["sin_asfaltar"] * red.sin_asfaltar * vial + ritmos["curvas"] * curvas * vial)
+    return minutos + ritmos.get("transbordo_min", 0.0) * (red.clase == CODIGO["transbordo"])
 
 
 # --- Rutas ------------------------------------------------------------------------------
@@ -363,6 +532,10 @@ def _unitarios(lat, lon) -> np.ndarray:
     """Puntos de la esfera como vectores 3D: la distancia euclídea entre ellos crece con la real."""
     p, lam = np.radians(np.asarray(lat, dtype=float)), np.radians(np.asarray(lon, dtype=float))
     return np.column_stack([np.cos(p) * np.cos(lam), np.cos(p) * np.sin(lam), np.sin(p)])
+
+
+def _cuerda_a_metros(cuerda) -> np.ndarray:
+    return 2 * RADIO_TIERRA_M * np.arcsin(np.clip(cuerda / 2, 0.0, 1.0))
 
 
 def cercanos(lat, lon, puntos_lat, puntos_lon, radio_m: float) -> list[list[int]]:
@@ -380,7 +553,9 @@ class Ruteador:
     """Caminos más rápidos sobre la red con un tiempo por arista (minutos).
 
     Solo se ubican puntos en la parte conectada grande de la red: un tramo suelto de
-    OSM, sin unión con nada, no sirve para llegar a ningún lado.
+    OSM, sin unión con nada, no sirve para llegar a ningún lado. Un punto se ubica en una
+    vía; solo si no hay ninguna a menos de CONEXION_MAX_M y un riel o la ruta de un bote
+    quedan más cerca, se ubica en ellos (una isla, un pueblo al que solo llega el tren).
     """
 
     def __init__(self, red: Red, minutos: np.ndarray, vertices_minimos: int = 200):
@@ -407,14 +582,26 @@ class Ruteador:
         tamanio = np.bincount(etiqueta)
         self.componente = etiqueta
         self.en_red_grande = tamanio[etiqueta] >= vertices_minimos
-        self._ubicables = np.flatnonzero(self.en_red_grande)
+        capa = np.zeros(n, dtype=np.int8) if red.capa is None else red.capa
+        self._ubicables = np.flatnonzero(self.en_red_grande & (capa == 0))
         self._arbol = cKDTree(_unitarios(red.lat[self._ubicables], red.lon[self._ubicables]))
+        self._en_capas = np.flatnonzero(self.en_red_grande & (capa > 0))
+        self._arbol_capas = None
+        if len(self._en_capas):
+            self._arbol_capas = cKDTree(_unitarios(red.lat[self._en_capas], red.lon[self._en_capas]))
 
     def ubicar(self, lat, lon) -> tuple[np.ndarray, np.ndarray]:
         """(vértice más cercano, metros en línea recta hasta él) para cada punto."""
-        cuerda, i = self._arbol.query(_unitarios(lat, lon))
-        metros = 2 * RADIO_TIERRA_M * np.arcsin(np.clip(cuerda / 2, 0.0, 1.0))
-        return self._ubicables[i], metros
+        puntos = _unitarios(lat, lon)
+        cuerda, i = self._arbol.query(puntos)
+        vertice, metros = self._ubicables[i], _cuerda_a_metros(cuerda)
+        if self._arbol_capas is not None:
+            cuerda_c, j = self._arbol_capas.query(puntos)
+            metros_c = _cuerda_a_metros(cuerda_c)
+            mejor = (metros > CONEXION_MAX_M) & (metros_c < metros)
+            vertice = np.where(mejor, self._en_capas[j], vertice)
+            metros = np.where(mejor, metros_c, metros)
+        return vertice, metros
 
     def minutos_desde(self, fuentes, limite: float = np.inf, predecesores: bool = False):
         """Minutos de viaje desde cada fuente a todos los vértices (inf si no se llega)."""
@@ -477,6 +664,9 @@ class Ruteador:
         for i, fuente in enumerate(local[fuentes]):
             # Los km del camino más rápido: el mismo árbol de caminos, pesado en metros.
             hijos = np.flatnonzero(predecesor[i] >= 0)
+            if not len(hijos):  # no llega a ningún otro vértice
+                km[i, fuente] = 0.0
+                continue
             padres = predecesor[i][hijos]
             peso = np.asarray(metros[padres, hijos]).ravel()
             arbol = csr_matrix((np.maximum(peso, 1e-3), (padres, hijos)), shape=grafo.shape)

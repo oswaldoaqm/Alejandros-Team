@@ -1,9 +1,11 @@
 """
-Tiempos de viaje por carretera que usa el motor, sobre la red vial de OpenStreetMap.
+Tiempos de viaje que usa el motor, sobre la red de OpenStreetMap: vías, tren y botes.
 
 1. Arma la red desde el extracto de Geofabrik (``pipeline/red_vial.py``) o la toma del
    caché si el extracto no cambió.
-2. Calibra las velocidades con los recorridos de las fichas (``pipeline/red_calibracion.py``).
+2. Calibra las velocidades de las vías con los recorridos de las fichas
+   (``pipeline/red_calibracion.py``) y les suma los ritmos del tren y del bote
+   (``pipeline/referencia/ritmos_fijos.csv``).
 3. Recorre cada polo con una sola búsqueda desde sus paradas, que da a la vez:
    - los tiempos entre sus paradas, en los dos sentidos;
    - el pueblo donde se duerme, la base (``pipeline/bases.py``);
@@ -11,14 +13,14 @@ Tiempos de viaje por carretera que usa el motor, sobre la red vial de OpenStreet
      cuesta lo mismo en los dos sentidos.
 4. Calcula los tiempos de cada una de las 24 ciudades de origen a cada parada y a cada base.
 
-Cada tiempo es de puerta a puerta en auto o bus: el camino por la red, lo que falta de la
-parada a la vía más cercana y los minutos fijos de cada traslado. La caminata final que
-registra la ficha (``caminata_min`` del maestro) va aparte.
+Cada tiempo es de puerta a puerta: el camino más rápido por la red (vías, tren y botes),
+lo que falta de cada punta a la red y los minutos fijos de cada traslado. La caminata
+final que registra la ficha (``caminata_min`` del maestro) va aparte.
 
 Escribe en data/procesados/:
   red_calibracion.json             parámetros y error medido por validación cruzada
   red_calibracion_recorridos.csv   cada recorrido de ficha usado, con el tiempo de la red
-  tiempos_origen.csv               origen → parada: minutos y km (vacío si no hay carretera)
+  tiempos_origen.csv               origen → parada: minutos y km (vacío si no hay camino)
   tiempos_polo.csv                 parada → parada dentro de cada polo
   polos_bases.csv                  la base de cada polo
   tiempos_base.csv                 base → cada parada de su polo
@@ -57,8 +59,8 @@ from pipeline.red_vial import (
 )
 
 OSM = EXTERNOS / "osm"
-CACHE = 2  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
-LEJOS_DE_LA_RED_M = 5_000  # una parada más lejos que esto de cualquier vía no se rutea
+CACHE = 3  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
+LEJOS_DE_LA_RED_M = 5_000  # una parada más lejos que esto de la red no se rutea
 CANDIDATOS_MARGEN_GRADOS = 1.0  # los pueblos que pueden ser base: a menos de ~110 km de las paradas
 
 
@@ -98,8 +100,14 @@ def red_en_cache(pbf: Path, indice: str) -> tuple[Red, Osm, dict]:
     return Red.cargar(ruta("red_vial", "npz")), Osm(**tablas), manifiesto
 
 
+def ritmos_fijos() -> dict[str, float]:
+    """Minutos por km del tren y del bote, y los del trasbordo (pipeline/referencia/ritmos_fijos.csv)."""
+    tabla = pd.read_csv(REFERENCIA / "ritmos_fijos.csv", sep=";")
+    return dict(zip(tabla["clase"], tabla["min_por_km"].astype(float), strict=True))
+
+
 def _puerta_a_puerta(minutos, km, metros_a_la_red, parametros) -> tuple[np.ndarray, np.ndarray]:
-    """Suma a cada camino lo que falta de cada punta a la vía y los minutos fijos del traslado."""
+    """Suma a cada camino lo que falta de cada punta a la red y los minutos fijos del traslado."""
     fuera_km = 1.3 * metros_a_la_red / 1000  # por un camino sin mapear, como en la calibración
     minutos = minutos + parametros["por_viaje"] + fuera_km * parametros["trocha"]
     return minutos, km + fuera_km
@@ -204,7 +212,7 @@ def recorrer_polos(
 
 
 def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(origen → cada parada, origen → la base de cada polo): minutos y km por carretera,
+    """(origen → cada parada, origen → la base de cada polo): minutos y km de puerta a puerta,
     vacíos si no hay camino. Una búsqueda en toda la red por ciudad de origen."""
     v_origen, m_origen = ruteador.ubicar(origenes["lat"].to_numpy(), origenes["lon"].to_numpy())
     v_parada, m_parada = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy())
@@ -235,7 +243,7 @@ def _escribir(tabla: pd.DataFrame, ruta: Path) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Calibra la red vial y calcula los tiempos de viaje por carretera.")
+    ap = argparse.ArgumentParser(description="Calibra la red y calcula los tiempos de viaje por vías, tren y botes.")
     ap.add_argument("--pbf", type=Path, default=OSM / "peru-latest.osm.pbf")
     ap.add_argument("--maestro", type=Path, default=PROCESADOS / "maestro_v3.csv")
     ap.add_argument("--salida", type=Path, default=PROCESADOS)
@@ -274,6 +282,7 @@ def main() -> None:
     error = f"error medio {cv['error_medio']:.0%}, mediano {cv['error_mediano']:.0%}"
     print(f"Calibración con {cv['recorridos']} recorridos de fichas · {error} (validación cruzada)")
 
+    parametros = {**parametros, **ritmos_fijos()}  # la calibración es solo de las vías
     ruteador = Ruteador(red, minutos_por_arista(red, parametros))
     paradas = maestro.loc[maestro["es_parada"].astype(bool), ["codigo", "polo", "lat", "lon", "jerarquia"]]
     paradas = paradas.reset_index(drop=True)

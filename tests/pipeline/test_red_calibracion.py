@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from pipeline import red_calibracion as calibracion
-from pipeline.red_vial import CLASES
+from pipeline.red_vial import VIALES
 
 
 def test_clave_de_nombres():
@@ -16,7 +16,7 @@ def test_clave_de_nombres():
 
 def _tabla_sintetica(n=400, semilla=1):
     rng = np.random.default_rng(semilla)
-    tabla = pd.DataFrame({f"km_{c}": rng.exponential(8, n) * (rng.random(n) < 0.5) for c in CLASES})
+    tabla = pd.DataFrame({f"km_{c}": rng.exponential(8, n) * (rng.random(n) < 0.5) for c in VIALES})
     tabla["km_balsa"] = 0.0
     tabla["km_sin_asfaltar"] = tabla["km_trocha"] * 0.5
     tabla["curvas"] = tabla["km_terciaria"] * 2

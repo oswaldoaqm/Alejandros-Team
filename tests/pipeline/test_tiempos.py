@@ -23,6 +23,10 @@ PARAMETROS = {
     "sin_asfaltar": 0.5,
     "curvas": 0.1,
     "por_viaje": 5.0,
+    "tren": 2.0,
+    "bote": 3.0,
+    "transbordo": 12.0,
+    "transbordo_min": 30.0,
 }
 PARADAS = pd.DataFrame(
     {
