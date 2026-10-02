@@ -584,6 +584,7 @@ def cercanos(lat, lon, puntos_lat, puntos_lon, radio_m: float) -> list[list[int]
 
 
 MEDIOS = ("vial", "tren", "bote")  # por dónde se llega a un punto (ver Ruteador.ubicar)
+_EN_CAPA = ("tren", "bote")  # los km de un camino que van en cada una (Ruteador.entre con por_medio)
 CAPA_MAX_M = 5_000  # un punto que se llega en bote o en tren se ubica en su capa si está a menos de esto
 
 
@@ -689,7 +690,9 @@ class Ruteador:
         a, b = camino[:-1], camino[1:]
         return np.asarray(self._arista[a, b]).ravel().astype(np.int64) - 1
 
-    def entre(self, fuentes, destinos, margen: float | None = 1.0, obligatorios=None) -> tuple[np.ndarray, np.ndarray]:
+    def entre(
+        self, fuentes, destinos, margen: float | None = 1.0, obligatorios=None, por_medio: bool = False
+    ) -> tuple[np.ndarray, ...]:
         """Minutos y km del camino más rápido de cada fuente a cada destino (vértices).
 
         Con ``margen`` (grados), la búsqueda se hace solo en la parte de la red que cae en
@@ -701,11 +704,14 @@ class Ruteador:
         importan de los que se miden de paso, como los pueblos que podrían ser base: solo
         los obligatorios fijan el rectángulo y obligan a repetir con toda la red. Un destino
         de paso que queda fuera del rectángulo o sin camino dentro de él vale ``inf``.
+
+        Con ``por_medio`` devuelve además cuántos de esos km van en tren y cuántos en bote:
+        (minutos, km, km_tren, km_bote).
         """
         fuentes, destinos = np.asarray(fuentes), np.asarray(destinos)
         obligatorios = np.ones(len(destinos), dtype=bool) if obligatorios is None else np.asarray(obligatorios, bool)
         if margen is None:
-            return self._entre(np.arange(self.red.vertices), fuentes, destinos)
+            return self._entre(np.arange(self.red.vertices), fuentes, destinos, por_medio)
         todos = np.r_[fuentes, destinos[obligatorios]]
         lat, lon = self.red.lat, self.red.lon
         dentro = np.flatnonzero(
@@ -714,12 +720,14 @@ class Ruteador:
             & (lon >= lon[todos].min() - margen)
             & (lon <= lon[todos].max() + margen)
         )
-        minutos, km = self._entre(dentro, fuentes, destinos)
-        for i in np.flatnonzero(~np.isfinite(minutos[:, obligatorios]).all(axis=1)):
-            minutos[i], km[i] = self._entre(np.arange(self.red.vertices), fuentes[i : i + 1], destinos)
-        return minutos, km
+        salida = self._entre(dentro, fuentes, destinos, por_medio)
+        for i in np.flatnonzero(~np.isfinite(salida[0][:, obligatorios]).all(axis=1)):
+            otra = self._entre(np.arange(self.red.vertices), fuentes[i : i + 1], destinos, por_medio)
+            for tabla, fila in zip(salida, otra, strict=True):
+                tabla[i] = fila[0]
+        return salida
 
-    def _entre(self, vertices, fuentes, destinos) -> tuple[np.ndarray, np.ndarray]:
+    def _entre(self, vertices, fuentes, destinos, por_medio: bool = False) -> tuple[np.ndarray, ...]:
         from scipy.sparse import csr_matrix
         from scipy.sparse.csgraph import dijkstra
 
@@ -728,19 +736,39 @@ class Ruteador:
         completo = len(vertices) == self.red.vertices
         grafo = self.grafo if completo else self.grafo[vertices][:, vertices]
         metros = self._metros if completo else self._metros[vertices][:, vertices]
+        aristas = None
+        if por_medio:
+            aristas = self._arista if completo else self._arista[vertices][:, vertices]
+        j = local[destinos]
+        fuera = j < 0  # destinos fuera de la parte buscada
+        j = np.where(fuera, 0, j)
         minutos, predecesor = dijkstra(grafo, directed=True, indices=local[fuentes], return_predecessors=True)
-        km = np.full(minutos.shape, np.inf)
+        forma = (len(fuentes), len(destinos))
+        km, km_medio = np.full(forma, np.inf), np.full((len(_EN_CAPA),) + forma, np.inf)
         for i, fuente in enumerate(local[fuentes]):
             # Los km del camino más rápido: el mismo árbol de caminos, pesado en metros.
             hijos = np.flatnonzero(predecesor[i] >= 0)
             if not len(hijos):  # no llega a ningún otro vértice
-                km[i, fuente] = 0.0
+                km[i] = km_medio[:, i] = np.where(j == fuente, 0.0, np.inf)
                 continue
             padres = predecesor[i][hijos]
             peso = np.asarray(metros[padres, hijos]).ravel()
             arbol = csr_matrix((np.maximum(peso, 1e-3), (padres, hijos)), shape=grafo.shape)
-            km[i] = dijkstra(arbol, directed=True, indices=fuente) / 1000
-        j = local[destinos]
-        minutos, km = minutos[:, j], km[:, j]
-        minutos[:, j < 0] = km[:, j < 0] = np.inf  # destinos fuera de la parte buscada
+            km[i] = dijkstra(arbol, directed=True, indices=fuente)[j] / 1000
+            if por_medio:
+                # Y en el mismo árbol, solo los metros de las aristas de cada capa.
+                clase = self.red.clase[np.asarray(aristas[padres, hijos]).ravel() - 1]
+                for k, medio in enumerate(_EN_CAPA):
+                    en_medio = clase == CODIGO[medio]
+                    if not en_medio.any():
+                        km_medio[k, i] = np.where(np.isfinite(km[i]), 0.0, np.inf)
+                        continue
+                    peso_medio = np.maximum(np.where(en_medio, peso, 0.0), 1e-6)
+                    arbol = csr_matrix((peso_medio, (padres, hijos)), shape=grafo.shape)
+                    km_medio[k, i] = dijkstra(arbol, directed=True, indices=fuente)[j] / 1000
+        minutos = minutos[:, j]
+        minutos[:, fuera] = km[:, fuera] = np.inf
+        km_medio[:, :, fuera] = np.inf
+        if por_medio:
+            return minutos, km, km_medio[0], km_medio[1]
         return minutos, km

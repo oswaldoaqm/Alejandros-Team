@@ -22,7 +22,8 @@ caminata final que registra la ficha (``caminata_min`` del maestro) va aparte.
 Escribe en data/procesados/:
   red_calibracion.json             parámetros y error medido por validación cruzada
   red_calibracion_recorridos.csv   cada recorrido de ficha usado, con el tiempo de la red
-  tiempos_origen.csv               origen → parada: minutos y km (vacío si no hay camino)
+  tiempos_origen.csv               origen → parada: minutos, km y cuántos de esos km van en
+                                   tren y en bote (vacío si no hay camino)
   tiempos_polo.csv                 parada → parada dentro de cada polo
   polos_bases.csv                  la base de cada polo
   tiempos_base.csv                 base → cada parada de su polo
@@ -69,6 +70,7 @@ CANDIDATOS_MARGEN_GRADOS = 1.0  # los pueblos que pueden ser base: a menos de ~1
 EN_BOTE = {"Bote", "Deslizador", "Lancha", "Canoa", "Barco"}
 EN_TREN = {"Ferrocarril"}
 A_PIE = {"A pie", "A caballo", "Acémila"}
+KM = ("km", "km_tren", "km_bote")  # los km de cada camino y cuántos de ellos van en tren y en bote
 
 
 @dataclass
@@ -149,7 +151,8 @@ def _puerta_a_puerta(minutos, km, metros_a_la_red, parametros, en_capa=0) -> tup
 
 def _sin_ruta_a_nan(tabla: pd.DataFrame, lejos: np.ndarray) -> pd.DataFrame:
     """Vacía minutos y km donde no hay camino o una punta queda lejos de la red."""
-    tabla.loc[lejos | ~np.isfinite(tabla["minutos"].to_numpy()), ["minutos", "km"]] = np.nan
+    columnas = [c for c in ("minutos", *KM) if c in tabla]
+    tabla.loc[lejos | ~np.isfinite(tabla["minutos"].to_numpy()), columnas] = np.nan
     return tabla
 
 
@@ -180,7 +183,9 @@ def recorrer_polos(
             & (clon <= grupo["lon"].max() + margen)
         )
         obligatorio = np.r_[np.ones(n, dtype=bool), np.zeros(len(cerca), dtype=bool)]
-        minutos, km = ruteador.entre(v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio)
+        minutos, km, km_tren, km_bote = ruteador.entre(
+            v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio, por_medio=True
+        )
 
         # Entre paradas: cada fila es desde, cada columna hasta.
         if n >= 2:
@@ -195,6 +200,8 @@ def recorrer_polos(
                         "hasta": codigos[hasta],
                         "minutos": mp[desde, hasta],
                         "km": kp[desde, hasta],
+                        "km_tren": km_tren[:, :n][desde, hasta],
+                        "km_bote": km_bote[:, :n][desde, hasta],
                     }
                 )
             )
@@ -208,12 +215,12 @@ def recorrer_polos(
         j = bases_.elegir(mb[en_red], peso[en_red], ajuste[cerca]) if en_red.any() else None
         if j is not None:
             elegido, criterio = cerca[j], "carretera"
-            mbj, kbj = mb[:, j], kb[:, j]
+            mbj, kbj, ktj, kboj = mb[:, j], kb[:, j], km_tren[:, n + j], km_bote[:, n + j]
         else:
             lat, lon = grupo["lat"].to_numpy(), grupo["lon"].to_numpy()
             elegido = bases_.elegir_en_linea_recta(lat, lon, peso, clat, clon, ajuste)
             criterio = "linea_recta"
-            mbj, kbj = np.full(n, np.inf), np.full(n, np.inf)
+            mbj = kbj = ktj = kboj = np.full(n, np.inf)
         con_camino = np.isfinite(mbj) & en_red
         c = candidatos.iloc[elegido]
         elegidas.append(
@@ -236,13 +243,15 @@ def recorrer_polos(
                 else np.nan,
             }
         )
-        desde_base.append(pd.DataFrame({"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj}))
+        desde_base.append(
+            pd.DataFrame({"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj, "km_tren": ktj, "km_bote": kboj})
+        )
 
     lejos = set(paradas.loc[m > LEJOS_DE_LA_RED_M, "codigo"])
     pares = (
         pd.concat(pares, ignore_index=True)
         if pares
-        else pd.DataFrame(columns=["polo", "desde", "hasta", "minutos", "km"])
+        else pd.DataFrame(columns=["polo", "desde", "hasta", "minutos", *KM])
     )
     pares = _sin_ruta_a_nan(pares, (pares["desde"].isin(lejos) | pares["hasta"].isin(lejos)).to_numpy())
     desde_base = pd.concat(desde_base, ignore_index=True)
@@ -258,18 +267,38 @@ def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tu
         paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas)
     )
     v_base, m_base, c_base = ruteador.ubicar(bases["lat"].to_numpy(), bases["lon"].to_numpy())
-    minutos, km = ruteador.entre(v_origen, np.r_[v_parada, v_base], margen=None)
+    minutos, km, km_tren, km_bote = ruteador.entre(v_origen, np.r_[v_parada, v_base], margen=None, por_medio=True)
     n = len(paradas)
     a_paradas, a_bases = [], []
     for i, origen in enumerate(origenes["id"]):
         puntas = int(c_origen[i] > 0) + (c_parada > 0)
         mi, ki = _puerta_a_puerta(minutos[i, :n], km[i, :n], m_origen[i] + m_parada, parametros, puntas)
         a_paradas.append(
-            pd.DataFrame({"origen": origen, "codigo": paradas["codigo"].to_numpy(), "minutos": mi, "km": ki})
+            pd.DataFrame(
+                {
+                    "origen": origen,
+                    "codigo": paradas["codigo"].to_numpy(),
+                    "minutos": mi,
+                    "km": ki,
+                    "km_tren": km_tren[i, :n],
+                    "km_bote": km_bote[i, :n],
+                }
+            )
         )
         puntas = int(c_origen[i] > 0) + (c_base > 0)
         mi, ki = _puerta_a_puerta(minutos[i, n:], km[i, n:], m_origen[i] + m_base, parametros, puntas)
-        a_bases.append(pd.DataFrame({"origen": origen, "polo": bases["polo"].to_numpy(), "minutos": mi, "km": ki}))
+        a_bases.append(
+            pd.DataFrame(
+                {
+                    "origen": origen,
+                    "polo": bases["polo"].to_numpy(),
+                    "minutos": mi,
+                    "km": ki,
+                    "km_tren": km_tren[i, n:],
+                    "km_bote": km_bote[i, n:],
+                }
+            )
+        )
     a_paradas = pd.concat(a_paradas, ignore_index=True)
     a_paradas = _sin_ruta_a_nan(a_paradas, np.tile(m_parada > LEJOS_DE_LA_RED_M, len(origenes)))
     a_bases = pd.concat(a_bases, ignore_index=True)

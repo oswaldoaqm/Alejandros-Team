@@ -142,6 +142,9 @@ def test_al_paradero_lejano_se_llega_en_tren(red):
     riel = haversine_m(-12.0005, -76.982, -12.03, -76.982) / 1000
     assert minutos[0, 0] == pytest.approx(trasbordo * 12.0 + 30.0 + riel * 2.0, rel=1e-4)
     assert km[0, 0] == pytest.approx(trasbordo + riel, rel=1e-4)
+    # Por medio: los km del riel van en tren; ninguno en bote.
+    _, _, km_tren, km_bote = ruteador.entre([inicio], [lejano], margen=None, por_medio=True)
+    assert km_tren[0, 0] == pytest.approx(riel, rel=1e-4) and km_bote[0, 0] == pytest.approx(0.0, abs=1e-6)
 
 
 def test_junto_a_una_via_se_ubica_en_la_via_aunque_el_riel_este_mas_cerca(red):

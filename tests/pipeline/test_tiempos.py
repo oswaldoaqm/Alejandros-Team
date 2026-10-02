@@ -75,6 +75,7 @@ def test_pares_de_paradas(mundo):
     esperado = _directo(ruteador, (-12.0005, -77.0), (-11.9915, -76.973))
     assert (ida["minutos"], ida["km"]) == pytest.approx(esperado)
     assert vuelta["minutos"] == pytest.approx(ida["minutos"])  # cada tramo cuesta lo mismo en los dos sentidos
+    assert (ida["km_tren"], ida["km_bote"]) == pytest.approx((0.0, 0.0), abs=1e-6)  # todo por la vía
     lejos = pares[(pares["desde"] == 3) | (pares["hasta"] == 3)]
     assert len(lejos) == 4 and lejos[["minutos", "km"]].isna().all().all()
 
@@ -149,6 +150,10 @@ def test_a_una_isla_se_llega_en_bote_y_bajarse_cuesta_un_trasbordo(mundo):
     minutos, _ = ruteador.entre([vo], [vi], margen=None)
     sin_bajarse = minutos[0, 0] + PARAMETROS["por_viaje"] + 1.3 * (mo + mi) / 1000 * PARAMETROS["trocha"]
     assert CAPAS[ci] == "bote" and fila["minutos"] == pytest.approx(sin_bajarse + PARAMETROS["transbordo_min"])
+    # Del muelle a la isla se va en bote: esos km van aparte; ninguno en tren.
+    _, _, km_tren, km_bote = ruteador.entre([vo], [vi], margen=None, por_medio=True)
+    assert fila["km_bote"] == pytest.approx(km_bote[0, 0]) and km_bote[0, 0] > 3.0
+    assert fila["km_tren"] == pytest.approx(0.0, abs=1e-6)
 
 
 def test_las_coordenadas_se_escriben_con_seis_decimales(tmp_path):
