@@ -1,11 +1,11 @@
-"""El tren y el bote en el motor: lo que traen los artefactos y con qué se viaja (contrato 1.2)."""
+"""El tren y el bote en el motor: lo que traen los artefactos, con qué se viaja (contrato 1.2) y cuánto cuesta."""
 
 import numpy as np
 import pytest
 
 from dreemgo.contrato import Consulta
+from dreemgo.motor import costo, textos, viaje
 from dreemgo.motor import datos as artefactos
-from dreemgo.motor import textos, viaje
 
 con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 
@@ -74,6 +74,43 @@ def test_como_se_escriben_los_medios():
     assert textos.por_medios(["bote"]) == "en bote"
 
 
+PARAMETROS = {
+    "bus_intercepto": {"valor": 12, "minimo": 5, "maximo": 25},
+    "bus_soles_km": {"valor": 0.085, "minimo": 0.055, "maximo": 0.125},
+    "movilidad_soles_km": {"valor": 0.55, "minimo": 0.30, "maximo": 0.95},
+    "alojamiento_noche": {"valor": 70, "minimo": 35, "maximo": 140},
+    "alimentacion_dia": {"valor": 50, "minimo": 25, "maximo": 95},
+    "entrada_sin_tarifa": {"valor": 17.63, "minimo": 5, "maximo": 20},
+    "tren_tramo": {"valor": 80, "minimo": 18, "maximo": 206},
+    "bote_soles_km": {"valor": 1.0, "minimo": 0.33, "maximo": 1.81},
+}
+
+
+def _gastos(**cambios) -> costo.Gastos:
+    base = dict(
+        dias=3,
+        noches=2,
+        km_interprovincial=75.0,
+        km_locales=20.0,
+        tarifas=(152.0,),
+        combinados=(),
+        sin_tarifa=0,
+        base="Machupicchu Pueblo",
+    )
+    return costo.Gastos(**(base | cambios))
+
+
+def test_el_tren_y_el_bote_se_pagan_aparte():
+    sin = costo.estimar(PARAMETROS, _gastos(), None)
+    tren = costo.estimar(PARAMETROS, _gastos(tramos_tren=2), None)
+    bote = costo.estimar(PARAMETROS, _gastos(km_bote=60.0), None)
+    assert tren.desglose["transporte"] > sin.desglose["transporte"] and tren.p20 > sin.p20
+    assert bote.desglose["transporte"] > sin.desglose["transporte"]
+    assert any(s.startswith("Tren: 2 tramos, entre S/ 18 y S/ 206") for s in tren.supuestos)
+    assert any(s.startswith("Bote: 60 km, entre S/ 0,33 y S/ 1,81 por km") for s in bote.supuestos)
+    assert not any(s.startswith(("Tren", "Bote")) for s in sin.supuestos)
+
+
 @con_datos
 def test_a_machu_picchu_se_llega_en_tren():
     datos = artefactos.cargar()
@@ -106,6 +143,8 @@ def test_la_respuesta_dice_con_que_se_viaja_y_avisa_del_tren():
             assert aviso == con_tren
             if medios != ["carretera"]:
                 assert not any("carretera" in a.mensaje for a in ruta.avisos)
+            if "tren" in medios:
+                assert any(s.startswith("Tren:") for s in ruta.costo.supuestos)
 
 
 @con_datos

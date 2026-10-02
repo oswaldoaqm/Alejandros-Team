@@ -493,17 +493,22 @@ def costo_del_viaje(it: Itinerario, consulta: Consulta, datos: Datos, dias: list
             combinados.append(r["tarifa_soles"])
         else:
             tarifas.append(r["tarifa_soles"])
+    # El tren y el bote se pagan aparte: lo demás va en bus o en movilidad local.
+    tramos = [t for r in it.recorridos for t in tramos_en_capa(it, r)]
+    tren_local, bote_local = sum(t for t, _ in tramos), sum(b for _, b in tramos)
+    km_locales = sum(d.km for d in dias) if excursion else sum(_km(it.polo, r, it.polo.base_km) for r in it.recorridos)
+    tren_ida, bote_ida = (0.0, 0.0) if excursion else (_numero(it.km_tren_ida), _numero(it.km_bote_ida))
     gastos = costos.Gastos(
         dias=consulta.dias,
         noches=0 if excursion else consulta.dias - 1,
-        km_interprovincial=0.0 if excursion else it.km_ida,
-        km_locales=sum(d.km for d in dias)
-        if excursion
-        else sum(_km(it.polo, r, it.polo.base_km) for r in it.recorridos),
+        km_interprovincial=0.0 if excursion else max(it.km_ida - tren_ida - bote_ida, 0.0),
+        km_locales=max(km_locales - tren_local - bote_local, 0.0),
         tarifas=tuple(tarifas),
         combinados=tuple(combinados),
         sin_tarifa=sin_tarifa,
         base=it.polo.base["nombre"],
+        tramos_tren=(2 if tren_ida > 0 else 0) + sum(1 for t, _ in tramos if t > 0),
+        km_bote=2 * bote_ida + bote_local,
     )
     return costos.estimar(datos.costos, gastos, consulta.presupuesto)
 
