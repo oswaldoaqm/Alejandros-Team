@@ -45,6 +45,8 @@ def _mensaje(error: dict[str, Any]) -> str:
     tipo, ctx = error.get("type", ""), error.get("ctx") or {}
     if tipo == "value_error":  # validaciones propias: el mensaje ya está en español
         return str(ctx.get("error") or error.get("msg", "")).removeprefix("Value error, ")
+    if tipo == "enum" and "expected" in ctx:  # pydantic une las opciones con «or»
+        ctx = {**ctx, "expected": str(ctx["expected"]).replace(" or ", " o ")}
     plantilla = PLANTILLAS.get(tipo)
     if plantilla:
         try:

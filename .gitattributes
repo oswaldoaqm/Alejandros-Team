@@ -1,3 +1,5 @@
 * text=auto
 # Los artefactos del motor se guardan byte por byte: su huella está en el manifiesto.
 dreemgo/datos/** -text
+# La app, siempre con fin de línea LF: es lo que espera su formateador (Biome), también en Windows.
+app/** text=auto eol=lf

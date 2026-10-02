@@ -45,3 +45,60 @@ jobs:
           for i in $(seq 1 30); do curl -fsS http://localhost:8080/v1/salud > /dev/null && break; sleep 1; done
           curl -fsS http://localhost:8080/v1/salud | python3 -c "import json, sys; assert json.load(sys.stdin)['estado'] == 'ok'"
           docker rm -f api
+
+  app:
+    name: App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Instalar
+        run: npm ci
+      - name: Estilo y tipos
+        run: npm run revisar
+      - name: Los tipos del contrato están al día
+        run: npm run tipos && git diff --exit-code -- src/api/esquema.d.ts
+      - name: Pruebas
+        run: npm test
+      - name: Construir
+        run: npm run build
+
+  humo:
+    name: App contra el API
+    runs-on: ubuntu-latest
+    needs: [python, app]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar el API
+        run: pip install -e ".[api]"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Instalar la app y el navegador
+        working-directory: app
+        run: npm ci && npx playwright install --with-deps chromium
+      - name: Prueba de humo
+        working-directory: app
+        run: npm run e2e
+      - name: Guardar el informe si falla
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: informe-de-playwright
+          path: |
+            app/playwright-report
+            app/test-results
+          retention-days: 7
