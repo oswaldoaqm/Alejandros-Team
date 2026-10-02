@@ -1,15 +1,15 @@
 {
   "archivos": {
-    "costos.json": "ef1a2aa92c805da5504048b508cbb7ce3d94d476f010c8649fdbed36a4a8a48a",
+    "costos.json": "66f50bd2dd65a1c8440cb641fb501774239c7074828a1a4c0fd9f7298f13bfd1",
     "eventos.json.gz": "29c5754d7313cd50cf9d46e8ad98d1454233f288a87667ab95e0dc6bd629df8c",
-    "origenes.json.gz": "b7fd55ec6da065812655facd6927093bbc750936cb244f68a71fa1ee9ff7a57b",
-    "polos.json.gz": "8f302ccfb1934acea466147b068b64a014a6f6ccebcf623f83da35d210bf9401",
+    "origenes.json.gz": "ff2ba88f4a1f7d116bdd067610292f51eddf1d2f441a45b6102a43ccd4c7ec17",
+    "polos.json.gz": "608b7a2e16578d215ab98fa9530048800a8f5ad7f661a1d34150ce4fa3e7f0d8",
     "recursos.json.gz": "47874016d9f849404e0dd19400664054f44edd751ea4de08aae6570ae886993e"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red vial, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
+    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
   ],
   "fuentes": {
     "clima": {
@@ -58,5 +58,5 @@
       "paradas": 214
     }
   },
-  "version_datos": "2026.10.1"
+  "version_datos": "2026.10.2"
 }

@@ -1,9 +1,11 @@
 """
-Tiempos de viaje por carretera que usa el motor, sobre la red vial de OpenStreetMap.
+Tiempos de viaje que usa el motor, sobre la red de OpenStreetMap: vías, tren y botes.
 
 1. Arma la red desde el extracto de Geofabrik (``pipeline/red_vial.py``) o la toma del
    caché si el extracto no cambió.
-2. Calibra las velocidades con los recorridos de las fichas (``pipeline/red_calibracion.py``).
+2. Calibra las velocidades de las vías con los recorridos de las fichas
+   (``pipeline/red_calibracion.py``) y les suma los ritmos del tren y del bote
+   (``pipeline/referencia/ritmos_fijos.csv``).
 3. Recorre cada polo con una sola búsqueda desde sus paradas, que da a la vez:
    - los tiempos entre sus paradas, en los dos sentidos;
    - el pueblo donde se duerme, la base (``pipeline/bases.py``);
@@ -11,19 +13,22 @@ Tiempos de viaje por carretera que usa el motor, sobre la red vial de OpenStreet
      cuesta lo mismo en los dos sentidos.
 4. Calcula los tiempos de cada una de las 24 ciudades de origen a cada parada y a cada base.
 
-Cada tiempo es de puerta a puerta en auto o bus: el camino por la red, lo que falta de la
-parada a la vía más cercana y los minutos fijos de cada traslado. La caminata final que
-registra la ficha (``caminata_min`` del maestro) va aparte.
+Cada tiempo es de puerta a puerta: el camino más rápido por la red (vías, tren y botes),
+lo que falta de cada punta a la red y los minutos fijos de cada traslado, más los de
+bajarse del tren o del bote si una punta queda en ellos. Una parada se ubica en el agua o
+en una estación solo si su ficha dice que se llega en bote o en tren (``acceso_de``). La
+caminata final que registra la ficha (``caminata_min`` del maestro) va aparte.
 
 Escribe en data/procesados/:
   red_calibracion.json             parámetros y error medido por validación cruzada
   red_calibracion_recorridos.csv   cada recorrido de ficha usado, con el tiempo de la red
-  tiempos_origen.csv               origen → parada: minutos y km (vacío si no hay carretera)
+  tiempos_origen.csv               origen → parada: minutos, km y cuántos de esos km van en
+                                   tren y en bote (vacío si no hay camino)
   tiempos_polo.csv                 parada → parada dentro de cada polo
   polos_bases.csv                  la base de cada polo
   tiempos_base.csv                 base → cada parada de su polo
   tiempos_origen_base.csv          origen → base de cada polo
-  red_paradas.csv                  a cuántos metros de la red queda cada parada
+  red_paradas.csv                  a cuántos metros de la red queda cada parada y en qué capa
 
 Todo lo que sale de la red es obra derivada de OpenStreetMap: ODbL 1.0, © colaboradores de
 OpenStreetMap.
@@ -47,6 +52,7 @@ from pipeline import bases as bases_
 from pipeline import red_calibracion as calibracion
 from pipeline.maestro import EXTERNOS, PROCESADOS, REFERENCIA
 from pipeline.red_vial import (
+    CAPAS,
     Red,
     Ruteador,
     leer_capitales,
@@ -57,9 +63,14 @@ from pipeline.red_vial import (
 )
 
 OSM = EXTERNOS / "osm"
-CACHE = 2  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
-LEJOS_DE_LA_RED_M = 5_000  # una parada más lejos que esto de cualquier vía no se rutea
+CACHE = 5  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
+LEJOS_DE_LA_RED_M = 5_000  # una parada más lejos que esto de la red no se rutea
 CANDIDATOS_MARGEN_GRADOS = 1.0  # los pueblos que pueden ser base: a menos de ~110 km de las paradas
+# Medios del último tramo de la ficha (``ultimo_medio`` del maestro).
+EN_BOTE = {"Bote", "Deslizador", "Lancha", "Canoa", "Barco"}
+EN_TREN = {"Ferrocarril"}
+A_PIE = {"A pie", "A caballo", "Acémila"}
+KM = ("km", "km_tren", "km_bote")  # los km de cada camino y cuántos de ellos van en tren y en bote
 
 
 @dataclass
@@ -98,16 +109,50 @@ def red_en_cache(pbf: Path, indice: str) -> tuple[Red, Osm, dict]:
     return Red.cargar(ruta("red_vial", "npz")), Osm(**tablas), manifiesto
 
 
-def _puerta_a_puerta(minutos, km, metros_a_la_red, parametros) -> tuple[np.ndarray, np.ndarray]:
-    """Suma a cada camino lo que falta de cada punta a la vía y los minutos fijos del traslado."""
+def ritmos_fijos() -> dict[str, float]:
+    """Minutos por km del tren y del bote, y los del trasbordo (pipeline/referencia/ritmos_fijos.csv)."""
+    tabla = pd.read_csv(REFERENCIA / "ritmos_fijos.csv", sep=";")
+    return dict(zip(tabla["clase"], tabla["min_por_km"].astype(float), strict=True))
+
+
+def acceso_de(recursos: pd.DataFrame) -> np.ndarray:
+    """Por dónde se llega a cada recurso según su ficha: ``"bote"`` si su recorrido lleva bote
+    y termina en él o a pie (una isla, una cocha a la que se camina desde el río); ``"tren"``
+    si termina en tren; ``"vial"`` en los demás casos, también cuando el bote es un tramo de
+    antes y se termina en mototaxi o en auto."""
+    ultimo = recursos["ultimo_medio"].fillna("")
+    acuatico = recursos["acceso_acuatico"].fillna(False).astype(bool)
+    bote = ultimo.isin(EN_BOTE) | (acuatico & ultimo.isin(A_PIE))
+    return np.select([bote.to_numpy(), ultimo.isin(EN_TREN).to_numpy()], ["bote", "tren"], "vial").astype(object)
+
+
+def paradas_de(maestro: pd.DataFrame) -> pd.DataFrame:
+    """Las paradas del maestro con lo que necesita la red: código, polo, coordenadas,
+    jerarquía y por dónde se llega a cada una (``acceso``)."""
+    paradas = maestro.loc[maestro["es_parada"].astype(bool)].reset_index(drop=True)
+    return paradas[["codigo", "polo", "lat", "lon", "jerarquia"]].assign(acceso=acceso_de(paradas))
+
+
+def _medios(paradas: pd.DataFrame) -> np.ndarray:
+    if "acceso" in paradas:
+        return paradas["acceso"].to_numpy()
+    return np.full(len(paradas), "vial", dtype=object)
+
+
+def _puerta_a_puerta(minutos, km, metros_a_la_red, parametros, en_capa=0) -> tuple[np.ndarray, np.ndarray]:
+    """Suma a cada camino lo que falta de cada punta a la red, los minutos fijos del traslado
+    y, por cada punta que queda en un tren o en un bote (``en_capa``: 0, 1 o 2), los minutos
+    de bajarse de él, los mismos de un trasbordo."""
     fuera_km = 1.3 * metros_a_la_red / 1000  # por un camino sin mapear, como en la calibración
     minutos = minutos + parametros["por_viaje"] + fuera_km * parametros["trocha"]
+    minutos = minutos + en_capa * parametros.get("transbordo_min", 0.0)
     return minutos, km + fuera_km
 
 
 def _sin_ruta_a_nan(tabla: pd.DataFrame, lejos: np.ndarray) -> pd.DataFrame:
     """Vacía minutos y km donde no hay camino o una punta queda lejos de la red."""
-    tabla.loc[lejos | ~np.isfinite(tabla["minutos"].to_numpy()), ["minutos", "km"]] = np.nan
+    columnas = [c for c in ("minutos", *KM) if c in tabla]
+    tabla.loc[lejos | ~np.isfinite(tabla["minutos"].to_numpy()), columnas] = np.nan
     return tabla
 
 
@@ -116,12 +161,13 @@ def recorrer_polos(
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """(tiempos entre paradas, base de cada polo, tiempos de la base a cada parada).
 
-    ``paradas``: codigo, polo, lat, lon y jerarquia. ``candidatos``: los de
-    ``bases.candidatos``. Una sola búsqueda por polo, desde sus paradas hasta sus paradas
-    y los candidatos cercanos; solo las paradas obligan a buscar en toda la red si dentro
-    del rectángulo del polo no hay camino (ver ``Ruteador.entre``)."""
-    v, m = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy())
-    vc, mc = ruteador.ubicar(candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy())
+    ``paradas``: codigo, polo, lat, lon, jerarquia y, si lo tiene, acceso (``paradas_de``).
+    ``candidatos``: los de ``bases.candidatos``. Una sola búsqueda por polo, desde sus
+    paradas hasta sus paradas y los candidatos cercanos; solo las paradas obligan a buscar
+    en toda la red si dentro del rectángulo del polo no hay camino (ver ``Ruteador.entre``)."""
+    v, m, capa = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas))
+    vc, mc, capa_c = ruteador.ubicar(candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy())
+    en_capa, en_capa_c = (capa > 0).astype(int), (capa_c > 0).astype(int)
     clat, clon = candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy()
     junto_a_la_red = mc <= LEJOS_DE_LA_RED_M
     pares, elegidas, desde_base = [], [], []
@@ -137,11 +183,14 @@ def recorrer_polos(
             & (clon <= grupo["lon"].max() + margen)
         )
         obligatorio = np.r_[np.ones(n, dtype=bool), np.zeros(len(cerca), dtype=bool)]
-        minutos, km = ruteador.entre(v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio)
+        minutos, km, km_tren, km_bote = ruteador.entre(
+            v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio, por_medio=True
+        )
 
         # Entre paradas: cada fila es desde, cada columna hasta.
         if n >= 2:
-            mp, kp = _puerta_a_puerta(minutos[:, :n], km[:, :n], m[i][:, None] + m[i][None, :], parametros)
+            puntas = en_capa[i][:, None] + en_capa[i][None, :]
+            mp, kp = _puerta_a_puerta(minutos[:, :n], km[:, :n], m[i][:, None] + m[i][None, :], parametros, puntas)
             desde, hasta = np.nonzero(~np.eye(n, dtype=bool))
             pares.append(
                 pd.DataFrame(
@@ -151,24 +200,27 @@ def recorrer_polos(
                         "hasta": codigos[hasta],
                         "minutos": mp[desde, hasta],
                         "km": kp[desde, hasta],
+                        "km_tren": km_tren[:, :n][desde, hasta],
+                        "km_bote": km_bote[:, :n][desde, hasta],
                     }
                 )
             )
 
         # La base: entre los candidatos, la de menor costo vista desde las paradas junto a la red.
-        mb, kb = _puerta_a_puerta(minutos[:, n:], km[:, n:], m[i][:, None] + mc[cerca][None, :], parametros)
+        puntas = en_capa[i][:, None] + en_capa_c[cerca][None, :]
+        mb, kb = _puerta_a_puerta(minutos[:, n:], km[:, n:], m[i][:, None] + mc[cerca][None, :], parametros, puntas)
         en_red = m[i] <= LEJOS_DE_LA_RED_M
         peso = bases_.pesos(grupo["jerarquia"])
         ajuste = candidatos["ajuste_min"].to_numpy()
         j = bases_.elegir(mb[en_red], peso[en_red], ajuste[cerca]) if en_red.any() else None
         if j is not None:
             elegido, criterio = cerca[j], "carretera"
-            mbj, kbj = mb[:, j], kb[:, j]
+            mbj, kbj, ktj, kboj = mb[:, j], kb[:, j], km_tren[:, n + j], km_bote[:, n + j]
         else:
             lat, lon = grupo["lat"].to_numpy(), grupo["lon"].to_numpy()
             elegido = bases_.elegir_en_linea_recta(lat, lon, peso, clat, clon, ajuste)
             criterio = "linea_recta"
-            mbj, kbj = np.full(n, np.inf), np.full(n, np.inf)
+            mbj = kbj = ktj = kboj = np.full(n, np.inf)
         con_camino = np.isfinite(mbj) & en_red
         c = candidatos.iloc[elegido]
         elegidas.append(
@@ -182,6 +234,8 @@ def recorrer_polos(
                 "hospedajes_osm": int(c["hospedajes_osm"]),
                 "altitud_osm_m": c["altitud_osm_m"],
                 "criterio": criterio,
+                "metros_a_la_red": int(round(float(mc[elegido]))),
+                "capa": CAPAS[capa_c[elegido]],
                 "paradas": n,
                 "paradas_con_camino": int(con_camino.sum()),
                 "minutos_medios": round(float(peso[con_camino] @ mbj[con_camino] / peso[con_camino].sum()), 1)
@@ -189,13 +243,15 @@ def recorrer_polos(
                 else np.nan,
             }
         )
-        desde_base.append(pd.DataFrame({"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj}))
+        desde_base.append(
+            pd.DataFrame({"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj, "km_tren": ktj, "km_bote": kboj})
+        )
 
     lejos = set(paradas.loc[m > LEJOS_DE_LA_RED_M, "codigo"])
     pares = (
         pd.concat(pares, ignore_index=True)
         if pares
-        else pd.DataFrame(columns=["polo", "desde", "hasta", "minutos", "km"])
+        else pd.DataFrame(columns=["polo", "desde", "hasta", "minutos", *KM])
     )
     pares = _sin_ruta_a_nan(pares, (pares["desde"].isin(lejos) | pares["hasta"].isin(lejos)).to_numpy())
     desde_base = pd.concat(desde_base, ignore_index=True)
@@ -204,21 +260,45 @@ def recorrer_polos(
 
 
 def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(origen → cada parada, origen → la base de cada polo): minutos y km por carretera,
+    """(origen → cada parada, origen → la base de cada polo): minutos y km de puerta a puerta,
     vacíos si no hay camino. Una búsqueda en toda la red por ciudad de origen."""
-    v_origen, m_origen = ruteador.ubicar(origenes["lat"].to_numpy(), origenes["lon"].to_numpy())
-    v_parada, m_parada = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy())
-    v_base, m_base = ruteador.ubicar(bases["lat"].to_numpy(), bases["lon"].to_numpy())
-    minutos, km = ruteador.entre(v_origen, np.r_[v_parada, v_base], margen=None)
+    v_origen, m_origen, c_origen = ruteador.ubicar(origenes["lat"].to_numpy(), origenes["lon"].to_numpy())
+    v_parada, m_parada, c_parada = ruteador.ubicar(
+        paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas)
+    )
+    v_base, m_base, c_base = ruteador.ubicar(bases["lat"].to_numpy(), bases["lon"].to_numpy())
+    minutos, km, km_tren, km_bote = ruteador.entre(v_origen, np.r_[v_parada, v_base], margen=None, por_medio=True)
     n = len(paradas)
     a_paradas, a_bases = [], []
     for i, origen in enumerate(origenes["id"]):
-        mi, ki = _puerta_a_puerta(minutos[i, :n], km[i, :n], m_origen[i] + m_parada, parametros)
+        puntas = int(c_origen[i] > 0) + (c_parada > 0)
+        mi, ki = _puerta_a_puerta(minutos[i, :n], km[i, :n], m_origen[i] + m_parada, parametros, puntas)
         a_paradas.append(
-            pd.DataFrame({"origen": origen, "codigo": paradas["codigo"].to_numpy(), "minutos": mi, "km": ki})
+            pd.DataFrame(
+                {
+                    "origen": origen,
+                    "codigo": paradas["codigo"].to_numpy(),
+                    "minutos": mi,
+                    "km": ki,
+                    "km_tren": km_tren[i, :n],
+                    "km_bote": km_bote[i, :n],
+                }
+            )
         )
-        mi, ki = _puerta_a_puerta(minutos[i, n:], km[i, n:], m_origen[i] + m_base, parametros)
-        a_bases.append(pd.DataFrame({"origen": origen, "polo": bases["polo"].to_numpy(), "minutos": mi, "km": ki}))
+        puntas = int(c_origen[i] > 0) + (c_base > 0)
+        mi, ki = _puerta_a_puerta(minutos[i, n:], km[i, n:], m_origen[i] + m_base, parametros, puntas)
+        a_bases.append(
+            pd.DataFrame(
+                {
+                    "origen": origen,
+                    "polo": bases["polo"].to_numpy(),
+                    "minutos": mi,
+                    "km": ki,
+                    "km_tren": km_tren[i, n:],
+                    "km_bote": km_bote[i, n:],
+                }
+            )
+        )
     a_paradas = pd.concat(a_paradas, ignore_index=True)
     a_paradas = _sin_ruta_a_nan(a_paradas, np.tile(m_parada > LEJOS_DE_LA_RED_M, len(origenes)))
     a_bases = pd.concat(a_bases, ignore_index=True)
@@ -226,12 +306,26 @@ def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tu
     return a_paradas, _sin_ruta_a_nan(a_bases, sin_camino)
 
 
+def red_paradas(ruteador: Ruteador, paradas: pd.DataFrame) -> pd.DataFrame:
+    """Dónde queda cada parada respecto de la red: a cuántos metros, si está lejos y en qué capa."""
+    _, metros, capa = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas))
+    return paradas[["codigo", "polo"]].assign(
+        metros_a_la_red=np.round(metros).astype(int),
+        lejos_de_la_red=metros > LEJOS_DE_LA_RED_M,
+        capa=np.array(CAPAS)[capa],
+    )
+
+
 def _escribir(tabla: pd.DataFrame, ruta: Path) -> None:
+    """Minutos y km con un decimal; la latitud y la longitud con seis (unos 10 cm): con uno
+    serían 11 km."""
+    coordenadas = {c: tabla[c].map(lambda x: "" if pd.isna(x) else f"{x:.6f}") for c in ("lat", "lon") if c in tabla}
+    tabla = tabla.assign(**coordenadas)
     tabla.to_csv(ruta, sep=";", index=False, encoding="utf-8-sig", lineterminator="\n", float_format="%.1f")
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Calibra la red vial y calcula los tiempos de viaje por carretera.")
+    ap = argparse.ArgumentParser(description="Calibra la red y calcula los tiempos de viaje por vías, tren y botes.")
     ap.add_argument("--pbf", type=Path, default=OSM / "peru-latest.osm.pbf")
     ap.add_argument("--maestro", type=Path, default=PROCESADOS / "maestro_v3.csv")
     ap.add_argument("--salida", type=Path, default=PROCESADOS)
@@ -270,9 +364,9 @@ def main() -> None:
     error = f"error medio {cv['error_medio']:.0%}, mediano {cv['error_mediano']:.0%}"
     print(f"Calibración con {cv['recorridos']} recorridos de fichas · {error} (validación cruzada)")
 
+    parametros = {**parametros, **ritmos_fijos()}  # la calibración es solo de las vías
     ruteador = Ruteador(red, minutos_por_arista(red, parametros))
-    paradas = maestro.loc[maestro["es_parada"].astype(bool), ["codigo", "polo", "lat", "lon", "jerarquia"]]
-    paradas = paradas.reset_index(drop=True)
+    paradas = paradas_de(maestro)
     candidatos = bases_.candidatos(osm.lugares, osm.capitales, osm.hospedajes)
     pares, bases, desde_base = recorrer_polos(ruteador, parametros, paradas, candidatos)
     bases["altitud_m"], bases["altitud_fuente"] = bases_.altitud(bases, maestro)
@@ -284,13 +378,7 @@ def main() -> None:
     _escribir(bases.drop(columns="altitud_osm_m"), a.salida / "polos_bases.csv")
     _escribir(desde_base, a.salida / "tiempos_base.csv")
     _escribir(a_bases, a.salida / "tiempos_origen_base.csv")
-    _, metros = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy())
-    _escribir(
-        paradas[["codigo", "polo"]].assign(
-            metros_a_la_red=np.round(metros).astype(int), lejos_de_la_red=metros > LEJOS_DE_LA_RED_M
-        ),
-        a.salida / "red_paradas.csv",
-    )
+    _escribir(red_paradas(ruteador, paradas), a.salida / "red_paradas.csv")
     print(f"Escrito en {a.salida}")
 
 

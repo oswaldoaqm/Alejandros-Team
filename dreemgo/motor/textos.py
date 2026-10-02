@@ -51,6 +51,12 @@ def lista(cosas: list[str], conjuncion: str = "y") -> str:
     return ", ".join(cosas[:-1]) + f" {conjuncion} " + cosas[-1]
 
 
+def por_medios(medios: list[str]) -> str:
+    """["carretera"] → "por carretera"; ["carretera", "tren"] → "por carretera y en tren";
+    ["bote"] → "en bote"."""
+    return lista(["por carretera" if m == "carretera" else f"en {m}" for m in medios]) or "por carretera"
+
+
 def fechas(inicio, fin) -> str:
     """ "16 de julio", "del 24 al 30 de julio", "del 28 de diciembre al 6 de enero"."""
     if fin is None or fin == inicio:

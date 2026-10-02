@@ -7,9 +7,12 @@ import pandas as pd
 import pytest
 
 from pipeline.red_vial import (
+    CAPAS,
     CLASES,
+    CODIGO,
     Red,
     Ruteador,
+    _estaciones_al_lado,
     haversine_m,
     leer_capitales,
     leer_hospedajes,
@@ -32,6 +35,7 @@ RITMOS = {
     "sin_asfaltar": 0.5,
     "curvas": 0.1,
 }
+CON_CAPAS = {**RITMOS, "tren": 2.0, "bote": 3.0, "transbordo": 12.0, "transbordo_min": 30.0}
 
 
 @pytest.fixture(scope="module")
@@ -50,7 +54,7 @@ def _arista(red, lat1, lon1, lat2, lon2):
 
 
 def test_la_red_se_parte_en_los_cruces_y_cada_kilometro(red):
-    assert (red.vertices, red.aristas) == (11, 9)
+    assert (red.vial().vertices, red.vial().aristas) == (11, 9)
     # La primaria 1-2-3-4 se corta en el cruce con la trocha (nodo 3), no en el nodo 2.
     i = _arista(red, -12.0, -77.0, -12.0, -76.982)
     assert red.metros[i] == pytest.approx(haversine_m(-12.0, -77.0, -12.0, -76.982), rel=1e-6)
@@ -60,7 +64,8 @@ def test_la_red_se_parte_en_los_cruces_y_cada_kilometro(red):
 
 
 def test_lo_que_un_auto_no_puede_recorrer_queda_fuera(red):
-    puntos = set(zip(red.lat.tolist(), red.lon.tolist(), strict=True))
+    vial = red.vial()
+    puntos = set(zip(vial.lat.tolist(), vial.lon.tolist(), strict=True))
     assert (-12.009, -76.973) not in puntos  # residencial privada
     assert (-12.009, -77.0) not in puntos  # vereda
     assert (-12.001, -76.991) not in puntos  # pasillo de estacionamiento
@@ -83,6 +88,102 @@ def test_guardar_y_cargar(red, tmp_path):
     red.guardar(tmp_path / "red.npz")
     otra = Red.cargar(tmp_path / "red.npz")
     assert np.array_equal(otra.metros, red.metros) and np.array_equal(otra.desde, red.desde)
+    assert np.array_equal(otra.capa, red.capa) and np.array_equal(otra.embarque, red.embarque)
+
+
+def test_el_tren_y_el_bote_van_en_su_capa(red):
+    capa = {nombre: set() for nombre in CAPAS}
+    for i in range(red.vertices):
+        capa[CAPAS[red.capa[i]]].add((red.lat[i], red.lon[i]))
+    # El ferry de 3,8 km y el bote del río suelto; la balsa de 1 km sigue en las vías.
+    assert capa["bote"] == {(-12.0, -76.955), (-12.0, -76.92), (-12.06, -76.95), (-12.06, -76.9)}
+    # La ruta de tren y el riel turístico que sigue desde el paradero, sin relación de ruta; sin el ramal minero.
+    assert capa["tren"] == {
+        (-12.0005, -76.982),
+        (-12.01, -76.982),
+        (-12.03, -76.982),
+        (-12.03, -76.96),
+        (-12.03, -76.95),
+    }
+    # Solo se sube en una estación o un muelle a menos de 1 km de una vía.
+    trasbordos = np.flatnonzero(red.clase == CODIGO["transbordo"])
+    puntas = {
+        frozenset({(red.lat[red.desde[e]], red.lon[red.desde[e]]), (red.lat[red.hasta[e]], red.lon[red.hasta[e]])})
+        for e in trasbordos
+    }
+    assert puntas == {
+        frozenset({(-12.0, -76.982), (-12.0005, -76.982)}),  # la estación, junto al cruce
+        frozenset({(-12.0, -76.955)}),  # el muelle, en el mismo punto que la vía
+    }
+
+
+def test_se_sube_y_se_baja_en_las_estaciones_y_los_muelles(red):
+    embarque = {(red.lat[i], red.lon[i]) for i in np.flatnonzero(red.embarque)}
+    # Las estaciones, el paradero y el nodo del riel junto a la estación dibujada a su lado; no un
+    # kilómetro cualquiera del riel.
+    estaciones = {(-12.0005, -76.982), (-12.03, -76.982), (-12.03, -76.96), (-12.03, -76.95)}
+    muelles = {(-12.0, -76.955), (-12.0, -76.92), (-12.06, -76.95), (-12.06, -76.9)}
+    assert embarque == estaciones | muelles
+
+
+def test_una_estacion_dibujada_al_lado_del_riel_se_toma_en_el_riel():
+    # El riel turístico 82-85-86 y la estación 87, dibujada a 25 m del nodo 85 y no sobre el riel.
+    riel = [(82, -12.03, -76.982), (85, -12.03, -76.96), (86, -12.03, -76.95)]
+    assert _estaciones_al_lado(MINI, [riel], {82, 85, 86}) == {85: (-12.03, -76.96)}
+
+
+def test_al_paradero_lejano_se_llega_en_tren(red):
+    ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
+    (inicio,), _, _ = ruteador.ubicar([-12.0], [-76.982])
+    (lejano,), metros, _ = ruteador.ubicar([-12.0302], [-76.982])  # a más de 1 km de cualquier vía
+    assert (red.lat[lejano], red.lon[lejano]) == (-12.03, -76.982) and metros[0] < 50
+    minutos, km = ruteador.entre([inicio], [lejano], margen=None)
+    trasbordo = haversine_m(-12.0, -76.982, -12.0005, -76.982) / 1000
+    riel = haversine_m(-12.0005, -76.982, -12.03, -76.982) / 1000
+    assert minutos[0, 0] == pytest.approx(trasbordo * 12.0 + 30.0 + riel * 2.0, rel=1e-4)
+    assert km[0, 0] == pytest.approx(trasbordo + riel, rel=1e-4)
+    # Por medio: los km del riel van en tren; ninguno en bote.
+    _, _, km_tren, km_bote = ruteador.entre([inicio], [lejano], margen=None, por_medio=True)
+    assert km_tren[0, 0] == pytest.approx(riel, rel=1e-4) and km_bote[0, 0] == pytest.approx(0.0, abs=1e-6)
+
+
+def test_junto_a_una_via_se_ubica_en_la_via_aunque_el_riel_este_mas_cerca(red):
+    ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
+    (vertice,), _, _ = ruteador.ubicar([-12.0004], [-76.982])  # a 11 m de la estación y 44 m del cruce
+    assert red.capa[vertice] == CAPAS.index("vial")
+
+
+def test_del_tren_solo_se_baja_en_una_estacion(red):
+    ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
+    # A 220 m del riel entre dos estaciones, y a 1,3 km de la vía: se baja en la estación más cercana.
+    (vertice,), (metros,), (capa,) = ruteador.ubicar([-12.012], [-76.982], ["tren"])
+    assert CAPAS[capa] == "tren" and (red.lat[vertice], red.lon[vertice]) == (-12.0005, -76.982)
+    assert metros == pytest.approx(haversine_m(-12.012, -76.982, -12.0005, -76.982))
+
+
+def test_se_llega_en_bote_solo_si_la_ficha_lo_dice(red):
+    ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
+    isla = ([-12.0015], [-76.921])  # a 170 m del muelle del ferry y a 3,7 km de la vía
+    _, _, (en_bote,) = ruteador.ubicar(*isla, ["bote"])
+    _, _, (por_tierra,) = ruteador.ubicar(*isla, ["vial"])
+    _, _, (sin_ficha,) = ruteador.ubicar(*isla)
+    assert (CAPAS[en_bote], CAPAS[por_tierra], CAPAS[sin_ficha]) == ("bote", "vial", "bote")
+    # Junto a una vía se llega por ella, aunque la ficha diga bote.
+    _, _, (orilla,) = ruteador.ubicar([-12.0003], [-76.9552], ["bote"])
+    assert CAPAS[orilla] == "vial"
+
+
+def test_un_bote_que_no_se_une_con_nada_no_se_usa(red):
+    # Con dos vértices, el río suelto contaría como red; pero no se une con el resto y no lleva a ninguna parte.
+    ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=2)
+    (vertice,), _, (capa,) = ruteador.ubicar([-12.0605], [-76.95], ["bote"])  # a 55 m de su muelle
+    assert CAPAS[capa] == "vial" and (red.lat[vertice], red.lon[vertice]) != (-12.06, -76.95)
+
+
+def test_sin_capas_la_red_vial_es_la_misma(red):
+    vial = red.vial()
+    assert vial.capa is None and set(vial.clase.tolist()) <= {CODIGO[c] for c in CLASES[:8]}
+    assert np.array_equal(red.lat[: vial.vertices], vial.lat)
 
 
 def test_minutos_por_arista(red):
@@ -93,8 +194,8 @@ def test_minutos_por_arista(red):
 
 def test_el_camino_mas_rapido_y_sus_km(red):
     ruteador = Ruteador(red, minutos_por_arista(red, RITMOS), vertices_minimos=4)
-    inicio, _ = ruteador.ubicar([-12.0], [-77.0])
-    fin, _ = ruteador.ubicar([-12.0], [-76.973])
+    inicio, _, _ = ruteador.ubicar([-12.0], [-77.0])
+    fin, _, _ = ruteador.ubicar([-12.0], [-76.973])
     minutos, km = ruteador.entre(inicio, fin, margen=None)
     recto = haversine_m(-12.0, -77.0, -12.0, -76.973) / 1000
     assert km[0, 0] == pytest.approx(recto, rel=1e-4)  # por la primaria, no por la trocha
@@ -105,7 +206,7 @@ def test_el_camino_mas_rapido_y_sus_km(red):
 
 def test_solo_se_ubica_en_la_red_conectada(red):
     ruteador = Ruteador(red, minutos_por_arista(red, RITMOS), vertices_minimos=4)
-    vertice, metros = ruteador.ubicar([-12.1], [-77.1])  # junto a un tramo suelto de dos vértices
+    vertice, metros, _ = ruteador.ubicar([-12.1], [-77.1])  # junto a un tramo suelto de dos vértices
     assert ruteador.en_red_grande[vertice[0]]
     assert metros[0] > 10_000
 
@@ -131,9 +232,9 @@ def test_hospedajes():
 
 def test_los_destinos_de_paso_no_agrandan_ni_repiten_la_busqueda(red, monkeypatch):
     ruteador = Ruteador(red, minutos_por_arista(red, RITMOS), vertices_minimos=4)
-    (inicio,), _ = ruteador.ubicar([-12.0], [-77.0])
-    (cerca,), _ = ruteador.ubicar([-12.0], [-76.982])
-    (pasando_la_balsa,), _ = ruteador.ubicar([-12.0], [-76.964])  # fuera del rectángulo de 0,01°
+    (inicio,), _, _ = ruteador.ubicar([-12.0], [-77.0])
+    (cerca,), _, _ = ruteador.ubicar([-12.0], [-76.982])
+    (pasando_la_balsa,), _, _ = ruteador.ubicar([-12.0], [-76.964])  # fuera del rectángulo de 0,01°
     en_toda_la_red = ruteador.entre([inicio], [cerca, pasando_la_balsa], margen=None)
     busquedas = []
     original = ruteador._entre

@@ -6,7 +6,7 @@ El código de este repositorio es MIT ([`LICENSE`](./LICENSE)). Los datos tienen
 |---|---|---|---|
 | [Inventario Nacional de Recursos Turísticos](https://www.datosabiertos.gob.pe/dataset/inventario-nacional-de-recursos-tur%C3%ADsticos), MINCETUR | El CSV de datos abiertos y la ficha oficial de cada recurso: jerarquía, ingreso, tarifa, actividades, accesos, descripción | [ODC-BY 1.0](https://opendatacommons.org/licenses/by/1-0/) | Atribución |
 | [Open-Meteo](https://open-meteo.com/), sobre los reanálisis ERA5 y ERA5-Land del Copernicus Climate Change Service | Clima diario 2016-2025 en cada polo; climatología mensual 2014-2023 por región | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Atribución. La API gratuita es solo para uso no comercial, como este proyecto |
-| [OpenStreetMap](https://www.openstreetmap.org/copyright), extracto del Perú de [Geofabrik](https://download.geofabrik.de/south-america/peru.html) | La red vial, para calcular tiempos de viaje por carretera; los pueblos y los hospedajes que registra, para elegir dónde se duerme en cada polo | [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) | Atribución, y que las bases de datos derivadas se compartan con la misma licencia |
+| [OpenStreetMap](https://www.openstreetmap.org/copyright), extracto del Perú de [Geofabrik](https://download.geofabrik.de/south-america/peru.html) | La red de vías, trenes de pasajeros y botes, para calcular tiempos de viaje; los pueblos y los hospedajes que registra, para elegir dónde se duerme en cada polo | [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) | Atribución, y que las bases de datos derivadas se compartan con la misma licencia |
 
 ## Atribución que se muestra
 

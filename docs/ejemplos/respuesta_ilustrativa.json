@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.1",
-  "version_datos": "2026.10.1",
+  "version_contrato": "1.2",
+  "version_datos": "2026.10.2",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -25,14 +25,14 @@
         ],
         "base": {
           "nombre": "Huancayo",
-          "lat": -12.1,
-          "lon": -75.2,
+          "lat": -12.068098,
+          "lon": -75.210095,
           "altitud_m": 3256
         },
         "recursos": 177,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.838,
+      "puntaje": 0.836,
       "motivos": [
         "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
         "Todas sus paradas son de historia y arqueología o naturaleza",
@@ -63,6 +63,9 @@
         "desde": "Lima",
         "horas": 6.0,
         "dias_de_viaje": 2,
+        "medios": [
+          "carretera"
+        ],
         "acceso": "terrestre",
         "fuente": "red_vial"
       },
@@ -440,17 +443,17 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 592,
-        "p50": 706,
-        "p80": 817,
+        "p20": 593,
+        "p50": 707,
+        "p80": 816,
         "desglose": {
           "transporte": 187,
           "alojamiento": 251,
-          "alimentacion": 238,
+          "alimentacion": 239,
           "entradas": 30
         },
         "dentro_del_presupuesto": false,
-        "exceso": 6,
+        "exceso": 7,
         "supuestos": [
           "Bus interprovincial de ida y vuelta: 604 km",
           "Movilidad local en colectivo o taxi: 148 km",
@@ -512,7 +515,7 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 706) pasa tu presupuesto por S/ 6."
+          "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
         },
         {
           "tipo": "datos",
@@ -539,8 +542,8 @@
         ],
         "base": {
           "nombre": "Huacho",
-          "lat": -11.1,
-          "lon": -77.6,
+          "lat": -11.108524,
+          "lon": -77.61033,
           "altitud_m": 35
         },
         "recursos": 68,
@@ -581,6 +584,9 @@
         "desde": "Lima",
         "horas": 2.9,
         "dias_de_viaje": 2,
+        "medios": [
+          "carretera"
+        ],
         "acceso": "terrestre",
         "fuente": "red_vial"
       },
@@ -1048,7 +1054,7 @@
         "moneda": "PEN",
         "p20": 583,
         "p50": 698,
-        "p80": 809,
+        "p80": 807,
         "desglose": {
           "transporte": 170,
           "alojamiento": 251,
@@ -1116,8 +1122,8 @@
         ],
         "base": {
           "nombre": "La Merced",
-          "lat": -11.1,
-          "lon": -75.3,
+          "lat": -11.056057,
+          "lon": -75.328265,
           "altitud_m": 777
         },
         "recursos": 59,
@@ -1152,6 +1158,9 @@
         "desde": "Lima",
         "horas": 6.3,
         "dias_de_viaje": 2,
+        "medios": [
+          "carretera"
+        ],
         "acceso": "terrestre",
         "fuente": "red_vial"
       },
@@ -1485,7 +1494,7 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 663,
+        "p20": 661,
         "p50": 778,
         "p80": 890,
         "desglose": {
@@ -1542,6 +1551,6 @@
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red vial, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
+    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
   ]
 }

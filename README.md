@@ -68,13 +68,14 @@ climatología mensual** (2014-2023) de [Open-Meteo Archive](https://open-meteo.c
 La fase 1 rehace los datos sobre el corte del 29 de septiembre. [`pipeline/`](./pipeline/) lee las 6 225 fichas
 oficiales y deja en [`data/procesados/`](./data/procesados/) el **maestro v3**, una fila por recurso con la
 fuente de cada campo; el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
-medida sobre una muestra anotada a mano; los **tiempos por carretera** sobre la red vial de OpenStreetMap,
-calibrada con los recorridos de las fichas (22 % de error medio); **dónde se duerme en cada polo**, y el
-**clima de cada polo mes a mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde
-`/v1/viajes` según el [contrato](./docs/CONTRATO.md).
+medida sobre una muestra anotada a mano; los **tiempos de viaje** sobre la red vial de OpenStreetMap,
+calibrada con los recorridos de las fichas (22 % de error medio), con el tren a Machu Picchu y los botes del
+Titicaca, las Ballestas y la Amazonía; **dónde se duerme en cada polo**, y el **clima de cada polo mes a
+mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
+[contrato](./docs/CONTRATO.md).
 
 Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo) y
-[OpenStreetMap](https://www.openstreetmap.org/) (red vial, pueblos y hospedajes). Prevista:
+[OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos y hospedajes). Prevista:
 [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto).
 
 Este repositorio contiene únicamente datos abiertos con licencia que permite su redistribución.
@@ -93,7 +94,7 @@ Alejandros-Team/
 │                                   red vial, bases, clima y artefactos
 │   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
-├── data/procesados/                maestro v3, eventos, tiempos por carretera, bases y clima, con su diccionario
+├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
 ├── infra/                          imagen del API y despliegue en AWS con SAM
 ├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API y registro de decisiones
@@ -206,9 +207,9 @@ python pipeline/adquisicion/descargar_osm.py
 python pipeline/adquisicion/descargar_clima_polos.py   # días: respeta la cuota gratuita de Open-Meteo
 python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
-python -m pipeline.tiempos     # tiempos por carretera y bases, unos 6 minutos
+python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.clima       # clima por polo y mes
-python -m pipeline.artefactos --version 2026.10.1   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.10.2   # dreemgo/datos/
 pytest
 uvicorn dreemgo.api.app:app    # http://localhost:8000/v1/docs
 ```

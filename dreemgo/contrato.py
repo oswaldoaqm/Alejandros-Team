@@ -20,7 +20,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.1"
+VERSION_CONTRATO = "1.2"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -209,13 +209,24 @@ class Estacionalidad(_Modelo):
     )
 
 
+Medio = Literal["carretera", "tren", "bote"]
+
+
 class Traslado(_Modelo):
     desde: str = Field(description="Nombre de la ciudad de origen.")
-    horas: float | None = Field(None, ge=0, description="Horas por carretera, solo ida.")
+    horas: float | None = Field(None, ge=0, description="Horas de viaje de ida: por carretera, en tren o en bote.")
     dias_de_viaje: int = Field(ge=0, description="Días del viaje que se van en la ida y la vuelta.")
-    acceso: Literal["terrestre", "sin_acceso_terrestre", "desconocido"]
+    medios: list[Medio] = Field(
+        default_factory=lambda: ["carretera"],
+        description="Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje "
+        "de un día, con qué se recorre el día.",
+    )
+    acceso: Literal["terrestre", "sin_acceso_terrestre", "desconocido"] = Field(
+        description="terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.",
+    )
     fuente: Literal["red_vial", "estimado"] = Field(
-        description="red_vial: calculado sobre OpenStreetMap. estimado: línea recta por un factor calibrado.",
+        description="red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. "
+        "estimado: línea recta por un factor calibrado.",
     )
 
 
@@ -228,7 +239,7 @@ class Costo(_Modelo):
     p80: int = Field(ge=0)
     desglose: dict[str, int] = Field(
         default_factory=dict,
-        description="Componentes del P50: transporte, alojamiento, alimentación, entradas.",
+        description="Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.",
     )
     dentro_del_presupuesto: bool | None = Field(None, description="null si la consulta no trae presupuesto.")
     exceso: int | None = Field(None, ge=0, description="Soles por encima del presupuesto, sobre el P50.")

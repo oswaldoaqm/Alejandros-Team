@@ -41,6 +41,27 @@
   <node id="65" version="1" lat="-12.004" lon="-76.984">
     <tag k="tourism" v="viewpoint"/>
   </node>
+  <node id="80" version="1" lat="-12.0005" lon="-76.982">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación Prueba"/>
+  </node>
+  <node id="81" version="1" lat="-12.010" lon="-76.982"/>
+  <node id="82" version="1" lat="-12.030" lon="-76.982">
+    <tag k="railway" v="halt"/>
+    <tag k="name" v="Paradero Lejano"/>
+  </node>
+  <node id="83" version="1" lat="-12.040" lon="-76.982"/>
+  <node id="85" version="1" lat="-12.030" lon="-76.960"/>
+  <node id="86" version="1" lat="-12.030" lon="-76.950">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación Turística"/>
+  </node>
+  <node id="87" version="1" lat="-12.0302" lon="-76.9601">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación al lado del riel"/>
+  </node>
+  <node id="90" version="1" lat="-12.060" lon="-76.950"/>
+  <node id="91" version="1" lat="-12.060" lon="-76.900"/>
   <way id="10" version="1">
     <nd ref="1"/><nd ref="2"/><nd ref="3"/><nd ref="4"/>
     <tag k="highway" v="primary"/>
@@ -94,11 +115,38 @@
     <tag k="tourism" v="hostel"/>
     <tag k="building" v="yes"/>
   </way>
+  <way id="30" version="1">
+    <nd ref="80"/><nd ref="81"/><nd ref="82"/>
+    <tag k="railway" v="rail"/>
+  </way>
+  <way id="31" version="1">
+    <nd ref="82"/><nd ref="83"/>
+    <tag k="railway" v="rail"/>
+    <tag k="usage" v="industrial"/>
+  </way>
+  <way id="32" version="1">
+    <nd ref="82"/><nd ref="85"/><nd ref="86"/>
+    <tag k="railway" v="narrow_gauge"/>
+    <tag k="usage" v="tourism"/>
+  </way>
+  <way id="33" version="1">
+    <nd ref="90"/><nd ref="91"/>
+    <tag k="route" v="ferry"/>
+    <tag k="name" v="Bote de un río mapeado a trozos"/>
+  </way>
   <relation id="100" version="1">
     <member type="node" ref="40" role="admin_centre"/>
     <tag k="type" v="boundary"/>
     <tag k="boundary" v="administrative"/>
     <tag k="admin_level" v="8"/>
     <tag k="name" v="Distrito de Prueba"/>
+  </relation>
+  <relation id="101" version="1">
+    <member type="way" ref="30" role=""/>
+    <member type="way" ref="31" role=""/>
+    <member type="node" ref="80" role="stop"/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="train"/>
+    <tag k="name" v="Tren de prueba"/>
   </relation>
 </osm>

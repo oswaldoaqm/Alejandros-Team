@@ -1,8 +1,9 @@
 """
 Cuánto cuesta un viaje, por persona: una banda y no un precio.
 
-    transporte   bus interprovincial de ida y vuelta (intercepto + soles por km) y la
-                 movilidad local de cada paseo (soles por km recorrido)
+    transporte   bus interprovincial de ida y vuelta (intercepto + soles por km), la
+                 movilidad local de cada paseo (soles por km recorrido), cada tramo en tren
+                 (un pasaje por tramo) y los km en bote (soles por km)
     alojamiento  noches × tarifa por noche
     alimentación días × gasto diario
     entradas     la tarifa de adulto peruano que publica cada ficha; un boleto combinado
@@ -17,6 +18,7 @@ no sabemos, y la misma consulta da siempre el mismo número.
 
 from __future__ import annotations
 
+import zlib
 from dataclasses import dataclass
 
 import numpy as np
@@ -35,22 +37,31 @@ class Gastos:
     dias: int
     noches: int
     km_interprovincial: float  # ida, por carretera; 0 en un viaje de un día
-    km_locales: float  # paseos desde la base, o todo el viaje de un día
+    km_locales: float  # paseos desde la base, o todo el viaje de un día, por carretera
     tarifas: tuple[float, ...]  # entradas con monto conocido, sin los boletos combinados
     combinados: tuple[float, ...]  # montos de boletos combinados: se paga el mayor, una vez
     sin_tarifa: int  # paradas con boleto cuyo monto no se conoce
     base: str
+    tramos_tren: int = 0  # cada viaje en tren, de ida o de vuelta, es un pasaje
+    km_bote: float = 0.0  # ida, vuelta y paseos
 
 
-def _muestras(parametros: dict, rng: np.random.Generator) -> dict[str, np.ndarray]:
-    nombres = sorted(parametros)  # orden fijo: la misma semilla da las mismas muestras
-    return {n: rng.uniform(parametros[n]["minimo"], parametros[n]["maximo"], SIMULACIONES) for n in nombres}
+def _muestras(parametros: dict) -> dict[str, np.ndarray]:
+    """Las simulaciones de cada parámetro, cada uno con su propia secuencia, sembrada con su
+    nombre: la misma consulta da siempre el mismo número, y sumar un parámetro a la tabla no
+    cambia las muestras de los demás."""
+    return {
+        n: np.random.default_rng([SEMILLA, zlib.crc32(n.encode())]).uniform(p["minimo"], p["maximo"], SIMULACIONES)
+        for n, p in parametros.items()
+    }
 
 
 def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
     bus = 2 * (p["bus_intercepto"] + p["bus_soles_km"] * g.km_interprovincial) if g.km_interprovincial else 0.0
+    tren = g.tramos_tren * p["tren_tramo"] if g.tramos_tren else 0.0
+    bote = g.km_bote * p["bote_soles_km"] if g.km_bote else 0.0
     return {
-        "transporte": bus + p["movilidad_soles_km"] * g.km_locales,
+        "transporte": bus + p["movilidad_soles_km"] * g.km_locales + tren + bote,
         "alojamiento": g.noches * p["alojamiento_noche"],
         "alimentacion": g.dias * p["alimentacion_dia"],
         "entradas": sum(g.tarifas) + max(g.combinados, default=0.0) + g.sin_tarifa * p["entrada_sin_tarifa"],
@@ -58,8 +69,7 @@ def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
 
 
 def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
-    rng = np.random.default_rng(SEMILLA)
-    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros, rng), g).values())
+    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros), g).values())
     p20, p50, p80 = (int(round(x)) for x in np.percentile(total, [20, 50, 80]))
 
     # El desglose reparte el P50 en proporción a cada componente con los valores centrales.
@@ -74,6 +84,17 @@ def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
         supuestos.append(f"Bus interprovincial de ida y vuelta: {textos.miles(2 * g.km_interprovincial)} km")
     if g.km_locales:
         supuestos.append(f"Movilidad local en colectivo o taxi: {textos.miles(g.km_locales)} km")
+    if g.tramos_tren:
+        t = parametros["tren_tramo"]
+        tramos = "un tramo" if g.tramos_tren == 1 else f"{g.tramos_tren} tramos"
+        supuestos.append(
+            f"Tren: {tramos}, entre {textos.soles(t['minimo'])} y {textos.soles(t['maximo'])} cada uno, "
+            "según el servicio y la anticipación"
+        )
+    if g.km_bote:
+        b = parametros["bote_soles_km"]
+        minimo, maximo = (f"{b[k]:.2f}".replace(".", ",") for k in ("minimo", "maximo"))
+        supuestos.append(f"Bote: {textos.miles(g.km_bote)} km, entre S/ {minimo} y S/ {maximo} por km")
     if g.noches:
         supuestos.append(f"Hospedaje económico en {g.base}, {g.noches} {'noche' if g.noches == 1 else 'noches'}")
     supuestos.append("Entradas de adulto peruano según la ficha oficial de cada lugar")

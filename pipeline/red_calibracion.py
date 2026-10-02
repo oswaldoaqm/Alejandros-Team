@@ -37,7 +37,9 @@ import unicodedata
 import numpy as np
 import pandas as pd
 
-from pipeline.red_vial import CLASES, CURVAS_TOPE, Red, Ruteador, haversine_m, minutos_por_arista
+from pipeline.red_vial import CURVAS_TOPE, VIALES, Red, Ruteador, haversine_m, minutos_por_arista
+
+CALIBRADAS = VIALES[:-1]  # todas las clases de vía menos la balsa
 
 # Valores de partida, en minutos por km: una red rural de montaña, no una autopista europea.
 RITMO_INICIAL = {
@@ -51,7 +53,7 @@ RITMO_INICIAL = {
     "balsa": 6.0,  # 10 km/h; no se calibra: casi ninguna ruta la usa
 }
 INICIALES = {**RITMO_INICIAL, "sin_asfaltar": 0.6, "curvas": 0.15, "por_viaje": 5.0}
-PARAMETROS = [*CLASES[:-1], "sin_asfaltar", "curvas", "por_viaje"]
+PARAMETROS = [*CALIBRADAS, "sin_asfaltar", "curvas", "por_viaje"]
 ANCLA = 0.3  # peso del valor de partida frente a los datos, en escala logarítmica
 ESCALA_ROBUSTA = 0.2  # error logarítmico desde el que una ficha empieza a pesar menos (±22 %)
 
@@ -154,13 +156,15 @@ def pares_de_calibracion(maestro, capitales, lugares) -> tuple[pd.DataFrame, dic
 
 def componer(red: Red, ritmos: dict, pares: pd.DataFrame) -> pd.DataFrame:
     """Para cada par (inicio, recurso), la ruta más rápida con ``ritmos`` y cuántos km hace
-    por cada clase de vía, sin asfaltar y en curvas."""
+    por cada clase de vía, sin asfaltar y en curvas. Solo por las vías: los recorridos que
+    se calibran no usan tren ni bote."""
+    red = red.vial()
     ruteador = Ruteador(red, minutos_por_arista(red, ritmos))
-    v_ini, m_ini = ruteador.ubicar(pares["lat_desde"].to_numpy(), pares["lon_desde"].to_numpy())
-    v_fin, m_fin = ruteador.ubicar(pares["lat"].to_numpy(), pares["lon"].to_numpy())
+    v_ini, m_ini, _ = ruteador.ubicar(pares["lat_desde"].to_numpy(), pares["lon_desde"].to_numpy())
+    v_fin, m_fin, _ = ruteador.ubicar(pares["lat"].to_numpy(), pares["lon"].to_numpy())
     km = red.metros.astype(np.float64) / 1000
     curvas_km = km * np.minimum(red.curvas, CURVAS_TOPE) / 100
-    filas = np.full((len(pares), len(CLASES) + 2), np.nan)
+    filas = np.full((len(pares), len(VIALES) + 2), np.nan)
     for fuente in np.unique(v_ini):
         cuales = np.flatnonzero(v_ini == fuente)
         limite = 4.0 * pares["acceso_min"].to_numpy()[cuales].max() + 60
@@ -169,24 +173,24 @@ def componer(red: Red, ritmos: dict, pares: pd.DataFrame) -> pd.DataFrame:
             if v_fin[i] != fuente and predecesor[v_fin[i]] < 0:
                 continue  # no se llega por la red
             aristas = ruteador.aristas_del_camino(predecesor, int(v_fin[i]))
-            filas[i, : len(CLASES)] = np.bincount(red.clase[aristas], weights=km[aristas], minlength=len(CLASES))
-            filas[i, len(CLASES)] = km[aristas][red.sin_asfaltar[aristas]].sum()
-            filas[i, len(CLASES) + 1] = curvas_km[aristas].sum()
-    columnas = [f"km_{c}" for c in CLASES] + ["km_sin_asfaltar", "curvas"]
+            filas[i, : len(VIALES)] = np.bincount(red.clase[aristas], weights=km[aristas], minlength=len(VIALES))
+            filas[i, len(VIALES)] = km[aristas][red.sin_asfaltar[aristas]].sum()
+            filas[i, len(VIALES) + 1] = curvas_km[aristas].sum()
+    columnas = [f"km_{c}" for c in VIALES] + ["km_sin_asfaltar", "curvas"]
     tabla = pd.concat([pares.reset_index(drop=True), pd.DataFrame(filas, columns=columnas)], axis=1)
     tabla["km_fuera_de_red"] = (m_ini + m_fin) / 1000
     tabla["traslados"] = 1.0  # cada recorrido paga una vez los minutos fijos
-    tabla["km_red"] = tabla[[f"km_{c}" for c in CLASES]].sum(axis=1, min_count=1) + tabla["km_fuera_de_red"]
+    tabla["km_red"] = tabla[[f"km_{c}" for c in VIALES]].sum(axis=1, min_count=1) + tabla["km_fuera_de_red"]
     return tabla
 
 
 def _matriz(tabla: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
     """Una columna por parámetro, en el orden de PARAMETROS, y los minutos que no se calibran."""
     x = np.column_stack(
-        [tabla[f"km_{c}"] for c in CLASES[:-1]] + [tabla["km_sin_asfaltar"], tabla["curvas"], tabla["traslados"]]
+        [tabla[f"km_{c}"] for c in CALIBRADAS] + [tabla["km_sin_asfaltar"], tabla["curvas"], tabla["traslados"]]
     )
     # Del punto a la vía más cercana, por un camino que OSM no tiene: como una trocha.
-    x[:, CLASES.index("trocha")] += 1.3 * tabla["km_fuera_de_red"].to_numpy()
+    x[:, CALIBRADAS.index("trocha")] += 1.3 * tabla["km_fuera_de_red"].to_numpy()
     return x, tabla["km_balsa"].to_numpy() * RITMO_INICIAL["balsa"]
 
 
@@ -264,8 +268,8 @@ def informe(tabla: pd.DataFrame, parametros: dict[str, float], cuentas: dict[str
         return round(float(np.mean(np.abs(validar(variante) / observado - 1))), 3)
 
     def un_ritmo(t):
-        t["km_primaria"] = t[[f"km_{c}" for c in CLASES[:-1]]].sum(axis=1)
-        t[[f"km_{c}" for c in CLASES[:-1] if c != "primaria"]] = 0.0
+        t["km_primaria"] = t[[f"km_{c}" for c in CALIBRADAS]].sum(axis=1)
+        t[[f"km_{c}" for c in CALIBRADAS if c != "primaria"]] = 0.0
         return t
 
     ablacion = {
@@ -283,8 +287,8 @@ def informe(tabla: pd.DataFrame, parametros: dict[str, float], cuentas: dict[str
     }
     return {
         "recorridos": {**cuentas, "con_ruta": int(tabla["km_red"].notna().sum()), "misma_distancia": len(usadas)},
-        "ritmo_min_por_km": {c: round(parametros[c], 3) for c in CLASES},
-        "velocidad_kmh": {c: round(60 / parametros[c], 1) for c in CLASES},
+        "ritmo_min_por_km": {c: round(parametros[c], 3) for c in VIALES},
+        "velocidad_kmh": {c: round(60 / parametros[c], 1) for c in VIALES},
         "recargo_sin_asfaltar_min_por_km": round(parametros["sin_asfaltar"], 3),
         "recargo_curvas_min_por_km_cada_100_grados": round(parametros["curvas"], 3),
         "minutos_por_traslado": round(parametros["por_viaje"], 1),

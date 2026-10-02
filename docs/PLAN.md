@@ -2,7 +2,7 @@
 
 **El 14 de octubre DreemGO está desplegado y resuelve una consulta real de punta a punta; el 18 de noviembre es un producto que se puede presentar a cualquiera.** Este documento es el estado del plan dentro del repositorio: qué se hace, en qué orden, cuándo está terminado y quién lo defiende. Se actualiza al cerrar cada fase.
 
-Estado al 1 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.1](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar; falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. Sigue la **fase 2**: la app y el despliegue.
+Estado al 1 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. Sigue la **fase 2**: la app y el despliegue.
 
 ## Qué promete el producto
 
@@ -13,7 +13,7 @@ El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué
 | Fase | Fechas | Qué sale | Terminado cuando |
 |---|---|---|---|
 | 0 · Cimientos | 30 sep – 3 oct | Descargas de datos; erratas y etiquetas de las entregas 4 a 7; esqueleto del repositorio; [contrato de la API](./CONTRATO.md); CI; infraestructura lista para AWS | CI en verde y el contrato revisado por los cuatro |
-| 1 · Datos v3 y motor | 3 – 9 oct | Maestro v3 con procedencia por campo; calendario de eventos real; clima por polo; tiempos por carretera; motor v2 detrás del API | `GET /v1/viajes` devuelve el contrato y las 10 propiedades de [CONTRATO §3](./CONTRATO.md) se cumplen en 1 000 consultas |
+| 1 · Datos v3 y motor | 3 – 9 oct | Maestro v3 con procedencia por campo; calendario de eventos real; clima por polo; tiempos de viaje por carretera, tren y bote; motor v2 detrás del API | `GET /v1/viajes` devuelve el contrato y las 10 propiedades de [CONTRATO §3](./CONTRATO.md) se cumplen en 1 000 consultas |
 | 2 · App y despliegue | 6 – 12 oct | App web contra el contrato; API desplegada | La app abre en un celular con datos móviles y resuelve una consulta |
 | 3 · Entrega de la semana 10 | 12 – 14 oct | `PrototypeReport`, presentación, capturas y video, README con instalación y despliegue | Carpeta `deliveries/week10/` completa |
 | **Semana 10 · prototipo** | **14 oct** | | |
