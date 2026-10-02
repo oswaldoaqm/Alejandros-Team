@@ -227,6 +227,10 @@ def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tu
 
 
 def _escribir(tabla: pd.DataFrame, ruta: Path) -> None:
+    """Minutos y km con un decimal; la latitud y la longitud con seis (unos 10 cm): con uno
+    serían 11 km."""
+    coordenadas = {c: tabla[c].map(lambda x: "" if pd.isna(x) else f"{x:.6f}") for c in ("lat", "lon") if c in tabla}
+    tabla = tabla.assign(**coordenadas)
     tabla.to_csv(ruta, sep=";", index=False, encoding="utf-8-sig", lineterminator="\n", float_format="%.1f")
 
 

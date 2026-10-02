@@ -103,3 +103,11 @@ def test_desde_los_origenes(mundo):
     assert (fila["minutos"], fila["km"]) == pytest.approx(
         _directo(ruteador, (-12.0, -76.99), (base["lat"], base["lon"]))
     )
+
+
+def test_las_coordenadas_se_escriben_con_seis_decimales(tmp_path):
+    tabla = pd.DataFrame({"polo": [1], "lat": [-9.2954321], "lon": [-75.9981234], "minutos": [12.345]})
+    tiempos._escribir(tabla, tmp_path / "t.csv")
+    leida = pd.read_csv(tmp_path / "t.csv", sep=";", encoding="utf-8-sig")
+    assert (leida.at[0, "lat"], leida.at[0, "lon"]) == (-9.295432, -75.998123)
+    assert leida.at[0, "minutos"] == 12.3
