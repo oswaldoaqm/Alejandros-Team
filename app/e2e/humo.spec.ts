@@ -3,6 +3,9 @@
 
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import { CLAVE_DE_LA_PRUEBA } from "./clave";
+
+const API = "http://localhost:8000";
 
 // El fondo del mapa viene de OpenFreeMap. La prueba no depende de esa red: lo cambia por un
 // fondo liso, y el resto del mapa (paradas, base, recorrido) se dibuja como siempre.
@@ -95,6 +98,82 @@ test("la ficha de un polo y el calendario cargan del API", async ({ page }) => {
   await expect(page.locator(".evento").first()).toBeVisible();
 });
 
+test("un municipio publica un evento, con su lugar, y sale en el calendario", async ({
+  page,
+  request,
+}, info) => {
+  // Si el API ya estaba corriendo, levantado a mano y sin esta clave, aquí no se puede publicar.
+  const sonda = await request.post(`${API}/v1/eventos`, {
+    headers: { "X-Clave-Publicador": CLAVE_DE_LA_PRUEBA },
+    data: {},
+  });
+  test.skip(
+    sonda.status() === 401 || sonda.status() === 403,
+    "El API que está corriendo no tiene la clave de esta prueba: ciérralo y deja que la prueba levante el suyo.",
+  );
+
+  // Dentro de unas semanas: ni pasado ni más allá de los doce meses que se publican.
+  const dia = (cuantos: number) =>
+    new Date(Date.now() + cuantos * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const nombre = `Feria de la prueba de humo (${info.project.name})`;
+  const entidad = "Municipalidad de la prueba de humo";
+
+  // Sin animaciones, el mapa salta a la ciudad de la región en vez de ir de a poco.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("./");
+  await page.getByRole("link", { name: "Para municipios: publicar un evento" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Publicar un evento" })).toBeFocused();
+
+  await page.getByLabel("Nombre del evento").fill(nombre);
+  await page.getByLabel("Empieza").fill(dia(40));
+  await page.getByLabel(/^Termina/).fill(dia(41));
+  await page.getByLabel("Región").selectOption("Áncash");
+  await page.getByLabel("Provincia").fill("Huaraz");
+  await page.getByLabel("Distrito").fill("Huaraz");
+
+  // El mapa quedó sobre Huaraz: un toque en su centro pone la marca ahí.
+  const lienzo = page.locator(".mapa--elegir .maplibregl-canvas");
+  await expect(lienzo).toBeVisible();
+  await lienzo.click();
+  await expect(page.locator(".maplibregl-marker.marcador--lugar")).toHaveCount(1);
+  await expect(page.getByText(/^Marcado en \u22129,5\d+, \u221277,5\d+\.$/)).toBeVisible();
+
+  await page.getByLabel("Entidad que publica").fill(entidad);
+  await page.getByLabel("Clave de publicador").fill(CLAVE_DE_LA_PRUEBA);
+  await page.getByRole("button", { name: "Publicar el evento" }).click();
+
+  await expect(page.getByRole("heading", { level: 1, name: "Evento publicado" })).toBeFocused();
+  await expect(page.getByText(/sale también en las rutas que duermen o paran a 10 km o menos/)).toBeVisible();
+  await expect(page.locator(".evento")).toContainText(`Publicado por ${entidad}`);
+
+  // Y está en el calendario de su mes, que se pide de nuevo al API.
+  await page.getByRole("link", { name: /^Ver el calendario de / }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Fiestas y eventos" })).toBeVisible();
+  await expect(page.locator(".evento", { hasText: nombre })).toContainText(
+    `Huaraz, Huaraz · Áncash · Publicado por ${entidad}`,
+  );
+});
+
+test("sin la clave correcta no se publica, y lo dice en la casilla de la clave", async ({ page }) => {
+  await page.goto("./#/publicar");
+  await page.getByLabel("Nombre del evento").fill("Feria que no se publica");
+  await page
+    .getByLabel("Empieza")
+    .fill(new Date(Date.now() + 40 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
+  await page.getByLabel("Región").selectOption("Cusco");
+  await page.getByLabel("Provincia").fill("Cusco");
+  await page.getByLabel("Distrito").fill("Cusco");
+  await page.getByLabel("Entidad que publica").fill("Alguien sin permiso");
+  await page.getByLabel("Clave de publicador").fill("esta-no-es-la-clave");
+  await page.getByRole("button", { name: "Publicar el evento" }).click();
+
+  const alerta = page.getByRole("alert");
+  await expect(alerta).toContainText("No se publicó");
+  await expect(alerta).toBeFocused();
+  await expect(page.getByLabel("Clave de publicador")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByLabel("Nombre del evento")).toHaveValue("Feria que no se publica");
+});
+
 const PANTALLAS = [
   ["el formulario", "./"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
@@ -102,6 +181,7 @@ const PANTALLAS = [
   ["el calendario", "./#/calendario"],
   ["cómo funciona", "./#/acerca"],
   ["mis viajes", "./#/mis-viajes"],
+  ["publicar un evento", "./#/publicar"],
 ] as const;
 
 for (const [nombre, direccion] of PANTALLAS) {
@@ -112,7 +192,9 @@ for (const [nombre, direccion] of PANTALLAS) {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(page.locator(".cargando")).toHaveCount(0);
     // El mapa llega aparte: se espera a que esté o a que se sepa que no hay.
-    if (nombre === "los resultados") await expect(page.locator(".maplibregl-canvas")).toBeVisible();
+    if (nombre === "los resultados" || nombre === "publicar un evento") {
+      await expect(page.locator(".maplibregl-canvas")).toBeVisible();
+    }
 
     const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(desborde, "la página no debe desplazarse a lo ancho").toBeLessThanOrEqual(0);
