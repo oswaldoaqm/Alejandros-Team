@@ -14,6 +14,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0008](./0008-calibrar-con-las-fichas.md) | Calibrar la red vial con los recorridos de las fichas | Vigente |
 | [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010) |
 | [0010](./0010-tren-y-botes.md) | El tren y los botes entran a la red; cada parada se ubica según su ficha | Vigente |
-| [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente |
+| [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente; lo publicado se ve en dos segundos en todos los servidores (actualización del 2 de octubre) |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
