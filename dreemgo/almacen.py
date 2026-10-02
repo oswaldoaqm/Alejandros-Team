@@ -1,7 +1,12 @@
 """
-Dónde se guardan los eventos publicados: en memoria, que sirve para desarrollar y se pierde al
-reiniciar; en un archivo local, una línea de JSON por evento; o en una tabla de DynamoDB, que
-es lo que usa el despliegue en AWS (infra/template.yaml).
+Dónde se guardan los eventos publicados.
+
+El API no sabe dónde corre: pide un almacén y este módulo le da el que toca según el entorno.
+
+- ``DREEMGO_TABLA_EVENTOS``: una tabla de DynamoDB (el despliegue en AWS, infra/template.yaml).
+- ``DREEMGO_EVENTOS_ARCHIVO``: un archivo local, una línea de JSON por evento (un contenedor
+  o una máquina cualquiera, con el archivo en un volumen que no se borre).
+- Ninguna de las dos: en memoria. Sirve para desarrollar; se pierde al reiniciar.
 
 Un almacén guarda y devuelve registros: diccionarios de tipos simples con ``id`` (ver
 ``Publicado.registro``). Guardar dos veces el mismo ``id`` deja el último.
@@ -11,6 +16,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+from collections.abc import Mapping
 from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from pathlib import Path
@@ -122,3 +129,12 @@ class EnDynamo:
         fin = date.fromisoformat(registro["fecha_fin"]) + timedelta(days=1)
         item["expira"] = int(datetime.combine(fin, time.max, tzinfo=UTC).timestamp())
         self._la_tabla().put_item(Item=item)
+
+
+def del_entorno(entorno: Mapping[str, str] = os.environ) -> Almacen:
+    """El almacén que corresponde a las variables de entorno."""
+    if tabla := entorno.get("DREEMGO_TABLA_EVENTOS"):
+        return EnDynamo(tabla)
+    if archivo := entorno.get("DREEMGO_EVENTOS_ARCHIVO"):
+        return EnArchivo(Path(archivo))
+    return EnMemoria()

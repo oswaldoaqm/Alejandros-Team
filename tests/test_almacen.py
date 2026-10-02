@@ -9,7 +9,7 @@ from decimal import Decimal
 
 import pytest
 
-from dreemgo.almacen import EnArchivo, EnDynamo, EnMemoria
+from dreemgo.almacen import EnArchivo, EnDynamo, EnMemoria, del_entorno
 
 
 def registro(id_: str = "p-000000000001", **cambios) -> dict:
@@ -149,3 +149,22 @@ class TestEnDynamo:
 
     def test_no_necesita_boto3_hasta_que_toca_la_tabla(self):
         EnDynamo("eventos")  # crearlo no importa boto3 ni sale a la red
+
+
+class TestDelEntorno:
+    def test_sin_variables_en_memoria(self):
+        assert isinstance(del_entorno({}), EnMemoria)
+
+    def test_con_archivo(self, tmp_path):
+        ruta = tmp_path / "eventos.jsonl"
+        almacen = del_entorno({"DREEMGO_EVENTOS_ARCHIVO": str(ruta)})
+        assert isinstance(almacen, EnArchivo)
+        almacen.guardar(registro())
+        assert ruta.exists()
+
+    def test_con_tabla_gana_la_tabla(self, tmp_path):
+        entorno = {"DREEMGO_TABLA_EVENTOS": "dreemgo-eventos", "DREEMGO_EVENTOS_ARCHIVO": str(tmp_path / "e.jsonl")}
+        assert isinstance(del_entorno(entorno), EnDynamo)
+
+    def test_una_variable_vacia_es_como_no_tenerla(self):
+        assert isinstance(del_entorno({"DREEMGO_TABLA_EVENTOS": "", "DREEMGO_EVENTOS_ARCHIVO": ""}), EnMemoria)
