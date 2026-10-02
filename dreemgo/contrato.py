@@ -14,6 +14,7 @@ Reglas de redacción que siguen todos los modelos:
 
 from __future__ import annotations
 
+import unicodedata
 from datetime import date, timedelta
 from enum import StrEnum
 from typing import Literal
@@ -346,8 +347,19 @@ class Respuesta(_Modelo):
 # ─────────────────────────────── eventos publicados ───────────────────────────────
 
 
+def _en_una_linea(valor: object) -> object:
+    """Un texto sin caracteres invisibles ni espacios de más. Lo que no es texto pasa igual,
+    para que el error lo dé la validación del campo."""
+    if not isinstance(valor, str):
+        return valor
+    visible = "".join(" " if c.isspace() else c for c in valor if c.isspace() or unicodedata.category(c)[0] != "C")
+    return " ".join(visible.split())
+
+
 class EventoNuevo(_Modelo):
-    """Un evento que publica un municipio o una oficina de destino (RF-03)."""
+    """Un evento que publica un municipio o una oficina de destino (RF-03).
+
+    Los textos se limpian antes de validarse: lo que se mide es lo que se va a mostrar."""
 
     nombre: str = Field(min_length=3, max_length=120)
     tipo: str | None = Field(None, max_length=60)
@@ -361,6 +373,19 @@ class EventoNuevo(_Modelo):
     descripcion: str | None = Field(None, max_length=1_000)
     url: HttpUrl | None = None
     publicado_por: str = Field(min_length=3, max_length=120, description="Entidad que publica.")
+
+    @field_validator("nombre", "tipo", "distrito", "provincia", "region", "publicado_por", mode="before")
+    @classmethod
+    def _sin_espacios_de_mas(cls, valor: object) -> object:
+        return _en_una_linea(valor)
+
+    @field_validator("tipo", "descripcion", "url", mode="before")
+    @classmethod
+    def _vacio_es_no_darlo(cls, valor: object) -> object:
+        """Un formulario manda los campos que no se llenaron como textos vacíos."""
+        if isinstance(valor, str):
+            return valor.strip() or None
+        return valor
 
     @model_validator(mode="after")
     def _ventana_valida(self) -> EventoNuevo:
