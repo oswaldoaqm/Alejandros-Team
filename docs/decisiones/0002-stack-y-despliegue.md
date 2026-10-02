@@ -29,3 +29,4 @@ La semana 10 pide un prototipo desplegado «cuando sea técnica y legalmente pos
 ## Actualización · 2 de octubre de 2026
 
 - **El motor no usa OR-Tools.** El itinerario lo arma un planificador propio sobre numpy ([0009](./0009-viaje-en-estrella.md)), y la imagen no lo lleva.
+- **El host gratuito ya tiene receta:** un Space de Hugging Face, con [`infra/huggingface/Dockerfile`](../../infra/huggingface/Dockerfile). Corre el mismo paquete en 2 CPU y 16 GB; a cambio, lo que publican los municipios no dura y el Space se duerme tras 48 horas sin uso ([`infra/README.md`](../../infra/README.md)). Pasar a Lambda sigue siendo `sam deploy` y cambiar una variable de la app.
