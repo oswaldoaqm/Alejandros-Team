@@ -9,6 +9,7 @@ export type Costo = Modelo["Costo"];
 export type Dia = Modelo["Dia"];
 export type Estacionalidad = Modelo["Estacionalidad"];
 export type Evento = Modelo["Evento"];
+export type EventoNuevo = Modelo["EventoNuevo"];
 export type Eventos = Modelo["Eventos"];
 export type Indicadores = Modelo["Indicadores"];
 export type Interes = Modelo["Interes"];

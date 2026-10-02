@@ -9,7 +9,8 @@ export type Vista =
   | { tipo: "polo"; id: number; consulta: Consulta | null }
   | { tipo: "calendario"; consulta: Consulta | null; mes: number | null }
   | { tipo: "mis-viajes" }
-  | { tipo: "acerca" };
+  | { tipo: "acerca" }
+  | { tipo: "publicar" };
 
 /** La pantalla que corresponde a una URL. */
 export function vistaDe(url: URL): Vista {
@@ -34,6 +35,8 @@ export function vistaDe(url: URL): Vista {
       return { tipo: "mis-viajes" };
     case "acerca":
       return { tipo: "acerca" };
+    case "publicar":
+      return { tipo: "publicar" };
   }
   if (!consulta) return { tipo: "inicio", consulta: null };
   const elegida = pagina === "ruta" ? Number(argumento) : 1;
@@ -57,4 +60,5 @@ export const enlaces = {
     `${c ? aEnlace(c, version) : "./"}#/calendario${mes ? `/${mes}` : ""}`,
   misViajes: () => "./#/mis-viajes",
   acerca: () => "./#/acerca",
+  publicar: () => "./#/publicar",
 };

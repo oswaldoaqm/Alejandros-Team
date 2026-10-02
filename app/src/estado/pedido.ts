@@ -16,7 +16,7 @@ export interface Pedido<T> {
 
 const memoria = new Map<string, unknown>();
 
-/** Para las pruebas: olvida lo pedido. */
+/** Olvida lo pedido: después de publicar un evento, lo ya respondido puede haber cambiado. */
 export function olvidarPedidos(): void {
   memoria.clear();
 }

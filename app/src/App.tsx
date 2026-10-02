@@ -14,6 +14,7 @@ import { Formulario } from "./vistas/Formulario";
 import { MisViajes } from "./vistas/MisViajes";
 import { PaginaCalendario } from "./vistas/PaginaCalendario";
 import { PaginaPolo } from "./vistas/PaginaPolo";
+import { Publicar } from "./vistas/Publicar";
 import { Resultados } from "./vistas/Resultados";
 
 /** La pantalla sin sus detalles: cambia cuando se pasa de una a otra, no al afinar la consulta. */
@@ -37,6 +38,8 @@ function Pantalla({ vista }: { vista: Vista }) {
       return <MisViajes />;
     case "acerca":
       return <Acerca />;
+    case "publicar":
+      return <Publicar />;
   }
 }
 
