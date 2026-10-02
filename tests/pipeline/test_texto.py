@@ -315,3 +315,47 @@ def test_sin_contactos_respeta_nombres_citados():
 )
 def test_sin_contactos_no_toca_resoluciones_ni_cifras(texto):
     assert sin_contactos(texto) == texto
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "reservas: Fulana Mengana-987654321 – Zutano Perengano - 912345678.",  # 14643: pegado a un guion
+        "los teléfonos son: 987654321 (párroco) y 912 345 678- 987654322",  # 871
+        "Informes: 2345678 / 3456789 / 987654321",  # 10931: fijos en una lista
+        "Teléfonos: 987654321 / 234-5678",  # 1208
+        "contactar con la Gerencia del Callao 234-5678/345-6789 anexos 123–456 ó a 987654321",  # 10941
+        "Atención: Lunes a domingo / Informes: 234-5678 anexo 1234",  # 6822
+        "Previa coordinación al numero 056-123456 o al correo reservas@ejemplo.pe",  # 11316
+        "Teléfono fijo: 056 – 123456 Celular : 987654321",  # 6972
+        "Mayores informes: 01 2345678 - 987654321",  # 1379
+        "Consultas 064-123456, horario de lunes a viernes",  # 12662
+        "Coordinaciones: 234-5678 | 987-654-321 | 912-345-678",  # 11193
+        "N° de contacto : 234-5678.",  # 3499
+        "comunicarse al telefono fijo 084-123456",  # 6915
+        "al teléf 042123456",  # 11416
+        "Previa llamada telefónica; al 074-123456 ó 987654321",  # 2350
+        "Reservas al 234-5678",
+        "Informes: info@info@ejemplo.gob.pe / 987654321",  # 4367: el correo escrito dos veces
+    ],
+)
+def test_sin_contactos_quita_los_telefonos_que_nada_anuncia(texto):
+    limpio_ = sin_contactos(texto)
+    assert CONTACTO_OMITIDO in limpio_
+    assert "@" not in limpio_
+    assert not re.search(r"\d{3}[\s-]?\d{3}", limpio_)
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "Informe Técnico N°001-2022",
+        "Coordenadas UTM: Este 0264341 / Norte 8877279",
+        "coordenadas Norte: 9123456.78 m S",
+        "la Guerra del Pacífico (1879-1883)",
+        "Jr. Próspero Nº 401-437 Esq. Jr. Morona Nº 181-199",
+        "según R.M. N° 000092-2024-MC",
+    ],
+)
+def test_sin_contactos_no_toca_coordenadas_ni_documentos(texto):
+    assert sin_contactos(texto) == texto

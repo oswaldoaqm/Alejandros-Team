@@ -58,16 +58,34 @@ def decimal(texto: str) -> float:
 # artefacto.
 
 CONTACTO_OMITIDO = "[contacto en la ficha oficial]"
+_OMITIDO = re.escape(CONTACTO_OMITIDO)
 
-_CORREO = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
-_CELULAR = re.compile(r"(?<![\d-])(?:\+?51[\s-]?)?9\d{2}[\s-]?\d{3}[\s-]?\d{3}(?![\d-])")
+_CORREO = re.compile(r"(?:[\w.+-]+@)+[\w-]+(?:\.[\w-]+)+")
+# Nueve cifras que empiezan en 9, juntas o en grupos. Un guion solo lo descarta si lo une a
+# otra cifra, como en una resolución: "Rios-9xx…" y "9xx…- Cel." sí son celulares.
+_CELULAR = re.compile(r"(?<!\d)(?<!\d-)(?:\+?51[\s-]?)?9\d{2}[\s-]?\d{3}[\s-]?\d{3}(?!\d)(?!-\d)")
 _FIJO_CON_CODIGO = re.compile(r"\(0?\d{1,2}\)\s?\d{3}[\s-]?\d{3,4}(?!\d)")
 _TELEFONO_CON_PALABRA = re.compile(
-    r"(?i)\b(tel[eé]fonos?|telfs?|tlfs?|telf|tel|fono|celular|cel|whats?app|wsp|rpm|rpc)"
+    r"(?i)\b((?:tel[eé]f(?:onos?)?|telfs?|tlfs?|tel|fono|celular|cel|whats?app|wsp|rpm|rpc)"
+    r"(?:\s+(?:fijo|m[oó]vil|de\s+contacto))?)"
     r"(\.?\s*(?:n[°º.]?\s*)?[:.]?\s*)"
-    r"(\+?[\d(][\d\s()-]{4,}\d)"
+    r"(\+?[\d(][\d\s()–-]{4,}\d)"
 )
 _DNI = re.compile(r"(?i)\bDNI\s*(?:n[°º.]?\s*)?[:.]?\s*\d{8}\b")
+
+# Un fijo sin la palabra «teléfono» delante ("Informes: 632 1543 / 330 3988") se parece a un
+# año o a una resolución. Solo se quita cuando lo delata lo que tiene al lado: otro contacto
+# de la misma lista, su anexo, o un aviso como «informes» o «número».
+_CODIGO = r"(?:\(0\d{1,2}\)|0\d{1,2})"  # el de la ciudad: 01, (053), 064
+_FIJO = rf"(?:{_CODIGO}[\s–-]*)?\d{{3}}[\s-]?\d{{3,4}}"
+_ENTRE_CONTACTOS = r"\s*(?:[/|,;–-]|\b(?:o|ó|u|y|y/o)\b(?:\s+al?\b)?)\s*"
+_FIJO_TRAS_CONTACTO = re.compile(rf"(?<={_OMITIDO})({_ENTRE_CONTACTOS})(?<!\d){_FIJO}(?!\d)(?![-/]\w)")
+_FIJO_ANTES_DE_CONTACTO = re.compile(rf"(?<![\w/-]){_FIJO}(?!\d)({_ENTRE_CONTACTOS})(?={_OMITIDO})")
+_FIJO_CON_ANEXO = re.compile(rf"(?<![\w-]){_FIJO}(?=\s*,?\s*\(?(?i:anexos?)\b)")
+_FIJO_CON_AVISO = re.compile(
+    r"(?i)(\b(?:n[uú]meros?|informes|consultas|reservas|reservaciones|coordinaciones|contactos?|informaci[oó]n"
+    rf"|llamar|llamando|comunicarse|contactar|contactarse)\b[^\d\[\n°º]{{0,20}}?)(?<![\w/-]){_FIJO}(?!\d)(?![-/]\w)"
+)
 
 
 # El nombre de quien atiende ese teléfono ("coordinar con el Sr. Nombre Apellido al
@@ -98,6 +116,14 @@ def sin_contactos(texto: str | None) -> str | None:
     t = _TELEFONO_CON_PALABRA.sub(lambda m: m.group(1) + m.group(2) + CONTACTO_OMITIDO, t)
     t = _FIJO_CON_CODIGO.sub(CONTACTO_OMITIDO, t)
     t = _CELULAR.sub(CONTACTO_OMITIDO, t)
+    t = _FIJO_CON_ANEXO.sub(CONTACTO_OMITIDO, t)
+    t = _FIJO_CON_AVISO.sub(lambda m: m.group(1) + CONTACTO_OMITIDO, t)
+    while CONTACTO_OMITIDO in t:  # una lista de teléfonos: cada uno delata al de al lado
+        nuevo = _FIJO_TRAS_CONTACTO.sub(lambda m: m.group(1) + CONTACTO_OMITIDO, t)
+        nuevo = _FIJO_ANTES_DE_CONTACTO.sub(lambda m: CONTACTO_OMITIDO + m.group(1), nuevo)
+        if nuevo == t:
+            break
+        t = nuevo
     return _quitar_nombres(t) if CONTACTO_OMITIDO in t else t
 
 
