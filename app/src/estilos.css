@@ -733,6 +733,17 @@ input[type="text"] {
   border-radius: 8px;
 }
 
+input::placeholder {
+  color: var(--tinta-3);
+  opacity: 1;
+}
+
+/* Una casilla con un error: el borde lo marca y el texto de abajo lo dice. */
+[aria-invalid="true"] {
+  border-color: var(--critico-tinta);
+  box-shadow: inset 0 0 0 1px var(--critico-tinta);
+}
+
 .contador {
   display: inline-flex;
   align-self: flex-start;
@@ -1071,6 +1082,30 @@ input[type="range"] {
   text-align: center;
 }
 
+/* El mapa donde se marca el lugar de un evento: más bajo, también en pantalla ancha, y con la cruz de «aquí». */
+.mapa.mapa--elegir {
+  height: min(52vh, 340px);
+}
+
+.mapa--elegir .maplibregl-canvas {
+  cursor: crosshair;
+}
+
+.lugar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.lugar__lectura {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .mapa__fallo {
   position: absolute;
   right: 8px;
@@ -1108,6 +1143,23 @@ input[type="range"] {
   background: #fff;
   border: 4px solid var(--tinta);
   border-radius: 6px;
+}
+
+/* La marca del lugar de un evento: un punto con su aro, que se puede arrastrar. */
+.marcador--lugar {
+  width: 26px;
+  height: 26px;
+  cursor: grab;
+  background: var(--enlace);
+  border-width: 3px;
+}
+
+.marcador--lugar::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  background: #fff;
+  border-radius: 50%;
 }
 
 /* Las paradas del día elegido quedan encima de las demás, y la base encima de todas. */
