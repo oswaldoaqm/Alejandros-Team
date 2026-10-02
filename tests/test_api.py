@@ -62,6 +62,13 @@ def test_errores_en_espanol_con_su_campo(cliente, params, campo, mensaje):
     assert any(e["campo"] == campo and e["mensaje"].startswith(mensaje) for e in errores), errores
 
 
+def test_las_opciones_de_un_valor_no_valido_se_listan_en_espanol(cliente):
+    r = cliente.get("/v1/viajes", params={"mes": 7, "intereses": "museos"})
+    [error] = [e for e in r.json()["detail"] if e["campo"] == "intereses"]
+    assert error["mensaje"].endswith("'arquitectura' o 'aventura'.")
+    assert " or " not in error["mensaje"]
+
+
 def test_parametro_desconocido(cliente):
     assert cliente.get("/v1/viajes", params={"mes": 7, "moneda": "USD"}).status_code == 422
 
