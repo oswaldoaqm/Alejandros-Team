@@ -2,7 +2,7 @@
 
 **El 14 de octubre DreemGO está desplegado y resuelve una consulta real de punta a punta; el 18 de noviembre es un producto que se puede presentar a cualquiera.** Este documento es el estado del plan dentro del repositorio: qué se hace, en qué orden, cuándo está terminado y quién lo defiende. Se actualiza al cerrar cada fase.
 
-Estado al 2 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. De la **fase 2** ya está la [app](../app/), publicada en GitHub Pages: el formulario, tres rutas para comparar, el itinerario con su mapa, su costo, su mes y sus fiestas, la ficha de cada polo y el calendario, con sus pruebas en CI. Y el lado de la oferta: una municipalidad publica un evento (`POST /v1/eventos` y la página «Publicar un evento») y sale en el calendario y en las rutas que pasan cerca, sin mover ninguna ([decisión 0011](./decisiones/0011-eventos-publicados.md)). Falta desplegar el API: hasta entonces la app publicada no tiene a quién preguntarle.
+Estado al 2 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. De la **fase 2** ya está la [app](../app/), publicada en GitHub Pages: el formulario, tres rutas para comparar, el itinerario con su mapa, su costo, su mes y sus fiestas, la ficha de cada polo y el calendario, con sus pruebas en CI. Y el lado de la oferta: una municipalidad publica un evento (`POST /v1/eventos` y la página «Publicar un evento») y sale en el calendario y en las rutas que pasan cerca, sin mover ninguna ([decisión 0011](./decisiones/0011-eventos-publicados.md)). El despliegue está listo para ejecutarse ([`infra/README.md`](../infra/README.md)): en AWS, ensayado contra un simulador hasta donde este llega, o en un Space gratuito de Hugging Face mientras no haya cuenta. Falta hacerlo: hasta entonces la app publicada no tiene a quién preguntarle.
 
 ## Qué promete el producto
 
@@ -32,7 +32,7 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 | Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/) |
 | Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas, y recibe los eventos que publican los municipios: [contrato](./CONTRATO.md) |
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
-| Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados |
+| Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados; y la receta para un Space de Hugging Face |
 | Pruebas | [`tests/`](../tests/) | Contrato, API y, con el motor, propiedades sobre miles de consultas |
 | Decisiones | [`docs/decisiones/`](./decisiones/) | Por qué cada cosa es como es |
 | Entregas | [`deliveries/`](../deliveries/) | Lo que pide cada semana del curso, con sus erratas |
@@ -52,7 +52,7 @@ Cada integrante tiene que poder explicar su parte frente al jurado. Antes de cad
 
 - **Ramas**: una por fase o tarea, con prefijo del autor (`alejandro/fase0-cimientos`), y PR a `main`. Nadie hace push directo a `main`.
 - **Commits**: atómicos, un cambio por commit, en español y con [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/): `feat(motor): …`, `fix(week06): …`, `docs: …`.
-- **CI**: lint, formato, pruebas, la imagen del API y la app (sus pruebas y una prueba de humo contra el API) en cada PR. Un PR en rojo no se fusiona.
+- **CI**: lint, formato, pruebas, las dos imágenes del API (arrancan, publican un evento y no lo pierden) y la app (sus pruebas y una prueba de humo contra el API) en cada PR. Un PR en rojo no se fusiona.
 - **Contrato primero**: un cambio en lo que el API recibe o devuelve empieza en `dreemgo/contrato.py` y [`CONTRATO.md`](./CONTRATO.md).
 - **Datos**: nada se inventa. Un dato que la fuente no trae viaja como `null`, y cada campo derivado dice de dónde sale.
 - **Entregas**: la carpeta de cada semana guarda sus documentos y una copia del código; lo que se corrige después va en su `ERRATA.md` ([decisión 0005](./decisiones/0005-historial-y-erratas.md)).
