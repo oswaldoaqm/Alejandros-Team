@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -11,6 +14,7 @@ from dreemgo.contrato import VERSION_CONTRATO, PoloDetalle, Respuesta
 from dreemgo.motor import datos as artefactos
 
 con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
+ESQUEMA_DE_LA_APP = Path(__file__).resolve().parents[1] / "docs" / "openapi.json"
 
 
 @pytest.fixture(scope="module")
@@ -34,6 +38,38 @@ def test_el_esquema_publica_el_contrato(cliente):
     esquemas = cliente.get("/v1/openapi.json").json()["components"]["schemas"]
     for modelo in ("Respuesta", "Ruta", "Dia", "Parada", "Recurso", "Costo", "Evento", "Opciones", "PoloDetalle"):
         assert modelo in esquemas
+
+
+def _lo_que_usa_la_app(esquema: dict) -> dict:
+    """Rutas con sus parámetros, y modelos con sus campos y enumeraciones: lo que no puede
+    cambiar sin regenerar los tipos de la app. No compara textos ni el orden, que dependen
+    de la versión de FastAPI y de pydantic."""
+    rutas = {
+        f"{metodo.upper()} {ruta}": sorted(p["name"] for p in operacion.get("parameters", []))
+        for ruta, metodos in esquema["paths"].items()
+        for metodo, operacion in metodos.items()
+    }
+    modelos = {}
+    for nombre, modelo in esquema["components"]["schemas"].items():
+        campos = modelo.get("properties", {})
+        enumeraciones = {campo: sorted(c["enum"]) for campo, c in campos.items() if "enum" in c}
+        if "enum" in modelo:
+            enumeraciones[""] = sorted(modelo["enum"])
+        modelos[nombre] = {
+            "campos": sorted(campos),
+            "obligatorios": sorted(modelo.get("required", [])),
+            "enumeraciones": enumeraciones,
+        }
+    return {"rutas": rutas, "modelos": modelos}
+
+
+def test_el_esquema_del_que_salen_los_tipos_de_la_app_esta_al_dia(cliente):
+    en_docs = json.loads(ESQUEMA_DE_LA_APP.read_text(encoding="utf-8"))
+    del_api = cliente.get("/v1/openapi.json").json()
+    assert _lo_que_usa_la_app(en_docs) == _lo_que_usa_la_app(del_api), (
+        "docs/openapi.json quedó atrás del contrato. "
+        "Corre `python docs/generar_openapi.py` y, en app/, `npm run tipos`."
+    )
 
 
 def test_consulta_sin_mes(cliente):
