@@ -116,6 +116,9 @@ export function App() {
           DreemGO · rutas por el Perú con datos oficiales de MINCETUR, clima de Open-Meteo y la red de
           OpenStreetMap. <Enlace href={enlaces.acerca()}>Fuentes y cómo funciona</Enlace>
         </p>
+        <p>
+          <Enlace href={enlaces.publicar()}>Para municipios: publicar un evento</Enlace>
+        </p>
       </footer>
     </ContextoApp.Provider>
   );

@@ -61,6 +61,15 @@ export function Acerca() {
         supuestos van al lado de cada costo.
       </p>
 
+      <h2>Las fiestas y los eventos</h2>
+      <p>
+        El calendario sale de dos lugares. Las fiestas y ferias del inventario de MINCETUR, con su fecha
+        calculada cuando la ficha no la trae; y los eventos que publican las municipalidades y las oficinas de
+        destino, con sus fechas exactas y el nombre de quien los publicó. Un evento publicado se suma a las
+        rutas que pasan cerca, pero no cambia qué rutas se proponen ni en qué orden: el orden no se vende.{" "}
+        <Enlace href={enlaces.publicar()}>Publicar un evento</Enlace>
+      </p>
+
       <h2>Los tiempos de viaje</h2>
       <p>
         Se calculan sobre las vías, el tren y las rutas de bote de OpenStreetMap, con velocidades ajustadas

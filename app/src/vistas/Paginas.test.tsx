@@ -137,9 +137,24 @@ describe("el calendario de fiestas", () => {
     const regiones = within(screen.getByRole("combobox", { name: "Región" })).getAllByRole("option");
     expect(regiones.map((o) => o.textContent)).toContain("Pasco");
   });
+
+  it("invita a publicar a quien organiza un evento", async () => {
+    await abrir("/#/calendario");
+    await userEvent.click(await screen.findByRole("link", { name: "¿Organizas uno? Publícalo" }));
+    expect(window.location.hash).toBe("#/publicar");
+  });
 });
 
 describe("moverse por la app", () => {
+  it("el pie lleva a publicar un evento", async () => {
+    await abrir("/");
+    await screen.findByRole("combobox", { name: "Punto de partida" });
+    await userEvent.click(screen.getByRole("link", { name: "Para municipios: publicar un evento" }));
+    const titulo = await screen.findByRole("heading", { level: 1, name: "Publicar un evento" });
+    expect(document.activeElement).toBe(titulo);
+    expect(window.location.hash).toBe("#/publicar");
+  });
+
   it("cada pantalla pone su título y recibe el foco, para que se note el cambio", async () => {
     await abrir("/");
     await screen.findByRole("combobox", { name: "Punto de partida" });

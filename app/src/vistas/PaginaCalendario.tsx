@@ -119,7 +119,8 @@ export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
       <p className="ayuda">
         Una fecha «aproximada» no viene con su día en la ficha: se calcula (el santo del día, la Pascua) o
         solo se conoce el mes. Conviene confirmarla antes de viajar. Cada evento del inventario enlaza a su
-        ficha oficial; los que dicen «Publicado por…» los anunció esa entidad, con sus fechas.
+        ficha oficial; los que dicen «Publicado por…» los anunció esa entidad, con sus fechas.{" "}
+        <Enlace href={enlaces.publicar()}>¿Organizas uno? Publícalo</Enlace>
       </p>
 
       <p>
