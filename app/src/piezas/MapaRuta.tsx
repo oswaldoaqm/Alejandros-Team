@@ -1,34 +1,15 @@
 // El mapa de una ruta: la base y las paradas numeradas en el orden del recorrido.
 // Va en su propio archivo del build (MapLibre pesa más que todo el resto de la app) y solo
-// se descarga cuando el mapa está por verse. El fondo es de OpenFreeMap: gratis y sin clave.
+// se descarga cuando el mapa está por verse.
 
-import { LngLatBounds, Map as MapaLibre, Marker, NavigationControl, Popup, setWorkerUrl } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
-// MapLibre dibuja con un proceso aparte (worker), que vive en su propio archivo. Con
-// `?worker&url`, Vite lo empaqueta con lo que necesita y devuelve su dirección.
-import urlDelTrabajador from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+import { LngLatBounds, Map as MapaLibre, Marker, NavigationControl, Popup } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import { abanico, type PuntoDeMapa } from "../itinerario";
 import { sinMovimiento } from "../movimiento";
+import { boton, ESTILO, PERU, TEXTOS } from "./maplibre";
 
-setWorkerUrl(urlDelTrabajador);
-
-const ESTILO = "https://tiles.openfreemap.org/styles/positron";
 const FUENTE = "recorrido";
 const CAPAS = ["recorrido-fondo", "recorrido"] as const;
-
-// Lo que MapLibre dice por su cuenta, en español.
-const TEXTOS = {
-  "AttributionControl.ToggleAttribution": "Mostrar u ocultar las fuentes del mapa",
-  "Map.Title": "Mapa",
-  "Marker.Title": "Marcador",
-  "NavigationControl.ZoomIn": "Acercar",
-  "NavigationControl.ZoomOut": "Alejar",
-  "Popup.Close": "Cerrar",
-  "CooperativeGesturesHandler.WindowsHelpText": "Usa Ctrl y la rueda para acercar el mapa",
-  "CooperativeGesturesHandler.MacHelpText": "Usa ⌘ y la rueda para acercar el mapa",
-  "CooperativeGesturesHandler.MobileHelpText": "Usa dos dedos para mover el mapa",
-};
 
 export interface BaseDeMapa {
   nombre: string;
@@ -79,7 +60,6 @@ function limites(base: BaseDeMapa | null, puntos: PuntoDeMapa[]): LngLatBounds |
 
 // Un solo punto no tiene tamaño: sin tope, el mapa se acercaría hasta la puerta.
 const ENCUADRE = { padding: 48, maxZoom: 13 };
-const PERU = new LngLatBounds([-81.4, -18.4], [-68.6, 0.1]);
 
 function globo(titulo: string, detalle: string): HTMLElement {
   const caja = document.createElement("div");
@@ -89,15 +69,6 @@ function globo(titulo: string, detalle: string): HTMLElement {
   resto.textContent = detalle;
   caja.append(fuerte, resto);
   return caja;
-}
-
-function boton(clase: string, rotulo: string, texto = ""): HTMLButtonElement {
-  const elemento = document.createElement("button");
-  elemento.type = "button";
-  elemento.className = clase;
-  elemento.textContent = texto;
-  elemento.setAttribute("aria-label", rotulo);
-  return elemento;
 }
 
 interface Marcado {
