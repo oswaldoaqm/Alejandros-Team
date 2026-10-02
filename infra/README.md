@@ -24,7 +24,7 @@ sam deploy --config-file samconfig.toml --parameter-overrides \
   OrigenesCors=https://oswaldoaqm.github.io ClavePublicador=<una-clave-larga>
 ```
 
-`sam deploy` crea el repositorio de imágenes, sube la imagen y deja la URL del API en la salida `UrlApi`. Esa URL es la que recibe la app en `VITE_API_URL`. Para comprobarlo:
+`sam deploy` crea el repositorio de imágenes, sube la imagen y deja la URL del API en la salida `UrlApi`. Esa URL es la que recibe la app en `VITE_API_URL`: se guarda en la variable `API_URL` del repositorio y la app publicada la toma en su siguiente build ([`app/README.md`](../app/README.md#publicarla)). Para comprobarlo:
 
 ```bash
 curl https://<id>.execute-api.sa-east-1.amazonaws.com/v1/salud
