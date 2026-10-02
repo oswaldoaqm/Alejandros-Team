@@ -20,6 +20,9 @@ api = [
     "fastapi>=0.115",
     "uvicorn>=0.30",
 ]
+aws = [
+    "boto3>=1.35",
+]
 pipeline = [
     "pandas>=2.2",
     "requests>=2.32",
