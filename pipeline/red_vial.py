@@ -9,10 +9,11 @@ calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-p
    primaria… trocha), si es sin asfaltar y cuántas curvas tiene por kilómetro. Se guarda
    en data/externos/osm/red_vial.npz (fuera de git: se reconstruye en un minuto).
    Encima de las vías van dos capas que no se cruzan con ellas: los trenes de pasajeros
-   (las rutas ``route=train`` sin sus ramales mineros) y los botes (los ferris de más de
-   3 km: el Titicaca, las Ballestas, los ríos de la Amazonía). Solo se sube o se baja en
-   una estación o un muelle, unidos a la vía más cercana por un trasbordo que cuesta
-   minutos fijos.
+   (las rutas ``route=train`` sin sus ramales mineros, y los rieles de uso turístico
+   aunque OSM no les haya puesto ruta, como el tramo de Machu Picchu a la Hidroeléctrica)
+   y los botes (los ferris de más de 3 km: el Titicaca, las Ballestas, los ríos de la
+   Amazonía). Solo se sube o se baja en una estación o un muelle, unidos a la vía más
+   cercana por un trasbordo que cuesta minutos fijos.
 2. Las velocidades por clase se calibran con los recorridos de acceso que publican las
    fichas oficiales (``pipeline/red_calibracion.py``).
 3. Con la red calibrada se calculan los tiempos que usa el motor: de cada ciudad de
@@ -89,9 +90,12 @@ BALSA_MAX_M = 3_000  # un ferry más largo que esto no es parte de la red vial: 
 TRAMO_MAX_M = 1_000  # las vías largas se parten cada kilómetro (ver _armar)
 CONEXION_MAX_M = 1_000  # una estación o un muelle se une a la vía más cercana si está a menos de esto
 _RIELES = {"rail", "narrow_gauge"}
+_RIEL_TURISTICO = "tourism"  # usage: lleva pasajeros aunque no esté en una ruta de tren de OSM
 _RIEL_EXCLUIDO = {"industrial", "military", "test"}  # usage: el tren minero no lleva pasajeros
 _SERVICIO_RIEL_EXCLUIDO = {"yard", "siding", "spur", "crossover"}
 _DESPLAZAMIENTO = {"tren": 10**12, "bote": 2 * 10**12}  # nodos de una capa: nunca coinciden con los de las vías
+_NO_ES_TREN = {"subway", "light_rail", "monorail", "funicular", "tram"}  # station=…: el metro de Lima no es el tren
+ESTACION_AL_LADO_M = 300  # una estación dibujada junto al riel se toma en el nodo del riel más cercano
 
 RADIO_TIERRA_M = 6_371_008.8
 
@@ -202,7 +206,8 @@ def leer_red(pbf: Path, indice: str = "flex_mem") -> Red:
     )
     for via in procesador:
         tags = via.tags
-        if via.id in vias_de_tren and "highway" not in tags:
+        turistico = tags.get("usage") == _RIEL_TURISTICO and tags.get("railway") in _RIELES
+        if (via.id in vias_de_tren or turistico) and "highway" not in tags:
             if (
                 tags.get("railway") in _RIELES
                 and tags.get("usage") not in _RIEL_EXCLUIDO
@@ -226,7 +231,8 @@ def leer_red(pbf: Path, indice: str = "flex_mem") -> Red:
     del procesador  # libera el índice de nodos antes de armar el grafo
 
     # Las estaciones parten el riel: así cada una es un vértice donde se sube y se baja.
-    estaciones = _estaciones(pbf, {r for riel in rieles for r, _, _ in riel}, paradas)
+    refs_de_riel = {r for riel in rieles for r, _, _ in riel}
+    estaciones = _estaciones(pbf, refs_de_riel, paradas) | _estaciones_al_lado(pbf, rieles, refs_de_riel)
     for riel in rieles:
         tramo = []
         for nodo in riel:
@@ -313,6 +319,34 @@ def _estaciones(pbf: Path, refs_de_riel: set[int], paradas: set[int]) -> dict[in
         if (es_estacion or nodo.id in paradas) and nodo.location.valid():
             salida[nodo.id] = (nodo.location.lat, nodo.location.lon)
     return salida
+
+
+def _estaciones_al_lado(pbf: Path, rieles: list, refs_de_riel: set[int]) -> dict[int, tuple[float, float]]:
+    """Las estaciones de tren que OSM dibuja al lado del riel y no sobre él, como la de la
+    Hidroeléctrica: nodo del riel más cercano → (lat, lon), si está a menos de
+    ESTACION_AL_LADO_M. Sin esto, ahí no se podría subir ni bajar."""
+    import osmium
+    from scipy.spatial import cKDTree
+
+    puntos = []
+    for nodo in osmium.FileProcessor(str(pbf), osmium.osm.NODE).with_filter(
+        osmium.filter.KeyFilter("railway", "public_transport")
+    ):
+        t = nodo.tags
+        if nodo.id in refs_de_riel or not nodo.location.valid():
+            continue
+        de_tren = (t.get("railway") in ("station", "halt") and t.get("station") not in _NO_ES_TREN) or (
+            t.get("public_transport") == "station" and t.get("train") == "yes"
+        )
+        if de_tren:
+            puntos.append((nodo.location.lat, nodo.location.lon))
+    nodos = {r: (la, lo) for riel in rieles for r, la, lo in riel}
+    if not puntos or not nodos:
+        return {}
+    refs = list(nodos)
+    lat, lon = np.array([nodos[r] for r in refs]).T
+    cuerda, i = cKDTree(_unitarios(lat, lon)).query(_unitarios(*np.array(puntos).T))
+    return {refs[j]: nodos[refs[j]] for j in i[_cuerda_a_metros(cuerda) <= ESTACION_AL_LADO_M]}
 
 
 def _unir(vial: Red, capas: Red | None, puntos: list[tuple[float, float]]) -> Red:

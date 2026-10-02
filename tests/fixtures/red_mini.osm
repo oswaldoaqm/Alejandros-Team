@@ -51,6 +51,15 @@
     <tag k="name" v="Paradero Lejano"/>
   </node>
   <node id="83" version="1" lat="-12.040" lon="-76.982"/>
+  <node id="85" version="1" lat="-12.030" lon="-76.960"/>
+  <node id="86" version="1" lat="-12.030" lon="-76.950">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación Turística"/>
+  </node>
+  <node id="87" version="1" lat="-12.0302" lon="-76.9601">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación al lado del riel"/>
+  </node>
   <way id="10" version="1">
     <nd ref="1"/><nd ref="2"/><nd ref="3"/><nd ref="4"/>
     <tag k="highway" v="primary"/>
@@ -112,6 +121,11 @@
     <nd ref="82"/><nd ref="83"/>
     <tag k="railway" v="rail"/>
     <tag k="usage" v="industrial"/>
+  </way>
+  <way id="32" version="1">
+    <nd ref="82"/><nd ref="85"/><nd ref="86"/>
+    <tag k="railway" v="narrow_gauge"/>
+    <tag k="usage" v="tourism"/>
   </way>
   <relation id="100" version="1">
     <member type="node" ref="40" role="admin_centre"/>

@@ -59,7 +59,7 @@ from pipeline.red_vial import (
 )
 
 OSM = EXTERNOS / "osm"
-CACHE = 3  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
+CACHE = 4  # sube cuando cambia lo que se guarda de la red, para no leer un caché viejo
 LEJOS_DE_LA_RED_M = 5_000  # una parada más lejos que esto de la red no se rutea
 CANDIDATOS_MARGEN_GRADOS = 1.0  # los pueblos que pueden ser base: a menos de ~110 km de las paradas
 

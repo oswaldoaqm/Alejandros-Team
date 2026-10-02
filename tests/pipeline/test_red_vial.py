@@ -12,6 +12,7 @@ from pipeline.red_vial import (
     CODIGO,
     Red,
     Ruteador,
+    _estaciones_al_lado,
     haversine_m,
     leer_capitales,
     leer_hospedajes,
@@ -95,7 +96,14 @@ def test_el_tren_y_el_bote_van_en_su_capa(red):
     for i in range(red.vertices):
         capa[CAPAS[red.capa[i]]].add((red.lat[i], red.lon[i]))
     assert capa["bote"] == {(-12.0, -76.955), (-12.0, -76.92)}  # el ferry de 3,8 km
-    assert capa["tren"] == {(-12.0005, -76.982), (-12.01, -76.982), (-12.03, -76.982)}  # sin el ramal minero
+    # La ruta de tren y el riel turístico que sigue desde el paradero, sin relación de ruta; sin el ramal minero.
+    assert capa["tren"] == {
+        (-12.0005, -76.982),
+        (-12.01, -76.982),
+        (-12.03, -76.982),
+        (-12.03, -76.96),
+        (-12.03, -76.95),
+    }
     # Solo se sube en una estación o un muelle a menos de 1 km de una vía.
     trasbordos = np.flatnonzero(red.clase == CODIGO["transbordo"])
     puntas = {
@@ -106,6 +114,12 @@ def test_el_tren_y_el_bote_van_en_su_capa(red):
         frozenset({(-12.0, -76.982), (-12.0005, -76.982)}),  # la estación, junto al cruce
         frozenset({(-12.0, -76.955)}),  # el muelle, en el mismo punto que la vía
     }
+
+
+def test_una_estacion_dibujada_al_lado_del_riel_se_toma_en_el_riel():
+    # El riel turístico 82-85-86 y la estación 87, dibujada a 25 m del nodo 85 y no sobre el riel.
+    riel = [(82, -12.03, -76.982), (85, -12.03, -76.96), (86, -12.03, -76.95)]
+    assert _estaciones_al_lado(MINI, [riel], {82, 85, 86}) == {85: (-12.03, -76.96)}
 
 
 def test_al_paradero_lejano_se_llega_en_tren(red):
