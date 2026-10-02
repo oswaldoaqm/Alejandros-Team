@@ -109,6 +109,18 @@ const EVENTOS: Evento[] = [
     region: "Junín",
     fuente: "mincetur",
   },
+  {
+    id: "p-0123456789ab",
+    nombre: "Feria del Queso",
+    fecha_inicio: "2027-07-20",
+    fecha_fin: "2027-07-21",
+    precision_fecha: "exacta",
+    distrito: "Concepción",
+    provincia: "Concepción",
+    region: "Junín",
+    fuente: "publicado",
+    publicado_por: "Municipalidad Provincial de Concepción",
+  },
 ];
 
 function pintar(verEnMapa = vi.fn()) {
@@ -159,6 +171,13 @@ describe("el itinerario", () => {
       "Ese día: Fiesta de Santiago, en Sicaya (fecha aproximada).",
     );
     expect(screen.queryByText(/Concurso de todo el mes/)).toBeNull();
+  });
+
+  it("el evento que publicó un municipio dice quién lo publicó", () => {
+    const { dias } = pintar();
+    expect(plano(dias[0]?.textContent)).toContain(
+      "Ese día: Feria del Queso, en Concepción (publicado por Municipalidad Provincial de Concepción).",
+    );
   });
 
   it("ofrece ver en el mapa los días que tienen paradas", async () => {

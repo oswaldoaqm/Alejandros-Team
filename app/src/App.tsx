@@ -14,6 +14,7 @@ import { Formulario } from "./vistas/Formulario";
 import { MisViajes } from "./vistas/MisViajes";
 import { PaginaCalendario } from "./vistas/PaginaCalendario";
 import { PaginaPolo } from "./vistas/PaginaPolo";
+import { Publicar } from "./vistas/Publicar";
 import { Resultados } from "./vistas/Resultados";
 
 /** La pantalla sin sus detalles: cambia cuando se pasa de una a otra, no al afinar la consulta. */
@@ -31,11 +32,14 @@ function Pantalla({ vista }: { vista: Vista }) {
     case "polo":
       return <PaginaPolo key={vista.id} id={vista.id} consulta={vista.consulta} />;
     case "calendario":
-      return <PaginaCalendario consulta={vista.consulta} />;
+      // La llave lo rehace si el enlace pide otro mes.
+      return <PaginaCalendario key={vista.mes ?? "sin-mes"} consulta={vista.consulta} mes={vista.mes} />;
     case "mis-viajes":
       return <MisViajes />;
     case "acerca":
       return <Acerca />;
+    case "publicar":
+      return <Publicar />;
   }
 }
 
@@ -111,6 +115,9 @@ export function App() {
         <p>
           DreemGO · rutas por el Perú con datos oficiales de MINCETUR, clima de Open-Meteo y la red de
           OpenStreetMap. <Enlace href={enlaces.acerca()}>Fuentes y cómo funciona</Enlace>
+        </p>
+        <p>
+          <Enlace href={enlaces.publicar()}>Para municipios: publicar un evento</Enlace>
         </p>
       </footer>
     </ContextoApp.Provider>

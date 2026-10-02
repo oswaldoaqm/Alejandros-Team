@@ -23,9 +23,15 @@ export function ventanaDelMes(numero: number, hoy: Date): { desde: string; hasta
   };
 }
 
-export function PaginaCalendario({ consulta }: { consulta: Consulta | null }) {
+interface Props {
+  consulta: Consulta | null;
+  /** El mes en que se abre; sin él, el de la consulta o el actual. */
+  mes: number | null;
+}
+
+export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
   const id = useId();
-  const [elegido, elegir] = useState(() => consulta?.mes ?? new Date().getMonth() + 1);
+  const [elegido, elegir] = useState(() => alAbrir ?? consulta?.mes ?? new Date().getMonth() + 1);
   const [region, elegirRegion] = useState("");
   const { desde, hasta, anio } = useMemo(() => ventanaDelMes(elegido, new Date()), [elegido]);
   const pedido = usePedido<Eventos>("/v1/eventos", `desde=${desde}&hasta=${hasta}`);
@@ -53,7 +59,8 @@ export function PaginaCalendario({ consulta }: { consulta: Consulta | null }) {
       ) : null}
       <h1 tabIndex={-1}>Fiestas y eventos</h1>
       <p className="bajada">
-        El calendario de fiestas, ferias y festivales del inventario oficial de MINCETUR, mes por mes.
+        Las fiestas, ferias y festivales del inventario oficial de MINCETUR y los eventos que publican las
+        municipalidades, mes por mes.
       </p>
 
       <div className="filtros">
@@ -105,13 +112,15 @@ export function PaginaCalendario({ consulta }: { consulta: Consulta | null }) {
       {pedido.datos === null && pedido.cargando ? <Cargando texto="Cargando el calendario…" /> : null}
       {pedido.datos !== null ? (
         <div aria-busy={pedido.cargando} className={pedido.cargando ? "resultado--espera" : undefined}>
-          <ListaEventos eventos={visibles} vacio="El calendario oficial no registra eventos ese mes." />
+          <ListaEventos eventos={visibles} vacio="No hay eventos registrados ese mes." />
         </div>
       ) : null}
 
       <p className="ayuda">
         Una fecha «aproximada» no viene con su día en la ficha: se calcula (el santo del día, la Pascua) o
-        solo se conoce el mes. Conviene confirmarla antes de viajar. Cada evento enlaza a su ficha oficial.
+        solo se conoce el mes. Conviene confirmarla antes de viajar. Cada evento del inventario enlaza a su
+        ficha oficial; los que dicen «Publicado por…» los anunció esa entidad, con sus fechas.{" "}
+        <Enlace href={enlaces.publicar()}>¿Organizas uno? Publícalo</Enlace>
       </p>
 
       <p>

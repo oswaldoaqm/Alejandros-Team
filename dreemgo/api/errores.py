@@ -21,9 +21,13 @@ PLANTILLAS: dict[str, str] = {
     "less_than": "Debe ser menor que {lt}.",
     "int_parsing": "Debe ser un número entero.",
     "int_from_float": "Debe ser un número entero.",
+    "float_parsing": "Debe ser un número.",
+    "float_type": "Debe ser un número.",
+    "string_type": "Debe ser un texto.",
     "bool_parsing": "Debe ser verdadero o falso.",
     "date_from_datetime_parsing": "Fecha no válida: se espera AAAA-MM-DD.",
     "date_parsing": "Fecha no válida: se espera AAAA-MM-DD.",
+    "date_type": "Fecha no válida: se espera AAAA-MM-DD.",
     "enum": "Valor no válido. Opciones: {expected}.",
     "string_pattern_mismatch": "Formato no válido.",
     "string_too_short": "Debe tener al menos {min_length} caracteres.",
@@ -32,13 +36,20 @@ PLANTILLAS: dict[str, str] = {
     "missing": "Falta este campo.",
     "extra_forbidden": "Este parámetro no existe en el contrato.",
     "url_parsing": "URL no válida.",
+    "url_scheme": "La dirección tiene que empezar con http:// o https://.",
+    "url_too_long": "La dirección es demasiado larga.",
+    "json_invalid": "El cuerpo de la petición no es JSON válido.",
+    "model_attributes_type": "Se espera un objeto JSON con los campos del contrato.",
 }
+# Lo que se manda en el cuerpo (un evento) no son parámetros de la URL.
+EN_EL_CUERPO = {"extra_forbidden": "Este campo no existe en el contrato."}
 
 
 def _campo(loc: tuple[Any, ...]) -> str:
-    """('query', 'intereses', 1) -> 'intereses'; un error de todo el modelo -> 'consulta'."""
+    """('query', 'intereses', 1) -> 'intereses'. Un error de todo el modelo -> 'consulta', o
+    'evento' si lo que no vale es el cuerpo de la petición."""
     partes = [str(p) for p in loc if p not in ("query", "body", "path", "header") and not isinstance(p, int)]
-    return ".".join(partes) or "consulta"
+    return ".".join(partes) or ("evento" if loc[:1] == ("body",) else "consulta")
 
 
 def _mensaje(error: dict[str, Any]) -> str:
@@ -47,7 +58,8 @@ def _mensaje(error: dict[str, Any]) -> str:
         return str(ctx.get("error") or error.get("msg", "")).removeprefix("Value error, ")
     if tipo == "enum" and "expected" in ctx:  # pydantic une las opciones con «or»
         ctx = {**ctx, "expected": str(ctx["expected"]).replace(" or ", " o ")}
-    plantilla = PLANTILLAS.get(tipo)
+    en_el_cuerpo = tuple(error.get("loc", ()))[:1] == ("body",)
+    plantilla = (EN_EL_CUERPO.get(tipo) if en_el_cuerpo else None) or PLANTILLAS.get(tipo)
     if plantilla:
         try:
             return plantilla.format(**ctx)

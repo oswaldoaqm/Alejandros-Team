@@ -54,22 +54,24 @@ Resources:
       DockerContext: ..
       DockerTag: v1
 
+  # Los eventos publicados. La clave es el id del evento: publicarlo otra vez lo reemplaza.
+  # El API la lee entera, a lo más una vez por minuto por cada servidor despierto.
   TablaEventos:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: polo
-          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
-        - AttributeName: polo
-          KeyType: HASH
         - AttributeName: id
-          KeyType: RANGE
+          KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
+        ReadCapacityUnits: 5
         WriteCapacityUnits: 1
+      # DynamoDB borra sola los eventos que ya pasaron: «expira» lo pone el API al guardar.
+      TimeToLiveSpecification:
+        AttributeName: expira
+        Enabled: true
 
 Outputs:
   UrlApi:

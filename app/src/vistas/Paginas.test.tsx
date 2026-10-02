@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
-import { EVENTOS, irA, POLO, pedidosA, ponerApi } from "../pruebas/api";
+import { EVENTOS, irA, POLO, PUBLICADO, pedidosA, ponerApi } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
 import { ventanaDelMes } from "./PaginaCalendario";
 
@@ -104,9 +104,57 @@ describe("el calendario de fiestas", () => {
       "?origen=cusco&mes=7&dias=4#/editar",
     );
   });
+
+  it("«#/calendario/11» abre en noviembre, y si el enlace pide otro mes, cambia", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 1));
+    const api = await abrir("/?origen=cusco&mes=7&dias=4#/calendario/11");
+    await screen.findByText(/eventos en noviembre de 2026$/);
+    expect(screen.getByRole("radio", { name: "Noviembre" })).toHaveProperty("checked", true);
+    expect(pedidosA(api, "/v1/eventos")).toEqual(["/v1/eventos?desde=2026-11-01&hasta=2026-11-30"]);
+
+    window.location.hash = "#/calendario/12";
+    await screen.findByText(/eventos en diciembre de 2026$/);
+    expect(screen.getByRole("radio", { name: "Diciembre" })).toHaveProperty("checked", true);
+  });
+
+  it("un evento publicado dice quién lo publicó, y enlaza a donde dijo esa entidad", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 1));
+    await abrir("/#/calendario/11", {
+      "/v1/eventos": { cuerpo: { ...EVENTOS, eventos: [...EVENTOS.eventos, PUBLICADO] } },
+    });
+    const enlace = await screen.findByRole("link", { name: /Feria de Productores/ });
+    expect(enlace.getAttribute("href")).toBe(PUBLICADO.url);
+    const evento = enlace.closest("li") as HTMLElement;
+    expect(plano(evento.textContent)).toContain("del 13 al 15 de noviembre");
+    expect(evento.textContent).toContain(
+      "Villa Rica, Oxapampa · Pasco · Publicado por Municipalidad Distrital",
+    );
+    // La fecha la dio quien lo organiza: no lleva la nota de «aproximada».
+    expect(evento.textContent).not.toContain("fecha aproximada");
+    // Y entra al filtro por región como cualquier otro.
+    const regiones = within(screen.getByRole("combobox", { name: "Región" })).getAllByRole("option");
+    expect(regiones.map((o) => o.textContent)).toContain("Pasco");
+  });
+
+  it("invita a publicar a quien organiza un evento", async () => {
+    await abrir("/#/calendario");
+    await userEvent.click(await screen.findByRole("link", { name: "¿Organizas uno? Publícalo" }));
+    expect(window.location.hash).toBe("#/publicar");
+  });
 });
 
 describe("moverse por la app", () => {
+  it("el pie lleva a publicar un evento", async () => {
+    await abrir("/");
+    await screen.findByRole("combobox", { name: "Punto de partida" });
+    await userEvent.click(screen.getByRole("link", { name: "Para municipios: publicar un evento" }));
+    const titulo = await screen.findByRole("heading", { level: 1, name: "Publicar un evento" });
+    expect(document.activeElement).toBe(titulo);
+    expect(window.location.hash).toBe("#/publicar");
+  });
+
   it("cada pantalla pone su título y recibe el foco, para que se note el cambio", async () => {
     await abrir("/");
     await screen.findByRole("combobox", { name: "Punto de partida" });

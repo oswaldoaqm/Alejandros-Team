@@ -136,6 +136,28 @@ describe("los resultados", () => {
     expect(new URLSearchParams(window.location.search).get("v")).toBe(VERSION);
   });
 
+  // Un enlace de antes de que se publicara nada, y uno de cuando había otros eventos.
+  it.each([VERSION, `${VERSION}-e0000000`])(
+    "si solo cambiaron los eventos publicados (enlace con %s), no avisa y pone la versión vigente",
+    async (delEnlace) => {
+      const vigente = `${VERSION}-e3f9a1c`;
+      await abrir(`/?${CONSULTA}&v=${delEnlace}`, {
+        "/v1/viajes": (url: URL) => ({ cuerpo: { ...viajesPara(url), version_datos: vigente } }),
+      });
+      await tarjetas();
+      await waitFor(() => expect(new URLSearchParams(window.location.search).get("v")).toBe(vigente));
+      expect(screen.queryByText(/Este enlace se armó con los datos/)).toBeNull();
+    },
+  );
+
+  it("si cambiaron los artefactos, avisa aunque el enlace traiga la huella de los eventos", async () => {
+    await abrir(`/?${CONSULTA}&v=2026.9.1-e3f9a1c`, {
+      "/v1/viajes": (url: URL) => ({ cuerpo: { ...viajesPara(url), version_datos: `${VERSION}-e3f9a1c` } }),
+    });
+    await tarjetas();
+    expect(screen.getByText(/Este enlace se armó con los datos/).textContent).toContain("2026.9.1-e3f9a1c");
+  });
+
   it("sin rutas, dice por qué y ofrece lo que el motor sugiere", async () => {
     const api = await abrir(`/?origen=lima&mes=7&dias=1&altitud_max=0`, {
       "/v1/viajes": (url) =>

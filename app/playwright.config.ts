@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { CLAVE_DE_LA_PRUEBA } from "./e2e/clave";
 
 // Las pruebas de punta a punta corren contra el API de verdad y la app ya construida:
 // levantan los dos, o usan los que ya estén corriendo en esta máquina.
@@ -28,6 +29,8 @@ export default defineConfig({
     {
       command: "python -m uvicorn dreemgo.api.app:app --port 8000",
       cwd: "..",
+      // Con clave, para que la prueba pueda publicar un evento. Lo publicado queda en memoria.
+      env: { DREEMGO_CLAVE_PUBLICADOR: CLAVE_DE_LA_PRUEBA },
       url: `${API}/v1/salud`,
       reuseExistingServer: !enCI,
       timeout: 60_000,

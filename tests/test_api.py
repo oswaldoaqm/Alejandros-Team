@@ -9,6 +9,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from dreemgo import __version__
+from dreemgo.api import errores
 from dreemgo.api.app import app
 from dreemgo.contrato import VERSION_CONTRATO, PoloDetalle, Respuesta
 from dreemgo.motor import datos as artefactos
@@ -103,6 +104,30 @@ def test_las_opciones_de_un_valor_no_valido_se_listan_en_espanol(cliente):
     [error] = [e for e in r.json()["detail"] if e["campo"] == "intereses"]
     assert error["mensaje"].endswith("'arquitectura' o 'aventura'.")
     assert " or " not in error["mensaje"]
+
+
+def test_los_errores_del_cuerpo_de_un_pedido_tambien_van_en_espanol():
+    def mensaje(tipo: str, loc: tuple = ("body", "nombre"), **ctx) -> str:
+        return errores._mensaje({"type": tipo, "loc": loc, "ctx": ctx, "msg": "Message in English"})
+
+    assert mensaje("string_type") == "Debe ser un texto."
+    assert mensaje("float_parsing") == "Debe ser un número."
+    assert mensaje("date_type") == "Fecha no válida: se espera AAAA-MM-DD."
+    assert mensaje("url_scheme") == "La dirección tiene que empezar con http:// o https://."
+    assert mensaje("string_too_short", min_length=3) == "Debe tener al menos 3 caracteres."
+    assert mensaje("json_invalid", loc=("body", 1)) == "El cuerpo de la petición no es JSON válido."
+    assert mensaje("model_attributes_type", loc=("body",)) == "Se espera un objeto JSON con los campos del contrato."
+    # Lo que sobra es un campo si va en el cuerpo y un parámetro si va en la URL.
+    assert mensaje("extra_forbidden") == "Este campo no existe en el contrato."
+    assert mensaje("extra_forbidden", loc=("query", "moneda")) == "Este parámetro no existe en el contrato."
+
+
+def test_un_error_de_todo_el_cuerpo_se_llama_evento_y_uno_de_toda_la_consulta_consulta():
+    assert errores._campo(("body",)) == "evento"
+    assert errores._campo(("body", 12)) == "evento"
+    assert errores._campo(("body", "nombre")) == "nombre"
+    assert errores._campo(("query",)) == "consulta"
+    assert errores._campo(("query", "intereses", 1)) == "intereses"
 
 
 def test_parametro_desconocido(cliente):

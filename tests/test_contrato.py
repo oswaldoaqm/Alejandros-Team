@@ -117,3 +117,24 @@ class TestEventoNuevo:
             EventoNuevo(**{**self.BASE, "lat": -12.9})
         with pytest.raises(ValidationError):
             EventoNuevo(**{**self.BASE, "lat": 40.4, "lon": -3.7})
+
+    def test_los_textos_se_limpian_antes_de_validarse(self):
+        con_ruido = {"nombre": "  Festival \t de la\u200b   Uva \n", "distrito": " Lunahuaná ", "region": "lima  "}
+        evento = EventoNuevo(**{**self.BASE, **con_ruido})
+        assert (evento.nombre, evento.distrito, evento.region) == ("Festival de la Uva", "Lunahuaná", "lima")
+        # Lo que se mide es lo que queda: tres espacios y una letra no son un nombre.
+        with pytest.raises(ValidationError) as error:
+            EventoNuevo(**{**self.BASE, "nombre": "  a\u200b\u200b  "})
+        assert [(e["loc"], e["type"]) for e in error.value.errors()] == [(("nombre",), "string_too_short")]
+
+    def test_un_opcional_vacio_es_como_no_darlo(self):
+        evento = EventoNuevo(**{**self.BASE, "tipo": "   ", "descripcion": "", "url": ""})
+        assert (evento.tipo, evento.descripcion, evento.url) == (None, None, None)
+        con_parrafos = EventoNuevo(**{**self.BASE, "descripcion": "  Dos días.\nCon catas.  "})
+        assert con_parrafos.descripcion == "Dos días.\nCon catas."
+
+    def test_un_enlace_tiene_que_ser_http_o_https(self):
+        assert str(EventoNuevo(**{**self.BASE, "url": "https://lunahuana.gob.pe/uva"}).url).startswith("https://")
+        for malo in ("javascript:alert(1)", "ftp://lunahuana.gob.pe", "lunahuana.gob.pe"):
+            with pytest.raises(ValidationError):
+                EventoNuevo(**{**self.BASE, "url": malo})

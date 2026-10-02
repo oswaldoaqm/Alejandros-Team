@@ -2,7 +2,7 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.2** · 1 de octubre de 2026. La 1.2 suma el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). La revisión del equipo sigue antes del 5 de octubre.
+**Versión 1.2** · 1 de octubre de 2026. La 1.2 suma el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). Desde el 2 de octubre responde también `POST /v1/eventos`, con el que un municipio publica un evento (§4.1): la 1.2 ya lo anunciaba y ya traía su modelo, así que la versión no sube. La revisión del equipo sigue antes del 5 de octubre.
 
 ## 1 · La consulta
 
@@ -30,7 +30,7 @@ Un campo que no está en la tabla se rechaza con 422, igual que un valor fuera d
 
 ```
 Respuesta
-├── version_contrato, version_datos      la versión de datos también va en el enlace
+├── version_contrato, version_datos      la versión de datos también va en el enlace (§6)
 ├── consulta                             la consulta tal como la entendió el motor
 ├── rutas[0..3]                          polos distintos, del mejor al peor
 │   ├── polo           id, nombre, región, base (donde se duerme), recursos, fuera_del_circuito
@@ -40,7 +40,8 @@ Respuesta
 │   ├── dias[]         número, fecha, tipo (ida, visita, vuelta… o ida_visita_y_vuelta en un viaje de un día), horas, km
 │   │   └── paradas[]  orden, recurso (con su ficha oficial), hora de llegada, traslado y visita en minutos
 │   ├── costo          banda P20-P50-P80 en soles, desglose, si entra en el presupuesto
-│   ├── eventos[]      fiestas y ferias que caen en las fechas, con la precisión de la fecha
+│   ├── eventos[]      fiestas y ferias que caen en las fechas: las del inventario, con la precisión de su fecha,
+│   │                  y las que publicó un municipio (fuente «publicado»), con quién las publicó
 │   ├── avisos[]       estacionalidad, altitud, aclimatación, presupuesto, días, datos
 │   └── indicadores    paradas, jerarquía media, paradas de jerarquía 3-4, altitud máxima, km, valor capturado
 ├── sin_resultado                        solo si no hay ninguna ruta: por qué y qué relajar
@@ -61,6 +62,7 @@ El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en l
 - **Tren y bote:** un camino puede ir en tren (a Machu Picchu) o en bote (a las islas del Titicaca, las Ballestas o por los ríos de la Amazonía). Subir o bajar cuesta 15 minutos, y a una parada se llega en bote solo si su ficha lo dice. La nota del día lo cuenta («En bote hasta Isla Taquile.») y el costo cobra cada tramo en tren y cada km en bote, con su fuente y su rango ([decisión 0010](./decisiones/0010-tren-y-botes.md)).
 - **Qué y en qué orden:** orientación por equipos con inserción voraz, 2-opt y tres arranques; se queda el de más valor.
 - **Puntaje:** (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. El presupuesto multiplica por (presupuesto / costo)² cuando el costo central lo pasa, y por 1 si no: reordena, pero no esconde (§3). «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
+- **Eventos publicados:** se suman a `eventos[]` de las rutas que duermen o paran cerca, y nada más. No entran al puntaje ni a los motivos: publicar un evento no mueve ningún polo de su lugar (§4.1 y [decisión 0011](./decisiones/0011-eventos-publicados.md)).
 - **Un viaje sale de su ciudad:** no se propone dormir en un polo cuya base queda a menos de media hora del origen, y un viaje de un día no cuenta las paradas de la misma ciudad.
 - **Tres rutas con bases distintas:** dos polos pueden dormir en el mismo pueblo (Huaraz sirve a cuatro); la respuesta no repite base.
 
@@ -75,9 +77,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 5. Un mes desaconsejado nunca aparece sin aviso, y si se descarta hay una alternativa (RF-01).
 6. Un evento solo aparece si cae dentro de las fechas o del mes del viaje (RF-03).
 7. El presupuesto ordena y advierte, pero nunca esconde una ruta: las tres rutas son las mismas con o sin presupuesto; cambian su orden y sus avisos. El viajero decide.
-8. La misma consulta con la misma `version_datos` devuelve exactamente la misma respuesta.
+8. La misma consulta con la misma `version_datos` devuelve exactamente la misma respuesta. Los eventos publicados también son datos: la versión lleva su huella (§6).
 9. Las rutas son de polos distintos.
 10. Un dato que la fuente no trae viaja como `null`, nunca como un número inventado: la jerarquía que MINCETUR no asignó, la tarifa que la ficha no publica.
+
+Con eventos publicados valen las diez, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 
@@ -87,10 +91,49 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 | `GET /v1/viajes` | Hasta tres viajes para una consulta | 1.1 |
 | `GET /v1/opciones` | Orígenes, intereses con sus etiquetas y cuántas paradas atienden, y rangos del formulario, para no fijarlos en la app | 1.1 |
 | `GET /v1/polos/{id}` | Ficha de un polo: sus paradas de mayor a menor jerarquía, su clima mes a mes y sus eventos de los próximos doce meses | 1.1 |
-| `GET /v1/eventos?desde=…&hasta=…&polo=…` | Eventos entre dos fechas (hasta un año), de un polo o de todos. Hoy, los del inventario | 1.1 |
-| `POST /v1/eventos` | Un municipio u oficina de destino publica un evento. Exige la cabecera `X-Clave-Publicador` | Semana 10, con la tabla de DynamoDB |
+| `GET /v1/eventos?desde=…&hasta=…&polo=…` | Eventos entre dos fechas (hasta un año), de un polo o de todos: los del inventario y los publicados | 1.1 |
+| `POST /v1/eventos` | Un municipio u oficina de destino publica un evento. Exige la cabecera `X-Clave-Publicador` (§4.1) | 1.2 |
 
 Sin los artefactos del motor (`dreemgo/datos/`), las consultas de datos responden 503 y `/v1/salud` dice `version_datos: null`.
+
+### 4.1 · Publicar un evento
+
+```
+POST /v1/eventos
+X-Clave-Publicador: <la clave que el equipo le dio a la entidad>
+Content-Type: application/json
+
+{"nombre": "Festival del Café", "fecha_inicio": "2026-11-13", "fecha_fin": "2026-11-15",
+ "distrito": "Villa Rica", "provincia": "Oxapampa", "region": "Pasco",
+ "lat": -10.7345, "lon": -75.2712, "publicado_por": "Municipalidad Distrital de Villa Rica"}
+```
+
+| Campo | Obligatorio | Valores |
+|---|---|---|
+| `nombre` | sí | 3 a 120 caracteres |
+| `fecha_inicio`, `fecha_fin` | sí | Fechas ISO. El evento dura 60 días como mucho, no terminó todavía y empieza en el mes en curso o en los once que siguen, que son los que muestra el calendario |
+| `distrito`, `provincia` | sí | 2 a 80 caracteres |
+| `region` | sí | Una de las 25 del país. Se acepta sin tildes ni mayúsculas y se guarda como la escribe el inventario |
+| `publicado_por` | sí | La entidad que publica, 3 a 120 caracteres. Es lo que el viajero lee junto al evento |
+| `lat`, `lon` | no, pero van juntas | Dentro del Perú. Sin ellas el evento sale en el calendario y en ninguna ruta |
+| `tipo` | no | Hasta 60 caracteres: «Feria gastronómica» |
+| `url` | no | Una dirección `http` o `https` con más información |
+| `descripcion` | no | Hasta 1 000 caracteres. Se guarda; todavía no se muestra |
+
+Responde **201** con el evento tal como lo verá el viajero: un `Evento` con `fuente: "publicado"`, `precision_fecha: "exacta"`, su `publicado_por` y un `id` que empieza con `p-`.
+
+- **Dónde aparece.** En `GET /v1/eventos` siempre. Con coordenadas, también en `eventos[]` de las rutas y en la ficha de los polos que duermen o tienen algún lugar del inventario a 10 km o menos, en línea recta. Si varios polos duermen en el mismo pueblo, sale en todos.
+- **Qué no cambia.** Ni qué polos se proponen, ni su orden, ni sus motivos (§3).
+- **Corregir.** Publicar otra vez el mismo evento (mismo nombre, fechas, distrito, provincia, región y entidad, sin contar tildes ni mayúsculas) lo reemplaza: sirve para ponerle la ubicación o el enlace. Con otro nombre u otras fechas es otro evento.
+- **Cuándo se ve.** Enseguida en el servidor que lo recibió y, como mucho, un minuto después en los demás.
+- **Lo que todavía no hay:** retirar un evento por el API, saber por la respuesta a qué polos tocó y ver la descripción. Quedan para la 1.3.
+
+| Respuesta | Cuándo |
+|---|---|
+| 401 | Falta la cabecera `X-Clave-Publicador` o la clave no es la correcta |
+| 403 | El servidor no tiene una clave configurada: no acepta publicaciones |
+| 422 | El evento no cumple la tabla de arriba. Cada error llega con su `campo`, como en `/v1/viajes`; el que es de todo el evento (las fechas al revés, una coordenada sin la otra) llega con `campo: "evento"` |
+| 503 | No se pudo guardar, o ya hay 500 eventos por venir. No queda nada a medias |
 
 ## 5 · Cómo encaja con lo que ya diseñamos
 
@@ -150,6 +193,8 @@ https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses
 ```
 
 Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.1. Lo que ves está calculado con los datos 2026.10.2…») en vez de mostrar otro viaje en silencio.
+
+La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.2-e3f9a1c`. Sin eventos publicados es solo `2026.10.2`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
 
 ## 7 · Cómo se cambia el contrato
 

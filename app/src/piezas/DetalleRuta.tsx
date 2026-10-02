@@ -146,7 +146,7 @@ export function DetalleRuta({ ruta, indice, consulta, version }: Props) {
           </h3>
           <ListaEventos
             eventos={eventos}
-            vacio="El calendario oficial no registra fiestas ni eventos de este polo en esas fechas."
+            vacio="No hay fiestas ni eventos registrados para este polo en esas fechas."
           />
         </section>
 
