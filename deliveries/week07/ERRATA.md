@@ -20,4 +20,8 @@ Lo entregado el 23 de septiembre está intacto en la etiqueta [`entrega/semana-0
 
 ## Falta en esta carpeta
 
-`Delivery1Report.pdf` con su fuente editable, `DataProductCanvas.pdf` y los requisitos se entregaron por la plataforma del curso el 23 de septiembre. El enunciado también los pide dentro de `deliveries/week07/`, así que se suben aquí.
+`Delivery1Report.pdf` con su fuente editable se entregó por la plataforma del curso el 23 de septiembre. El enunciado también lo pide dentro de `deliveries/week07/`, así que se sube aquí.
+
+## Lo que se sumó después
+
+`DataProductCanvas.pdf` y `Requirements.md` entraron a esta carpeta el 2 de octubre. Son los de la semana 5, sin cambios, que es lo que traía el pull request del día de la entrega (#11): el Canvas, byte por byte; los requisitos, con sus cinco imágenes enlazadas a `../week05/assets/` en vez de copiadas.

@@ -13,6 +13,8 @@ week07/
 ├── README.md                      este archivo
 ├── ERRATA.md                      correcciones posteriores a la entrega
 ├── PresentationWeek07.pdf         presentación de la Delivery 1
+├── DataProductCanvas.pdf          el Canvas, el mismo de la semana 5
+├── Requirements.md                los requisitos, los mismos de la semana 5
 ├── Cloud_Architecture.drawio.png  arquitectura en la nube
 ├── E-R.png                        modelo entidad-relación
 ├── code/                          copia del código de week06, más el generador del diagrama por capas
@@ -24,7 +26,7 @@ week07/
     └── figuras y métricas de TA-01
 ```
 
-`Delivery1Report.pdf` con su fuente editable, `DataProductCanvas.pdf` y los requisitos se entregaron por la plataforma del curso.
+`Delivery1Report.pdf` y su fuente editable se entregaron por la plataforma del curso y todavía faltan en esta carpeta.
 
 ## Cómo correr el código
 
