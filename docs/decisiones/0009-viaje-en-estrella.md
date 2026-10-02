@@ -11,7 +11,7 @@ TA-04 (semana 6) armaba los días desde un «punto base» que era el recurso con
 - **Una base por polo**, un pueblo real de OSM: el que deja las paradas más cerca en minutos por carretera (promedio pesado por jerarquía), con 5 minutos a favor por cada vez que se duplica el hospedaje registrado a menos de 3 km, hasta 25, y un recargo si no hay ninguno ([`pipeline/bases.py`](../../pipeline/bases.py)). Así el polo de Machu Picchu duerme en Machupicchu Pueblo y no en un caserío mejor centrado.
 - **El viaje es una estrella:** ida, días de paseo que salen de la base y vuelven, y vuelta. Más de 8 horas de carretera se parten en partes iguales y se duerme a mitad de camino. Ninguna jornada pasa de 8 horas ni de seis paradas.
 - **Qué visitar y en qué orden** es orientación por equipos: inserción voraz por valor por minuto, 2-opt y tres arranques, de los que queda el de más valor.
-- **El puntaje** es el de la semana 6 con la calidad medida sobre el itinerario: (1 − λ) · calidad · temporada + λ · novedad, λ = 0,3. La lejanía de la novedad es el tiempo por carretera desde la ciudad de origen de la región del polo.
+- **El puntaje** es el de la semana 6 con la calidad medida sobre el itinerario y el presupuesto como factor: (1 − λ) · calidad · temporada · presupuesto + λ · novedad, λ = 0,3. La lejanía de la novedad es el tiempo por carretera desde la ciudad de origen de la región del polo.
 - **Un viaje sale de su ciudad:** no se duerme a menos de media hora del origen.
 
 ## Alternativas descartadas
