@@ -1,0 +1,57 @@
+name: Pages
+
+# Publica la app en GitHub Pages cuando cambia en main. Antes de la primera vez, en el
+# repositorio: Settings → Pages → Source: «GitHub Actions», y la variable API_URL con la
+# dirección del API desplegado (Settings → Secrets and variables → Actions → Variables).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Construir la app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Instalar
+        working-directory: app
+        run: npm ci
+      - name: Construir
+        working-directory: app
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
+        run: npm run build
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: app/dist
+
+  publicar:
+    name: Publicar
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacion.outputs.page_url }}
+    steps:
+      - id: publicacion
+        uses: actions/deploy-pages@v5
