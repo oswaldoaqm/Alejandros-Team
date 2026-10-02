@@ -23,9 +23,15 @@ export function ventanaDelMes(numero: number, hoy: Date): { desde: string; hasta
   };
 }
 
-export function PaginaCalendario({ consulta }: { consulta: Consulta | null }) {
+interface Props {
+  consulta: Consulta | null;
+  /** El mes en que se abre; sin él, el de la consulta o el actual. */
+  mes: number | null;
+}
+
+export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
   const id = useId();
-  const [elegido, elegir] = useState(() => consulta?.mes ?? new Date().getMonth() + 1);
+  const [elegido, elegir] = useState(() => alAbrir ?? consulta?.mes ?? new Date().getMonth() + 1);
   const [region, elegirRegion] = useState("");
   const { desde, hasta, anio } = useMemo(() => ventanaDelMes(elegido, new Date()), [elegido]);
   const pedido = usePedido<Eventos>("/v1/eventos", `desde=${desde}&hasta=${hasta}`);

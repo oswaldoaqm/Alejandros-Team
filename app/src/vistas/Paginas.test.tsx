@@ -104,6 +104,19 @@ describe("el calendario de fiestas", () => {
       "?origen=cusco&mes=7&dias=4#/editar",
     );
   });
+
+  it("«#/calendario/11» abre en noviembre, y si el enlace pide otro mes, cambia", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 1));
+    const api = await abrir("/?origen=cusco&mes=7&dias=4#/calendario/11");
+    await screen.findByText(/eventos en noviembre de 2026$/);
+    expect(screen.getByRole("radio", { name: "Noviembre" })).toHaveProperty("checked", true);
+    expect(pedidosA(api, "/v1/eventos")).toEqual(["/v1/eventos?desde=2026-11-01&hasta=2026-11-30"]);
+
+    window.location.hash = "#/calendario/12";
+    await screen.findByText(/eventos en diciembre de 2026$/);
+    expect(screen.getByRole("radio", { name: "Diciembre" })).toHaveProperty("checked", true);
+  });
 });
 
 describe("moverse por la app", () => {

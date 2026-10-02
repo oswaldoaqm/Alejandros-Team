@@ -7,7 +7,7 @@ export type Vista =
   | { tipo: "inicio"; consulta: Consulta | null }
   | { tipo: "resultados"; consulta: Consulta; version: string | null; ruta: number }
   | { tipo: "polo"; id: number; consulta: Consulta | null }
-  | { tipo: "calendario"; consulta: Consulta | null }
+  | { tipo: "calendario"; consulta: Consulta | null; mes: number | null }
   | { tipo: "mis-viajes" }
   | { tipo: "acerca" };
 
@@ -24,8 +24,12 @@ export function vistaDe(url: URL): Vista {
       if (argumento !== "" && Number.isInteger(id) && id >= 0) return { tipo: "polo", id, consulta };
       break;
     }
-    case "calendario":
-      return { tipo: "calendario", consulta };
+    case "calendario": {
+      // «#/calendario/11» lo abre en noviembre; sin número, en el mes de la consulta o en el actual.
+      const mes = Number(argumento);
+      const vale = argumento !== "" && Number.isInteger(mes) && mes >= 1 && mes <= 12;
+      return { tipo: "calendario", consulta, mes: vale ? mes : null };
+    }
     case "mis-viajes":
       return { tipo: "mis-viajes" };
     case "acerca":
@@ -49,8 +53,8 @@ export const enlaces = {
     `${aEnlace(c, version)}${ruta > 1 ? `#/ruta/${ruta}` : ""}`,
   polo: (id: number, c?: Consulta | null, version?: string | null) =>
     `${c ? aEnlace(c, version) : "./"}#/polo/${id}`,
-  calendario: (c?: Consulta | null, version?: string | null) =>
-    `${c ? aEnlace(c, version) : "./"}#/calendario`,
+  calendario: (c?: Consulta | null, version?: string | null, mes?: number | null) =>
+    `${c ? aEnlace(c, version) : "./"}#/calendario${mes ? `/${mes}` : ""}`,
   misViajes: () => "./#/mis-viajes",
   acerca: () => "./#/acerca",
 };

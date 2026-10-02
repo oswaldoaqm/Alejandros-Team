@@ -31,7 +31,8 @@ function Pantalla({ vista }: { vista: Vista }) {
     case "polo":
       return <PaginaPolo key={vista.id} id={vista.id} consulta={vista.consulta} />;
     case "calendario":
-      return <PaginaCalendario consulta={vista.consulta} />;
+      // La llave lo rehace si el enlace pide otro mes.
+      return <PaginaCalendario key={vista.mes ?? "sin-mes"} consulta={vista.consulta} mes={vista.mes} />;
     case "mis-viajes":
       return <MisViajes />;
     case "acerca":

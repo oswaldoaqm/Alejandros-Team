@@ -27,9 +27,17 @@ describe("de la URL a la pantalla", () => {
     expect(vista("?mes=7#/editar")).toEqual({ tipo: "inicio", consulta: JULIO });
     expect(vista("?mes=7#/polo/33")).toEqual({ tipo: "polo", id: 33, consulta: JULIO });
     expect(vista("#/polo/0")).toEqual({ tipo: "polo", id: 0, consulta: null });
-    expect(vista("#/calendario")).toEqual({ tipo: "calendario", consulta: null });
+    expect(vista("#/calendario")).toEqual({ tipo: "calendario", consulta: null, mes: null });
     expect(vista("#/mis-viajes")).toEqual({ tipo: "mis-viajes" });
     expect(vista("#/acerca")).toEqual({ tipo: "acerca" });
+  });
+
+  it("el calendario se puede abrir en un mes", () => {
+    expect(vista("#/calendario/11")).toEqual({ tipo: "calendario", consulta: null, mes: 11 });
+    expect(vista("?mes=7#/calendario/2")).toEqual({ tipo: "calendario", consulta: JULIO, mes: 2 });
+    for (const otro of ["0", "13", "1.5", "noviembre"]) {
+      expect(vista(`#/calendario/${otro}`)).toEqual({ tipo: "calendario", consulta: null, mes: null });
+    }
   });
 
   it("un fragmento que no conoce no rompe nada", () => {
@@ -51,7 +59,17 @@ describe("de la pantalla a la URL", () => {
     expect(vista(enlaces.editar(JULIO))).toEqual({ tipo: "inicio", consulta: JULIO });
     expect(vista(enlaces.polo(33, JULIO, "2026.10.2"))).toEqual({ tipo: "polo", id: 33, consulta: JULIO });
     expect(vista(enlaces.polo(33))).toEqual({ tipo: "polo", id: 33, consulta: null });
-    expect(vista(enlaces.calendario())).toEqual({ tipo: "calendario", consulta: null });
+    expect(vista(enlaces.calendario())).toEqual({ tipo: "calendario", consulta: null, mes: null });
+    expect(vista(enlaces.calendario(null, null, 11))).toEqual({
+      tipo: "calendario",
+      consulta: null,
+      mes: 11,
+    });
+    expect(vista(enlaces.calendario(JULIO, "2026.10.2", 11))).toEqual({
+      tipo: "calendario",
+      consulta: JULIO,
+      mes: 11,
+    });
     expect(vista(enlaces.misViajes())).toEqual({ tipo: "mis-viajes" });
     expect(vista(enlaces.acerca())).toEqual({ tipo: "acerca" });
     expect(vista(enlaces.inicio())).toEqual({ tipo: "inicio", consulta: null });
