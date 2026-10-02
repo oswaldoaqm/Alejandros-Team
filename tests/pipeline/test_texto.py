@@ -359,3 +359,95 @@ def test_sin_contactos_quita_los_telefonos_que_nada_anuncia(texto):
 )
 def test_sin_contactos_no_toca_coordenadas_ni_documentos(texto):
     assert sin_contactos(texto) == texto
+
+
+OMITIDO = CONTACTO_OMITIDO
+
+
+@pytest.mark.parametrize(
+    ("texto", "esperado"),
+    [
+        (  # 10215: sin tratamiento
+            "Coordinar previamente con Fulano Mengano Zutano - Cel.: 987654321.",
+            f"Coordinar previamente con [encargado] - Cel.: {OMITIDO}.",
+        ),
+        (  # 14643: dos personas, cada una con su teléfono
+            "reservas: Fulana Mengana-987654321 – Zutano Perengano - 912345678.",
+            f"reservas: [encargado]-{OMITIDO} – [encargado] - {OMITIDO}.",
+        ),
+        (  # 11112: el nombre después del teléfono
+            "Comunicarse al 987654321 - Fulano Mengano o 912345678 Zutano Perengano.",
+            f"Comunicarse al {OMITIDO} - [encargado] o {OMITIDO} [encargado].",
+        ),
+        (  # 10867: el tratamiento en minúsculas y con dos puntos
+            "Previa coordinación con el encargado, el señor: Fulano Mengano. Cel. 987654321",
+            f"Previa coordinación con el encargado, el [encargado]. Cel. {OMITIDO}",
+        ),
+        (  # 11288: el cargo se queda
+            "Previa coordinación con el propietario Fulano Mengano al contacto 987654321 y presentación de boleto",
+            f"Previa coordinación con el propietario [encargado] al contacto {OMITIDO} y presentación de boleto",
+        ),
+        (  # 11435: Julio también es un nombre
+            "contactar con el sr. Julio Mengano , presidente del centro poblado, celular 987654321",
+            f"contactar con el [encargado] , presidente del centro poblado, celular {OMITIDO}",
+        ),
+        (  # 13771: Mercado también es un apellido
+            "Coordinar con el Director y propietario Fulano Mercado Mengano / Cel.: 987654321",
+            f"Coordinar con el Director y propietario [encargado] / Cel.: {OMITIDO}",
+        ),
+        (  # 3644: un apellido compuesto
+            "está el padre Fulano Mengano- Zutano, cuyo teléfono es el 987654321",
+            f"está el padre [encargado], cuyo teléfono es el {OMITIDO}",
+        ),
+        (  # 14697: el apellido en minúsculas
+            "Hacer de su conocimiento a la autoridad comunal Fulano mengano telf. 987654321",
+            f"Hacer de su conocimiento a la autoridad comunal [encargado] telf. {OMITIDO}",
+        ),
+        (  # 12015: un nombre de pila solo
+            "Paseos en cuatrimotos Fulana (cel: 987654321)",
+            f"Paseos en cuatrimotos [encargado] (cel: {OMITIDO})",
+        ),
+        (  # 11543: todo en mayúsculas, solo lo pegado al contacto
+            "VISITAS GUIADAS TODO EL AÑO PREVIA COORDINACION CON EL JEFE FULANA MENGANA ZUTANA CEL 987654321",
+            f"VISITAS GUIADAS TODO EL AÑO PREVIA COORDINACION CON EL JEFE [encargado] CEL {OMITIDO}",
+        ),
+        (  # un solo nombre, lejos del teléfono: lo delata el cargo
+            "El párroco Fulano atiende de lunes a viernes. Cel. 987654321",
+            f"El párroco [encargado] atiende de lunes a viernes. Cel. {OMITIDO}",
+        ),
+    ],
+)
+def test_sin_contactos_quita_el_nombre_aunque_no_lleve_tratamiento(texto, esperado):
+    assert sin_contactos(texto) == esperado
+
+
+@pytest.mark.parametrize(
+    ("texto", "queda"),
+    [
+        (  # 11068
+            "El ingreso a la Catarata Gallito de las Rocas es previa coordinación con el administrador del Fundo "
+            "Mesapata. Celular: 987654321.",
+            "Catarata Gallito de las Rocas es previa coordinación con el administrador del Fundo Mesapata.",
+        ),
+        (  # 10224
+            "Comunicarse con el Área de Turismo de la Municipalidad Distrital de Huayhuay - Cel. 987654321",
+            "Municipalidad Distrital de Huayhuay",
+        ),
+        ("De Lunes a Domingo. Reservas al 987654321", "De Lunes a Domingo. Reservas al"),
+        (
+            "Fiesta de Santa Rosa, entre Abril y Julio. Informes al 987654321",
+            "Fiesta de Santa Rosa, entre Abril y Julio. Informes al",
+        ),
+    ],
+)
+def test_sin_contactos_deja_los_lugares_las_instituciones_y_los_dias(texto, queda):
+    limpio_ = sin_contactos(texto)
+    assert queda in limpio_
+    assert "[encargado]" not in limpio_
+
+
+def test_el_nombre_del_encargado_no_se_lee_como_un_dia():
+    # 11136: su encargado se llama Domingo, y el recurso figuraba como abierto los domingos.
+    texto = "Lunes a sábado. Con orientación del presidente de la junta, sr. Santos Domingo Mengano al cel. 987654321."
+    assert leer_dias(texto) == (0, 1, 2, 3, 4, 5, 6)
+    assert leer_dias(sin_contactos(texto)) == (0, 1, 2, 3, 4, 5)

@@ -89,22 +89,190 @@ _FIJO_CON_AVISO = re.compile(
 
 
 # El nombre de quien atiende ese teléfono ("coordinar con el Sr. Nombre Apellido al
-# Cel. …") también se quita, pero solo si está pegado a un contacto: el nombre de una
+# Cel. …") también se quita, pero solo en un texto que trae un contacto: el nombre de una
 # investigadora citada en la descripción no es un dato de contacto.
+#
+# Una persona se reconoce por sus mayúsculas: dos o más palabras seguidas que empiezan con
+# mayúscula y no son un cargo, una institución ni un día; o una sola detrás de un
+# tratamiento o de un cargo ("el señor Neyra", "el párroco Juan") o pegada al contacto
+# ("con Marisol al cel. …"). Ante la duda se quita: aquí es mejor perder el nombre de un
+# caserío que dejar el de una persona.
 NOMBRE_OMITIDO = "[encargado]"
-_PALABRA_DE_NOMBRE = r"(?:[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+|[A-ZÁÉÍÓÚÑ]\.)"
-_NOMBRE = (
-    r"(?:(?:Sr|Sra|Srta|Señor|Señora|Lic|Ing|Dr|Dra|Prof|Arq|Blgo|Bach|Tec)\.?"
-    r"|(?i:encargad[oa]|responsable|a\s+cargo\s+de)\s*:?)"
-    rf"\s+{_PALABRA_DE_NOMBRE}(?:\s+{_PALABRA_DE_NOMBRE}){{0,4}}"
+
+# Tratamientos: se van con el nombre.
+_TRATAMIENTOS = frozenset(
+    "sr sra sres srta sro señor señora señores señorita don doña lic ing dr dra prof arq blgo bach tec abog "
+    "mg pbro rvdo rev hno hna hnos fray sor mons cmdte gral encargado encargada responsable".split()
 )
-_NOMBRE_ANTES_DE_CONTACTO = re.compile(rf"{_NOMBRE}(?=[^\[]{{0,60}}{re.escape(CONTACTO_OMITIDO)})")
-_NOMBRE_DESPUES_DE_CONTACTO = re.compile(rf"(?<={re.escape(CONTACTO_OMITIDO)})([^\[]{{0,20}}?){_NOMBRE}")
+# Cargos: se quedan, y lo que sigue con mayúscula es el nombre de quien lo ocupa.
+_CARGOS = frozenset(
+    "propietario propietaria dueño dueña administrador administradora presidente presidenta alcalde "
+    "alcaldesa parroco padre sacerdote presbitero hermano hermana hermanos esposos familia familias teniente "
+    "gobernador promotor promotora guia economo sacristan guardian vigilante cuidador cuidadora custodio "
+    "coordinador coordinadora jefe jefa director directora gerente secretario secretaria tesorero "
+    "tesorera fiscal mayordomo comunero comunera tecnico tecnica ingeniero ingeniera profesor profesora "
+    "licenciado licenciada biologo biologa arqueologo arqueologa contacto contactos capitan comandante".split()
+)
+# Lo que suele ir delante del nombre de un lugar: "Catarata X", "Fundo X Y", "Parque Nacional X".
+_ANTE_UN_LUGAR = frozenset(
+    "catarata cascada cascadas laguna lago rio cerro cerros nevado bosque isla islas playa mirador gruta "
+    "caverna fundo hacienda casa bodega templo iglesia capilla santuario museo parque reserva nacional "
+    "parroquia caserio anexo sector barrio calle jiron jr avenida av pasaje alto bajo nuevo nueva gran "
+    "viejo vieja".split()
+)
+# Palabras comunes que también son nombres de pila: solas no dicen nada, junto a un apellido sí.
+_TAMBIEN_NOMBRES = frozenset("julio abril domingo santos rosa cruz luz sol angel angeles san santa santo".split())
+# Y las que también son apellidos: no empiezan un nombre, pero lo continúan ("… Mercado Ramos").
+_TAMBIEN_APELLIDOS = frozenset("mercado flora mayor mayo".split())
+# Instituciones y sus adjetivos: lo que sigue con mayúscula suele ser un lugar.
+_INSTITUCIONES = frozenset(
+    """
+    comunidad comunidades campesina campesinas nativa nativas municipalidad
+    municipal munic municip distrital provincial regional gobierno gerencia subgerencia sub oficina
+    area direccion desconcentrada jefatura administracion presidencia directiva comite comision
+    asociacion cooperativa empresa sociedad agencia agencias operador club hermandad beneficencia
+    ministerio autoridad unidad programa proyecto red sistema servicio servicios junta arzobispado
+    obispado catedral convento biblioteca galeria restaurante hotel resort tienda mercado estacion
+    puesto garita control sede centro poblado distrito provincia region departamento parcialidad
+    asentamiento zona turismo turistico turistica turisticos cultura cultural desarrollo economico
+    social humano educacion deporte recreacion ambiente ambiental naturales recursos recurso
+    conservacion proteccion flora fauna vigilancia ecoturismo interpretacion registro flujo
+    cc cp ccnn sernanp sernamp dircetur mincetur ddc
+    """.split()
+)
+# Lo demás que lleva mayúscula sin ser el nombre de nadie.
+_COMUNES = frozenset(
+    """
+    a al con de del el en la las los no o para por se si sin su sus un una y ya es e u
+    previa previo previamente coordinar coordinas coordinacion coordinaciones comunicar comunicarse
+    contactar contactarse contactandose solicitar solicitud realizar reservar ingresar enviar llamar
+    llamando llevar hacer tener debe deben puede presentarse ponerse considerar atiende cierra
+    permiso autorizacion ingreso entrada salida tarifa tarifas precio precios costo pago boleto ticket
+    visita visitas visitantes atencion horario horarios turno turnos informes informacion consultas
+    reservas reservaciones inscripciones tambien asimismo ademas solo solamente cuando segun
+    hasta fuera todos mayor mayores general libre gratuito gratuitas restringido recomendable
+    preferentemente observacion taller talleres experiencia recorridos paseos actividades max
+    cel celular celulares telefono telefonos telf telef tel tlf fono fijo movil whats whatsapp wsp
+    correo correos email mail electronico numero numeros num nro nº anexos dni ruc web pagina
+    facebook instagram fb app semana fiesta comunal comunitario
+    ninos nino adultos adulto estudiantes escolares universitarios nacionales extranjeros
+    extranjero locales grupos persona personas soles usd
+    lunes martes miercoles jueves viernes sabado sabados domingos feriado feriados
+    enero febrero marzo mayo junio agosto septiembre setiembre octubre noviembre diciembre
+    """.split()
+)
+_NO_ES_NOMBRE = _COMUNES | _INSTITUCIONES | _CARGOS | _TRATAMIENTOS
+_PARTICULAS = frozenset("de del la las los y e".split())
+_PALABRA = re.compile(r"[^\W\d_]+")
+# Lo que puede haber entre un nombre suelto y su contacto: "Doris (cel: …", "Marisol al …",
+# y hasta dos palabras más, que suelen ser un apellido en minúsculas.
+_HASTA_EL_CONTACTO = re.compile(
+    r"(?i)((?:\s+[a-záéíóúñ]+){0,2}?)[\s(\[,;:.-]*(?:(?:al|a|el|la|en|su|n[°ºo]?|nro|n[uú]mero|cel|celular|tel|telf"
+    r"|tel[eé]fono|fono|wsp|whatsapp|correo|e-?mail|contacto|m[oó]vil)\b[\s.:°º]*){0,4}"
+)
+# En un texto largo solo cuenta lo que rodea al contacto; en uno escrito en mayúsculas, donde
+# todo parece un nombre, solo lo que está pegado a él.
+_TEXTO_CORTO = 400
+_CERCA_ANTES, _CERCA_DESPUES = 130, 70
+_PEGADO = 30
+
+
+def _con_mayuscula(palabra: str) -> bool:
+    return len(palabra) > 1 and palabra[0].isupper() and (palabra[1:].islower() or palabra.isupper())
+
+
+def _clase(palabra: str, llana: str, con_punto: bool) -> str:
+    """N nombre, S también nombre, A también apellido, L ante un lugar, I inicial, P partícula;
+    «M» lleva mayúscula sin ser nada de eso y «-» es cualquier otra palabra."""
+    if len(palabra) == 1:
+        return "I" if palabra.isupper() and con_punto else "P" if llana in _PARTICULAS else "-"
+    if llana in _PARTICULAS:
+        return "P"
+    if not _con_mayuscula(palabra):
+        return "-"
+    if llana in _TAMBIEN_NOMBRES:
+        return "S"
+    if llana in _TAMBIEN_APELLIDOS:
+        return "A"
+    if llana in _ANTE_UN_LUGAR:
+        return "L"
+    return "M" if llana in _NO_ES_NOMBRE else "N"
 
 
 def _quitar_nombres(t: str) -> str:
-    t = _NOMBRE_ANTES_DE_CONTACTO.sub(NOMBRE_OMITIDO, t)
-    return _NOMBRE_DESPUES_DE_CONTACTO.sub(lambda m: m.group(1) + NOMBRE_OMITIDO, t)
+    """Quita del texto, que ya trae un contacto omitido, los nombres de persona."""
+    contactos = [(m.start(), m.end()) for m in re.finditer(_OMITIDO, t)]
+    letras = [c for c in t.replace(CONTACTO_OMITIDO, "") if c.isalpha()]
+    en_mayusculas = bool(letras) and sum(c.isupper() for c in letras) > 0.6 * len(letras)
+    antes, despues = (_PEGADO, _PEGADO) if en_mayusculas else (_CERCA_ANTES, _CERCA_DESPUES)
+
+    def cerca(inicio: int, fin: int) -> bool:
+        if len(t) <= _TEXTO_CORTO and not en_mayusculas:
+            return True
+        return any(c_ini - antes <= fin <= c_ini or c_fin <= inicio <= c_fin + despues for c_ini, c_fin in contactos)
+
+    palabras: list[tuple[int, int, str, str]] = []  # inicio, fin, sin tildes y clase
+    for m in _PALABRA.finditer(t):
+        if not any(c_ini <= m.start() < c_fin for c_ini, c_fin in contactos):
+            llana = sin_tildes(m.group(0))
+            palabras.append((m.start(), m.end(), llana, _clase(m.group(0), llana, t[m.end() :][:1] == ".")))
+
+    def seguidas(i: int) -> bool:
+        """La palabra i+1 sigue a la i sin más que espacios, el punto de una inicial o un guion."""
+        entre = t[palabras[i][1] : palabras[i + 1][0]]
+        return entre in (".", "-", ". ", "- ") or (entre != "" and entre.isspace() and "\n" not in entre)
+
+    quitar: list[tuple[int, int]] = []
+    i = 0
+    while i < len(palabras):
+        previa = palabras[i - 1] if i > 0 else None
+        pegada = previa is not None and t[previa[1] : palabras[i][0]].strip(" .:,;") == ""
+        tratamiento = pegada and previa[2] in _TRATAMIENTOS
+        # Tras un tratamiento, cualquier palabra con mayúscula es el nombre: "Sra. Flora …".
+        if palabras[i][3] not in ("NS" if not tratamiento else "NSALM"):
+            i += 1
+            continue
+        # La racha: nombres, iniciales y, entre ellos, partículas ("de la") o un apellido que
+        # también es otra cosa ("Carlos Calle"). Termina en la última palabra con mayúscula.
+        j = ultimo = i
+        while j + 1 < len(palabras) and seguidas(j) and palabras[j + 1][3] in "NSALIP":
+            j += 1
+            if palabras[j][3] != "P":
+                ultimo = j
+        rango = palabras[i : ultimo + 1]
+        inicio, fin = palabras[i][0], palabras[ultimo][1]
+        if palabras[ultimo][3] == "I":
+            fin += 1  # el punto de una inicial al final: "Nombre A."
+        nombres = sum(1 for p in rango if p[3] == "N")
+        # Una sigla con una inicial ("APROCTUR C.") no es un nombre con su apellido.
+        cuentan = "NSALI" if not t[inicio : palabras[i][1]].isupper() else "NSAL"
+        con_mayuscula = sum(1 for p in rango if p[3] in cuentan)
+        cargo = pegada and previa[2] in _CARGOS
+        lugar = previa is not None and previa[2] in _ANTE_UN_LUGAR and t[previa[1] : inicio].isspace()
+        suelto = None  # un nombre solo, pegado al contacto que lo sigue
+        if con_mayuscula == 1 and nombres == 1 and not t[inicio:fin].isupper():
+            siguiente = min((c_ini for c_ini, _ in contactos if c_ini >= fin), default=None)
+            if siguiente is not None and siguiente - fin <= 45:
+                suelto = _HASTA_EL_CONTACTO.fullmatch(t[fin:siguiente])
+            if previa is not None and (
+                previa[3] in "NSALI" or previa[2] in _PARTICULAS | _ANTE_UN_LUGAR | _INSTITUCIONES
+            ):
+                suelto = None  # "comunidad de Huayhuay - Cel. …", "Isla Juspique al …"
+        if tratamiento or cargo:
+            es_persona = True
+        elif lugar and con_mayuscula <= 2:
+            es_persona = False
+        else:
+            es_persona = (nombres >= 1 and con_mayuscula >= 2) or suelto is not None
+        if es_persona and cerca(inicio, fin):
+            if suelto is not None and not (tratamiento or cargo):
+                fin += len(suelto.group(1))
+            quitar.append((previa[0] if tratamiento else inicio, fin))
+        i = ultimo + 1
+
+    for inicio, fin in reversed(quitar):
+        t = t[:inicio] + NOMBRE_OMITIDO + t[fin:]
+    return t
 
 
 def sin_contactos(texto: str | None) -> str | None:
