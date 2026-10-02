@@ -17,6 +17,7 @@ no sabemos, y la misma consulta da siempre el mismo número.
 
 from __future__ import annotations
 
+import zlib
 from dataclasses import dataclass
 
 import numpy as np
@@ -42,9 +43,14 @@ class Gastos:
     base: str
 
 
-def _muestras(parametros: dict, rng: np.random.Generator) -> dict[str, np.ndarray]:
-    nombres = sorted(parametros)  # orden fijo: la misma semilla da las mismas muestras
-    return {n: rng.uniform(parametros[n]["minimo"], parametros[n]["maximo"], SIMULACIONES) for n in nombres}
+def _muestras(parametros: dict) -> dict[str, np.ndarray]:
+    """Las simulaciones de cada parámetro, cada uno con su propia secuencia, sembrada con su
+    nombre: la misma consulta da siempre el mismo número, y sumar un parámetro a la tabla no
+    cambia las muestras de los demás."""
+    return {
+        n: np.random.default_rng([SEMILLA, zlib.crc32(n.encode())]).uniform(p["minimo"], p["maximo"], SIMULACIONES)
+        for n, p in parametros.items()
+    }
 
 
 def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
@@ -58,8 +64,7 @@ def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
 
 
 def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
-    rng = np.random.default_rng(SEMILLA)
-    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros, rng), g).values())
+    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros), g).values())
     p20, p50, p80 = (int(round(x)) for x in np.percentile(total, [20, 50, 80]))
 
     # El desglose reparte el P50 en proporción a cada componente con los valores centrales.

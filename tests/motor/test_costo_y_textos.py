@@ -42,6 +42,11 @@ def test_la_misma_entrada_da_el_mismo_costo():
     assert costo.estimar(PARAMETROS, _gastos(), 900) == costo.estimar(PARAMETROS, _gastos(), 900)
 
 
+def test_sumar_un_parametro_no_cambia_el_costo_de_un_viaje_que_no_lo_usa():
+    con_otro = PARAMETROS | {"bote_soles_km": {"valor": 1.0, "minimo": 0.33, "maximo": 1.81}}
+    assert costo.estimar(con_otro, _gastos(), 900) == costo.estimar(PARAMETROS, _gastos(), 900)
+
+
 def test_presupuesto():
     c = costo.estimar(PARAMETROS, _gastos(), presupuesto=200)
     assert c.dentro_del_presupuesto is False and c.exceso == c.p50 - 200
