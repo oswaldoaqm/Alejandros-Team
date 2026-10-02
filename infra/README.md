@@ -32,15 +32,46 @@ curl https://<id>.execute-api.sa-east-1.amazonaws.com/v1/salud
 
 La primera petición después de un rato sin uso tarda más: es el arranque en frío de Lambda. Se mide después del primer despliegue y se anota en el informe de la semana 10.
 
+`ClavePublicador` es la clave con la que los municipios publican eventos. Se genera una larga, por ejemplo con `python -c "import secrets; print(secrets.token_urlsafe(32))"`, y se le da solo a quien publica: no entra al repositorio ni a un chat. Si se deja vacía, nadie publica.
+
+## Los eventos publicados
+
+`POST /v1/eventos` guarda cada evento en la tabla de DynamoDB; su nombre sale en la salida `TablaEventos` del despliegue. Quién puede publicar, qué se acepta y dónde aparece lo publicado está en [`docs/CONTRATO.md`](../docs/CONTRATO.md) §4.1, y el porqué en la [decisión 0011](../docs/decisiones/0011-eventos-publicados.md). La app tiene la misma función en «Para municipios: publicar un evento». Para probar el despliegue sin la app:
+
+```bash
+curl -X POST https://<id>.execute-api.sa-east-1.amazonaws.com/v1/eventos \
+  -H "Content-Type: application/json" -H "X-Clave-Publicador: <la-clave>" \
+  -d '{"nombre": "Festival de prueba", "fecha_inicio": "2026-11-13", "fecha_fin": "2026-11-15",
+       "distrito": "Huaraz", "provincia": "Huaraz", "region": "Áncash",
+       "lat": -9.5279, "lon": -77.5286, "publicado_por": "Equipo DreemGO (prueba)"}'
+```
+
+Responde 201 con el evento, y `/v1/salud` pasa a decir `version_datos: "2026.10.2-e…"`: la versión de los artefactos más la huella de lo publicado.
+
+- **Corregir un evento:** se publica otra vez con el mismo nombre, fechas, lugar y entidad.
+- **Retirarlo:** todavía no se puede por el API. A mano, con el `id` que devolvió al publicarlo:
+
+  ```bash
+  aws dynamodb delete-item --table-name <TablaEventos> --key '{"id": {"S": "p-…"}}'
+  ```
+
+  Deja de salir en las respuestas en un minuto, que es lo que el API recuerda la tabla.
+- **Los que ya pasaron** los borra DynamoDB sola unos días después de su último día: el API le pone a cada evento cuándo expira.
+- **Cambiar la clave:** se despliega otra vez con otro valor en `ClavePublicador`.
+
 ## Costo esperado
 
-Con el tráfico del curso, cero o centavos. Lambda incluye 1 millón de peticiones y 400 000 GB-segundo al mes sin costo; la tabla usa capacidad provisionada de 2 lecturas y 1 escritura, dentro de lo gratuito; la HTTP API está limitada a 10 peticiones por segundo para que un abuso no se convierta en factura. Lo único que puede costar algo es guardar imágenes viejas en ECR: se borran las que ya no se usan.
+Con el tráfico del curso, cero o centavos. Lambda incluye 1 millón de peticiones y 400 000 GB-segundo al mes sin costo; la tabla usa capacidad provisionada de 5 lecturas y 1 escritura por segundo, muy por debajo de las 25 y 25 que DynamoDB incluye sin costo; la HTTP API está limitada a 10 peticiones por segundo para que un abuso no se convierta en factura. Las condiciones de la capa gratuita cambian: conviene mirarlas en la consola de facturación al crear la cuenta, y para eso está la alarma de USD 1. Lo único que puede costar algo es guardar imágenes viejas en ECR: se borran las que ya no se usan.
+
+El API lee la tabla entera, a lo más una vez por minuto por cada servidor despierto. Con el tope de 500 eventos por venir, y eventos como el del ejemplo, son unas 60 unidades de lectura por minuto y por servidor; la tabla da 300.
 
 ## Quitar todo
 
 ```bash
 sam delete --stack-name dreemgo --region sa-east-1
 ```
+
+Se lleva también la tabla, con los eventos publicados.
 
 ## Sin cuenta de AWS
 
@@ -51,4 +82,20 @@ docker build -f infra/Dockerfile -t dreemgo-api .
 docker run -p 8080:8080 -e DREEMGO_CORS=http://localhost:5173 dreemgo-api
 ```
 
-Fuera de Lambda los eventos publicados se guardan en un archivo local en vez de DynamoDB.
+Así el API responde consultas pero no acepta publicaciones, porque no tiene clave. Para que las acepte y las guarde en un archivo que sobreviva a los reinicios, en un volumen:
+
+```bash
+docker run -p 8080:8080 -e DREEMGO_CORS=http://localhost:5173 \
+  -e DREEMGO_CLAVE_PUBLICADOR=<una-clave-larga> \
+  -e DREEMGO_EVENTOS_ARCHIVO=/datos/eventos.jsonl -v dreemgo-eventos:/datos \
+  dreemgo-api
+```
+
+## Las variables que lee el API
+
+| Variable | Qué hace | Si falta |
+|---|---|---|
+| `DREEMGO_CORS` | Orígenes que pueden llamar al API desde el navegador, separados por comas | La app publicada y `http://localhost:5173` |
+| `DREEMGO_CLAVE_PUBLICADOR` | La clave que exige `POST /v1/eventos` | Nadie publica |
+| `DREEMGO_TABLA_EVENTOS` | La tabla de DynamoDB donde se guardan los eventos publicados. La pone `template.yaml` | Se mira la variable siguiente |
+| `DREEMGO_EVENTOS_ARCHIVO` | El archivo donde se guardan, una línea de JSON por evento | Quedan en memoria y se pierden al reiniciar: sirve para desarrollar |
