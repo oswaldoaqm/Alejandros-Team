@@ -328,7 +328,7 @@ def leer_ficha(html: bytes | str, codigo: int | None = None) -> Ficha:
     ingresos = tuple(
         Ingreso(
             tipo=_tipo_de(fila.get("Tipo de ingreso"), TIPOS_INGRESO) or "otro",
-            observaciones=sin_contactos(fila.get("Observaciones")),
+            observaciones=sin_contactos(fila.get("Observaciones"), aviso=True),
             tarifa=leer_tarifa(fila.get("Observaciones")),
         )
         for fila in tablas.get("Tipo de ingreso", [])
@@ -337,7 +337,7 @@ def leer_ficha(html: bytes | str, codigo: int | None = None) -> Ficha:
     for fila in tablas.get("Época propicia de visita al recurso", []):
         horario = fila.get("Hora de visita especificación")
         abre, cierra = leer_horario(horario)
-        observaciones = sin_contactos(fila.get("Observaciones"))
+        observaciones = sin_contactos(fila.get("Observaciones"), aviso=True)
         epocas.append(
             Epoca(
                 epoca=fila.get("Época propicia de visita al recurso"),

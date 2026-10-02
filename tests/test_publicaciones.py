@@ -1,8 +1,10 @@
-"""Lo publicado, a mano del API: cuándo se lee el almacén, qué pasa si falla y quién puede publicar."""
+"""Lo publicado, a mano del API: cuándo se lee el almacén, cómo se entera un servidor de lo que
+publicó otro, qué pasa si el almacén falla y quién puede publicar."""
 
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import date, datetime, timedelta
 from types import SimpleNamespace
 
@@ -12,6 +14,7 @@ from dreemgo.almacen import EnMemoria
 from dreemgo.api import publicaciones as modulo
 from dreemgo.api.publicaciones import (
     HORA_DEL_PERU,
+    MIRADA_S,
     REINTENTO_S,
     VIGENCIA_S,
     CalendarioLleno,
@@ -62,24 +65,40 @@ class Reloj:
 
 
 class AlmacenDePrueba(EnMemoria):
-    """En memoria, pero cuenta las lecturas y puede fallar cuando se le pide."""
+    """En memoria, pero cuenta las lecturas y las miradas a la marca, y puede fallar cuando se le pide."""
 
     def __init__(self) -> None:
         super().__init__()
         self.lecturas = 0
+        self.miradas = 0
         self.falla_al_leer = False
         self.falla_al_guardar = False
+        self.falla_al_mirar = False
+        self.al_leer: Callable[[], None] | None = None  # lo que pasa justo después de leer
 
     def leer(self) -> list[dict]:
         self.lecturas += 1
         if self.falla_al_leer:
             raise OSError("la tabla no responde")
-        return super().leer()
+        registros = super().leer()
+        if self.al_leer:
+            self.al_leer()
+        return registros
 
     def guardar(self, registro: dict) -> None:
         if self.falla_al_guardar:
             raise OSError("la tabla no responde")
         super().guardar(registro)
+
+    def marca(self) -> object:
+        self.miradas += 1
+        if self.falla_al_mirar:
+            raise OSError("la tabla no responde")
+        return super().marca()
+
+    def borrar_a_mano(self, id_: str) -> None:
+        """Como quien borra el ítem de la tabla: la marca no se entera."""
+        del self._registros[id_]
 
 
 @pytest.fixture
@@ -94,6 +113,12 @@ def reloj() -> Reloj:
 
 @pytest.fixture
 def publicadas(almacen, reloj) -> Publicaciones:
+    return Publicaciones(almacen, reloj=reloj)
+
+
+@pytest.fixture
+def otro_servidor(almacen, reloj) -> Publicaciones:
+    """Otro proceso del API sobre el mismo almacén."""
     return Publicaciones(almacen, reloj=reloj)
 
 
@@ -113,13 +138,14 @@ class TestLeer:
         assert almacen.lecturas == 1
         assert nombres(primera) == ["Festival del Café"]
 
-    def test_pasado_el_plazo_vuelve_a_leer(self, publicadas, almacen, reloj):
-        publicadas.instantanea(PAIS)
-        almacen.guardar(publicado().registro())  # lo publicó otro servidor
-        reloj.pasan(VIGENCIA_S - 1)
-        assert nombres(publicadas.instantanea(PAIS)) == []
-        reloj.pasan(1)
+    def test_lo_que_cambia_sin_mover_la_marca_se_ve_al_pasar_el_plazo(self, publicadas, almacen, reloj):
+        almacen.guardar(publicado().registro())
         assert nombres(publicadas.instantanea(PAIS)) == ["Festival del Café"]
+        almacen.borrar_a_mano(publicado().id)
+        reloj.pasan(VIGENCIA_S - 1)
+        assert nombres(publicadas.instantanea(PAIS)) == ["Festival del Café"]
+        reloj.pasan(1)
+        assert nombres(publicadas.instantanea(PAIS)) == []
         assert almacen.lecturas == 2
 
     def test_si_el_reloj_retrocede_vuelve_a_leer(self, publicadas, almacen, reloj):
@@ -134,6 +160,61 @@ class TestLeer:
         assert publicadas.instantanea(PAIS).polos_de(id_) == {1}
         assert publicadas.instantanea(OTRO_PAIS).polos_de(id_) == {7}
         assert almacen.lecturas == 1
+
+
+class TestVariosServidores:
+    def test_lo_que_publica_uno_lo_ve_el_otro_en_su_siguiente_mirada(self, publicadas, otro_servidor, reloj):
+        assert nombres(otro_servidor.instantanea(PAIS)) == []
+        publicadas.guardar(publicado(), PAIS, HOY)
+        reloj.pasan(MIRADA_S - 0.5)
+        assert nombres(otro_servidor.instantanea(PAIS)) == []  # todavía no le toca preguntar
+        reloj.pasan(0.5)
+        assert nombres(otro_servidor.instantanea(PAIS)) == ["Festival del Café"]
+        assert otro_servidor.instantanea(PAIS).version("2026.10.2") == publicadas.instantanea(PAIS).version("2026.10.2")
+
+    def test_mientras_nadie_publica_pregunta_la_marca_y_no_vuelve_a_leer(self, publicadas, almacen, reloj):
+        primera = publicadas.instantanea(PAIS)
+        lecturas, miradas = almacen.lecturas, almacen.miradas
+        for _ in range(5):
+            reloj.pasan(MIRADA_S)
+            assert publicadas.instantanea(PAIS) is primera
+            assert publicadas.instantanea(PAIS) is primera  # dos consultas seguidas, una sola pregunta
+        assert almacen.lecturas == lecturas
+        assert almacen.miradas == miradas + 5
+
+    def test_si_alguien_publica_mientras_se_lee_la_siguiente_mirada_lo_trae(self, publicadas, almacen, reloj):
+        almacen.al_leer = lambda: EnMemoria.guardar(almacen, publicado().registro())
+        assert nombres(publicadas.instantanea(PAIS)) == []  # la lectura salió antes de que se guardara
+        almacen.al_leer = None
+        reloj.pasan(MIRADA_S)
+        assert nombres(publicadas.instantanea(PAIS)) == ["Festival del Café"]
+
+    def test_quien_publica_vuelve_a_leer_una_vez_y_ve_lo_mismo(self, publicadas, almacen, reloj):
+        guardada = publicadas.guardar(publicado(), PAIS, HOY)
+        lecturas = almacen.lecturas
+        reloj.pasan(MIRADA_S)  # su propia publicación movió la marca
+        assert publicadas.instantanea(PAIS) == guardada
+        reloj.pasan(MIRADA_S)
+        assert publicadas.instantanea(PAIS) == guardada
+        assert almacen.lecturas == lecturas + 1
+
+    def test_si_no_se_puede_preguntar_se_sigue_con_lo_leido_sin_insistir(
+        self, publicadas, otro_servidor, almacen, reloj, caplog
+    ):
+        otro_servidor.instantanea(PAIS)
+        publicadas.guardar(publicado(), PAIS, HOY)
+        almacen.falla_al_mirar = True
+        reloj.pasan(MIRADA_S)
+        with caplog.at_level(logging.WARNING, logger="dreemgo.publicaciones"):
+            assert nombres(otro_servidor.instantanea(PAIS)) == []
+        assert "No se pudo preguntar si hay eventos publicados nuevos" in caplog.text
+        miradas = almacen.miradas
+        reloj.pasan(REINTENTO_S - 0.5)
+        otro_servidor.instantanea(PAIS)
+        assert almacen.miradas == miradas
+        almacen.falla_al_mirar = False
+        reloj.pasan(0.5)
+        assert nombres(otro_servidor.instantanea(PAIS)) == ["Festival del Café"]
 
 
 class TestSiElAlmacenFalla:
@@ -160,6 +241,24 @@ class TestSiElAlmacenFalla:
         reloj.pasan(REINTENTO_S)
         assert nombres(publicadas.instantanea(PAIS)) == ["Festival del Café"]
         assert almacen.lecturas == 2
+
+    def test_con_el_almacen_caido_no_se_insiste_en_cada_mirada(self, publicadas, almacen, reloj):
+        almacen.guardar(publicado().registro())
+        almacen.falla_al_leer = True
+        publicadas.instantanea(PAIS)
+        reloj.pasan(MIRADA_S)
+        publicadas.instantanea(PAIS)
+        reloj.pasan(MIRADA_S)
+        publicadas.instantanea(PAIS)
+        assert almacen.lecturas == 1
+
+    def test_si_falla_la_marca_al_arrancar_se_sigue_sin_lo_publicado_y_se_reintenta(self, publicadas, almacen, reloj):
+        almacen.guardar(publicado().registro())
+        almacen.falla_al_mirar = True
+        assert publicadas.instantanea(PAIS) == SIN_PUBLICADOS
+        almacen.falla_al_mirar = False
+        reloj.pasan(REINTENTO_S)
+        assert nombres(publicadas.instantanea(PAIS)) == ["Festival del Café"]
 
     def test_un_registro_roto_no_tumba_a_los_demas(self, publicadas, almacen, caplog):
         almacen.guardar(publicado().registro())

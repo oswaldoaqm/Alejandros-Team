@@ -128,7 +128,7 @@ def main() -> None:
             print(f"  {columna}: {miles(n)}")
         if se_ubican:
             print(f"  (de esos, {miles(se_ubican)} recursos que no tenían coordenadas ahora las tienen)")
-        print("MINCETUR publicó una versión nueva. La copia del repositorio no se tocó; avísale a Claude.")
+        print("MINCETUR publicó una versión nueva. La copia del repositorio no se tocó: avisa al equipo.")
     print(f"Manifiesto: {MANIFIESTO}")
 
 

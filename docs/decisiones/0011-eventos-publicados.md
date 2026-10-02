@@ -12,7 +12,7 @@ El calendario del motor son los 758 acontecimientos del inventario, con su fecha
 - **A qué rutas toca:** a las de los polos que duermen o tienen algún lugar del inventario a 10 km o menos, en línea recta ([`dreemgo/publicados.py`](../../dreemgo/publicados.py)). Sin coordenadas, el evento sale en el calendario y en ninguna ruta.
 - **Se guarda lo que dijo quien publica y nada más.** A qué polos toca se calcula al leer, con los artefactos del momento: si los polos cambian con una versión nueva de los datos, lo publicado los sigue.
 - **La versión de datos lleva la huella de lo publicado:** `2026.10.2-e3f9a1c`. Cada consulta se resuelve con una sola foto del calendario publicado y la versión que informa es la de esa foto.
-- **Dónde se guarda lo decide el entorno**, detrás de una interfaz de dos operaciones, leer todo y guardar uno ([`dreemgo/almacen.py`](../../dreemgo/almacen.py)): una tabla de DynamoDB en AWS, un archivo fuera de AWS y la memoria para desarrollar. El API recuerda lo leído un minuto.
+- **Dónde se guarda lo decide el entorno**, detrás de una interfaz de dos operaciones, leer todo y guardar uno ([`dreemgo/almacen.py`](../../dreemgo/almacen.py)): una tabla de DynamoDB en AWS, un archivo fuera de AWS y la memoria para desarrollar. ~~El API recuerda lo leído un minuto.~~ Ahora la interfaz tiene una tercera operación: ver la actualización.
 - **La tabla tiene el `id` del evento como clave** y se lee entera. Publicar otra vez el mismo evento (mismo nombre, fechas, lugar y entidad) lo reemplaza, y DynamoDB borra sola los que ya pasaron.
 - **Publica quien trae la clave** (`X-Clave-Publicador`). Sin clave configurada no publica nadie.
 - **No se acepta** un evento que ya terminó, de más de 60 días, que empieza a más de doce meses, fuera del Perú o con una región que no es una de las 25. Caben 500 eventos por venir.
@@ -29,9 +29,19 @@ El calendario del motor son los 758 acontecimientos del inventario, con su fecha
 
 ## Consecuencias
 
-- **Demora:** un evento se ve enseguida en el servidor que lo recibió y hasta un minuto después en los demás.
+- ~~**Demora:** un evento se ve enseguida en el servidor que lo recibió y hasta un minuto después en los demás.~~ Ya son dos segundos: ver la actualización.
 - **Si la tabla no responde, las rutas siguen:** se responde con lo último que se leyó, o sin lo publicado, y la versión de datos dice con qué.
 - **Los enlaces compartidos** antes de una publicación abren con otra versión de datos. La app distingue los dos casos: si cambiaron los artefactos, avisa que las rutas pueden ser otras; si solo cambió la huella, las rutas son las mismas, no avisa y pone en el enlace la versión vigente. Avisar con cada publicación haría que nadie leyera el aviso que sí importa.
 - **No hay moderación:** quien tiene la clave publica a nombre de la entidad que diga. Por eso lo publicado se muestra siempre con su «Publicado por…» y nunca como un motivo del motor.
 - **Lo que el contrato 1.2 no tiene todavía:** retirar un evento por el API (hoy se borra de la tabla a mano), saber por la respuesta a qué polos tocó y mostrar la descripción. Corregirle el nombre o las fechas a un evento crea otro.
 - **La imagen del API** suma boto3, que solo se usa en AWS.
+
+## Actualización · 2 de octubre de 2026
+
+Al preparar el despliegue, el minuto de demora resultó pesar más de lo previsto. En Lambda basta con que la app haga dos pedidos a la vez para que haya dos servidores despiertos, y quien acaba de publicar podía no ver su evento en la consulta siguiente, según cuál de los dos la atendiera. En un contenedor con dos procesos pasaba lo mismo.
+
+Ahora el almacén tiene una tercera operación, **la marca**: un valor que cambia cada vez que alguien guarda. En la tabla es un ítem más, `#marca`; en el archivo, su tamaño y su hora; en memoria, un contador. Cada servidor la pregunta cada dos segundos como mucho, solo mientras atiende pedidos, y vuelve a leer todo cuando cambió. La lectura completa de cada minuto se queda, para lo que no mueve la marca: un evento borrado a mano, o uno guardado justo cuando la tabla no dejó escribir la marca.
+
+- **Lo que cuesta:** en la tabla, una unidad de lectura por pregunta, y una escritura más por publicación.
+- **Descartado, acortar el minuto:** leer la tabla entera cada pocos segundos pasa de su capacidad cuando el calendario se llena.
+- **Descartado, preguntar la marca en cada consulta:** a diez consultas por segundo, que es el límite de la HTTP API, son el doble de las lecturas que la tabla da.

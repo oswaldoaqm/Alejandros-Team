@@ -4,7 +4,7 @@
 
 ## Contexto
 
-La semana 10 pide un prototipo desplegado «cuando sea técnica y legalmente posible». El equipo sabe Python, el motor usa numpy y OR-Tools, y no hay presupuesto. Todavía no hay cuenta de AWS.
+La semana 10 pide un prototipo desplegado «cuando sea técnica y legalmente posible». El equipo sabe Python, el motor usa numpy ~~y OR-Tools~~ (ver la actualización), y no hay presupuesto. Todavía no hay cuenta de AWS.
 
 ## Decisión
 
@@ -25,3 +25,8 @@ La semana 10 pide un prototipo desplegado «cuando sea técnica y legalmente pos
 - Mientras no haya cuenta de AWS, la imagen corre en local o en un host de contenedores gratuito; el cambio a Lambda es `sam deploy`.
 - El arranque en frío se mide en el primer despliegue. Si pasa de 5 s, el plan B es cargar artefactos más livianos o precalentar antes de cada demo.
 - La HTTP API limita a 10 peticiones por segundo para que un abuso no genere costo.
+
+## Actualización · 2 de octubre de 2026
+
+- **El motor no usa OR-Tools.** El itinerario lo arma un planificador propio sobre numpy ([0009](./0009-viaje-en-estrella.md)), y la imagen no lo lleva.
+- **El host gratuito ya tiene receta:** un Space de Hugging Face, con [`infra/huggingface/Dockerfile`](../../infra/huggingface/Dockerfile). Corre el mismo paquete en 2 CPU y 16 GB; a cambio, lo que publican los municipios no dura y el Space se duerme tras 48 horas sin uso ([`infra/README.md`](../../infra/README.md)). Pasar a Lambda sigue siendo `sam deploy` y cambiar una variable de la app.

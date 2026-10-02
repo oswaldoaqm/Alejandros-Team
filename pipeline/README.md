@@ -144,4 +144,13 @@ Todas las bases quedan sobre una vía, también Machupicchu Pueblo, cuyas calles
 
 ## Datos personales
 
-Las fichas publican el nombre, el correo y el teléfono de quien las llenó, y a veces el celular de un encargado en el texto libre. El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal". En el resto del texto reemplaza teléfonos, correos y el nombre pegado a ellos por `[contacto en la ficha oficial]` y `[encargado]`. Nada de eso llega a los artefactos ni al repositorio. Cada parada enlaza a su ficha oficial, donde el viajero encuentra el contacto.
+Las fichas publican el nombre, el correo y el teléfono de quien las llenó y, en el texto libre, los de quien abre la puerta: «coordinar con el Sr. … al cel. …». El producto no los necesita: cada parada enlaza a su ficha oficial, donde el viajero encuentra el contacto. Nada de eso llega a los artefactos ni al repositorio.
+
+- El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal".
+- En el resto del texto, `texto.sin_contactos` reemplaza correos, celulares, teléfonos fijos y DNI por `[contacto en la ficha oficial]`, y el nombre de quien atiende, por `[encargado]`. A una persona la reconoce por sus mayúsculas junto a un contacto, o por su tratamiento o su cargo: «el señor …», «el propietario …».
+- Las observaciones de ingreso y de época son avisos de cómo se visita. Ahí un número de siete cifras o más se toma por un teléfono, y el nombre se quita aunque no traiga teléfono: el que sigue a un tratamiento o a un cargo, y el nombre completo, de tres palabras o más, de un aviso que pide permiso o coordinación.
+- Ante la duda, se quita. A veces se pierde el nombre de un caserío o de una asociación que estaba junto al teléfono.
+
+Lo que no hace: fuera de esos casos, un nombre en un texto que no trae teléfono ni correo se queda. Sin un contacto al lado no hay cómo distinguirlo de «Semana Santa» o de «Camino Inca». En la revisión a mano del 2 de octubre, sobre los avisos de las 6 225 fichas, no quedó ningún nombre con apellido.
+
+Los casos de [`tests/pipeline/test_texto.py`](../tests/pipeline/test_texto.py) conservan la forma de las celdas reales, con nombres, teléfonos y correos inventados.

@@ -11,4 +11,4 @@ docs
 pipeline
 tests
 infra/samconfig.toml
-.aws-sam
+**/.aws-sam

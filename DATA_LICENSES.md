@@ -22,7 +22,7 @@ El código de este repositorio es MIT ([`LICENSE`](./LICENSE)). Los datos tienen
 
 ## Datos personales
 
-Las fichas oficiales publican el nombre, el correo y el teléfono de quien las llenó, y a veces el celular de un encargado en el texto libre. El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal", y en el resto del texto reemplaza teléfonos, correos y el nombre pegado a ellos (ver [`pipeline/README.md`](./pipeline/README.md#datos-personales)). Nada de eso llega a los artefactos ni al repositorio; las fichas de prueba en `tests/fixtures/fichas/` están saneadas con el mismo criterio.
+Las fichas oficiales publican el nombre, el correo y el teléfono de quien las llenó y, en el texto libre, los de quien atiende cada lugar. El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal", y en el resto del texto reemplaza teléfonos, correos y el nombre de quien atiende (ver [`pipeline/README.md`](./pipeline/README.md#datos-personales)). Nada de eso llega a los artefactos ni al repositorio. Las fichas de prueba de `tests/fixtures/fichas/` están saneadas con el mismo criterio, y la tabla de fichas de las semanas 6 y 7 se pasó por el mismo filtro el 2 de octubre ([erratas de la semana 6](./deliveries/week06/ERRATA.md)).
 
 ## Lo que no se usa
 

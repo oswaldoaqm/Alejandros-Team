@@ -9,6 +9,42 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 > Proyecto final del curso **DS3022 — Desarrollo de Producto de Datos**
 > Universidad de Ingeniería y Tecnología (UTEC) · Prof. Germain Garcia-Zanabria · Ciclo 2026-2
 
+| | |
+|---|---|
+| **La app** | <https://oswaldoaqm.github.io/Alejandros-Team/> |
+| **Correrlo en tu máquina** | [Probarlo](#probarlo), más abajo |
+| **La entrega en curso** | [`deliveries/week10/`](./deliveries/week10/): el prototipo funcional y su [informe](./deliveries/week10/PrototypeReport.md) |
+| **Qué recibe y qué devuelve el API** | [`docs/CONTRATO.md`](./docs/CONTRATO.md) |
+| **El plan, con fechas y estado** | [`docs/PLAN.md`](./docs/PLAN.md) |
+| **Por qué cada cosa es como es** | [`docs/decisiones/`](./docs/decisiones/) |
+
+---
+
+## Probarlo
+
+La app publicada necesita el API desplegado, que todavía no lo está ([estado](./docs/PLAN.md)). Mientras tanto, el producto completo corre en una computadora con Python 3.11 o más nuevo y Node 22.12 o más nuevo, en dos terminales:
+
+```bash
+# 1. El API, desde la raíz del repositorio
+pip install -e ".[api]"
+python -m uvicorn dreemgo.api.app:app --port 8000     # http://localhost:8000/v1/docs
+```
+
+```bash
+# 2. La app, en otra terminal
+cd app
+npm ci
+npm run dev                                           # http://localhost:5173
+```
+
+Las pantallas de la app, sus pruebas y cómo se publica están en [`app/README.md`](./app/README.md); cómo se despliega el API, en [`infra/README.md`](./infra/README.md).
+
+Una municipalidad o una oficina de destino puede publicar un evento desde la app («Para municipios: publicar
+un evento») o con `POST /v1/eventos` y la clave que le da el equipo. Lo publicado sale en el calendario y en
+las rutas que pasan cerca en esas fechas, con el nombre de quien lo publicó, y no cambia qué rutas se proponen
+ni en qué orden. El porqué está en la [decisión 0011](./docs/decisiones/0011-eventos-publicados.md), y cómo se
+guarda en cada entorno, en [`infra/README.md`](./infra/README.md).
+
 ---
 
 ## El problema
@@ -42,6 +78,43 @@ están repartidos en las otras 23 regiones y quedan fuera del circuito que absor
 | **Alejandro** | Data Scientist / ML Engineer | Análisis exploratorio, calidad de datos, clustering de destinos por perfil de interés, selección y validación de modelos |
 | **Diego** | Backend & Algorithms Engineer | Microservicios, estructuras de datos y cálculo de rutas geográficas |
 | **Christopher** | Frontend Developer & Product Owner | Interfaz interactiva, Data Product Canvas, requisitos funcionales y de negocio |
+
+---
+
+## Estructura del repositorio
+
+```
+Alejandros-Team/
+├── README.md
+├── pyproject.toml                  el paquete de Python: dependencias, ruff y pytest
+├── LICENSE                         licencia del código (MIT)
+├── DATA_LICENSES.md                licencia de cada fuente de datos y qué exige
+├── .github/workflows/              integración continua y publicación de la app
+├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py. Los eventos
+│                                   que publican los municipios: publicados.py y almacen.py
+│   ├── motor/                      del pedido al viaje: valor, días, itinerario, costo y avisos
+│   └── datos/                      los artefactos que carga el motor, con su manifiesto
+├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro, eventos,
+│                                   red vial, bases, clima y artefactos
+│   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
+│   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
+├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
+├── app/                            la app web: React, Vite, TypeScript y MapLibre
+├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
+│                                   publicados, o gratis en un Space de Hugging Face
+├── tests/                          pruebas del contrato, del API y del pipeline
+├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
+└── deliveries/                     lo que pide cada hito del curso, una carpeta por semana
+    ├── week04/                     tema, equipo y selección de dataset
+    ├── week05/                     propuesta, Data Product Canvas y requerimientos
+    ├── week06/                     análisis exploratorio y selección de modelo
+    ├── week07/                     Delivery 1: definición integrada del proyecto
+    └── week10/                     prototipo funcional: el informe y dónde está cada cosa
+```
+
+El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
+
+Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`, y el `README.md` de cada una dice qué trae. Lo entregado en cada fecha queda intacto en las etiquetas `entrega/semana-XX`, y lo que se corrigió después está en el `ERRATA.md` de cada carpeta.
 
 ---
 
@@ -82,60 +155,6 @@ Este repositorio contiene únicamente datos abiertos con licencia que permite su
 
 ---
 
-## Estructura del repositorio
-
-```
-Alejandros-Team/
-├── README.md
-├── dreemgo/                        motor y API (FastAPI); el contrato está en dreemgo/contrato.py. Los eventos
-│                                   que publican los municipios: publicados.py y almacen.py
-│   ├── motor/                      del pedido al viaje: valor, días, itinerario, costo y avisos
-│   └── datos/                      los artefactos que carga el motor, con su manifiesto
-├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro, eventos,
-│                                   red vial, bases, clima y artefactos
-│   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
-│   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
-├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
-├── app/                            la app web: React, Vite, TypeScript y MapLibre
-├── infra/                          imagen del API y despliegue en AWS con SAM, con la tabla de eventos publicados
-├── tests/                          pruebas del contrato, del API y del pipeline
-├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
-└── deliveries/
-    ├── week04/                     Tema, equipo y selección de dataset
-    │   ├── README.md
-    │   ├── DreemGO_pitch.pdf
-    │   ├── code/data_quality_check.py
-    │   └── data/                   sample.csv · data_dictionary.csv
-    │                               acquisition.md · data_quality.md
-    ├── week05/                     Propuesta, Data Product Canvas y requerimientos
-    │   ├── README.md
-    │   ├── ProjectProposal.pdf · .docx
-    │   ├── DataProductCanvas.pdf · .md
-    │   ├── Requirements.md
-    │   ├── PresentationWeek05.pdf
-    │   ├── assets/                 wireframes, storyboards y diagrama UML
-    │   ├── code/                   enriquecimiento, clima, altitud y features
-    │   └── data/                   dataset_enriched.csv · data_dictionary_v2.csv
-    ├── week06/                     Análisis exploratorio y selección de modelo
-    │   ├── README.md
-    │   ├── DataAnalysis.md         EDA, hallazgos y limitaciones
-    │   ├── ModelSelection.md       baselines, métricas y modelo elegido
-    │   ├── code/                   fichas, clima, TA-01, TA-04, TA-05 y consulta de punta a punta
-    │   ├── data/raw/ · data/processed/
-    │   └── docs/                   diccionario, figuras y métricas
-    └── week07/                     Delivery 1 · definición integrada del proyecto
-        ├── PresentationWeek07.pdf
-        ├── Cloud_Architecture.drawio.png · E-R.png
-        ├── code/ · data/           copia del código y los datos de week06
-        └── docs/                   diccionario, arquitectura y prototipo de baja fidelidad
-```
-
-El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
-
-Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`. Lo entregado en cada fecha queda intacto en las etiquetas `entrega/semana-XX`, y lo que se corrigió después está en el `ERRATA.md` de cada carpeta.
-
----
-
 ## El modelo
 
 **TA-01 · Agrupamiento espacio-temporal.** Enlace completo sobre una distancia de viaje que combina haversine
@@ -159,22 +178,37 @@ entre los dos modelos— está en
 
 ---
 
-## Enlaces de las entregas
+## Entregas y cronograma
+
+| Semana | Fecha | Hito | Carpeta | Estado |
+|---|---|---|---|---|
+| 4 | 2 sep 2026 | Tema, equipo y selección de dataset | [`week04/`](./deliveries/week04/) | Entregado |
+| 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | [`week05/`](./deliveries/week05/) | Entregado |
+| 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | [`week06/`](./deliveries/week06/) | Entregado |
+| 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | [`week07/`](./deliveries/week07/) | Entregado |
+| 10 | 14 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | En curso |
+| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | | Pendiente |
+| 15 | 18 nov 2026 | Presentación final y **Delivery 2** | | Pendiente |
+
+Los documentos de cada una:
 
 | Documento | Ruta |
 |---|---|
+| Nota de calidad de datos | [`week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md) |
 | Propuesta de proyecto | [`week05/ProjectProposal.pdf`](./deliveries/week05/ProjectProposal.pdf) |
 | Data Product Canvas | [`week05/DataProductCanvas.pdf`](./deliveries/week05/DataProductCanvas.pdf) |
 | Requerimientos y diseño | [`week05/Requirements.md`](./deliveries/week05/Requirements.md) |
 | Análisis exploratorio | [`week06/DataAnalysis.md`](./deliveries/week06/DataAnalysis.md) |
 | Selección de modelo | [`week06/ModelSelection.md`](./deliveries/week06/ModelSelection.md) |
 | Diccionario de datos | [`week06/docs/Data_Dictionary.md`](./deliveries/week06/docs/Data_Dictionary.md) |
-| Nota de calidad de datos | [`week04/data/data_quality.md`](./deliveries/week04/data/data_quality.md) |
 | Presentación de la Delivery 1 | [`week07/PresentationWeek07.pdf`](./deliveries/week07/PresentationWeek07.pdf) |
+| Informe del prototipo | [`week10/PrototypeReport.md`](./deliveries/week10/PrototypeReport.md) |
 
 ---
 
 ## Reproducir
+
+Las entregas de las semanas 4 a 7 se reproducen con el código de su carpeta:
 
 ```bash
 git clone https://github.com/oswaldoaqm/Alejandros-Team.git
@@ -213,35 +247,6 @@ python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bas
 python -m pipeline.clima       # clima por polo y mes
 python -m pipeline.artefactos --version 2026.10.2   # dreemgo/datos/
 pytest
-uvicorn dreemgo.api.app:app    # http://localhost:8000/v1/docs
 ```
 
-La app corre contra ese API, en otra terminal (Node 22.12 o más nuevo):
-
-```bash
-cd app
-npm ci
-npm run dev                    # http://localhost:5173
-```
-
-Sus pantallas, sus pruebas y cómo se publica están en [`app/README.md`](./app/README.md).
-
-Una municipalidad o una oficina de destino puede publicar un evento desde la app («Para municipios: publicar
-un evento») o con `POST /v1/eventos` y la clave que le da el equipo. Lo publicado sale en el calendario y en
-las rutas que pasan cerca en esas fechas, con el nombre de quien lo publicó, y no cambia qué rutas se proponen
-ni en qué orden. El porqué está en la [decisión 0011](./docs/decisiones/0011-eventos-publicados.md), y cómo se
-guarda en cada entorno, en [`infra/README.md`](./infra/README.md).
-
----
-
-## Cronograma
-
-| Semana | Fecha | Hito | Estado |
-|---|---|---|---|
-| 4 | 2 sep 2026 | Tema, equipo y selección de dataset | Entregado |
-| 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | Entregado |
-| 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | Entregado |
-| 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | Entregado |
-| 10 | 14 oct 2026 | Prototipo funcional | En curso |
-| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | Pendiente |
-| 15 | 18 nov 2026 | Presentación final y **Delivery 2** | Pendiente |
+Con eso quedan los datos que usa el motor, y el producto se corre como dice [Probarlo](#probarlo).

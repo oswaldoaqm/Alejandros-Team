@@ -11,6 +11,8 @@ python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisic
 
 Estas tablas son las de la versión de datos `2026.10.2`. El clima es el de los 36 polos descargados al 30 de septiembre ([`pipeline/README.md`](../../pipeline/README.md)).
 
+El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. El recurso 11136 figuraba como abierto solo los domingos porque su encargado se llama Domingo; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traen ese domingo: se corrige en la versión siguiente.
+
 `python -m pipeline.artefactos` junta después estas tablas en lo que carga el motor, en [`dreemgo/datos/`](../../dreemgo/datos/).
 
 | Archivo | Qué es |
@@ -88,8 +90,8 @@ Los 222 polos del modelo v2 se mantienen, con sus mismos números. Cada uno sigu
 | `tarifa_soles`, `tarifa_regla` | Entrada de un adulto peruano. 0 si el ingreso es libre. La regla dice cómo se eligió entre los montos del texto (ver `leer_tarifa`) | Ficha, con `leer_tarifa` |
 | `boleto_combinado` | La entrada es parte de un boleto para varios lugares (Boleto Turístico del Cusco, un circuito): se paga una vez por viaje | Ficha |
 | `abre`, `cierra` | Horario en 24 h | Ficha, con `leer_horario` |
-| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (863 lugares) | Ficha, con `leer_dias` |
-| `epoca`, `epoca_observaciones` | Época propicia de visita, como la escribe la ficha | Ficha |
+| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (862 lugares) | Ficha, con `leer_dias` |
+| `epoca`, `epoca_observaciones` | Época propicia de visita, como la escribe la ficha, sin los datos de contacto ([`pipeline/README.md`](../../pipeline/README.md#datos-personales)) | Ficha |
 
 ### Acceso
 

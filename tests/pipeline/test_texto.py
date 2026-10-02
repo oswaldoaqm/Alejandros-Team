@@ -1,4 +1,8 @@
-"""Cada caso es una celda real de las fichas de MINCETUR (código de la ficha al lado)."""
+"""Cada caso es una celda real de las fichas de MINCETUR (código de la ficha al lado).
+
+Los casos de datos de contacto conservan la forma de la celda, con nombres, teléfonos y
+correos inventados.
+"""
 
 import re
 
@@ -262,11 +266,11 @@ def test_tarifa_de_boleto_combinado():
 @pytest.mark.parametrize(
     "texto",
     [
-        "Para visitas de delegaciones coordinar al Cel. 972808625 Lic. Nombre Apellido.",
-        "reservas al 993 560 367 o por whatsapp",
-        "llamar al (053) 461211",
-        "comunicarse al +51 926 015 625",
-        "correo: visitas@congreso.gob.pe.",
+        "Para visitas de delegaciones coordinar al Cel. 987654321 Lic. Nombre Apellido.",
+        "reservas al 912 345 678 o por whatsapp",
+        "llamar al (053) 123456",
+        "comunicarse al +51 987 654 321",
+        "correo: visitas@ejemplo.gob.pe.",
         "Teléfono: 01-4567890",
     ],
 )
@@ -285,7 +289,7 @@ def test_sin_contactos_quita_telefonos_y_correos(texto):
             "Previa coordinación con el [encargado] al Cel. [contacto en la ficha oficial]",
         ),
         (
-            "coordinar al Cel. 972808625 Lic. Nombre Apellido Apellido.",
+            "coordinar al Cel. 987654321 Lic. Nombre Apellido Apellido.",
             "coordinar al Cel. [contacto en la ficha oficial] [encargado].",
         ),
         ("Encargado: Nombre J. Apellido 987654321", "[encargado] [contacto en la ficha oficial]"),
@@ -311,3 +315,198 @@ def test_sin_contactos_respeta_nombres_citados():
 )
 def test_sin_contactos_no_toca_resoluciones_ni_cifras(texto):
     assert sin_contactos(texto) == texto
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "reservas: Fulana Mengana-987654321 – Zutano Perengano - 912345678.",  # 14643: pegado a un guion
+        "los teléfonos son: 987654321 (párroco) y 912 345 678- 987654322",  # 871
+        "Informes: 2345678 / 3456789 / 987654321",  # 10931: fijos en una lista
+        "Teléfonos: 987654321 / 234-5678",  # 1208
+        "contactar con la Gerencia del Callao 234-5678/345-6789 anexos 123–456 ó a 987654321",  # 10941
+        "Atención: Lunes a domingo / Informes: 234-5678 anexo 1234",  # 6822
+        "Previa coordinación al numero 056-123456 o al correo reservas@ejemplo.pe",  # 11316
+        "Teléfono fijo: 056 – 123456 Celular : 987654321",  # 6972
+        "Mayores informes: 01 2345678 - 987654321",  # 1379
+        "Consultas 064-123456, horario de lunes a viernes",  # 12662
+        "Coordinaciones: 234-5678 | 987-654-321 | 912-345-678",  # 11193
+        "N° de contacto : 234-5678.",  # 3499
+        "comunicarse al telefono fijo 084-123456",  # 6915
+        "al teléf 042123456",  # 11416
+        "Previa llamada telefónica; al 074-123456 ó 987654321",  # 2350
+        "Reservas al 234-5678",
+        "Informes: info@info@ejemplo.gob.pe / 987654321",  # 4367: el correo escrito dos veces
+    ],
+)
+def test_sin_contactos_quita_los_telefonos_que_nada_anuncia(texto):
+    limpio_ = sin_contactos(texto)
+    assert CONTACTO_OMITIDO in limpio_
+    assert "@" not in limpio_
+    assert not re.search(r"\d{3}[\s-]?\d{3}", limpio_)
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "Informe Técnico N°001-2022",
+        "Coordenadas UTM: Este 0264341 / Norte 8877279",
+        "coordenadas Norte: 9123456.78 m S",
+        "la Guerra del Pacífico (1879-1883)",
+        "Jr. Próspero Nº 401-437 Esq. Jr. Morona Nº 181-199",
+        "según R.M. N° 000092-2024-MC",
+    ],
+)
+def test_sin_contactos_no_toca_coordenadas_ni_documentos(texto):
+    assert sin_contactos(texto) == texto
+
+
+OMITIDO = CONTACTO_OMITIDO
+
+
+@pytest.mark.parametrize(
+    ("texto", "esperado"),
+    [
+        (  # 10215: sin tratamiento
+            "Coordinar previamente con Fulano Mengano Zutano - Cel.: 987654321.",
+            f"Coordinar previamente con [encargado] - Cel.: {OMITIDO}.",
+        ),
+        (  # 14643: dos personas, cada una con su teléfono
+            "reservas: Fulana Mengana-987654321 – Zutano Perengano - 912345678.",
+            f"reservas: [encargado]-{OMITIDO} – [encargado] - {OMITIDO}.",
+        ),
+        (  # 11112: el nombre después del teléfono
+            "Comunicarse al 987654321 - Fulano Mengano o 912345678 Zutano Perengano.",
+            f"Comunicarse al {OMITIDO} - [encargado] o {OMITIDO} [encargado].",
+        ),
+        (  # 10867: el tratamiento en minúsculas y con dos puntos
+            "Previa coordinación con el encargado, el señor: Fulano Mengano. Cel. 987654321",
+            f"Previa coordinación con el encargado, el [encargado]. Cel. {OMITIDO}",
+        ),
+        (  # 11288: el cargo se queda
+            "Previa coordinación con el propietario Fulano Mengano al contacto 987654321 y presentación de boleto",
+            f"Previa coordinación con el propietario [encargado] al contacto {OMITIDO} y presentación de boleto",
+        ),
+        (  # 11435: Julio también es un nombre
+            "contactar con el sr. Julio Mengano , presidente del centro poblado, celular 987654321",
+            f"contactar con el [encargado] , presidente del centro poblado, celular {OMITIDO}",
+        ),
+        (  # 13771: Mercado también es un apellido
+            "Coordinar con el Director y propietario Fulano Mercado Mengano / Cel.: 987654321",
+            f"Coordinar con el Director y propietario [encargado] / Cel.: {OMITIDO}",
+        ),
+        (  # 3644: un apellido compuesto
+            "está el padre Fulano Mengano- Zutano, cuyo teléfono es el 987654321",
+            f"está el padre [encargado], cuyo teléfono es el {OMITIDO}",
+        ),
+        (  # 14697: el apellido en minúsculas
+            "Hacer de su conocimiento a la autoridad comunal Fulano mengano telf. 987654321",
+            f"Hacer de su conocimiento a la autoridad comunal [encargado] telf. {OMITIDO}",
+        ),
+        (  # 12015: un nombre de pila solo
+            "Paseos en cuatrimotos Fulana (cel: 987654321)",
+            f"Paseos en cuatrimotos [encargado] (cel: {OMITIDO})",
+        ),
+        (  # 11543: todo en mayúsculas, solo lo pegado al contacto
+            "VISITAS GUIADAS TODO EL AÑO PREVIA COORDINACION CON EL JEFE FULANA MENGANA ZUTANA CEL 987654321",
+            f"VISITAS GUIADAS TODO EL AÑO PREVIA COORDINACION CON EL JEFE [encargado] CEL {OMITIDO}",
+        ),
+        (  # un solo nombre, lejos del teléfono: lo delata el cargo
+            "El párroco Fulano atiende de lunes a viernes. Cel. 987654321",
+            f"El párroco [encargado] atiende de lunes a viernes. Cel. {OMITIDO}",
+        ),
+    ],
+)
+def test_sin_contactos_quita_el_nombre_aunque_no_lleve_tratamiento(texto, esperado):
+    assert sin_contactos(texto) == esperado
+
+
+@pytest.mark.parametrize(
+    ("texto", "queda"),
+    [
+        (  # 11068
+            "El ingreso a la Catarata Gallito de las Rocas es previa coordinación con el administrador del Fundo "
+            "Mesapata. Celular: 987654321.",
+            "Catarata Gallito de las Rocas es previa coordinación con el administrador del Fundo Mesapata.",
+        ),
+        (  # 10224
+            "Comunicarse con el Área de Turismo de la Municipalidad Distrital de Huayhuay - Cel. 987654321",
+            "Municipalidad Distrital de Huayhuay",
+        ),
+        ("De Lunes a Domingo. Reservas al 987654321", "De Lunes a Domingo. Reservas al"),
+        (
+            "Fiesta de Santa Rosa, entre Abril y Julio. Informes al 987654321",
+            "Fiesta de Santa Rosa, entre Abril y Julio. Informes al",
+        ),
+    ],
+)
+def test_sin_contactos_deja_los_lugares_las_instituciones_y_los_dias(texto, queda):
+    limpio_ = sin_contactos(texto)
+    assert queda in limpio_
+    assert "[encargado]" not in limpio_
+
+
+def test_el_nombre_del_encargado_no_se_lee_como_un_dia():
+    # 11136: su encargado se llama Domingo, y el recurso figuraba como abierto los domingos.
+    texto = "Lunes a sábado. Con orientación del presidente de la junta, sr. Santos Domingo Mengano al cel. 987654321."
+    assert leer_dias(texto) == (0, 1, 2, 3, 4, 5, 6)
+    assert leer_dias(sin_contactos(texto)) == (0, 1, 2, 3, 4, 5)
+
+
+@pytest.mark.parametrize(
+    ("texto", "esperado"),
+    [
+        (  # 11345: un fijo sin nada que lo anuncie
+            "Previo aviso y pago de ticket. Contacto: Sr. Fulano Mengano Zutano 076123456.",
+            f"Previo aviso y pago de ticket. Contacto: [encargado] {OMITIDO}.",
+        ),
+        (  # 13675: un celular al que le falta una cifra
+            "te invitamos a contactar directamente al propietario, Fulano Mengano, al 98765432",
+            f"te invitamos a contactar directamente al propietario, [encargado], al {OMITIDO}",
+        ),
+        (  # 13755: con su código de ciudad y entre paréntesis
+            "Comunicarse con la secretaría del Obispado (073-123456).",
+            f"Comunicarse con la secretaría del Obispado ({OMITIDO}).",
+        ),
+        ("084 123456, despacho parroquial", f"{OMITIDO}, despacho parroquial"),  # 903
+        (  # 11762: sin teléfono, con tratamiento
+            "Coordinar con el Sr. Fulano Mengano Zutano, presidente del barrio.",
+            "Coordinar con el [encargado], presidente del barrio.",
+        ),
+        (  # 11837
+            "Coordinar con el señor Fulano, encargado de la iglesia.",
+            "Coordinar con el [encargado], encargado de la iglesia.",
+        ),
+        ("Previa coordinación con la familia Mengano.", "Previa coordinación con la familia [encargado]."),  # 327
+        ("Coordinación con el párroco; Fulano Mengano Zutano", "Coordinación con el párroco; [encargado]"),  # 431
+        (  # 5282: sin tratamiento ni cargo, el nombre completo de quien da el permiso
+            "Previa autorización de la Comunidad San Jacinto - Fulano Mengano Zutano.",
+            "Previa autorización de la Comunidad San Jacinto - [encargado].",
+        ),
+    ],
+)
+def test_en_un_aviso_el_nombre_y_el_numero_son_un_contacto(texto, esperado):
+    assert sin_contactos(texto, aviso=True) == esperado
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "Asimismo es necesario adquirir el servicio de un Guía Oficial de Alta Montaña.",  # 1330
+        "Durante Semana Santa y la fiesta del Señor de los Milagros.",
+        "Al formar parte del Camino Inca, se paga un boleto turístico.",  # 13698
+        "Lunes a Domingo de 9 am a 5 pm.",
+        "Adulto Nacional S/ 15.00, Niño Nacional S/ 7.50",  # 13101
+        "Menores de edad: ingreso gratuito según Resolución Ministerial N° 000092-2024-MC.",  # 3792
+        "Observación externa desde Jr. Próspero Nº 401-437 Esq. Jr. Morona Nº 181-199",  # 8384
+        "Visitas según el Artículo N°10 de la Ordenanza Municipal N°01-2020-MDCF/A.",  # 11154
+        "Previa coordinación con la empresa: SOUTHERN PERU COPPER CORPORATION",  # 513
+    ],
+)
+def test_un_aviso_sin_contactos_queda_como_esta(texto):
+    assert sin_contactos(texto, aviso=True) == texto
+
+
+def test_fuera_de_un_aviso_un_nombre_sin_telefono_no_es_un_contacto():
+    for texto in ("Coordinar con el Sr. Fulano Mengano.", "La festividad del Señor Cautivo de Ayabaca es en octubre."):
+        assert sin_contactos(texto) == texto

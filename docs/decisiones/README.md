@@ -5,7 +5,7 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | N.º | Decisión | Estado |
 |---|---|---|
 | [0001](./0001-sin-login-y-enlace-compartible.md) | Sin cuentas: el viaje se comparte por enlace | Vigente |
-| [0002](./0002-stack-y-despliegue.md) | FastAPI en Lambda con imagen de contenedor; app estática en GitHub Pages | Vigente |
+| [0002](./0002-stack-y-despliegue.md) | FastAPI en Lambda con imagen de contenedor; app estática en GitHub Pages | Vigente; sin OR-Tools y con receta para un host gratuito (actualización del 2 de octubre) |
 | [0003](./0003-artefactos-precalculados.md) | El motor carga artefactos precalculados; no hay base relacional | Vigente; lo que publican los municipios lo versiona la 0011 |
 | [0004](./0004-sin-modelos-supervisados.md) | Sin modelos supervisados: agrupamiento, reglas de clima y optimización | Vigente |
 | [0005](./0005-historial-y-erratas.md) | Las entregas se etiquetan y se corrigen en su sitio con erratas | Vigente |
@@ -14,6 +14,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0008](./0008-calibrar-con-las-fichas.md) | Calibrar la red vial con los recorridos de las fichas | Vigente |
 | [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010) |
 | [0010](./0010-tren-y-botes.md) | El tren y los botes entran a la red; cada parada se ubica según su ficha | Vigente |
-| [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente |
+| [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente; lo publicado se ve en dos segundos en todos los servidores (actualización del 2 de octubre) |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.

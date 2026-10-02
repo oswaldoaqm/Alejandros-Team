@@ -125,7 +125,7 @@ Responde **201** con el evento tal como lo verá el viajero: un `Evento` con `fu
 - **Dónde aparece.** En `GET /v1/eventos` siempre. Con coordenadas, también en `eventos[]` de las rutas y en la ficha de los polos que duermen o tienen algún lugar del inventario a 10 km o menos, en línea recta. Si varios polos duermen en el mismo pueblo, sale en todos.
 - **Qué no cambia.** Ni qué polos se proponen, ni su orden, ni sus motivos (§3).
 - **Corregir.** Publicar otra vez el mismo evento (mismo nombre, fechas, distrito, provincia, región y entidad, sin contar tildes ni mayúsculas) lo reemplaza: sirve para ponerle la ubicación o el enlace. Con otro nombre u otras fechas es otro evento.
-- **Cuándo se ve.** Enseguida en el servidor que lo recibió y, como mucho, un minuto después en los demás.
+- **Cuándo se ve.** Enseguida en el servidor que lo recibió y, en los demás, a los dos segundos como mucho. Si justo entonces falla el almacén, en un minuto.
 - **Lo que todavía no hay:** retirar un evento por el API, saber por la respuesta a qué polos tocó y ver la descripción. Quedan para la 1.3.
 
 | Respuesta | Cuándo |

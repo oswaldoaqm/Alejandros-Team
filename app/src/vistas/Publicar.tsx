@@ -468,7 +468,6 @@ function Publicado({ evento, conLugar, hoy, otro }: PropsDePublicado) {
               ? "Como marcaste dónde es, sale también en las rutas que duermen o paran a 10 km o menos en esas fechas."
               : "Como no marcaste dónde es, no sale en ninguna ruta. Para ponerle el lugar, publícalo otra vez con el mismo nombre, fechas, distrito y entidad."}
           </p>
-          <p>Puede tardar hasta un minuto en verse en toda la app.</p>
         </div>
       </div>
       <h2 className="rotulo">Así lo ve el viajero</h2>

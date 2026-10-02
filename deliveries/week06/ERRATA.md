@@ -28,6 +28,13 @@ Lo entregado el 16 de septiembre está intacto en la etiqueta [`entrega/semana-0
 | `code/ta05_estacionalidad.py`, `code/consulta.py` | «TA-02» en un encabezado impreso y en la documentación | TA-05 | La renumeración del 20 de septiembre dejó dos restos |
 | `code/` | `build_master_dataset.py`, `clean_impute_dataset.py`, `scraper_mincetur.py`, `generate_commerce_data.py`, `create_notebook.py` y `build_advanced_eda.py` junto al código vivo | En `code/legacy/`, con un README que explica por qué no se corren | Generan datos al azar, sobrescriben columnas, reescriben los notebooks o fueron reemplazados |
 
+## Correcciones del 2 de octubre
+
+| Dónde | Qué decía o hacía | Qué dice o hace ahora | Por qué |
+|---|---|---|---|
+| `data/processed/fichas_mincetur.csv`, columna `INGRESO_OBS` | Las observaciones de ingreso tal como las escribe cada ficha, con los teléfonos, los correos y los nombres de quienes atienden el lugar | Los mismos textos con `[contacto en la ficha oficial]` y `[encargado]` en su lugar, en 699 celdas, y en una de `HORA_VISITA`. Esas celdas quedan en una sola línea | Son datos de personas. El pipeline del producto los quita al leer la ficha ([`pipeline/README.md`](../../pipeline/README.md#datos-personales)) y esta tabla es anterior a esa regla. Ningún script lee la columna: el scraper sacó de ella `TARIFA_SOLES` al escribirla |
+| `code/scraper_mincetur_v3.py` | Se identificaba ante el servidor de MINCETUR con el correo personal de un integrante | Con la dirección del repositorio | El contacto del proyecto es su repositorio, como en `pipeline/adquisicion/` |
+
 ## Hallazgos que siguen abiertos
 
 - **`ACCESO_KM` de `fichas_mincetur.csv` no es confiable.** El parser lee la coma como separador de miles y suma todas las filas de la tabla de accesos: 38 fichas pasan de 1 000 km y una llega a 67 406 km. La velocidad calibrada usa la mediana y resiste esos casos, pero se recalcula cuando las fichas se vuelvan a leer desde el HTML guardado (semana 10).

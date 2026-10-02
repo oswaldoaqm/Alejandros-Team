@@ -45,6 +45,58 @@ jobs:
           for i in $(seq 1 30); do curl -fsS http://localhost:8080/v1/salud > /dev/null && break; sleep 1; done
           curl -fsS http://localhost:8080/v1/salud | python3 -c "import json, sys; assert json.load(sys.stdin)['estado'] == 'ok'"
           docker rm -f api
+      - name: Lo publicado queda en su volumen
+        run: |
+          arrancar() {
+            docker run -d --name api -p 8080:8080 -v eventos:/datos \
+              -e DREEMGO_CLAVE_PUBLICADOR=clave-de-ci -e DREEMGO_EVENTOS_ARCHIVO=/datos/eventos.jsonl dreemgo-api:ci
+            for i in $(seq 1 30); do curl -fsS http://localhost:8080/v1/salud > /dev/null && break; sleep 1; done
+          }
+          version() {
+            curl -fsS http://localhost:8080/v1/salud | python3 -c "import json, sys; print(json.load(sys.stdin)['version_datos'])"
+          }
+          arrancar
+          sin_eventos=$(version)
+          curl -sS --fail-with-body -w '\n' -X POST http://localhost:8080/v1/eventos \
+            -H "Content-Type: application/json" -H "X-Clave-Publicador: clave-de-ci" \
+            -d "{\"nombre\": \"Feria de la CI\", \"fecha_inicio\": \"$(date -d '+7 days' +%F)\", \"fecha_fin\": \"$(date -d '+8 days' +%F)\",
+                 \"distrito\": \"Huaraz\", \"provincia\": \"Huaraz\", \"region\": \"Ancash\", \"publicado_por\": \"Prueba de CI\"}"
+          con_el_evento=$(version)
+          test "$con_el_evento" != "$sin_eventos"
+          docker rm -f api
+          arrancar
+          test "$(version)" = "$con_el_evento"
+          docker rm -f api
+
+  imagen-hf:
+    name: Imagen para Hugging Face
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v7
+      - name: Construir con el código de este commit
+        run: docker build --build-arg VERSION=${{ github.event.pull_request.head.sha || github.sha }} -t dreemgo-hf:ci infra/huggingface
+      - name: Lo publicado lo ven sus dos procesos
+        run: |
+          version() {  # de un solo golpe, para que ocho a la vez no se pisen al escribir
+            curl -fsS http://localhost:7860/v1/salud | python3 -c "import json, sys; sys.stdout.write(json.load(sys.stdin)['version_datos'] + '\n')"
+          }
+          export -f version
+          # Cuarenta consultas de a ocho, para que respondan los dos procesos: las versiones que dicen, sin repetir.
+          versiones() { seq 1 40 | xargs -P 8 -I{} bash -c version | sort -u; }
+          docker run -d --name api -p 7860:7860 -e DREEMGO_CLAVE_PUBLICADOR=clave-de-ci dreemgo-hf:ci
+          for i in $(seq 1 30); do curl -fsS http://localhost:7860/v1/salud > /dev/null && break; sleep 1; done
+          sin_eventos=$(versiones)
+          curl -sS --fail-with-body -w '\n' -X POST http://localhost:7860/v1/eventos \
+            -H "Content-Type: application/json" -H "X-Clave-Publicador: clave-de-ci" \
+            -d "{\"nombre\": \"Feria de la CI\", \"fecha_inicio\": \"$(date -d '+7 days' +%F)\", \"fecha_fin\": \"$(date -d '+8 days' +%F)\",
+                 \"distrito\": \"Huaraz\", \"provincia\": \"Huaraz\", \"region\": \"Ancash\", \"publicado_por\": \"Prueba de CI\"}"
+          sleep 5
+          con_el_evento=$(versiones)
+          echo "antes: $sin_eventos · después: $con_el_evento"
+          test "$(echo "$con_el_evento" | wc -l)" = 1
+          test "$con_el_evento" != "$sin_eventos"
+          docker rm -f api
 
   app:
     name: App
