@@ -15,12 +15,15 @@ export type TipoDeError = "red" | "validacion" | "sin_datos" | "no_encontrado" |
 export class ErrorApi extends Error {
   readonly tipo: TipoDeError;
   readonly campos: ErrorDeCampo[];
+  /** El estado HTTP con que respondió el API; null si el error no vino de una respuesta. */
+  readonly estado: number | null;
 
-  constructor(tipo: TipoDeError, mensaje: string, campos: ErrorDeCampo[] = []) {
+  constructor(tipo: TipoDeError, mensaje: string, campos: ErrorDeCampo[] = [], estado: number | null = null) {
     super(mensaje);
     this.name = "ErrorApi";
     this.tipo = tipo;
     this.campos = campos;
+    this.estado = estado;
   }
 }
 
@@ -45,18 +48,20 @@ async function errorDe(respuesta: Response): Promise<ErrorApi> {
     detalle = undefined;
   }
   const texto = typeof detalle === "string" ? detalle : undefined;
-  if (respuesta.status === 422) {
+  const estado = respuesta.status;
+  if (estado === 422) {
     const campos = camposDe(detalle);
-    return new ErrorApi("validacion", campos[0]?.mensaje ?? texto ?? "La consulta no es válida.", campos);
+    const mensaje = campos[0]?.mensaje ?? texto ?? "La consulta no es válida.";
+    return new ErrorApi("validacion", mensaje, campos, estado);
   }
-  if (respuesta.status === 503) {
-    return new ErrorApi("sin_datos", texto ?? "El servidor todavía no tiene sus datos cargados.");
+  if (estado === 503) {
+    return new ErrorApi("sin_datos", texto ?? "El servidor todavía no tiene sus datos cargados.", [], estado);
   }
-  if (respuesta.status === 404) return new ErrorApi("no_encontrado", texto ?? "No existe.");
-  if (respuesta.status === 401 || respuesta.status === 403) {
-    return new ErrorApi("sin_permiso", texto ?? "No tienes permiso para hacer esto.");
+  if (estado === 404) return new ErrorApi("no_encontrado", texto ?? "No existe.", [], estado);
+  if (estado === 401 || estado === 403) {
+    return new ErrorApi("sin_permiso", texto ?? "No tienes permiso para hacer esto.", [], estado);
   }
-  return new ErrorApi("servidor", texto ?? `El servidor respondió con un error (${respuesta.status}).`);
+  return new ErrorApi("servidor", texto ?? `El servidor respondió con un error (${estado}).`, [], estado);
 }
 
 export interface Pedido {
