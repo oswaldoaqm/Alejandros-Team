@@ -1,4 +1,8 @@
-"""Cada caso es una celda real de las fichas de MINCETUR (código de la ficha al lado)."""
+"""Cada caso es una celda real de las fichas de MINCETUR (código de la ficha al lado).
+
+Los casos de datos de contacto conservan la forma de la celda, con nombres, teléfonos y
+correos inventados.
+"""
 
 import re
 
@@ -262,11 +266,11 @@ def test_tarifa_de_boleto_combinado():
 @pytest.mark.parametrize(
     "texto",
     [
-        "Para visitas de delegaciones coordinar al Cel. 972808625 Lic. Nombre Apellido.",
-        "reservas al 993 560 367 o por whatsapp",
-        "llamar al (053) 461211",
-        "comunicarse al +51 926 015 625",
-        "correo: visitas@congreso.gob.pe.",
+        "Para visitas de delegaciones coordinar al Cel. 987654321 Lic. Nombre Apellido.",
+        "reservas al 912 345 678 o por whatsapp",
+        "llamar al (053) 123456",
+        "comunicarse al +51 987 654 321",
+        "correo: visitas@ejemplo.gob.pe.",
         "Teléfono: 01-4567890",
     ],
 )
@@ -285,7 +289,7 @@ def test_sin_contactos_quita_telefonos_y_correos(texto):
             "Previa coordinación con el [encargado] al Cel. [contacto en la ficha oficial]",
         ),
         (
-            "coordinar al Cel. 972808625 Lic. Nombre Apellido Apellido.",
+            "coordinar al Cel. 987654321 Lic. Nombre Apellido Apellido.",
             "coordinar al Cel. [contacto en la ficha oficial] [encargado].",
         ),
         ("Encargado: Nombre J. Apellido 987654321", "[encargado] [contacto en la ficha oficial]"),
