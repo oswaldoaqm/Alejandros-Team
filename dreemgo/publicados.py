@@ -7,6 +7,11 @@ en vez de duplicarlo: su identificador sale de su nombre, sus fechas, su lugar y
 A qué polos toca un evento no se guarda: se calcula con los artefactos del momento. Si los
 polos cambian con una versión nueva de los datos, lo publicado los sigue.
 
+Se suman al calendario oficial sin tocar el orden de las rutas: aparecen en ``eventos[]`` con
+``fuente: "publicado"`` y con quién los publicó. Como también son datos, la versión de datos
+que informa el API lleva su huella: la misma consulta con la misma versión sigue dando la
+misma respuesta (docs/CONTRATO.md §3 y docs/decisiones/0011).
+
 Aquí no hay red ni disco: guardar y leer es cosa del almacén.
 """
 
@@ -31,6 +36,22 @@ RADIO_TIERRA_KM = 6371.0
 
 # Lo que identifica a un evento: publicarlo otra vez con esto igual lo corrige, no lo duplica.
 IDENTIDAD = ("nombre", "fecha_inicio", "fecha_fin", "distrito", "provincia", "region", "publicado_por")
+# Lo que puede cambiar una respuesta. La descripción todavía no se muestra, y la hora de
+# publicación no cambia qué evento es.
+EN_LA_HUELLA = (
+    "id",
+    "nombre",
+    "tipo",
+    "fecha_inicio",
+    "fecha_fin",
+    "distrito",
+    "provincia",
+    "region",
+    "lat",
+    "lon",
+    "url",
+    "publicado_por",
+)
 
 
 def plegar(texto: str) -> str:
@@ -132,3 +153,53 @@ def polos_cercanos(publicados: Iterable[Publicado], datos: Datos) -> list[frozen
         cerca = _km(float(np.radians(p.lat)), float(np.radians(p.lon)), lats, lons) <= RADIO_KM
         salida.append(frozenset(int(x) for x in polos[cerca]))
     return salida
+
+
+@dataclass(frozen=True)
+class Instantanea:
+    """Los eventos publicados en un momento dado, ya ubicados en sus polos. No cambia: una
+    consulta se resuelve entera con una sola. Se arma con ``Instantanea.de``."""
+
+    eventos: tuple[Publicado, ...] = ()
+    polos: tuple[frozenset[int], ...] = ()  # los de cada evento, en el mismo orden
+    huella: str = ""
+
+    @classmethod
+    def de(cls, publicados: Iterable[Publicado], datos: Datos) -> Instantanea:
+        # De dos con el mismo id vale el último publicado; y el orden no depende del almacén.
+        por_id: dict[str, Publicado] = {}
+        for p in sorted(publicados, key=lambda p: (p.publicado, json.dumps(p.registro(), sort_keys=True))):
+            por_id[p.id] = p
+        eventos = tuple(por_id[i] for i in sorted(por_id))
+        if not eventos:
+            return cls()
+        contenido = [{c: r[c] for c in EN_LA_HUELLA} for r in (p.registro() for p in eventos)]
+        texto = json.dumps(contenido, ensure_ascii=False, sort_keys=True)
+        return cls(
+            eventos=eventos,
+            polos=tuple(polos_cercanos(eventos, datos)),
+            huella=hashlib.sha256(texto.encode()).hexdigest()[:7],
+        )
+
+    def version(self, de_los_artefactos: str) -> str:
+        """La versión de datos con lo publicado: «2026.10.2» sin eventos, «2026.10.2-e3f9a1c» con ellos.
+        Un guion y no un «+»: la versión viaja en el enlace, y ahí un «+» se lee como un espacio."""
+        return f"{de_los_artefactos}-e{self.huella}" if self.huella else de_los_artefactos
+
+    def entre(self, desde: date, hasta: date, polo: int | None = None) -> list[Evento]:
+        """Los que caen entre dos fechas, de un polo o de todos, en el orden del calendario."""
+        salida = [
+            p.evento()
+            for p, polos in zip(self.eventos, self.polos, strict=True)
+            if p.fecha_inicio <= hasta and p.fecha_fin >= desde and (polo is None or polo in polos)
+        ]
+        return sorted(salida, key=lambda e: (e.fecha_inicio, e.id))
+
+    def polos_de(self, id_evento: str) -> frozenset[int]:
+        for p, polos in zip(self.eventos, self.polos, strict=True):
+            if p.id == id_evento:
+                return polos
+        return frozenset()
+
+
+SIN_PUBLICADOS = Instantanea()

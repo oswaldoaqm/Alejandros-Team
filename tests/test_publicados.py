@@ -1,4 +1,4 @@
-"""Los eventos publicados: qué los identifica y en qué polos salen."""
+"""Los eventos publicados: qué los identifica, en qué polos salen y cómo cambian la versión de datos."""
 
 from __future__ import annotations
 
@@ -12,6 +12,8 @@ from dreemgo.contrato import Evento, EventoNuevo
 from dreemgo.motor import datos as artefactos
 from dreemgo.publicados import (
     RADIO_KM,
+    SIN_PUBLICADOS,
+    Instantanea,
     Publicado,
     plegar,
     polos_cercanos,
@@ -164,6 +166,80 @@ class TestPolos:
     def test_sin_polos_no_falla(self):
         vacio = SimpleNamespace(polos={}, recursos={})
         assert polos_cercanos([publicado()], vacio) == [frozenset()]
+
+
+class TestInstantanea:
+    def test_sin_eventos_la_version_es_la_de_los_artefactos(self):
+        assert Instantanea.de([], PAIS) == SIN_PUBLICADOS
+        assert SIN_PUBLICADOS.version("2026.10.2") == "2026.10.2"
+        assert SIN_PUBLICADOS.entre(date(2026, 1, 1), date(2027, 1, 1)) == []
+
+    def test_con_eventos_la_version_lleva_su_huella(self):
+        version = Instantanea.de([publicado()], PAIS).version("2026.10.2")
+        assert version.startswith("2026.10.2-e") and len(version) == len("2026.10.2-e") + 7
+        assert "+" not in version and " " not in version  # viaja en el enlace para compartir
+
+    def test_la_huella_no_depende_del_orden_en_que_llegan(self):
+        a, b = publicado(), publicado(nombre="Feria del Queso")
+        assert Instantanea.de([a, b], PAIS) == Instantanea.de([b, a], PAIS)
+
+    def test_la_huella_cambia_con_lo_que_cambia_una_respuesta(self):
+        base = Instantanea.de([publicado()], PAIS).huella
+        for cambio in ({"lat": -10.0, "lon": -75.0}, {"url": None}, {"tipo": "Feria"}):
+            assert Instantanea.de([publicado(**cambio)], PAIS).huella != base
+        assert Instantanea.de([publicado(), publicado(nombre="Feria del Queso")], PAIS).huella != base
+
+    def test_la_huella_no_cambia_con_lo_que_no_se_muestra(self):
+        base = Instantanea.de([publicado()], PAIS).huella
+        mas_tarde = AHORA + timedelta(hours=3)
+        assert Instantanea.de([publicado(mas_tarde)], PAIS).huella == base
+        assert Instantanea.de([publicado(descripcion="Otra descripción.")], PAIS).huella == base
+
+    def test_de_dos_con_el_mismo_id_vale_el_ultimo_publicado(self):
+        primero = publicado(url=None)
+        corregido = publicado(AHORA + timedelta(minutes=5))
+        for orden in ([primero, corregido], [corregido, primero]):
+            instantanea = Instantanea.de(orden, PAIS)
+            assert instantanea.eventos == (corregido,)
+
+    def test_entre_dos_fechas(self):
+        instantanea = Instantanea.de([publicado()], PAIS)  # del 13 al 15 de noviembre
+        dentro = [
+            (date(2026, 11, 1), date(2026, 11, 30)),
+            (date(2026, 11, 15), date(2026, 11, 20)),  # toca el último día
+            (date(2026, 11, 10), date(2026, 11, 13)),  # toca el primero
+            (date(2026, 11, 14), date(2026, 11, 14)),
+        ]
+        fuera = [(date(2026, 11, 16), date(2026, 11, 30)), (date(2026, 11, 1), date(2026, 11, 12))]
+        for desde, hasta in dentro:
+            assert [e.nombre for e in instantanea.entre(desde, hasta)] == ["Festival del Café"]
+        for desde, hasta in fuera:
+            assert instantanea.entre(desde, hasta) == []
+
+    def test_de_un_polo_o_de_todos(self):
+        en_la_base = publicado(nombre="Feria en el pueblo", lat=-10.0, lon=-75.0)
+        en_lima = publicado(nombre="Feria en Lima", lat=-12.0, lon=-77.0)
+        sin_lugar = publicado(nombre="Feria sin lugar", lat=None, lon=None)
+        instantanea = Instantanea.de([en_la_base, en_lima, sin_lugar], PAIS)
+        noviembre = (date(2026, 11, 1), date(2026, 11, 30))
+
+        def nombres(polo=None):
+            return [e.nombre for e in instantanea.entre(*noviembre, polo)]
+
+        # En el calendario están todos, también el que no tiene lugar.
+        assert sorted(nombres()) == ["Feria en Lima", "Feria en el pueblo", "Feria sin lugar"]
+        assert nombres(1) == nombres(2) == ["Feria en el pueblo"]
+        assert nombres(3) == ["Feria en Lima"]
+        assert nombres(99) == []
+        assert instantanea.polos_de(en_la_base.id) == {1, 2}
+        assert instantanea.polos_de(sin_lugar.id) == frozenset()
+        assert instantanea.polos_de("p-no-existe") == frozenset()
+
+    def test_salen_en_el_orden_del_calendario(self):
+        tarde = publicado(nombre="Segundo", fecha_inicio=date(2026, 11, 20), fecha_fin=date(2026, 11, 21))
+        temprano = publicado(nombre="Primero", fecha_inicio=date(2026, 11, 2), fecha_fin=date(2026, 11, 2))
+        instantanea = Instantanea.de([tarde, temprano], PAIS)
+        assert [e.nombre for e in instantanea.entre(date(2026, 11, 1), date(2026, 11, 30))] == ["Primero", "Segundo"]
 
 
 @con_datos
