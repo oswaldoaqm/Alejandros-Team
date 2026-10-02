@@ -1,0 +1,56 @@
+// Qué pantalla toca según la URL. La consulta va en los parámetros (es el enlace para
+// compartir); las demás pantallas van en el fragmento, que GitHub Pages sirve sin configurar nada.
+
+import { aEnlace, type Consulta, deParametros } from "./consulta";
+
+export type Vista =
+  | { tipo: "inicio"; consulta: Consulta | null }
+  | { tipo: "resultados"; consulta: Consulta; version: string | null; ruta: number }
+  | { tipo: "polo"; id: number; consulta: Consulta | null }
+  | { tipo: "calendario"; consulta: Consulta | null }
+  | { tipo: "mis-viajes" }
+  | { tipo: "acerca" };
+
+/** La pantalla que corresponde a una URL. */
+export function vistaDe(url: URL): Vista {
+  const consulta = deParametros(url.searchParams);
+  const fragmento = url.hash.replace(/^#\/?/, "");
+  const [pagina = "", argumento = ""] = fragmento.split("/");
+  switch (pagina) {
+    case "editar":
+      return { tipo: "inicio", consulta };
+    case "polo": {
+      const id = Number(argumento);
+      if (argumento !== "" && Number.isInteger(id) && id >= 0) return { tipo: "polo", id, consulta };
+      break;
+    }
+    case "calendario":
+      return { tipo: "calendario", consulta };
+    case "mis-viajes":
+      return { tipo: "mis-viajes" };
+    case "acerca":
+      return { tipo: "acerca" };
+  }
+  if (!consulta) return { tipo: "inicio", consulta: null };
+  const elegida = pagina === "ruta" ? Number(argumento) : 1;
+  return {
+    tipo: "resultados",
+    consulta,
+    version: url.searchParams.get("v"),
+    ruta: Number.isInteger(elegida) && elegida >= 1 && elegida <= 3 ? elegida : 1,
+  };
+}
+
+/** El enlace relativo de una pantalla. Con `consulta`, la conserva para poder volver. */
+export const enlaces = {
+  inicio: () => "./",
+  editar: (c: Consulta, version?: string | null) => `${aEnlace(c, version)}#/editar`,
+  resultados: (c: Consulta, version?: string | null, ruta = 1) =>
+    `${aEnlace(c, version)}${ruta > 1 ? `#/ruta/${ruta}` : ""}`,
+  polo: (id: number, c?: Consulta | null, version?: string | null) =>
+    `${c ? aEnlace(c, version) : "./"}#/polo/${id}`,
+  calendario: (c?: Consulta | null, version?: string | null) =>
+    `${c ? aEnlace(c, version) : "./"}#/calendario`,
+  misViajes: () => "./#/mis-viajes",
+  acerca: () => "./#/acerca",
+};
