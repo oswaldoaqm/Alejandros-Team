@@ -66,7 +66,7 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
+        ReadCapacityUnits: 5
         WriteCapacityUnits: 1
       # DynamoDB borra sola los eventos que ya pasaron: «expira» lo pone el API al guardar.
       TimeToLiveSpecification:
