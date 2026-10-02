@@ -17,6 +17,7 @@ import { Icono } from "../piezas/Icono";
 import { TarjetaRuta } from "../piezas/TarjetaRuta";
 import { enlaces } from "../ruta";
 import { aplicarSugerencia, textoDeSugerencia } from "../textos";
+import { cambioDeVersion } from "../version";
 
 interface Props {
   consulta: Consulta;
@@ -249,21 +250,24 @@ export function Resultados({ consulta, version, elegida }: Props) {
 
   useTitulo(titulo(consulta, nombres));
 
-  // El enlace completo lleva la versión de datos: si la barra de direcciones no la trae, se le pone.
+  // El enlace completo lleva la versión de datos: si la barra de direcciones no la trae, se le
+  // pone. Y si solo cambiaron los eventos publicados, se pone la vigente sin avisar: las rutas
+  // son las mismas (src/version.ts).
   const versionRecibida = alDia ? respuesta.version_datos : null;
+  const cambio = versionRecibida === null ? "ninguno" : cambioDeVersion(version, versionRecibida);
   useEffect(() => {
-    if (versionRecibida !== null && version === null) {
+    if (versionRecibida !== null && (version === null || cambio === "eventos")) {
       navegar(enlaces.resultados(consulta, versionRecibida, elegida), {
         reemplazar: true,
         conservarPosicion: true,
       });
     }
-  }, [versionRecibida, version, consulta, elegida, navegar]);
+  }, [versionRecibida, version, cambio, consulta, elegida, navegar]);
 
   const rutas = respuesta?.rutas ?? [];
   const indice = Math.min(Math.max(elegida, 1), Math.max(rutas.length, 1)) - 1;
   const abierta = rutas[indice];
-  const deOtraVersion = alDia && version !== null && version !== respuesta.version_datos;
+  const deOtraVersion = alDia && cambio === "datos";
 
   const elegir = () => {
     // En celular el detalle queda debajo de las tarjetas: se lleva la vista hasta él.
