@@ -60,6 +60,17 @@ def plegar(texto: str) -> str:
     return " ".join(sin_marcas.casefold().split())
 
 
+def regiones(datos: Datos) -> list[str]:
+    """Las regiones como las escribe el inventario, en orden alfabético."""
+    return sorted({r for p in datos.polos.values() for r in p.regiones}, key=plegar)
+
+
+def region_del_inventario(texto: str, datos: Datos) -> str | None:
+    """La región tal como la escribe el inventario, o None si no es ninguna. Con una sola
+    forma de escribirla, el calendario la junta con las demás fiestas de la región."""
+    return {plegar(r): r for r in regiones(datos)}.get(plegar(texto))
+
+
 @dataclass(frozen=True)
 class Publicado:
     """Un evento publicado, como se guarda."""

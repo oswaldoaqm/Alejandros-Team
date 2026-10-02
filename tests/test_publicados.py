@@ -17,6 +17,8 @@ from dreemgo.publicados import (
     Publicado,
     plegar,
     polos_cercanos,
+    region_del_inventario,
+    regiones,
 )
 
 con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
@@ -240,6 +242,22 @@ class TestInstantanea:
         temprano = publicado(nombre="Primero", fecha_inicio=date(2026, 11, 2), fecha_fin=date(2026, 11, 2))
         instantanea = Instantanea.de([tarde, temprano], PAIS)
         assert [e.nombre for e in instantanea.entre(date(2026, 11, 1), date(2026, 11, 30))] == ["Primero", "Segundo"]
+
+
+class TestRegiones:
+    def test_la_region_se_escribe_como_en_el_inventario(self):
+        assert regiones(PAIS) == ["Junín", "Lima", "Pasco"]
+        assert region_del_inventario("junin", PAIS) == "Junín"
+        assert region_del_inventario(" PASCO ", PAIS) == "Pasco"
+        assert region_del_inventario("Narnia", PAIS) is None
+
+    @con_datos
+    def test_son_las_veinticinco_del_pais(self):
+        datos = artefactos.cargar()
+        assert len(regiones(datos)) == 25
+        assert regiones(datos)[:3] == ["Amazonas", "Áncash", "Apurímac"]  # sin que la tilde la mande al final
+        assert region_del_inventario("ancash", datos) == "Áncash"
+        assert region_del_inventario("madre de dios", datos) is not None
 
 
 @con_datos
