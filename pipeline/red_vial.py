@@ -12,8 +12,9 @@ calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-p
    (las rutas ``route=train`` sin sus ramales mineros, y los rieles de uso turístico
    aunque OSM no les haya puesto ruta, como el tramo de Machu Picchu a la Hidroeléctrica)
    y los botes (los ferris de más de 3 km: el Titicaca, las Ballestas, los ríos de la
-   Amazonía). Solo se sube o se baja en una estación o un muelle, unidos a la vía más
-   cercana por un trasbordo que cuesta minutos fijos.
+   Amazonía). Del tren se sube y se baja en una estación, y de un bote en cualquier punto de
+   su ruta; los que quedan cerca de una vía se unen a ella por un trasbordo que cuesta
+   minutos fijos.
 2. Las velocidades por clase se calibran con los recorridos de acceso que publican las
    fichas oficiales (``pipeline/red_calibracion.py``).
 3. Con la red calibrada se calculan los tiempos que usa el motor: de cada ciudad de
@@ -113,6 +114,7 @@ class Red:
     sin_asfaltar: np.ndarray  # bool
     curvas: np.ndarray  # float32, grados de giro por kilómetro
     capa: np.ndarray | None = None  # int8 por vértice, índice en CAPAS; None si todo es vial
+    embarque: np.ndarray | None = None  # bool por vértice: estación o muelle; None si todo es vial
     fecha_osm: str = ""
 
     @property
@@ -135,6 +137,7 @@ class Red:
             sin_asfaltar=self.sin_asfaltar,
             curvas=self.curvas,
             capa=np.zeros(self.vertices, dtype=np.int8) if self.capa is None else self.capa,
+            embarque=np.zeros(self.vertices, dtype=bool) if self.embarque is None else self.embarque,
             fecha_osm=np.array(self.fecha_osm),
         )
 
@@ -242,8 +245,7 @@ def leer_red(pbf: Path, indice: str = "flex_mem") -> Red:
                 tramo = [nodo]
         if len(tramo) > 1:
             capas.agregar(tramo, "tren", False, _DESPLAZAMIENTO["tren"])
-    muelles = [p for e in capas.extremos("bote") for p in e]
-    return _unir(vial.armar(), capas.armar(), list(estaciones.values()) + muelles)
+    return _unir(vial.armar(), capas.armar(), list(estaciones.values()))
 
 
 class _Vias:
@@ -265,15 +267,6 @@ class _Vias:
         self.lons.extend(lo)
         self.clases.append(CODIGO[clase])
         self.sin_asf.append(sin_asfaltar)
-
-    def extremos(self, clase: str) -> list[tuple[tuple[float, float], tuple[float, float]]]:
-        """Primer y último punto de cada vía de esa clase."""
-        fin = list(self.inicios[1:]) + [len(self.refs)]
-        return [
-            ((self.lats[a], self.lons[a]), (self.lats[b - 1], self.lons[b - 1]))
-            for a, b, c in zip(self.inicios, fin, self.clases, strict=True)
-            if c == CODIGO[clase]
-        ]
 
     def armar(self) -> Red | None:
         if not self.inicios:
@@ -350,8 +343,11 @@ def _estaciones_al_lado(pbf: Path, rieles: list, refs_de_riel: set[int]) -> dict
 
 
 def _unir(vial: Red, capas: Red | None, puntos: list[tuple[float, float]]) -> Red:
-    """La red vial con las capas encima, unidas por un trasbordo entre cada estación o muelle
-    y el vértice vial más cercano (a menos de CONEXION_MAX_M)."""
+    """La red vial con las capas encima, unidas por un trasbordo entre cada punto de embarque
+    y el vértice vial más cercano, si está a menos de CONEXION_MAX_M. Del tren se sube en sus
+    estaciones; de un bote, en cualquier punto de su ruta, como las lanchas que paran en cada
+    pueblo de la orilla. Los puntos de embarque quedan marcados en ``embarque``, aunque ninguna
+    vía llegue a ellos (el muelle de una isla)."""
     if capas is None:
         return vial
     from scipy.spatial import cKDTree
@@ -363,7 +359,10 @@ def _unir(vial: Red, capas: Red | None, puntos: list[tuple[float, float]]) -> Re
         capa[n + capas.desde[de_la_capa]] = CAPAS.index(nombre)
         capa[n + capas.hasta[de_la_capa]] = CAPAS.index(nombre)
     vertice_de = {(la, lo): i for i, (la, lo) in enumerate(zip(capas.lat.tolist(), capas.lon.tolist(), strict=True))}
-    en_capa = sorted({vertice_de[p] for p in puntos if p in vertice_de})
+    de_bote = np.flatnonzero(capa[n:] == CAPAS.index("bote")).tolist()
+    en_capa = sorted({vertice_de[p] for p in puntos if p in vertice_de} | set(de_bote))
+    embarque = np.zeros(n + capas.vertices, dtype=bool)
+    embarque[n + np.asarray(en_capa, dtype=np.int64)] = True
     arbol = cKDTree(_unitarios(vial.lat, vial.lon))
     cuerda, cercano = arbol.query(_unitarios(capas.lat[en_capa], capas.lon[en_capa]))
     metros = 2 * RADIO_TIERRA_M * np.arcsin(np.clip(cuerda / 2, 0.0, 1.0))
@@ -381,6 +380,7 @@ def _unir(vial: Red, capas: Red | None, puntos: list[tuple[float, float]]) -> Re
         sin_asfaltar=np.r_[vial.sin_asfaltar, capas.sin_asfaltar, np.zeros(k, dtype=bool)],
         curvas=np.r_[vial.curvas, capas.curvas, np.zeros(k)].astype(np.float32),
         capa=capa,
+        embarque=embarque,
     )
 
 
@@ -583,13 +583,20 @@ def cercanos(lat, lon, puntos_lat, puntos_lon, radio_m: float) -> list[list[int]
     return list(arbol.query_ball_point(_unitarios(lat, lon), cuerda))
 
 
+MEDIOS = ("vial", "tren", "bote")  # por dónde se llega a un punto (ver Ruteador.ubicar)
+CAPA_MAX_M = 5_000  # un punto que se llega en bote o en tren se ubica en su capa si está a menos de esto
+
+
 class Ruteador:
     """Caminos más rápidos sobre la red con un tiempo por arista (minutos).
 
-    Solo se ubican puntos en la parte conectada grande de la red: un tramo suelto de
-    OSM, sin unión con nada, no sirve para llegar a ningún lado. Un punto se ubica en una
-    vía; solo si no hay ninguna a menos de CONEXION_MAX_M y un riel o la ruta de un bote
-    quedan más cerca, se ubica en ellos (una isla, un pueblo al que solo llega el tren).
+    Solo se ubican puntos en la parte conectada de la red. En las vías, en cualquier tramo
+    de al menos ``vertices_minimos`` vértices: un tramo suelto de OSM, sin unión con nada,
+    no sirve para llegar a ningún lado. En el tren y en los botes, solo en la parte que se
+    une con el resto del país: un río mapeado a trozos no lleva a ninguna parte. Del tren
+    se baja en una estación; de un bote, en cualquier punto de su ruta, como hacen las
+    lanchas de la Amazonía y los botes del Titicaca. Cómo se elige dónde se ubica cada
+    punto está en ``ubicar``.
     """
 
     def __init__(self, red: Red, minutos: np.ndarray, vertices_minimos: int = 200):
@@ -616,26 +623,54 @@ class Ruteador:
         tamanio = np.bincount(etiqueta)
         self.componente = etiqueta
         self.en_red_grande = tamanio[etiqueta] >= vertices_minimos
+        unida = etiqueta == int(np.argmax(tamanio))  # la parte que une el país
         capa = np.zeros(n, dtype=np.int8) if red.capa is None else red.capa
-        self._ubicables = np.flatnonzero(self.en_red_grande & (capa == 0))
-        self._arbol = cKDTree(_unitarios(red.lat[self._ubicables], red.lon[self._ubicables]))
-        self._en_capas = np.flatnonzero(self.en_red_grande & (capa > 0))
-        self._arbol_capas = None
-        if len(self._en_capas):
-            self._arbol_capas = cKDTree(_unitarios(red.lat[self._en_capas], red.lon[self._en_capas]))
+        embarque = np.zeros(n, dtype=bool) if red.embarque is None else red.embarque
+        self._capa = capa
+        self._ubicables = {
+            "vial": np.flatnonzero(self.en_red_grande & (capa == CAPAS.index("vial"))),
+            "tren": np.flatnonzero(unida & (capa == CAPAS.index("tren")) & embarque),
+            "bote": np.flatnonzero(unida & (capa == CAPAS.index("bote"))),
+        }
+        self._arboles = {
+            medio: cKDTree(_unitarios(red.lat[v], red.lon[v])) for medio, v in self._ubicables.items() if len(v)
+        }
 
-    def ubicar(self, lat, lon) -> tuple[np.ndarray, np.ndarray]:
-        """(vértice más cercano, metros en línea recta hasta él) para cada punto."""
+    def _mas_cercano(self, medio: str, puntos: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        if medio not in self._arboles:
+            return np.full(len(puntos), -1, dtype=np.int64), np.full(len(puntos), np.inf)
+        cuerda, i = self._arboles[medio].query(puntos)
+        return self._ubicables[medio][i], _cuerda_a_metros(cuerda)
+
+    def ubicar(self, lat, lon, medios=None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """(vértice, metros en línea recta hasta él, capa del vértice) para cada punto.
+
+        ``medios`` dice, por punto, cómo se llega a él:
+        - ``"vial"``: por la vía más cercana, como un pueblo o una parada a la que se llega
+          en auto o a pie;
+        - ``"bote"`` o ``"tren"``: por la ruta de bote o la estación más cercanas, si quedan a
+          menos de CAPA_MAX_M y no hay una vía igual de cerca a menos de CONEXION_MAX_M;
+          si no, por la vía;
+        - ``None`` (todos, por defecto): por la vía, salvo que no haya ninguna a menos de
+          CONEXION_MAX_M y una estación o la ruta de un bote queden más cerca (una isla, un
+          pueblo al que solo llega el tren).
+        """
         puntos = _unitarios(lat, lon)
-        cuerda, i = self._arbol.query(puntos)
-        vertice, metros = self._ubicables[i], _cuerda_a_metros(cuerda)
-        if self._arbol_capas is not None:
-            cuerda_c, j = self._arbol_capas.query(puntos)
-            metros_c = _cuerda_a_metros(cuerda_c)
-            mejor = (metros > CONEXION_MAX_M) & (metros_c < metros)
-            vertice = np.where(mejor, self._en_capas[j], vertice)
-            metros = np.where(mejor, metros_c, metros)
-        return vertice, metros
+        cercano = {medio: self._mas_cercano(medio, puntos) for medio in MEDIOS}
+        vertice, metros = cercano["vial"]
+        junto_a_la_via = metros <= CONEXION_MAX_M
+        if medios is None:
+            (vt, mt), (vb, mb) = cercano["tren"], cercano["bote"]
+            v, m = np.where(mb < mt, vb, vt), np.minimum(mb, mt)
+            usa = ~junto_a_la_via & (m < metros)
+        else:
+            medios = np.asarray(medios, dtype=object)
+            en_bote = medios == "bote"
+            v = np.where(en_bote, cercano["bote"][0], cercano["tren"][0])
+            m = np.where(en_bote, cercano["bote"][1], cercano["tren"][1])
+            usa = np.isin(medios, ["tren", "bote"]) & (m <= CAPA_MAX_M) & ~(junto_a_la_via & (metros <= m))
+        vertice, metros = np.where(usa, v, vertice), np.where(usa, m, metros)
+        return vertice, metros, self._capa[vertice]
 
     def minutos_desde(self, fuentes, limite: float = np.inf, predecesores: bool = False):
         """Minutos de viaje desde cada fuente a todos los vértices (inf si no se llega)."""

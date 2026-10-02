@@ -60,6 +60,8 @@
     <tag k="railway" v="station"/>
     <tag k="name" v="Estación al lado del riel"/>
   </node>
+  <node id="90" version="1" lat="-12.060" lon="-76.950"/>
+  <node id="91" version="1" lat="-12.060" lon="-76.900"/>
   <way id="10" version="1">
     <nd ref="1"/><nd ref="2"/><nd ref="3"/><nd ref="4"/>
     <tag k="highway" v="primary"/>
@@ -126,6 +128,11 @@
     <nd ref="82"/><nd ref="85"/><nd ref="86"/>
     <tag k="railway" v="narrow_gauge"/>
     <tag k="usage" v="tourism"/>
+  </way>
+  <way id="33" version="1">
+    <nd ref="90"/><nd ref="91"/>
+    <tag k="route" v="ferry"/>
+    <tag k="name" v="Bote de un río mapeado a trozos"/>
   </way>
   <relation id="100" version="1">
     <member type="node" ref="40" role="admin_centre"/>

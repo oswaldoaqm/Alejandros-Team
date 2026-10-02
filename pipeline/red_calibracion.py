@@ -160,8 +160,8 @@ def componer(red: Red, ritmos: dict, pares: pd.DataFrame) -> pd.DataFrame:
     se calibran no usan tren ni bote."""
     red = red.vial()
     ruteador = Ruteador(red, minutos_por_arista(red, ritmos))
-    v_ini, m_ini = ruteador.ubicar(pares["lat_desde"].to_numpy(), pares["lon_desde"].to_numpy())
-    v_fin, m_fin = ruteador.ubicar(pares["lat"].to_numpy(), pares["lon"].to_numpy())
+    v_ini, m_ini, _ = ruteador.ubicar(pares["lat_desde"].to_numpy(), pares["lon_desde"].to_numpy())
+    v_fin, m_fin, _ = ruteador.ubicar(pares["lat"].to_numpy(), pares["lon"].to_numpy())
     km = red.metros.astype(np.float64) / 1000
     curvas_km = km * np.minimum(red.curvas, CURVAS_TOPE) / 100
     filas = np.full((len(pares), len(VIALES) + 2), np.nan)
