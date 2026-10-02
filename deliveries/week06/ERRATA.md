@@ -33,6 +33,7 @@ Lo entregado el 16 de septiembre está intacto en la etiqueta [`entrega/semana-0
 | Dónde | Qué decía o hacía | Qué dice o hace ahora | Por qué |
 |---|---|---|---|
 | `data/processed/fichas_mincetur.csv`, columna `INGRESO_OBS` | Las observaciones de ingreso tal como las escribe cada ficha, con los teléfonos, los correos y los nombres de quienes atienden el lugar | Los mismos textos con `[contacto en la ficha oficial]` y `[encargado]` en su lugar, en 699 celdas, y en una de `HORA_VISITA`. Esas celdas quedan en una sola línea | Son datos de personas. El pipeline del producto los quita al leer la ficha ([`pipeline/README.md`](../../pipeline/README.md#datos-personales)) y esta tabla es anterior a esa regla. Ningún script lee la columna: el scraper sacó de ella `TARIFA_SOLES` al escribirla |
+| `code/scraper_mincetur_v3.py` | Se identificaba ante el servidor de MINCETUR con el correo personal de un integrante | Con la dirección del repositorio | El contacto del proyecto es su repositorio, como en `pipeline/adquisicion/` |
 
 ## Hallazgos que siguen abiertos
 
