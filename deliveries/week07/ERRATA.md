@@ -16,6 +16,7 @@ Lo entregado el 23 de septiembre está intacto en la etiqueta [`entrega/semana-0
 | Dónde | Qué decía | Qué dice ahora | Por qué |
 |---|---|---|---|
 | `data/processed/fichas_mincetur.csv`, columna `INGRESO_OBS` | Los teléfonos, los correos y los nombres de quienes atienden cada lugar, como en la copia de `week06` | `[contacto en la ficha oficial]` y `[encargado]` en su lugar | Son datos de personas. El detalle está en [`../week06/ERRATA.md`](../week06/ERRATA.md) |
+| `code/scraper_mincetur_v3.py` | Se identificaba con el correo personal de un integrante | Con la dirección del repositorio | La misma corrección que en `week06/code` |
 
 ## Falta en esta carpeta
 
