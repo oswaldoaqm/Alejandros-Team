@@ -1,6 +1,6 @@
 # 0007 · Tiempos de viaje sobre un extracto propio de OpenStreetMap
 
-**Fecha:** 30 de septiembre de 2026 · **Estado:** vigente. Su calibración la precisa la [0008](./0008-calibrar-con-las-fichas.md)
+**Fecha:** 30 de septiembre de 2026 · **Estado:** vigente. Su calibración la precisa la [0008](./0008-calibrar-con-las-fichas.md), y la [0010](./0010-tren-y-botes.md) le suma el tren y los botes
 
 ## Contexto
 
