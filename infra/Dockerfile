@@ -6,6 +6,10 @@
 #
 #   docker build -f infra/Dockerfile -t dreemgo-api .
 #   docker run -p 8080:8080 dreemgo-api        # http://localhost:8080/v1/docs
+#
+# El puerto sale de PORT, que por defecto es 8080. Ese es el puerto que esperan AWS Lambda
+# (lo pone template.yaml), Docker en local y hostes como Render. Google Cloud Run, en cambio,
+# inyecta su propio PORT: con `docker run -e PORT=...`, el contenedor lo respeta sin cambios.
 
 FROM public.ecr.aws/docker/library/python:3.12-slim
 
@@ -18,6 +22,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8080 \
     AWS_LWA_READINESS_CHECK_PATH=/v1/salud
 
+# Se puede cambiar en el build (`--build-arg PORT=…`) o al correr (`-e PORT=…`).
+ARG PORT=8080
+
 WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY dreemgo ./dreemgo
@@ -28,5 +35,7 @@ RUN pip install ".[api,aws]" \
     && mkdir /datos && chown dreemgo:dreemgo /datos
 USER dreemgo
 
-EXPOSE 8080
-CMD ["uvicorn", "dreemgo.api.app:app", "--host", "0.0.0.0", "--port", "8080"]
+EXPOSE ${PORT}
+# `exec` deja a uvicorn como proceso principal del contenedor: recibe bien la señal de apagado
+# y `$PORT` se expande en tiempo de ejecución, así que `-e PORT=…` funciona sin recompilar.
+CMD ["sh", "-c", "exec uvicorn dreemgo.api.app:app --host 0.0.0.0 --port ${PORT}"]

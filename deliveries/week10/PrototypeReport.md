@@ -93,7 +93,7 @@ flowchart LR
 | Pieza | Tecnología | Dónde corre |
 |---|---|---|
 | Pipeline | Python, pandas, scipy, osmium | En la computadora de un integrante, cuando cambia una fuente |
-| Motor y API | Python, numpy, pydantic, FastAPI | Una imagen de contenedor: en AWS Lambda detrás de una HTTP API, en un Space de Hugging Face o en local |
+| Motor y API | Python, numpy, pydantic, FastAPI | Una imagen de contenedor: en AWS Lambda detrás de una HTTP API, en Render o en local |
 | Eventos publicados | DynamoDB en AWS; un archivo o la memoria fuera de AWS | Junto al API |
 | App | React, Vite, TypeScript, MapLibre GL | GitHub Pages |
 | Integración continua | GitHub Actions | En cada pull request: lint, pruebas, imágenes y la app contra el API |

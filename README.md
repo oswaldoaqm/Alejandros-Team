@@ -101,7 +101,7 @@ Alejandros-Team/
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
 ├── app/                            la app web: React, Vite, TypeScript y MapLibre
 ├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
-│                                   publicados, o gratis en un Space de Hugging Face
+│                                   publicados, o gratis en Render
 ├── tests/                          pruebas del contrato, del API y del pipeline
 ├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
 └── deliveries/                     lo que pide cada hito del curso, una carpeta por semana
