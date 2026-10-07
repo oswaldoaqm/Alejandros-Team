@@ -95,9 +95,10 @@ Alejandros-Team/
 │   ├── motor/                      del pedido al viaje: valor, días, itinerario, costo y avisos
 │   └── datos/                      los artefactos que carga el motor, con su manifiesto
 ├── pipeline/                       convierte las descargas en los datos del motor: fichas, maestro, eventos,
-│                                   red vial, bases, clima y artefactos
-│   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima y fichas
-│   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral…
+│                                   red vial, bases, clima y artefactos; y elige las fotos que muestra la app
+│   ├── adquisicion/                descargas de las fuentes: inventario, OpenStreetMap, clima, fichas y fotos
+│   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral, fotos
+│                                   revisadas…
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
 ├── app/                            la app web: React, Vite, TypeScript y MapLibre
 ├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
@@ -147,11 +148,15 @@ Titicaca, las Ballestas y la Amazonía; **dónde se duerme en cada polo**, y el 
 mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
 [contrato](./docs/CONTRATO.md).
 
-Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo) y
-[OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos y hospedajes). Prevista:
+Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo),
+[OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos y hospedajes) y
+[Wikimedia Commons](https://commons.wikimedia.org/) (una foto de licencia libre para los lugares y los pueblos
+que la tienen, elegida con [Wikidata](https://www.wikidata.org/)). Prevista:
 [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto).
 
-Este repositorio contiene únicamente datos abiertos con licencia que permite su redistribución.
+Este repositorio contiene únicamente datos abiertos con licencia que permite su redistribución. De las fotos
+guarda la lista, con el autor y la licencia de cada una, y ninguna imagen: la app se las pide a Wikimedia. La
+licencia de cada fuente y lo que exige están en [`DATA_LICENSES.md`](./DATA_LICENSES.md).
 
 ---
 
@@ -246,6 +251,8 @@ python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.clima       # clima por polo y mes
 python -m pipeline.artefactos --version 2026.10.2   # dreemgo/datos/
+python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
+python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 pytest
 ```
 
