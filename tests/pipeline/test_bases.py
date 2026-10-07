@@ -6,8 +6,8 @@ import pytest
 
 from pipeline import bases
 
-SIN_CAPITALES = pd.DataFrame(columns=["distrito", "capital", "lat", "lon"])
-SIN_HOSPEDAJES = pd.DataFrame(columns=["tipo", "lat", "lon"])
+SIN_CAPITALES = pd.DataFrame(columns=["distrito", "capital", "lat", "lon"]).astype({"lat": float, "lon": float})
+SIN_HOSPEDAJES = pd.DataFrame(columns=["tipo", "lat", "lon"]).astype({"lat": float, "lon": float})
 
 
 def _lugares() -> pd.DataFrame:
