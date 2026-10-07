@@ -11,7 +11,7 @@ requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "Alejandro's Team · DS3022 UTEC" }]
 dependencies = [
-    "numpy>=2.0",
+    "numpy>=1.26,<3.0",
     "pydantic>=2.8",
 ]
 
