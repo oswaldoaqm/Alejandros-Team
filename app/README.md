@@ -1,6 +1,6 @@
 # La app de DreemGO
 
-La web que usa el viajero: pregunta qué viaje quiere, muestra hasta tres rutas para comparar y abre el itinerario de la que elija, con su mapa, su costo, su mes y sus fiestas. Tiene además una página para que una municipalidad publique un evento. Está pensada primero para celular, en español, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
+La web que usa el viajero: pregunta qué viaje quiere, propone hasta tres para comparar y abre el que elija en su propia pantalla, con su plan día por día, su mapa, su costo, su mes y sus fiestas. Tiene además una página para que una municipalidad publique un evento. Está pensada primero para celular, en español, con tema claro y oscuro, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
 
 React 19, Vite, TypeScript y MapLibre GL. Sin librería de rutas ni de estado: la consulta vive en la URL, que es también el enlace para compartir ([decisión 0001](../docs/decisiones/0001-sin-login-y-enlace-compartible.md)).
 
@@ -61,53 +61,62 @@ Así, sin `https`, el navegador no deja copiar ni usar el menú de compartir: «
 
 | Dirección | Pantalla | De dónde salen sus datos |
 |---|---|---|
-| `./` | El formulario | `GET /v1/opciones` |
-| `./?origen=lima&mes=7&dias=6&…&v=2026.10.2` | Las rutas y el detalle de la primera | `GET /v1/viajes` |
-| `…#/ruta/2` | Lo mismo, con la segunda ruta abierta | |
+| `./` | El formulario: cinco filas, y las que piden elegir abren su hoja | `GET /v1/opciones` |
+| `./?origen=lima&mes=7&dias=6&…&v=2026.10.2` | Los tres viajes, en tarjetas para comparar | `GET /v1/viajes` |
+| `…#/ruta/2` | El segundo viaje, en su pantalla: por qué conviene, qué saber antes de ir, el plan día por día con su mapa, el costo, el clima y las fiestas. Cada lugar abre su hoja | |
 | `…#/editar` | El formulario con esa consulta | |
-| `…#/polo/33` | La ficha de un polo: clima de los doce meses, lugares y fiestas | `GET /v1/polos/{id}` |
-| `…#/calendario` | Fiestas y eventos de un mes; `#/calendario/11` lo abre en noviembre | `GET /v1/eventos` |
-| `./#/mis-viajes` | Los viajes guardados en este navegador | `localStorage` |
+| `…#/polo/33` | La zona de un viaje: sus lugares, su clima de los doce meses y sus fiestas | `GET /v1/polos/{id}` |
+| `…#/calendario` | Fiestas: los eventos de un mes, por región; `#/calendario/11` lo abre en noviembre | `GET /v1/eventos` |
+| `./#/mis-viajes` | Guardados: los viajes guardados en este navegador | `localStorage` |
 | `./#/acerca` | Cómo funciona y de dónde salen los datos | |
 | `./#/publicar` | Para municipalidades: publicar un evento, con su lugar marcado en un mapa | `POST /v1/eventos` |
 
-Los parámetros son los de la consulta del contrato, más `v`, la versión de datos con que se calculó. Si el enlace trae una versión que ya no es la vigente, la app lo avisa en vez de mostrar otro viaje en silencio. Si lo único que cambió son los eventos que publicaron los municipios (la parte `-e…` de la versión), las rutas son las mismas: no avisa y pone en el enlace la versión vigente. Lo que va después de `#` es de la app: GitHub Pages lo sirve sin configurar nada.
+Los parámetros son los de la consulta del contrato, más `v`, la versión de datos con que se calculó. Si el enlace trae una versión que ya no es la vigente, la app lo avisa en vez de mostrar otro viaje en silencio. Si lo único que cambió son los eventos que publicaron los municipios (la parte `-e…` de la versión), los viajes son los mismos: no avisa y pone en el enlace la versión vigente. Lo que va después de `#` es de la app: GitHub Pages lo sirve sin configurar nada.
+
+La app le habla al viajero con sus palabras: un «polo» del contrato es una zona, y una «ruta», un viaje. Las direcciones conservan las del contrato (`#/polo/33`, `#/ruta/2`), así los enlaces que ya se compartieron siguen abriendo.
 
 ## Cómo está hecha
 
 ```
 src/
-├── main.tsx · App.tsx     arranque y marco: cabecera, pantalla según la URL, pie
+├── main.tsx · App.tsx     arranque y marco: cabecera, barra de abajo en celular, pantalla según la URL, pie
 ├── ruta.ts                de la URL a la pantalla, y de la pantalla a la URL
-├── consulta.ts            la consulta del viajero: ida y vuelta a la URL, chips y título
+├── consulta.ts            la consulta del viajero: ida y vuelta a la URL, y cómo se dice en una frase
 ├── formato.ts · textos.ts números, fechas y frases, escritos como los escribe el motor
-├── itinerario.ts          paradas numeradas de corrido: el mismo número en la lista y en el mapa
+├── itinerario.ts          las paradas de cada día, numeradas igual en la lista y en el mapa
+├── flor.ts                la flor de cada viaje y los pétalos del mapa: uno por día
+├── fotos.ts               qué foto va con cada viaje, zona y lugar, y cómo se le pide a Wikimedia
 ├── eventos.ts             en qué día del viaje cae un evento
 ├── version.ts             la versión de datos: qué parte es de los artefactos y cuál de lo publicado
 ├── regiones.ts            las 25 regiones, cada una con su ciudad, para el mapa de publicar
-├── almacen.ts             «Mis viajes», en el navegador
+├── almacen.ts             «Guardados», en el navegador
 ├── api/                   cliente del API y tipos generados del contrato
-├── estado/                navegación, pedidos al API y título de la pestaña
-├── piezas/                tarjeta de ruta, itinerario, los dos mapas, banda de costo, clima…
+├── estado/                navegación, pedidos al API, la lista de fotos y título de la pestaña
+├── estilos/               un archivo por pantalla; base.css tiene los colores y las medidas de los dos temas
+├── piezas/                tarjeta de viaje, plan del día, hojas, los dos mapas, banda de costo, clima…
 ├── vistas/                una por pantalla
 └── pruebas/               el API de mentira y la preparación de las pruebas
+public/fotos.json          la lista de fotos: la escribe el pipeline, no se edita a mano
 ```
 
 - **Los tipos salen del contrato.** `src/api/esquema.d.ts` se genera de `docs/openapi.json`, y ese archivo, del API. Si el contrato cambia: `python docs/generar_openapi.py` en la raíz y `npm run tipos` aquí. Las pruebas del API fallan si `docs/openapi.json` queda atrás.
 - **Lo que escribe el motor no se reescribe.** Motivos, avisos, notas de cada día y explicaciones del mes se muestran tal como llegan.
-- **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo o el mapa fallan, el itinerario dice lo mismo con palabras; y al publicar un evento, el lugar se puede escribir en coordenadas.
+- **El mapa es un croquis del viaje, no el trazo del camino.** Cada día es un pétalo que sale de donde se duerme y abarca los lugares de ese día; con un día elegido, sus lugares llevan el número que tienen en la lista. La misma idea, en chico, es la flor de cada viaje: el tallo es el camino de ida y cada pétalo, un día, más largo cuanto más lejos se llega y más ancho cuantos más lugares tiene.
+- **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo no carga, queda un lienzo liso con los pétalos y los lugares en su sitio; si el mapa entero falla, el plan dice lo mismo con palabras; y al publicar un evento, el lugar se puede escribir en coordenadas.
+- **Las fotos son de Wikimedia Commons y no se guardan aquí.** `public/fotos.json` dice qué foto va con cada lugar y con cada pueblo donde se duerme: lo escribe el pipeline, que las elige con Wikidata y deja fuera las que se quitaron al revisarlas ([`pipeline/README.md`](../pipeline/README.md#fotos)). La app le pide a Wikimedia la miniatura del ancho que necesita cada pantalla y muestra el autor y la licencia junto a cada foto. Lo que no tiene foto, o cuya foto no carga, muestra la flor del viaje o un ícono.
+- **Claro y oscuro.** La app sigue el tema del sistema. Los colores y las medidas de los dos temas están en `src/estilos/base.css`; el mapa es claro en los dos.
 - **La clave de publicador no se guarda.** Vive en la página mientras está abierta y viaja solo en la cabecera del pedido que publica.
 - **El estado no va solo en el color.** El veredicto del mes y los avisos llevan siempre su ícono y su palabra.
 
 ### Cuánto pesa
 
-Con gzip, lo que se baja al abrir la app son unos 99 kB (94 de JavaScript y 6 de estilos). El mapa suma unos 440 kB la primera vez que se abre una ruta (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
+Con gzip, lo que se baja al abrir la app son unos 113 kB (101 de JavaScript y 11 de estilos). La lista de fotos suma 25 kB la primera vez que se ven unos viajes, y cada foto llega del tamaño de su recuadro. El mapa suma unos 440 kB la primera vez que se abre un viaje (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
 
 ## Pruebas
 
 `npm test` corre las pruebas de la lógica y de cada pantalla en jsdom, con un API de mentira que responde con [`docs/ejemplos/respuesta_ilustrativa.json`](../docs/ejemplos/respuesta_ilustrativa.json), una respuesta real del motor: si el contrato cambia y el ejemplo se regenera, las pruebas corren contra la forma nueva.
 
-`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar rutas, abrir el mapa, compartir el enlace, guardar el viaje. Y lo que hace una municipalidad: publicar un evento marcando su lugar en el mapa y verlo en el calendario. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario). Levanta el API y la app por su cuenta, o usa los que ya estén corriendo; si el API ya estaba corriendo sin la clave de la prueba, la de publicar se salta y lo dice. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
+`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar los viajes, abrir uno con su mapa, compartir el enlace, guardarlo y volver a él. Y lo que hace una municipalidad: publicar un evento marcando su lugar en el mapa y verlo en el calendario. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario). Levanta el API y la app por su cuenta, o usa los que ya estén corriendo; si el API ya estaba corriendo sin la clave de la prueba, la de publicar se salta y lo dice. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
 
 ```bash
 (cd .. && pip install -e ".[api]")   # el API que van a usar las pruebas
@@ -123,6 +132,10 @@ El build usa rutas relativas (`base: "./"`), así que la misma carpeta `dist/` s
 
 ## Lo que todavía no hace
 
-- Al imprimir o guardar como PDF sale todo menos el mapa.
-- Con muchas paradas muy juntas, las marcas del mapa se enciman al ver todo el viaje; al elegir un día se abren para que se lea cada número.
-- No hay modo oscuro.
+- Al imprimir o guardar como PDF sale el viaje entero, con la dirección de cada ficha oficial, pero sin el mapa ni la foto.
+- Con todo el viaje a la vista, los lugares muy juntos se enciman en el mapa; al elegir un día se corren hacia los lados para que se lea cada número.
+- Tienen foto 479 de las 4 465 paradas y 77 de los 161 imperdibles. Lo demás muestra la flor del viaje o un ícono.
+- Las fotos y el fondo del mapa se piden a Wikimedia y a OpenFreeMap desde el navegador del viajero. Sin ellos la app sigue: sin fotos y con el mapa liso.
+- El mapa es claro también con el tema oscuro.
+- Un viaje guardado o compartido se recuerda por su puesto entre los tres. Si los datos cambian, en ese puesto puede salir otro viaje: la app lo avisa.
+- El motor todavía dice «polo» y «rutas» en algunos de sus textos (el aviso del clima, el veredicto del mes, cuando no hay viajes), donde la app dice «zona» y «viajes».
