@@ -8,8 +8,9 @@ Los únicos scripts del proyecto que salen a internet. Se corren en la máquina 
 | `descargar_osm.py` | Extracto de OpenStreetMap del Perú (Geofabrik), con MD5 verificado y manifiesto | 5-15 min, según la conexión | ODbL 1.0 |
 | `descargar_fichas_html.py` | HTML crudo de la ficha de cada recurso del inventario vigente: primero los recursos nuevos y las 31 que fallaron en el scraper v3, luego los acontecimientos y al final el resto. Al volver a correrlo baja solo las que faltan | 2-3 h la primera vez | Datos abiertos de MINCETUR (ODC-BY) |
 | `descargar_clima_polos.py` | Clima diario 2016-2025 en el centro de cada uno de los 222 polos: lluvia, horas de lluvia, nieve, horas de sol y temperaturas | ~6 días, limitado por la cuota gratuita de Open-Meteo | CC BY 4.0 |
+| `descargar_fotos.py` | De Wikidata, lo que tiene coordenadas y foto cerca de las paradas y las bases, con sus nombres y sus tipos; de Wikimedia Commons, el autor, la licencia y el tamaño de cada una de esas fotos, y de las que la revisión puso a mano en `pipeline/referencia/fotos_revisadas.csv`. Las fotos no: la app las pide a Wikimedia | 10-20 min | Wikidata, CC0; cada foto, la suya |
 
-Los tres retoman donde quedaron si se cortan: basta volver a correr el mismo comando.
+Los que tardan retoman donde quedaron si se cortan: basta volver a correr el mismo comando.
 
 ## Cómo correrlos
 
@@ -23,6 +24,7 @@ python pipeline/adquisicion/descargar_clima_polos.py
 python pipeline/adquisicion/descargar_inventario.py
 python pipeline/adquisicion/descargar_osm.py
 python pipeline/adquisicion/descargar_fichas_html.py
+python pipeline/adquisicion/descargar_fotos.py   # después de los artefactos del motor: busca fotos para sus paradas y bases
 ```
 
 Mientras corren, la PC tiene que estar enchufada y sin suspenderse. Si se suspende no se pierde nada, solo se atrasa.
@@ -39,4 +41,5 @@ Open-Meteo es gratuito para uso no comercial con 10 000 llamadas al día y 5 000
 
 - MINCETUR: una petición por segundo y un agente que identifica al proyecto. El inventario base se baja entero en una sola petición.
 - Open-Meteo: siempre bajo la cuota gratuita, sin paralelizar.
+- Wikidata y Wikimedia Commons: de a un pedido, con pausa, un agente que identifica al proyecto y respetando el `Retry-After` cuando responden 429. A Commons, los archivos de a 50.
 - Geofabrik: una sola descarga del extracto, verificada por MD5, en vez de consultar servicios de ruteo públicos miles de veces. Geofabrik publica uno nuevo cada día; el script conserva el que ya bajó para que todo el cálculo use el mismo archivo.
