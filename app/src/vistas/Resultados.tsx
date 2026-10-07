@@ -49,18 +49,27 @@ interface Mensaje {
   enlace?: string;
 }
 
-/** Guardar y compartir: dos círculos sobre la portada del viaje, y un aviso abajo. */
-function Acciones({ consulta, version, elegida }: { consulta: Consulta; version: string; elegida: number }) {
+interface PropsDeAcciones {
+  consulta: Consulta;
+  version: string;
+  /** El viaje abierto: 1, 2 o 3. Es el que se guarda y el que se comparte, no los tres. */
+  elegida: number;
+  /** El nombre del viaje abierto, para reconocerlo en Guardados. */
+  nombre: string;
+}
+
+/** Guardar, compartir e imprimir el viaje abierto: van sobre su portada, con un aviso abajo. */
+function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
   const { nombres } = useApp();
   const llave = clave(consulta);
-  const [guardado, ponerGuardado] = useState(() => estaGuardado(consulta));
+  const [guardado, ponerGuardado] = useState(() => estaGuardado(consulta, elegida));
   const [mensaje, ponerMensaje] = useState<Mensaje | null>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: la llave resume la consulta
   useEffect(() => {
-    ponerGuardado(estaGuardado(consulta));
+    ponerGuardado(estaGuardado(consulta, elegida));
     ponerMensaje(null);
-  }, [llave]);
+  }, [llave, elegida]);
 
   useEffect(() => {
     if (!mensaje || mensaje.enlace) return;
@@ -70,15 +79,16 @@ function Acciones({ consulta, version, elegida }: { consulta: Consulta; version:
 
   const alternarGuardado = () => {
     if (guardado) {
-      borrarViaje(consulta);
+      borrarViaje(consulta, elegida);
       ponerGuardado(false);
       ponerMensaje({ texto: "Lo quitamos de Guardados." });
       return;
     }
     const listo = guardarViaje({
       consulta,
+      ruta: elegida,
       version,
-      titulo: titulo(consulta, nombres),
+      titulo: nombre,
       guardado: new Date().toISOString(),
     });
     ponerGuardado(listo);
@@ -89,14 +99,14 @@ function Acciones({ consulta, version, elegida }: { consulta: Consulta; version:
 
   const compartir = async () => {
     const enlace = new URL(enlaces.resultados(consulta, version, elegida), window.location.href).href;
-    const nombre = titulo(consulta, nombres);
+    const pedido = titulo(consulta, nombres);
     const conElDedo =
       typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
     if (conElDedo && typeof navigator.share === "function") {
       try {
         await navigator.share({
-          title: `DreemGO · ${nombre}`,
-          text: `Mira este viaje: ${nombre}`,
+          title: `DreemGO · ${pedido}`,
+          text: `Mira este viaje: ${pedido}`,
           url: enlace,
         });
         return;
@@ -263,7 +273,12 @@ export function Resultados({ consulta, version, elegida }: Props) {
           aviso={avisoDeVersion}
           acciones={
             alDia ? (
-              <Acciones consulta={consulta} version={respuesta.version_datos} elegida={indice + 1} />
+              <Acciones
+                consulta={consulta}
+                version={respuesta.version_datos}
+                elegida={indice + 1}
+                nombre={abierta.polo.nombre}
+              />
             ) : null
           }
           atribucion={respuesta.atribucion}

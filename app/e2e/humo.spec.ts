@@ -91,8 +91,12 @@ test("el enlace es el viaje: quien lo abre ve el mismo", async ({ page, context 
   await expect(otra.getByText(/Este enlace se armó con los datos/)).toHaveCount(0);
 });
 
-test("guardar un viaje lo deja en «Guardados» de este navegador", async ({ page }) => {
-  await page.goto("./?origen=lima&mes=7&dias=3#/ruta/1");
+test("guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él", async ({
+  page,
+}) => {
+  await page.goto("./?origen=lima&mes=7&dias=3#/ruta/2");
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  const nombre = await titulo(page).innerText();
   // Exacto: «Imprimir o guardar en PDF» también dice «guardar».
   await page.getByRole("button", { name: "Guardar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Guardado", exact: true })).toHaveAttribute(
@@ -101,8 +105,11 @@ test("guardar un viaje lo deja en «Guardados» de este navegador", async ({ pag
   );
   await page.getByRole("link", { name: "Guardados" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Guardados" })).toBeFocused();
+  // El guardado lleva el nombre del viaje y, debajo, lo que se pidió.
   await page.getByRole("link", { name: /Desde Lima, 3.días en julio/ }).click();
-  await expect(tarjetas(page)).toHaveCount(3);
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  await expect(titulo(page)).toHaveText(nombre);
+  await expect(page).toHaveURL(/#\/ruta\/2$/);
 });
 
 test("la zona de un viaje y el calendario cargan del API", async ({ page }) => {

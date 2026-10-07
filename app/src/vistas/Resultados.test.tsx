@@ -309,9 +309,9 @@ describe("un viaje abierto", () => {
 });
 
 describe("guardar, compartir e imprimir", () => {
-  it("guarda el viaje en el navegador y lo lista en Guardados", async () => {
-    await abrir(`/?${CONSULTA}#/ruta/1`);
-    await viajeAbierto();
+  it("guarda el viaje abierto en el navegador, y Guardados vuelve a ese viaje", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/2`);
+    const nombre = await viajeAbierto();
     const guardar = screen.getByRole("button", { name: "Guardar" });
     expect(guardar.getAttribute("aria-pressed")).toBe("false");
     await userEvent.click(guardar);
@@ -319,6 +319,8 @@ describe("guardar, compartir e imprimir", () => {
     expect(screen.getByText("Guardado en este navegador.")).toBeDefined();
     expect(leerViajes()).toHaveLength(1);
     expect(leerViajes()[0]).toMatchObject({
+      ruta: 2,
+      titulo: B.polo.nombre,
       version: VERSION,
       consulta: { origen: "lima", mes: 7, dias: 4 },
     });
@@ -326,17 +328,66 @@ describe("guardar, compartir e imprimir", () => {
     const [enLaCabecera] = screen.getAllByRole("link", { name: "Guardados" });
     await userEvent.click(enLaCabecera as HTMLElement);
     expect(await screen.findByRole("heading", { level: 1, name: "Guardados" })).toBeDefined();
-    const guardado = screen.getByRole("link", { name: /Desde Lima, 4.días en julio/ });
-    expect(guardado.getAttribute("href")).toBe(`?${CONSULTA}&v=${VERSION}`);
+    // Se reconoce por su nombre, y debajo dice lo que se pidió.
+    const guardado = screen.getByRole("link", { name: new RegExp(`^${B.polo.nombre}`) });
+    expect(plano(guardado.textContent)).toContain("Desde Lima, 4 días en julio");
+    expect(guardado.getAttribute("href")).toBe(`?${CONSULTA}&v=${VERSION}#/ruta/2`);
 
-    // El enlace guardado vuelve a los mismos viajes.
+    // El enlace guardado abre el mismo viaje, no los tres.
     await userEvent.click(guardado);
-    expect(await tarjetas()).toHaveLength(3);
+    expect(await viajeAbierto()).toBe(nombre);
+    expect(screen.getByRole("button", { name: "Guardado" })).toBeDefined();
 
     await userEvent.click(screen.getAllByRole("link", { name: "Guardados" })[0] as HTMLElement);
-    await userEvent.click(await screen.findByRole("button", { name: /^Quitar Desde Lima/ }));
+    await userEvent.click(
+      await screen.findByRole("button", { name: new RegExp(`^Quitar ${B.polo.nombre}`) }),
+    );
     expect(screen.getByText("Todavía no guardaste ningún viaje")).toBeDefined();
     expect(leerViajes()).toEqual([]);
+  });
+
+  it("guardar un viaje no da por guardados los otros dos", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    await userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    await userEvent.click(screen.getByRole("link", { name: "Tus viajes" }));
+    await userEvent.click((await tarjetas())[2] as HTMLElement);
+    await viajeAbierto();
+    expect(screen.getByRole("button", { name: "Guardar" }).getAttribute("aria-pressed")).toBe("false");
+    await userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    expect(leerViajes().map((v) => [v.titulo, v.ruta])).toEqual([
+      [C.polo.nombre, 3],
+      [A.polo.nombre, 1],
+    ]);
+  });
+
+  it("lo guardado cuando no se elegía un viaje sigue abriendo los tres", async () => {
+    localStorage.setItem(
+      "dreemgo.viajes.v1",
+      JSON.stringify([
+        {
+          consulta: {
+            origen: "lima",
+            mes: 7,
+            fecha_inicio: null,
+            dias: 4,
+            intereses: [],
+            presupuesto: null,
+            altitud_max: null,
+            sorpresa: false,
+          },
+          version: VERSION,
+          titulo: "Desde Lima, 4 días en julio",
+          guardado: "2026-10-01T10:00:00Z",
+        },
+      ]),
+    );
+    await abrir("/#/mis-viajes");
+    const guardado = await screen.findByRole("link", { name: /^Desde Lima, 4.días en julio/ });
+    expect(guardado.getAttribute("href")).toBe(`?origen=lima&mes=7&dias=4&v=${VERSION}`);
+    await userEvent.click(guardado);
+    expect(await tarjetas()).toHaveLength(3);
   });
 
   it("comparte el enlace completo: la consulta, la versión y el viaje abierto", async () => {

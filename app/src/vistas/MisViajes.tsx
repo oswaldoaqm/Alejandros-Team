@@ -1,9 +1,10 @@
 // Los viajes guardados en este navegador. Cada uno es su enlace: al abrirlo, el motor lo vuelve
-// a calcular con la misma consulta. No hay cuentas: nada de esto sale del dispositivo.
+// a calcular con la misma consulta y se abre el mismo viaje. No hay cuentas: nada de esto sale
+// del dispositivo.
 
 import { useState } from "react";
-import { borrarViaje, leerViajes, type ViajeGuardado } from "../almacen";
-import { clave, detalles, titulo } from "../consulta";
+import { borrarViaje, claveDeViaje, leerViajes, type ViajeGuardado } from "../almacen";
+import { detalles, titulo } from "../consulta";
 import { useApp } from "../estado/contexto";
 import { useTitulo } from "../estado/titulo";
 import { aIso, fecha } from "../formato";
@@ -23,7 +24,7 @@ export function MisViajes() {
   useTitulo("Guardados");
 
   const quitar = (viaje: ViajeGuardado, nombre: string) => {
-    borrarViaje(viaje.consulta);
+    borrarViaje(viaje.consulta, viaje.ruta);
     ponerViajes(leerViajes());
     ponerAviso(`Quitamos «${nombre}» de Guardados.`);
   };
@@ -51,12 +52,20 @@ export function MisViajes() {
       ) : (
         <ul className="guardados">
           {viajes.map((viaje) => {
-            const nombre = titulo(viaje.consulta, nombres);
+            const pedido = titulo(viaje.consulta, nombres);
             const mas = detalles(viaje.consulta, nombres);
+            // Un viaje se reconoce por su nombre, y debajo va lo que se pidió. Lo guardado antes de
+            // que cada viaje tuviera su pantalla es la consulta entera: abre sus tres viajes.
+            const unViaje = viaje.ruta !== null;
+            const nombre = unViaje ? viaje.titulo : pedido;
             return (
-              <li key={clave(viaje.consulta)} className="guardado">
-                <Enlace href={enlaces.resultados(viaje.consulta, viaje.version)} className="guardado__enlace">
+              <li key={claveDeViaje(viaje.consulta, viaje.ruta)} className="guardado">
+                <Enlace
+                  href={enlaces.resultados(viaje.consulta, viaje.version, viaje.ruta)}
+                  className="guardado__enlace"
+                >
                   <span className="guardado__titulo">{nombre}</span>
+                  {unViaje ? <span className="guardado__detalle">{pedido}</span> : null}
                   {mas ? <span className="guardado__detalle">{mas}</span> : null}
                   <span className="guardado__meta">{cuando(viaje)}</span>
                 </Enlace>
