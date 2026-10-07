@@ -151,7 +151,8 @@ describe("publicar un evento", () => {
     const recibidos: PedidoRecibido[] = [];
     const api = await abrir({ "/v1/eventos": eventosQuePublican(recibidos) });
     // Antes de publicar se miró el calendario de noviembre: esa respuesta ya no vale.
-    await userEvent.click(screen.getByRole("link", { name: "Fiestas" }));
+    // «Fiestas» está en la cabecera y en la barra de abajo: es el mismo enlace.
+    await userEvent.click(screen.getAllByRole("link", { name: "Fiestas" })[0] as HTMLElement);
     await userEvent.click(await screen.findByRole("radio", { name: "Noviembre" }));
     await waitFor(() => expect(pedidosA(api, "/v1/eventos")).toHaveLength(2));
     window.location.hash = "#/publicar";

@@ -1,0 +1,122 @@
+/* La lista de fiestas y eventos: la misma en el viaje, en la zona, en el calendario y en la
+   vista previa de Publicar. A la izquierda, el día en grande, como en una agenda; al lado, qué
+   es, dónde y cuándo. Los separadores empiezan donde empieza el texto. */
+
+.eventos {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.evento {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.evento + .evento::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 76px;
+  content: "";
+  border-top: 1px solid var(--linea);
+}
+
+.evento__dia {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding-top: 1px;
+  line-height: 1;
+  color: var(--tinta-2);
+}
+
+.evento__numero {
+  font-family: var(--fuente-titular);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.evento__mes {
+  margin-top: 4px;
+  font-size: var(--t-pie);
+  font-weight: 650;
+  color: var(--lago);
+}
+
+.evento__nombre {
+  font-weight: 650;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.evento__nombre a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.evento__nombre a:hover {
+  color: var(--lago);
+  text-decoration: underline;
+}
+
+.evento__nombre .icono {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--tinta-3);
+  vertical-align: -2px;
+}
+
+.evento__lugar {
+  margin-top: 2px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.evento__cuando {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: var(--t-pie);
+  color: var(--tinta-2);
+}
+
+/* Una aclaración junto a la fecha: «Fecha aproximada», «Publicado por…». El radio es la mitad de
+   su alto: en una línea es una pastilla, y si el nombre de la entidad ocupa dos, un recuadro. */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  font-size: var(--t-pie);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--tinta-2);
+  background: var(--superficie-2);
+  border-radius: 11px;
+}
+
+.etiqueta--publicado {
+  color: var(--lago-tinta);
+  background: var(--lago-claro);
+}
+
+.eventos__mas {
+  margin-top: 12px;
+}
+
+.eventos-vacio {
+  padding: 18px 20px;
+  color: var(--tinta-2);
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}

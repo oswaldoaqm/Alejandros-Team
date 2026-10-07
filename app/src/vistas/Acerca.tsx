@@ -117,6 +117,10 @@ export function Acerca() {
           Mapa de fondo: <EnlaceExterno href="https://openfreemap.org/">OpenFreeMap</EnlaceExterno>, con
           OpenMapTiles y datos de OpenStreetMap.
         </li>
+        <li>
+          Fotos: <EnlaceExterno href="https://commons.wikimedia.org/">Wikimedia Commons</EnlaceExterno>,
+          elegidas con Wikidata. Cada una lleva el nombre de su autor y su licencia, y enlaza a su página.
+        </li>
       </ul>
 
       <h2>Quién lo hace</h2>

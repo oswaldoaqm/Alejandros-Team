@@ -57,7 +57,7 @@ describe("el formulario", () => {
     await userEvent.click(screen.getByRole("radio", { name: "Julio" }));
     await generar();
 
-    await screen.findByRole("heading", { level: 1, name: "Tus rutas" });
+    await screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=cusco&mes=7&dias=7&intereses=playa");
     await waitFor(() =>
       expect(window.location.search).toBe(`?origen=cusco&mes=7&dias=7&intereses=playa&v=${VERSION}`),
@@ -68,12 +68,12 @@ describe("el formulario", () => {
     const api = await abrir();
     await userEvent.click(screen.getByRole("radio", { name: "Julio" }));
     await userEvent.click(screen.getByRole("button", { name: "Sorpréndeme" }));
-    await screen.findByRole("heading", { level: 1, name: "Tus rutas" });
+    await screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6&sorpresa=true");
 
-    await userEvent.click(screen.getByRole("link", { name: "Editar" }));
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
     await userEvent.type(await screen.findByRole("spinbutton", { name: "Días disponibles" }), "{Enter}");
-    await screen.findByRole("heading", { level: 1, name: "Tus rutas" });
+    await screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6");
   });
 
@@ -89,10 +89,10 @@ describe("el formulario", () => {
     expect(plano(document.querySelector(`output[for="${presupuesto.id}"]`)?.textContent)).toBe("S/ 1 800");
     expect(plano(document.querySelector(`output[for="${altitud.id}"]`)?.textContent)).toBe("2 500 m");
     await generar();
-    await screen.findByRole("heading", { level: 1, name: "Tus rutas" });
+    await screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6&presupuesto=1800&altitud_max=2500");
 
-    await userEvent.click(screen.getByRole("link", { name: "Editar" }));
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
     const otraVez = await screen.findByRole("slider", { name: /Presupuesto total/ });
     expect(otraVez).toHaveProperty("value", "1800");
     fireEvent.change(otraVez, { target: { value: otraVez.getAttribute("max") } });
@@ -114,7 +114,7 @@ describe("el formulario", () => {
     expect(fecha).toHaveProperty("value", "");
     fireEvent.change(fecha, { target: { value: "2027-07-20" } });
     await generar();
-    await screen.findByRole("heading", { level: 1, name: "Tus rutas" });
+    await screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&fecha_inicio=2027-07-20&dias=6");
   });
 

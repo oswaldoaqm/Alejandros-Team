@@ -1,4 +1,18 @@
 /* DreemGO · estilos de la app. Pensados primero para celular; las pantallas anchas suman
-   columnas al final. Sin fuentes descargadas: con datos móviles, cada kilobyte cuenta. */
+   columnas. Sin fuentes descargadas: la letra es la del sistema (San Francisco en Apple,
+   Segoe UI en Windows, Roboto en Android) y con datos móviles cada kilobyte cuenta.
 
+   El orden importa: primero las bases, luego lo que heredan las pantallas secundarias y al
+   final las piezas del rediseño, que mandan donde se cruzan. */
+
+@import "./estilos/base.css";
 @import "./estilos/legado.css";
+@import "./estilos/controles.css";
+@import "./estilos/eventos.css";
+@import "./estilos/flor.css";
+@import "./estilos/marco.css";
+@import "./estilos/resultados.css";
+@import "./estilos/viaje.css";
+@import "./estilos/mapa.css";
+@import "./estilos/paginas.css";
+@import "./estilos/impresion.css";

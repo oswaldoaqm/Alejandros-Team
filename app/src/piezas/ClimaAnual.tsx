@@ -1,4 +1,4 @@
-// El clima de un polo en los doce meses: la lluvia de cada mes como barra y su veredicto
+// El clima de una zona en los doce meses: la lluvia de cada mes como barra y su veredicto
 // debajo, con ícono. Al elegir un mes se lee su explicación; la tabla dice lo mismo en números.
 
 import { useId, useState } from "react";
@@ -97,7 +97,7 @@ export function ClimaAnual({ clima, inicial }: { clima: Estacionalidad[]; inicia
         <summary>Ver como tabla</summary>
         <div className="tabla-marco">
           <table>
-            <caption className="solo-lector">Clima del polo, mes a mes</caption>
+            <caption className="solo-lector">Clima de la zona, mes a mes</caption>
             <thead>
               <tr>
                 <th scope="col">Mes</th>

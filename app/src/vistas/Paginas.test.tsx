@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
 import { EVENTOS, irA, POLO, PUBLICADO, pedidosA, ponerApi } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
+import { nombreDelViaje } from "../textos";
 import { ventanaDelMes } from "./PaginaCalendario";
 
 vi.mock("../piezas/MapaRuta", () => ({ default: () => <div data-testid="mapa" /> }));
@@ -15,35 +16,52 @@ async function abrir(direccion: string, rutas: Parameters<typeof ponerApi>[0] = 
   return api;
 }
 
-describe("la ficha de un polo", () => {
-  it("muestra dónde se duerme, el clima mes a mes, los lugares y las fiestas", async () => {
+const ZONA = nombreDelViaje(POLO.polo.nombre).titulo;
+
+describe("la zona de un viaje", () => {
+  it("muestra dónde se duerme, los lugares, el clima mes a mes y las fiestas", async () => {
     await abrir(`/?mes=7#/polo/${POLO.polo.id}`);
-    expect(await screen.findByRole("heading", { level: 1, name: POLO.polo.nombre })).toBeDefined();
-    expect(plano(document.querySelector(".bajada")?.textContent)).toContain(
-      `se duerme en ${POLO.polo.base.nombre}`,
+    expect(await screen.findByRole("heading", { level: 1, name: ZONA })).toBeDefined();
+    expect(plano(document.querySelector(".portada__datos")?.textContent)).toContain(
+      `Duermes en ${POLO.polo.base.nombre}`,
     );
+    expect(screen.getByRole("region", { name: "Qué hay para ver" })).toBeDefined();
+    expect(screen.getByRole("region", { name: "El clima, mes a mes" })).toBeDefined();
+    expect(screen.getByRole("region", { name: "Fiestas de los próximos meses" })).toBeDefined();
     // El clima abre en el mes de la consulta.
     expect(screen.getByRole("radio", { name: /^Julio/ })).toHaveProperty("checked", true);
-    expect(screen.getByRole("link", { name: "Volver a tus rutas" }).getAttribute("href")).toBe(
+    expect(screen.getByRole("link", { name: "Tus viajes" }).getAttribute("href")).toBe(
       "?origen=lima&mes=7&dias=6",
     );
-    await waitFor(() => expect(document.title).toBe(`${POLO.polo.nombre} · DreemGO`));
+    await waitFor(() => expect(document.title).toBe(`${ZONA} · DreemGO`));
   });
 
-  it("lista primero los diez lugares de mayor jerarquía y deja ver todos", async () => {
+  it("lista primero los lugares más importantes, deja ver todos y abre cada uno en su hoja", async () => {
     await abrir(`/#/polo/${POLO.polo.id}`);
-    await screen.findByRole("heading", { level: 1, name: POLO.polo.nombre });
-    const fichas = () => screen.getAllByRole("link", { name: /Ficha oficial/ });
-    expect(POLO.recursos.length).toBeGreaterThan(10);
-    expect(fichas()).toHaveLength(10);
-    await userEvent.click(screen.getByRole("button", { name: `Ver las ${POLO.recursos.length}` }));
-    expect(fichas()).toHaveLength(POLO.recursos.length);
+    const lugares = await screen.findByRole("region", { name: "Qué hay para ver" });
+    const filas = () => within(lugares).getAllByRole("listitem");
+    expect(POLO.recursos.length).toBeGreaterThan(8);
+    expect(filas()).toHaveLength(8);
+    await userEvent.click(
+      within(lugares).getByRole("button", { name: `Ver los ${POLO.recursos.length} lugares` }),
+    );
+    expect(filas()).toHaveLength(POLO.recursos.length);
+    expect(within(lugares).getByRole("button", { name: "Ver menos" }).getAttribute("aria-expanded")).toBe(
+      "true",
+    );
+
+    const primero = POLO.recursos[0];
+    if (!primero) throw new Error("La zona de prueba no trae lugares.");
+    await userEvent.click(within(lugares).getByRole("button", { name: new RegExp(`^${primero.nombre}`) }));
+    const hoja = screen.getByRole("dialog", { name: primero.nombre });
     expect(
-      screen.getByRole("button", { name: "Ver solo las 10 primeras" }).getAttribute("aria-expanded"),
-    ).toBe("true");
+      within(hoja)
+        .getByRole("link", { name: /^Ver la ficha oficial/ })
+        .getAttribute("href"),
+    ).toBe(primero.url_ficha);
   });
 
-  it("si el polo no existe, lo dice", async () => {
+  it("si la zona no existe, lo dice", async () => {
     await abrir("/#/polo/9999");
     const alerta = await screen.findByRole("alert");
     expect(alerta.textContent).toContain("No lo encontramos");
@@ -128,11 +146,10 @@ describe("el calendario de fiestas", () => {
     expect(enlace.getAttribute("href")).toBe(PUBLICADO.url);
     const evento = enlace.closest("li") as HTMLElement;
     expect(plano(evento.textContent)).toContain("del 13 al 15 de noviembre");
-    expect(evento.textContent).toContain(
-      "Villa Rica, Oxapampa · Pasco · Publicado por Municipalidad Distrital",
-    );
+    expect(evento.textContent).toContain("Villa Rica, Oxapampa, Pasco");
+    expect(evento.textContent).toContain("Publicado por Municipalidad Distrital de Villa Rica");
     // La fecha la dio quien lo organiza: no lleva la nota de «aproximada».
-    expect(evento.textContent).not.toContain("fecha aproximada");
+    expect(evento.textContent).not.toContain("aproximada");
     // Y entra al filtro por región como cualquier otro.
     const regiones = within(screen.getByRole("combobox", { name: "Región" })).getAllByRole("option");
     expect(regiones.map((o) => o.textContent)).toContain("Pasco");
@@ -149,7 +166,7 @@ describe("moverse por la app", () => {
   it("el pie lleva a publicar un evento", async () => {
     await abrir("/");
     await screen.findByRole("combobox", { name: "Punto de partida" });
-    await userEvent.click(screen.getByRole("link", { name: "Para municipios: publicar un evento" }));
+    await userEvent.click(screen.getByRole("link", { name: "Publica un evento" }));
     const titulo = await screen.findByRole("heading", { level: 1, name: "Publicar un evento" });
     expect(document.activeElement).toBe(titulo);
     expect(window.location.hash).toBe("#/publicar");
@@ -160,19 +177,22 @@ describe("moverse por la app", () => {
     await screen.findByRole("combobox", { name: "Punto de partida" });
     expect(document.title).toBe("DreemGO · Tres viajes por el Perú, día por día");
 
-    await userEvent.click(screen.getByRole("link", { name: "Mis viajes" }));
-    const titulo = screen.getByRole("heading", { level: 1, name: "Mis viajes" });
+    // Las secciones están dos veces: en la cabecera y, para el celular, en la barra de abajo.
+    const primero = (nombre: string) => screen.getAllByRole("link", { name: nombre })[0] as HTMLElement;
+    await userEvent.click(primero("Guardados"));
+    const titulo = screen.getByRole("heading", { level: 1, name: "Guardados" });
     expect(document.activeElement).toBe(titulo);
-    expect(document.title).toBe("Mis viajes · DreemGO");
-    expect(screen.getByRole("link", { name: "Mis viajes" }).getAttribute("aria-current")).toBe("page");
+    expect(document.title).toBe("Guardados · DreemGO");
+    for (const enlace of screen.getAllByRole("link", { name: "Guardados" }))
+      expect(enlace.getAttribute("aria-current")).toBe("page");
 
-    await userEvent.click(screen.getByRole("link", { name: "Fuentes y cómo funciona" }));
+    await userEvent.click(primero("Cómo funciona"));
     expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1, name: "Cómo funciona" }));
     expect(window.location.hash).toBe("#/acerca");
 
     // Atrás y adelante del navegador también cambian de pantalla.
     window.history.back();
-    expect(await screen.findByRole("heading", { level: 1, name: "Mis viajes" })).toBeDefined();
+    expect(await screen.findByRole("heading", { level: 1, name: "Guardados" })).toBeDefined();
   });
 
   it("«Saltar al contenido» lleva el foco al contenido sin cambiar de pantalla", async () => {
@@ -182,19 +202,17 @@ describe("moverse por la app", () => {
     expect(window.location.hash).toBe("#/acerca");
   });
 
-  it("«Volver a tus rutas» retrocede: la ruta abierta sigue abierta", async () => {
+  it("«Tus viajes», desde la zona, retrocede: el viaje abierto sigue abierto", async () => {
     const api = await abrir("/?origen=lima&mes=7&dias=4#/ruta/2");
-    const lista = within(await screen.findByRole("list", { name: "Rutas propuestas" })).getAllByRole("link");
-    expect(lista[1]?.getAttribute("aria-current")).toBe("true");
-    const alPolo = screen.getByRole("link", { name: /Ver todo lo que hay en el polo/ });
-    const id = alPolo.getAttribute("href")?.split("/").at(-1);
+    const aLaZona = await screen.findByRole("link", { name: /^Ver todos los lugares de la zona/ });
+    const id = aLaZona.getAttribute("href")?.split("/").at(-1);
     api.mockClear();
     ponerApi({ [`/v1/polos/${id}`]: { cuerpo: POLO } });
-    await userEvent.click(alPolo);
-    await screen.findByRole("heading", { level: 1, name: POLO.polo.nombre });
+    await userEvent.click(aLaZona);
+    await screen.findByRole("heading", { level: 1, name: ZONA });
 
-    await userEvent.click(screen.getByRole("link", { name: "Volver a tus rutas" }));
-    await screen.findByRole("list", { name: "Rutas propuestas" });
+    await userEvent.click(screen.getByRole("link", { name: "Tus viajes" }));
+    await screen.findByRole("link", { name: /^Ver todos los lugares de la zona/ });
     expect(window.location.hash).toBe("#/ruta/2");
   });
 });
