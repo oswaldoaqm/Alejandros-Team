@@ -12,20 +12,6 @@ h1 {
   letter-spacing: -0.025em;
 }
 
-.sobretitulo,
-.rotulo {
-  font-size: 0.74rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--tinta-2);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.rotulo {
-  margin: 28px 0 10px;
-}
-
 .bajada {
   margin-bottom: 16px;
   color: var(--tinta-2);

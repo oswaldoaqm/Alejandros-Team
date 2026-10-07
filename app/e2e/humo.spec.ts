@@ -167,7 +167,7 @@ test("un municipio publica un evento, con su lugar, y sale en el calendario", as
   await page.getByRole("button", { name: "Publicar el evento" }).click();
 
   await expect(page.getByRole("heading", { level: 1, name: "Evento publicado" })).toBeFocused();
-  await expect(page.getByText(/sale también en las rutas que duermen o paran a 10 km o menos/)).toBeVisible();
+  await expect(page.getByText(/sale también en los viajes que pasan a 10 km o menos/)).toBeVisible();
   await expect(page.locator(".evento")).toContainText(`Publicado por ${entidad}`);
 
   // Y está en el calendario de su mes, que se pide de nuevo al API.

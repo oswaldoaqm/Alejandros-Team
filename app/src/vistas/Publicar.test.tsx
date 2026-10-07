@@ -68,6 +68,9 @@ describe("publicar un evento", () => {
       expect(casilla(obligatoria).required, obligatoria).toBe(true);
     }
     expect(casilla(/^Termina/).required).toBe(false);
+    expect(casilla(/^Termina/).getAttribute("aria-describedby")).toBe(
+      screen.getByText("Si dura un día, se deja en blanco.").id,
+    );
     expect(casilla("Clave de publicador").type).toBe("password");
     // Se publican los eventos de doce meses: el calendario no muestra más.
     expect(casilla("Empieza").max).toBe("2027-09-30");
@@ -77,7 +80,7 @@ describe("publicar un evento", () => {
     const recibidos: PedidoRecibido[] = [];
     const api = await abrir({ "/v1/eventos": eventosQuePublican(recibidos) });
     llenar({
-      "Termina Si dura un día, se deja en blanco": "2026-11-15",
+      "Termina Opcional": "2026-11-15",
       "Tipo de evento Opcional": "Feria gastronómica",
       "Enlace con más información Opcional": "https://www.munivillarica.gob.pe/festival",
     });
@@ -102,7 +105,7 @@ describe("publicar un evento", () => {
       url: "https://www.munivillarica.gob.pe/festival",
       publicado_por: ENTIDAD,
     });
-    expect(screen.getByText(/sale también en las rutas que duermen o paran a 10 km o menos/)).toBeDefined();
+    expect(screen.getByText(/sale también en los viajes que pasan a 10 km o menos/)).toBeDefined();
     expect(screen.getByText(new RegExp(`Publicado por ${ENTIDAD}`))).toBeDefined();
     expect(screen.getByRole("link", { name: /Feria de Productores/ }).getAttribute("href")).toBe(
       PUBLICADO.url,
@@ -127,7 +130,7 @@ describe("publicar un evento", () => {
       tipo: null,
       url: null,
     });
-    expect(screen.getByText(/Como no marcaste dónde es, no sale en ninguna ruta/)).toBeDefined();
+    expect(screen.getByText(/Como no marcaste dónde es, no sale en ningún viaje/)).toBeDefined();
   });
 
   it("al elegir la región, el mapa se acerca a su ciudad principal", async () => {
