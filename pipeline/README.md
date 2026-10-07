@@ -10,6 +10,7 @@ python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.clima     # después de tiempos, unos segundos
 python -m pipeline.artefactos --version 2026.10.2   # al final: lo que carga el motor
+python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
@@ -32,6 +33,7 @@ La versión `2026.10.2` usa el clima de los 36 polos que ya estaban descargados 
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2) |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo |
+| [`fotos.py`](./fotos.py) | Elige la foto de cada parada y de cada base entre lo que Wikidata tiene cerca, por nombre y por clase de lugar; descarta pueblos, regiones, batallas, mapas y fotos sin licencia libre o sin autor. Escribe [`app/public/fotos.json`](../app/public/fotos.json), que la app lee. Las correcciones de la revisión a mano van en [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
 ## Qué tan bien lee
@@ -141,6 +143,51 @@ Todas las bases quedan sobre una vía, también Machupicchu Pueblo, cuyas calles
 ## Clima por polo
 
 `clima.py` promedia los diez años de cada polo mes por mes y aplica la regla de dos ejes de la semana 6, ahora con el clima del propio polo: 150 mm o más en el mes, y estar entre los tres meses más lluviosos del polo con más de 50 mm. Con los 36 polos descargados al 30 de septiembre, 250 de sus 432 meses quedan viables, 100 con advertencia y 82 desaconsejados. Los otros 186 polos usan, hasta que terminen de bajar, la capa regional de la semana 6, y la respuesta del motor lo avisa. Las horas de sol no se publican: el reanálisis no ve la neblina de la costa ([decisión 0006](../docs/decisiones/0006-clima-por-polo.md)).
+
+## Fotos
+
+Las fotos son de Wikimedia Commons, y el repositorio no guarda ninguna. `fotos.py` escribe en [`app/public/fotos.json`](../app/public/fotos.json) qué archivo va con cada parada y con cada base, con su autor, su licencia y su tamaño, y la app pide a Wikimedia la miniatura que necesita cada pantalla.
+
+**Cómo se eligen.** `descargar_fotos.py` baja de Wikidata lo que tiene coordenadas y foto en las 104 celdas de 1° donde hay una parada o una base: 4 261 elementos. De las 2 908 fotos de los que quedan cerca, 2 628 se pueden usar: JPEG de 640 píxeles de ancho o más, con licencia libre, y con autor salvo que sean de dominio público. `fotos.py` decide qué elemento es cada lugar por distancia y por nombre; las reglas, con sus cifras, están al comienzo del módulo:
+
+- Compara los nombres en una grafía común al quechua y al castellano: «Wariwillka» y «Huarihuilca» son el mismo.
+- Separa lo que distingue al lugar de su clase (iglesia, plaza, laguna), y no deja pasar una clase por otra: una iglesia no es la foto de una plaza.
+- Un pueblo, un distrito o una provincia solo sirven para la base que se llama igual, o para el recurso que es el pueblo.
+
+**El crédito.** La licencia pide mostrar el autor, y Commons lo guarda como lo escribió quien subió la foto, a veces con restos de su wiki. `fotos.py` lo publica como se va a leer: «No machine-readable author provided. Xauxa assumed (based on copyright claims).» queda en «Xauxa», y «User:Pedro Felipe», en «Pedro Felipe»; así se corrigieron 25 de los 580 créditos. «Trabajo propio» o «Unknown author» no nombran a nadie: una foto así solo se usa si es de dominio público.
+
+**La revisión a ojo.** La regla propuso 679 fotos: 548 de paradas y 131 de bases, en 604 archivos distintos. Entre el 2 y el 4 de octubre de 2026 se miraron todas en miniatura, y [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) guarda cada corrección con su motivo. Una de cada seis propuestas no servía: 112 se quitaron y 5 se cambiaron por otra. Otras 13 fotos se pusieron a mano en lugares a los que la regla no les daba ninguna, casi siempre porque su foto estaba en la ficha del pueblo o de un lugar vecino.
+
+| Por qué se quitó | Fotos |
+|---|---:|
+| Es otro lugar: el edificio vecino, una estación, otro pueblo, el sitio cuando el lugar es su museo | 64 |
+| Lleva la fecha impresa, una marca de agua, una firma o un logotipo | 16 |
+| No es una foto del lugar: un collage, una vista desde el espacio, un grabado, una maqueta | 13 |
+| El lugar no se ve: casi todo es cielo, techos o una ladera en sombra | 8 |
+| Muestra gente o un acto, y no el lugar | 7 |
+| Mide menos de 320 píxeles de alto y, ampliada para llenar la portada, se ve borrosa | 4 |
+
+Un pueblo puede llevar la foto de lo que tiene dentro: su plaza, su iglesia, su castillo. No la de un sitio de las afueras que es otra parada, como el obelisco de la pampa de Ayacucho para Quinua.
+
+**Cobertura.**
+
+| | Con foto | De |
+|---|---:|---:|
+| Paradas | 479 | 4 465 |
+| Imperdibles (jerarquía 3 y 4) | 77 | 161 |
+| Bases | 101 | 222 |
+| Polos con alguna foto, de un lugar suyo o de su base | 140 | 222 |
+
+Donde no hay foto, la app muestra la flor del viaje.
+
+**Para corregir una foto** se agrega una fila a `fotos_revisadas.csv`: `lugar` y el código del recurso, o `base` y el número del polo; el archivo de Commons que debe ir, o nada si el lugar se queda sin foto; y el motivo, que empieza con el nombre del lugar y no lleva punto y coma. Después, `python pipeline/adquisicion/descargar_fotos.py`, que pide a Commons los datos de un archivo que todavía no tenga, y `python -m pipeline.fotos`. Si la foto puesta a mano no está descargada o no es libre, `fotos.py` lo avisa. [`tests/pipeline/test_fotos.py`](../tests/pipeline/test_fotos.py) comprueba que la lista publicada respete las correcciones y sea de la versión vigente de los datos: hay que rehacerla cada vez que se rehacen los artefactos.
+
+Lo que falta:
+
+- **84 imperdibles sin foto.** Wikidata no tiene un elemento con foto para ellos, o la que tiene no sirve: el Complejo Arqueológico Wari, Túcume, el Templo de la Compañía de Jesús del Cusco. Se resuelven a mano, buscando la foto en Commons.
+- **Las panorámicas.** Wikimedia sirve miniaturas de hasta 1 280 píxeles de ancho. Una foto cuatro veces más ancha que alta llega con unos 315 de alto y, en la portada, se ve blanda. Quedan cuatro: Ayaviri, Chankillo, la Plaza de Armas del Cusco y la laguna Chuchún.
+- **Lo que una miniatura no deja ver.** La revisión se hizo a 330 píxeles de ancho, con las esquinas ampliadas para buscar fechas y marcas. Una marca muy pequeña pudo pasar.
+- **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide.
 
 ## Datos personales
 
