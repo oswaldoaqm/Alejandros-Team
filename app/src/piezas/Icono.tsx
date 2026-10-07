@@ -1,7 +1,7 @@
 // Íconos de trazo, dibujados aquí para no cargar una librería. Son decorativos: el texto de
 // al lado dice lo mismo, así que van ocultos para los lectores de pantalla.
 
-const TRAZOS = {
+export const TRAZOS = {
   bien: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m8.5 12.3 2.4 2.4 4.8-5.2"],
   aviso: ["M12 4 2.8 19.5h18.4L12 4Z", "M12 10v4.5", "M12 17.2v.3"],
   critico: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m9 9 6 6", "m15 9-6 6"],
@@ -54,18 +54,92 @@ const TRAZOS = {
   ],
   copiar: ["M9 9h10v11H9z", "M5 15V4h10"],
   borrar: ["M5 7h14", "M9 7V4h6v3", "M7 7l1 13h8l1-13"],
+  estrella: ["m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8L12 3.6Z"],
+  ajustes: ["M4 7h9", "M17 7h3", "M15 5v4", "M4 17h3", "M11 17h9", "M9 15v4"],
+  lupa: ["M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z", "m20 20-4-4"],
+  bus: [
+    "M6 4h12a2 2 0 0 1 2 2v11H4V6a2 2 0 0 1 2-2Z",
+    "M4 12h16",
+    "M7 20v-3",
+    "M17 20v-3",
+    "M8 14.5h.01",
+    "M16 14.5h.01",
+  ],
+  sol: [
+    "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+    "M12 2.5v2",
+    "M12 19.5v2",
+    "m4.6 4.6 1.4 1.4",
+    "m18 18 1.4 1.4",
+    "M2.5 12h2",
+    "M19.5 12h2",
+    "m4.6 19.4 1.4-1.4",
+    "m18 6 1.4-1.4",
+  ],
+  lluvia: [
+    "M7 14.5a4 4 0 0 1 .4-8A5.5 5.5 0 0 1 18 8a3.3 3.3 0 0 1-.5 6.5H7Z",
+    "m8 18-1 2",
+    "m12 18-1 2",
+    "m16 18-1 2",
+  ],
+  montana: ["M2.5 19 9 8l4 6.5L15.5 11l6 8h-19Z", "m7.6 10.4 1.4 1.3 1.6-1.3"],
+  reloj: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 7v5l3.2 2"],
+  billete: ["M3 7h18v10H3z", "M12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", "M6.5 10v4", "M17.5 10v4"],
+  corazon: ["M12 20s-7.5-4.6-9.2-9.4A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4C19.5 15.4 12 20 12 20Z"],
+  abajo: ["m6 9 6 6 6-6"],
+  flor: [
+    "M12 12c-1.6-2.4-1.6-5.6 0-8.5 1.6 2.9 1.6 6.1 0 8.5Z",
+    "M12 12c2.7-1 5.9-.1 8.1 2.4-3.1.9-6.2.1-8.1-2.4Z",
+    "M12 12c.3 2.9-1.4 5.7-4.3 7.2-.5-3.2 1.2-6 4.3-7.2Z",
+    "M12 12c-2.9.1-5.6-1.7-6.9-4.6 3.2-.4 5.9 1.4 6.9 4.6Z",
+    "M12 12c1.9-2.2 5-3 8-2.1-1.8 2.6-4.9 3.5-8 2.1Z",
+  ],
+  naturaleza: ["M5 19c0-9 6-14 14-14 0 8-5 14-14 14Z", "M5 19l8.5-8.5"],
+  historia: [
+    "M4 20h16",
+    "M5 17h14",
+    "M6.5 17V10",
+    "M10 17V10",
+    "M14 17V10",
+    "M17.5 17V10",
+    "M3.5 10h17L12 4.5 3.5 10Z",
+  ],
+  gastronomia: ["M7 3v18", "M4.5 3v5a2.5 2.5 0 0 0 5 0V3", "M17 21V3c-2.2 1.5-3.2 4-3.2 7.5H17"],
+  caminatas: [
+    "M8 11c-1.4 0-2.4-2-2.4-4.4S6.6 2.5 8 2.5s2.4 1.7 2.4 4.1S9.4 11 8 11Z",
+    "M6 13.5h4V16a2 2 0 0 1-4 0v-2.5Z",
+    "M16 15c-1.4 0-2.4-2-2.4-4.4S14.6 6.5 16 6.5s2.4 1.7 2.4 4.1S17.4 15 16 15Z",
+    "M14 17.5h4V20a2 2 0 0 1-4 0v-2.5Z",
+  ],
+  playa: [
+    "M3 16c2 0 2-1.5 4.5-1.5S10 16 12 16s2-1.5 4.5-1.5S19 16 21 16",
+    "M3 20c2 0 2-1.5 4.5-1.5S10 20 12 20s2-1.5 4.5-1.5S19 20 21 20",
+    "M15 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z",
+  ],
+  fiestas: ["M9 18V6l11-2v12", "M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z", "M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"],
+  arquitectura: ["M4 21h16", "M6 21V10l6-6 6 6v11", "M10 21v-5h4v5", "M12 7.5v2.5"],
+  aventura: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m15.5 8.5-2 5-5 2 2-5 5-2Z"],
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;
 
-export function Icono({ nombre, tamano = 18 }: { nombre: NombreDeIcono; tamano?: number }) {
+export function Icono({
+  nombre,
+  tamano = 18,
+  relleno = false,
+}: {
+  nombre: NombreDeIcono;
+  tamano?: number;
+  /** Relleno con el color del texto: la estrella de los imperdibles. */
+  relleno?: boolean;
+}) {
   return (
     <svg
       className="icono"
       width={tamano}
       height={tamano}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={relleno ? "currentColor" : "none"}
       stroke="currentColor"
       strokeWidth="1.8"
       strokeLinecap="round"
