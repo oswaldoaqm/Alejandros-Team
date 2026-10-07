@@ -67,10 +67,10 @@ describe("los tres viajes", () => {
     );
   });
 
-  it("marca los viajes poco turísticos cuando no lo son todos", async () => {
+  it("marca los viajes que están fuera del circuito cuando no lo están todos", async () => {
     await abrir();
     const lista = await tarjetas();
-    const sellos = lista.map((t) => within(t).queryByText("Poco turístico") !== null);
+    const sellos = lista.map((t) => within(t).queryByText("Fuera del circuito") !== null);
     expect(sellos).toEqual(RESPUESTA.rutas.map((r) => r.polo.fuera_del_circuito));
   });
 
@@ -88,16 +88,16 @@ describe("los tres viajes", () => {
   it("si ninguno pasa por Lima ni por Cusco, lo dice una vez arriba y no en cada tarjeta", async () => {
     await abrir(`/?${CONSULTA}`, soloFuera(3));
     expect(await tarjetas()).toHaveLength(3);
-    expect(screen.getByText(/están lejos del circuito/).textContent).toContain("Los tres están lejos");
-    expect(screen.queryByText("Poco turístico")).toBeNull();
+    expect(screen.getByText(/están fuera del circuito/).textContent).toContain("Los tres están fuera");
+    expect(screen.queryByText("Fuera del circuito")).toBeNull();
   });
 
   it("con dos viajes no dice «los tres»", async () => {
     await abrir(`/?${CONSULTA}`, soloFuera(2));
     expect(await tarjetas()).toHaveLength(2);
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Dos viajes para ti");
-    const frase = screen.getByText(/están lejos del circuito/).textContent;
-    expect(frase).toContain("Los dos están lejos");
+    const frase = screen.getByText(/están fuera del circuito/).textContent;
+    expect(frase).toContain("Los dos están fuera");
     expect(frase).not.toContain("tres");
   });
 
@@ -105,8 +105,8 @@ describe("los tres viajes", () => {
     await abrir(`/?${CONSULTA}`, soloFuera(1));
     const [unica] = await tarjetas();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Un viaje para ti");
-    expect(screen.queryByText(/están lejos del circuito/)).toBeNull();
-    expect(within(unica as HTMLElement).getByText("Poco turístico")).toBeDefined();
+    expect(screen.queryByText(/están fuera del circuito/)).toBeNull();
+    expect(within(unica as HTMLElement).getByText("Fuera del circuito")).toBeDefined();
   });
 
   it("«Cambiar» lleva al formulario con la misma consulta", async () => {

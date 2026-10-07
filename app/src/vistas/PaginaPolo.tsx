@@ -191,7 +191,7 @@ function Zona({ detalle, fotos, mes }: PropsDeZona) {
           de los lugares más importantes del país.
         </p>
         {polo.fuera_del_circuito ? (
-          <p>Es una zona poco turística: ninguno de sus lugares está en Lima ni en Cusco, lo más visitado.</p>
+          <p>Está fuera del circuito de Lima y Cusco: ninguno de sus lugares queda en esas dos regiones.</p>
         ) : null}
         {fotos ? (
           <p>Las fotos son de Wikimedia Commons: cada una lleva el nombre de su autor y su licencia.</p>
@@ -281,8 +281,8 @@ export function PaginaPolo({ id, consulta }: { id: number; consulta: Consulta | 
                   </li>
                   {detalle.polo.fuera_del_circuito ? (
                     <li>
-                      <Icono nombre="naturaleza" />
-                      Poco turística
+                      <Icono nombre="aventura" />
+                      Fuera del circuito
                     </li>
                   ) : null}
                 </ul>

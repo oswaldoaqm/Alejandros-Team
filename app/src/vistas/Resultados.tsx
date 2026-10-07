@@ -290,7 +290,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
 
   const demas = detalles(entendida, nombres);
   // Si ninguno pasa por Lima ni por Cusco, lo dice una frase arriba y no la etiqueta de cada tarjeta.
-  const todosPocoTuristicos = rutas.length > 1 && rutas.every((r) => r.polo.fuera_del_circuito);
+  const todosFuera = rutas.length > 1 && rutas.every((r) => r.polo.fuera_del_circuito);
 
   return (
     <section className="pagina resultados">
@@ -316,7 +316,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
         {pedido.cargando
           ? "Estamos revisando las zonas del país. La primera vez puede tardar unos segundos."
           : alDia && rutas.length > 1
-            ? `Del que más te conviene al que menos.${todosPocoTuristicos ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están lejos del circuito de Lima y Cusco.` : ""}`
+            ? `Del que más te conviene al que menos.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
             : ""}
       </p>
 
@@ -350,7 +350,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
               <TarjetaRuta
                 ruta={ruta}
                 enlace={enlaces.resultados(consulta, vigente, i + 1)}
-                marcarPocoTuristico={!todosPocoTuristicos}
+                marcarFueraDelCircuito={!todosFuera}
                 foto={fotos ? fotoDelViaje(ruta, fotos) : null}
               />
             </li>

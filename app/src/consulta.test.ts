@@ -92,7 +92,7 @@ describe("la consulta en palabras", () => {
 
   it("lo demás que pidió, solo si pidió algo", () => {
     expect(detalles(COMPLETA, NOMBRES)).toBe(
-      `Historia y arqueología y Playa, hasta S/${nb}1${nb}800 por persona, hasta 2${nb}500${nb}m de altura, solo lugares poco turísticos`,
+      `Historia y arqueología y Playa, hasta S/${nb}1${nb}800 por persona, hasta 2${nb}500${nb}m de altura, solo fuera de Lima y Cusco`,
     );
     expect(detalles({ ...POR_DEFECTO, mes: 7 }, NOMBRES)).toBeNull();
   });

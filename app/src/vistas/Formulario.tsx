@@ -192,7 +192,7 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
           Ver mis viajes
         </button>
         <button type="button" className="boton boton--texto" onClick={() => buscar(true)}>
-          Sorpréndeme con lugares poco turísticos
+          Sorpréndeme fuera de Lima y Cusco
         </button>
       </div>
 

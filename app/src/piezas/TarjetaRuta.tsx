@@ -16,8 +16,8 @@ import { Icono, type NombreDeIcono } from "./Icono";
 interface Props {
   ruta: Ruta;
   enlace: string;
-  /** Si la etiqueta «Poco turístico» distingue a este viaje de los otros dos. */
-  marcarPocoTuristico: boolean;
+  /** Si la etiqueta «Fuera del circuito» distingue a este viaje de los otros dos. */
+  marcarFueraDelCircuito: boolean;
   /** La foto del viaje (src/fotos.ts); sin ella, va su flor. */
   foto?: FotoDe | null;
 }
@@ -28,7 +28,7 @@ const ICONO_DEL_CLIMA: Record<Ruta["estacionalidad"]["veredicto"], NombreDeIcono
   desaconsejado: "lluvia",
 };
 
-export function TarjetaRuta({ ruta, enlace, marcarPocoTuristico, foto = null }: Props) {
+export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null }: Props) {
   const [sinFoto, ponerSinFoto] = useState(false);
   const { polo, costo, indicadores, estacionalidad, traslado } = ruta;
   const { titulo, subtitulo } = nombreDelViaje(polo.nombre);
@@ -70,8 +70,8 @@ export function TarjetaRuta({ ruta, enlace, marcarPocoTuristico, foto = null }: 
         ) : (
           <DibujoFlor base={base} puntos={puntos} ida={traslado.horas} />
         )}
-        {marcarPocoTuristico && polo.fuera_del_circuito ? (
-          <span className="viaje-tarjeta__sello">Poco turístico</span>
+        {marcarFueraDelCircuito && polo.fuera_del_circuito ? (
+          <span className="viaje-tarjeta__sello">Fuera del circuito</span>
         ) : null}
       </div>
       <div className="viaje-tarjeta__cuerpo">

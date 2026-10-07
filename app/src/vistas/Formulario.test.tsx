@@ -105,12 +105,12 @@ describe("el formulario", () => {
     expect(pedidosA(api, "/v1/viajes")).toHaveLength(0);
   });
 
-  it("«Sorpréndeme» pide solo lugares poco turísticos; «Ver mis viajes», no", async () => {
+  it("«Sorpréndeme» pide solo viajes fuera de Lima y Cusco; «Ver mis viajes», no", async () => {
     const api = await abrir();
     await abrirFila(/^Cuándo/);
     await userEvent.click(screen.getByRole("radio", { name: "Julio" }));
     await listo();
-    await userEvent.click(screen.getByRole("button", { name: "Sorpréndeme con lugares poco turísticos" }));
+    await userEvent.click(screen.getByRole("button", { name: "Sorpréndeme fuera de Lima y Cusco" }));
     await enResultados();
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6&sorpresa=true");
 

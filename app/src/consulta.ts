@@ -97,12 +97,12 @@ export function titulo(c: Consulta, nombres: Nombres): string {
   return `Desde ${nombreDeOrigen(c.origen, nombres)}, ${plural(c.dias, "día", "días")} ${cuando}`;
 }
 
-/** Lo demás que pidió, si pidió algo: «Playa, hasta S/ 1 800 por persona, solo lugares poco turísticos». */
+/** Lo demás que pidió, si pidió algo: «Playa, hasta S/ 1 800 por persona, solo fuera de Lima y Cusco». */
 export function detalles(c: Consulta, nombres: Nombres): string | null {
   const partes: string[] = [];
   if (c.intereses.length > 0) partes.push(lista(c.intereses.map((i) => nombres.intereses[i] ?? i)));
   if (c.presupuesto !== null) partes.push(`hasta ${soles(c.presupuesto)} por persona`);
   if (c.altitud_max !== null) partes.push(`hasta ${metros(c.altitud_max)} de altura`);
-  if (c.sorpresa) partes.push("solo lugares poco turísticos");
+  if (c.sorpresa) partes.push("solo fuera de Lima y Cusco");
   return partes.length > 0 ? mayuscula(partes.join(", ")) : null;
 }
