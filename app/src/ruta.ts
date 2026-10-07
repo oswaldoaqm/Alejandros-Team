@@ -5,7 +5,13 @@ import { aEnlace, type Consulta, deParametros } from "./consulta";
 
 export type Vista =
   | { tipo: "inicio"; consulta: Consulta | null }
-  | { tipo: "resultados"; consulta: Consulta; version: string | null; ruta: number }
+  | {
+      tipo: "resultados";
+      consulta: Consulta;
+      version: string | null;
+      /** El viaje abierto: 1, 2 o 3. null: la lista de los tres, para comparar. */
+      ruta: number | null;
+    }
   | { tipo: "polo"; id: number; consulta: Consulta | null }
   | { tipo: "calendario"; consulta: Consulta | null; mes: number | null }
   | { tipo: "mis-viajes" }
@@ -39,12 +45,12 @@ export function vistaDe(url: URL): Vista {
       return { tipo: "publicar" };
   }
   if (!consulta) return { tipo: "inicio", consulta: null };
-  const elegida = pagina === "ruta" ? Number(argumento) : 1;
+  const elegida = pagina === "ruta" ? Number(argumento) : null;
   return {
     tipo: "resultados",
     consulta,
     version: url.searchParams.get("v"),
-    ruta: Number.isInteger(elegida) && elegida >= 1 && elegida <= 3 ? elegida : 1,
+    ruta: elegida !== null && Number.isInteger(elegida) && elegida >= 1 && elegida <= 3 ? elegida : null,
   };
 }
 
@@ -52,8 +58,9 @@ export function vistaDe(url: URL): Vista {
 export const enlaces = {
   inicio: () => "./",
   editar: (c: Consulta, version?: string | null) => `${aEnlace(c, version)}#/editar`,
-  resultados: (c: Consulta, version?: string | null, ruta = 1) =>
-    `${aEnlace(c, version)}${ruta > 1 ? `#/ruta/${ruta}` : ""}`,
+  /** Sin `ruta`, la lista de los tres viajes; con `ruta`, ese viaje abierto. */
+  resultados: (c: Consulta, version?: string | null, ruta?: number | null) =>
+    `${aEnlace(c, version)}${ruta ? `#/ruta/${ruta}` : ""}`,
   polo: (id: number, c?: Consulta | null, version?: string | null) =>
     `${c ? aEnlace(c, version) : "./"}#/polo/${id}`,
   calendario: (c?: Consulta | null, version?: string | null, mes?: number | null) =>

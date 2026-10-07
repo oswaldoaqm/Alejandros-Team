@@ -25,76 +25,107 @@ test.beforeEach(async ({ context }) => {
   );
 });
 
-const tarjetas = (pagina: Page) => pagina.getByRole("list", { name: "Rutas propuestas" }).getByRole("link");
-const nombres = (pagina: Page) => tarjetas(pagina).locator(".tarjeta__nombre").allInnerTexts();
+const tarjetas = (pagina: Page) => pagina.getByRole("list", { name: "Viajes propuestos" }).getByRole("link");
+const titulo = (pagina: Page) => pagina.getByRole("heading", { level: 1 });
 
-test("de la consulta al itinerario, con su mapa y sus fichas", async ({ page }) => {
+/** Abre una fila del formulario («Desde», «Cuándo»…) y la cierra con «Listo» si la hoja lo pide. */
+async function elegir(pagina: Page, fila: RegExp, accion: () => Promise<void>, listo = true) {
+  await pagina.getByRole("button", { name: fila }).click();
+  await accion();
+  if (listo) await pagina.getByRole("dialog").getByRole("button", { name: "Listo" }).click();
+}
+
+test("de la consulta al viaje, con su mapa, sus días y la ficha de cada lugar", async ({ page }) => {
   await page.goto("./");
-  await page.getByLabel("Punto de partida").selectOption("lima");
-  await page.getByText("Historia y arqueología").click();
-  await page.getByRole("radio", { name: "Julio" }).check({ force: true });
-  await page.getByRole("button", { name: "Generar mis rutas" }).click();
+  await elegir(page, /^Qué te gusta/, () =>
+    page.getByRole("checkbox", { name: "Historia y arqueología" }).check(),
+  );
+  await elegir(page, /^Cuándo/, () => page.getByRole("radio", { name: "Julio" }).check({ force: true }));
+  await page.getByRole("button", { name: "Ver mis viajes" }).click();
 
   await expect(tarjetas(page)).toHaveCount(3);
   await expect(page).toHaveURL(/\?origen=lima&mes=7&dias=6&intereses=historia&v=\d{4}\.\d+\.\d+/);
 
-  // Seis días pedidos, seis días en el itinerario; y cada parada, con su ficha oficial.
-  await expect(page.getByRole("heading", { level: 4 })).toHaveCount(6);
-  const paradas = await page.locator(".parada__numero").count();
-  expect(paradas).toBeGreaterThan(0);
-  const fichas = page.getByRole("link", { name: /Ficha oficial/ });
-  await expect(fichas).toHaveCount(paradas);
-  await expect(fichas.first()).toHaveAttribute("href", /^https:\/\/consultasenlinea\.mincetur\.gob\.pe\//);
+  // El primero: su portada, y el plan con un segmento por día. Seis días pedidos, seis en el plan.
+  const nombre = await tarjetas(page).first().locator(".viaje-tarjeta__nombre").innerText();
+  await tarjetas(page).first().click();
+  await expect(page).toHaveURL(/#\/ruta\/1$/);
+  await expect(titulo(page)).toHaveText(nombre.split("\n")[0] ?? "");
+  await expect(page.getByRole("radio", { name: /^Día \d+$/ })).toHaveCount(6);
 
-  // El mapa se dibuja y lleva una marca por parada, más la base.
+  // El mapa se dibuja con una marca por lugar, y la de donde se duerme.
   await expect(page.locator(".maplibregl-canvas")).toBeVisible();
-  await expect(page.locator(".maplibregl-marker.marcador:not(.marcador--base)")).toHaveCount(paradas);
-  await expect(page.locator(".maplibregl-marker.marcador--base")).toHaveCount(1);
+  const lugares = await page.locator(".maplibregl-marker.pin").count();
+  expect(lugares).toBeGreaterThan(0);
+  await expect(page.locator(".maplibregl-marker.pin-base")).toHaveCount(1);
 
-  // Otra ruta: cambia el detalle y el enlace.
-  const segunda = await tarjetas(page).nth(1).locator(".tarjeta__nombre").innerText();
-  await tarjetas(page).nth(1).click();
-  await expect(page).toHaveURL(/#\/ruta\/2$/);
-  await expect(page.getByRole("heading", { level: 2, name: /^Ruta B/ })).toContainText(
-    segunda.split("\n").at(-1) ?? "",
+  // Un día: solo sus lugares en el mapa, y cada uno abre su hoja con la ficha oficial.
+  await page.getByRole("radio", { name: "Día 2" }).check({ force: true });
+  const delDia = page.getByRole("list", { name: "Lugares del día 2" }).getByRole("button");
+  await expect(delDia.first()).toBeVisible();
+  await expect(page.locator(".maplibregl-marker.pin:not(.pin--oculto)")).toHaveCount(await delDia.count());
+  await delDia.first().click();
+  await expect(page.getByRole("dialog").getByRole("link", { name: /^Ver la ficha oficial/ })).toHaveAttribute(
+    "href",
+    /^https:\/\/consultasenlinea\.mincetur\.gob\.pe\//,
   );
+  await page.getByRole("dialog").getByRole("button", { name: "Cerrar" }).click();
+
+  // «Tus viajes» vuelve a los tres.
+  await page.getByRole("link", { name: "Tus viajes" }).click();
+  await expect(tarjetas(page)).toHaveCount(3);
 });
 
-test("el enlace es el viaje: quien lo abre ve las mismas rutas", async ({ page, context }) => {
+test("el enlace es el viaje: quien lo abre ve el mismo", async ({ page, context }) => {
   await page.goto("./?origen=cusco&mes=8&dias=5&intereses=naturaleza#/ruta/2");
-  await expect(tarjetas(page)).not.toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
   await expect(page).toHaveURL(/&v=/);
-  const detalle = await page.getByRole("heading", { level: 2, name: /^Ruta B/ }).innerText();
+  const nombre = await titulo(page).innerText();
+  const dias = await page.locator(".dia-fila").allInnerTexts();
 
   const otra = await context.newPage();
   await otra.goto(page.url());
-  await expect(tarjetas(otra)).not.toHaveCount(0);
-  expect(await nombres(otra)).toEqual(await nombres(page));
-  expect(await otra.getByRole("heading", { level: 2, name: /^Ruta B/ }).innerText()).toBe(detalle);
+  await expect(otra.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  await expect(titulo(otra)).toHaveText(nombre);
+  expect(await otra.locator(".dia-fila").allInnerTexts()).toEqual(dias);
   await expect(otra.getByText(/Este enlace se armó con los datos/)).toHaveCount(0);
 });
 
-test("guardar un viaje lo deja en «Mis viajes» de este navegador", async ({ page }) => {
-  await page.goto("./?origen=lima&mes=7&dias=3");
-  await page.getByRole("button", { name: "Guardar" }).click();
-  await expect(page.getByRole("button", { name: "Guardado" })).toBeVisible();
-  await page.getByRole("link", { name: "Mis viajes" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Mis viajes" })).toBeFocused();
-  await page.getByRole("link", { name: /Lima · julio · 3.días/ }).click();
-  await expect(tarjetas(page)).not.toHaveCount(0);
+test("guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él", async ({
+  page,
+}) => {
+  await page.goto("./?origen=lima&mes=7&dias=3#/ruta/2");
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  const nombre = await titulo(page).innerText();
+  // Exacto: «Imprimir o guardar en PDF» también dice «guardar».
+  await page.getByRole("button", { name: "Guardar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Guardado", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await page.getByRole("link", { name: "Guardados" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Guardados" })).toBeFocused();
+  // El guardado lleva el nombre del viaje y, debajo, lo que se pidió.
+  await page.getByRole("link", { name: /Desde Lima, 3.días en julio/ }).click();
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  await expect(titulo(page)).toHaveText(nombre);
+  await expect(page).toHaveURL(/#\/ruta\/2$/);
 });
 
-test("la ficha de un polo y el calendario cargan del API", async ({ page }) => {
-  await page.goto("./?origen=lima&mes=7&dias=6");
-  await page.getByRole("link", { name: /Ver todo lo que hay en el polo/ }).click();
+test("la zona de un viaje y el calendario cargan del API", async ({ page }) => {
+  await page.goto("./?origen=lima&mes=7&dias=6#/ruta/1");
+  await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
+  const nombre = await titulo(page).innerText();
+  await page.getByRole("link", { name: /^Ver todos los lugares de la zona/ }).click();
   await expect(page.getByRole("radio", { name: /^Julio:/ })).toBeChecked();
-  await expect(page.getByRole("link", { name: /Ficha oficial/ })).toHaveCount(10);
+  await expect(page.getByRole("region", { name: "Qué hay para ver" }).getByRole("listitem")).toHaveCount(8);
 
-  await page.getByRole("link", { name: "Volver a tus rutas" }).click();
-  await expect(tarjetas(page)).not.toHaveCount(0);
+  await page.getByRole("link", { name: "Tus viajes" }).click();
+  await expect(titulo(page)).toHaveText(nombre);
 
-  await page.getByRole("link", { name: "Fiestas" }).click();
-  await expect(page.getByRole("heading", { level: 2 }).first()).toContainText(/eventos? en julio de \d{4}/);
+  // Exacto: el viaje también enlaza «Ver todas las fiestas de julio».
+  await page.getByRole("link", { name: "Fiestas", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: /eventos? en julio de \d{4}/ })).toBeVisible();
   await expect(page.locator(".evento").first()).toBeVisible();
 });
 
@@ -121,7 +152,7 @@ test("un municipio publica un evento, con su lugar, y sale en el calendario", as
   // Sin animaciones, el mapa salta a la ciudad de la región en vez de ir de a poco.
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("./");
-  await page.getByRole("link", { name: "Para municipios: publicar un evento" }).click();
+  await page.getByRole("link", { name: "Publica un evento" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Publicar un evento" })).toBeFocused();
 
   await page.getByLabel("Nombre del evento").fill(nombre);
@@ -143,15 +174,15 @@ test("un municipio publica un evento, con su lugar, y sale en el calendario", as
   await page.getByRole("button", { name: "Publicar el evento" }).click();
 
   await expect(page.getByRole("heading", { level: 1, name: "Evento publicado" })).toBeFocused();
-  await expect(page.getByText(/sale también en las rutas que duermen o paran a 10 km o menos/)).toBeVisible();
+  await expect(page.getByText(/sale también en los viajes que pasan a 10 km o menos/)).toBeVisible();
   await expect(page.locator(".evento")).toContainText(`Publicado por ${entidad}`);
 
   // Y está en el calendario de su mes, que se pide de nuevo al API.
   await page.getByRole("link", { name: /^Ver el calendario de / }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Fiestas y eventos" })).toBeVisible();
-  await expect(page.locator(".evento", { hasText: nombre })).toContainText(
-    `Huaraz, Huaraz · Áncash · Publicado por ${entidad}`,
-  );
+  await expect(page.getByRole("heading", { level: 1, name: "Fiestas" })).toBeVisible();
+  const publicado = page.locator(".evento", { hasText: nombre });
+  await expect(publicado).toContainText("Huaraz, Áncash");
+  await expect(publicado).toContainText(`Publicado por ${entidad}`);
 });
 
 test("sin la clave correcta no se publica, y lo dice en la casilla de la clave", async ({ page }) => {
@@ -177,10 +208,11 @@ test("sin la clave correcta no se publica, y lo dice en la casilla de la clave",
 const PANTALLAS = [
   ["el formulario", "./"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
-  ["la ficha de un polo", "./#/polo/33"],
+  ["un viaje", "./?origen=lima&mes=7&dias=6#/ruta/1"],
+  ["la zona de un viaje", "./#/polo/33"],
   ["el calendario", "./#/calendario"],
   ["cómo funciona", "./#/acerca"],
-  ["mis viajes", "./#/mis-viajes"],
+  ["guardados", "./#/mis-viajes"],
   ["publicar un evento", "./#/publicar"],
 ] as const;
 
@@ -192,7 +224,7 @@ for (const [nombre, direccion] of PANTALLAS) {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(page.locator(".cargando")).toHaveCount(0);
     // El mapa llega aparte: se espera a que esté o a que se sepa que no hay.
-    if (nombre === "los resultados" || nombre === "publicar un evento") {
+    if (nombre === "un viaje" || nombre === "publicar un evento") {
       await expect(page.locator(".maplibregl-canvas")).toBeVisible();
     }
 

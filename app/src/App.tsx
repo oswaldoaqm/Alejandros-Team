@@ -7,6 +7,8 @@ import { ContextoApp, nombresDe } from "./estado/contexto";
 import { useNavegacion } from "./estado/navegacion";
 import { usePedido } from "./estado/pedido";
 import { Enlace } from "./piezas/Enlace";
+import { MarcaFlor } from "./piezas/Flor";
+import { Icono } from "./piezas/Icono";
 import { Limite } from "./piezas/Limite";
 import { enlaces, type Vista } from "./ruta";
 import { Acerca } from "./vistas/Acerca";
@@ -17,9 +19,14 @@ import { PaginaPolo } from "./vistas/PaginaPolo";
 import { Publicar } from "./vistas/Publicar";
 import { Resultados } from "./vistas/Resultados";
 
-/** La pantalla sin sus detalles: cambia cuando se pasa de una a otra, no al afinar la consulta. */
+/**
+ * La pantalla sin sus detalles: cambia cuando se pasa de una a otra, no al afinar la consulta.
+ * Abrir un viaje es pasar a otra pantalla: la de los tres viajes queda atrás.
+ */
 function pagina(vista: Vista): string {
-  return vista.tipo === "polo" ? `polo/${vista.id}` : vista.tipo;
+  if (vista.tipo === "polo") return `polo/${vista.id}`;
+  if (vista.tipo === "resultados" && vista.ruta !== null) return `viaje/${vista.ruta}`;
+  return vista.tipo;
 }
 
 function Pantalla({ vista }: { vista: Vista }) {
@@ -64,6 +71,7 @@ export function App() {
   }, [actual]);
 
   const en = (tipo: Vista["tipo"]) => (vista.tipo === tipo ? "page" : undefined);
+  const planeando = vista.tipo === "inicio" || vista.tipo === "resultados" || vista.tipo === "polo";
   // Con una consulta abierta, el calendario se abre en su mes y ofrece volver a las rutas.
   const consulta = "consulta" in vista ? vista.consulta : null;
 
@@ -76,17 +84,20 @@ export function App() {
       <header className="cabecera">
         <div className="cabecera__ancho">
           <Enlace href={enlaces.inicio()} className="marca" aria-label="DreemGO, inicio">
+            <MarcaFlor />
             DreemGO
           </Enlace>
-          <nav aria-label="Secciones">
+          <nav aria-label="Secciones" className="cabecera__nav">
+            <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
+              Planear
+            </Enlace>
             <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
               Fiestas
             </Enlace>
             <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
-              Mis viajes
+              Guardados
             </Enlace>
-            {/* En celular este enlace queda en el pie: en la cabecera no cabe sin partirla en dos filas. */}
-            <Enlace href={enlaces.acerca()} aria-current={en("acerca")} className="solo-ancho">
+            <Enlace href={enlaces.acerca()} aria-current={en("acerca")}>
               Cómo funciona
             </Enlace>
           </nav>
@@ -113,13 +124,28 @@ export function App() {
       </main>
       <footer className="pie">
         <p>
-          DreemGO · rutas por el Perú con datos oficiales de MINCETUR, clima de Open-Meteo y la red de
-          OpenStreetMap. <Enlace href={enlaces.acerca()}>Fuentes y cómo funciona</Enlace>
+          Lugares del inventario oficial de MINCETUR, clima de Open-Meteo y caminos de OpenStreetMap.{" "}
+          <Enlace href={enlaces.acerca()}>Cómo funciona</Enlace>
         </p>
         <p>
-          <Enlace href={enlaces.publicar()}>Para municipios: publicar un evento</Enlace>
+          ¿Eres de una municipalidad? <Enlace href={enlaces.publicar()}>Publica un evento</Enlace>
         </p>
       </footer>
+      {/* En celular, las secciones van abajo, al alcance del pulgar. */}
+      <nav aria-label="Secciones" className="barra-inferior">
+        <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
+          <Icono nombre="flor" tamano={24} />
+          Planear
+        </Enlace>
+        <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
+          <Icono nombre="calendario" tamano={24} />
+          Fiestas
+        </Enlace>
+        <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
+          <Icono nombre="guardar" tamano={24} />
+          Guardados
+        </Enlace>
+      </nav>
     </ContextoApp.Provider>
   );
 }

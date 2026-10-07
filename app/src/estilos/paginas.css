@@ -1,0 +1,354 @@
+/* Las pantallas que acompañan al viaje: Guardados, Fiestas, Cómo funciona, Publicar un evento
+   y la página de cada zona. Comparten la cabecera: un título grande y una bajada. */
+
+.pagina__titulo {
+  font-size: var(--t-titulo);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.pagina__bajada {
+  max-width: 60ch;
+  margin: 8px 0 24px;
+  color: var(--tinta-2);
+}
+
+@media (min-width: 960px) {
+  .pagina__titulo {
+    font-size: var(--t-display);
+    letter-spacing: -0.035em;
+  }
+}
+
+/* ── Guardados ────────────────────────────────────────────────────────────────── */
+
+.guardados {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.guardado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 10px 0 0;
+}
+
+.guardado + .guardado {
+  border-top: 1px solid var(--linea);
+}
+
+.guardado__enlace {
+  display: grid;
+  gap: 2px;
+  min-height: 64px;
+  padding: 14px 4px 14px 18px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.guardado__enlace:hover .guardado__titulo {
+  color: var(--lago);
+}
+
+.guardado__titulo {
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.guardado__detalle {
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.guardado__meta {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+.guardado__quitar {
+  color: var(--tinta-3);
+  background: none;
+}
+
+.guardado__quitar:hover {
+  color: var(--critico-tinta);
+  background: var(--critico-fondo);
+}
+
+/* ── La zona de un viaje (vistas/PaginaPolo.tsx) ──────────────────────────────────
+   Usa la portada del viaje. En celular, una columna; desde 960 px, los lugares a la
+   izquierda y el clima y las fiestas a la derecha. */
+
+.zona__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.zona__lado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+}
+
+.zona__bajada {
+  margin: -8px 0 14px;
+  color: var(--tinta-2);
+}
+
+.zona__mas {
+  margin-top: 12px;
+}
+
+/* Sin foto (todavía no llega, o la zona no tiene), la barra no flota: va sobre el título. */
+.portada--sin-arte .portada__barra {
+  position: static;
+}
+
+.zona-lugares {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.zona-lugares > li {
+  position: relative;
+}
+
+.zona-lugares > li + li::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 82px;
+  content: "";
+  border-top: 1px solid var(--linea);
+}
+
+.zona-lugar {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 76px;
+  padding: 10px 14px 10px 12px;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.zona-lugar:hover {
+  background: var(--superficie-2);
+}
+
+.zona-lugar:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline-offset: -3px;
+}
+
+.zona-lugar > .icono {
+  color: var(--tinta-3);
+}
+
+/* La miniatura: la foto si hay; si no, o si no carga, un alfiler sobre el azul de la marca. */
+.zona-lugar__foto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  color: var(--lago);
+  background: var(--lago-claro);
+  border-radius: 12px;
+}
+
+.zona-lugar__foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zona-lugar__texto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.zona-lugar__nombre {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.zona-lugar__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* El clima del año: una tarjeta; la barra del mes elegido, entera; las demás, suaves. */
+.clima {
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.clima__barra {
+  width: 62%;
+  max-width: 24px;
+  background: color-mix(in srgb, var(--lago) 32%, var(--superficie));
+  border-radius: 5px 5px 2px 2px;
+}
+
+.clima__mes input:checked ~ .clima__columna {
+  border-bottom: 1px solid var(--borde);
+}
+
+.clima__mes input:checked ~ .clima__columna .clima__barra {
+  background: var(--lago);
+}
+
+.clima__mes input:focus-visible ~ .clima__columna {
+  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.clima__nombre {
+  font-size: 0.6875rem;
+}
+
+.clima__lectura {
+  padding: 12px 14px;
+  background: var(--superficie-2);
+  border: 0;
+  border-radius: var(--r-control);
+}
+
+.clima__lectura strong {
+  font-weight: 650;
+}
+
+@media (min-width: 960px) {
+  .zona__cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    gap: 40px 48px;
+    align-items: start;
+  }
+
+  .zona__cuerpo > .portada,
+  .zona__cuerpo > .letra-chica,
+  .zona__cuerpo > .cargando,
+  .zona__cuerpo > .aviso {
+    grid-column: 1 / -1;
+  }
+
+  .zona__cuerpo > .portada {
+    margin-bottom: -8px;
+  }
+
+  .portada--sin-arte {
+    grid-template-areas:
+      "barra"
+      "texto";
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Fiestas (vistas/PaginaCalendario.tsx) ─────────────────────────────────────── */
+
+.calendario__filtros {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.selector-de-meses {
+  scroll-padding-inline: 16px;
+}
+
+/* La región: un desplegable del sistema (en celular abre su rueda), con la forma de los botones. */
+.calendario__region {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-self: start;
+  max-width: 100%;
+}
+
+.calendario__region label {
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.calendario__region select {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 40px;
+  padding: 0 36px 0 14px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta);
+  appearance: none;
+  background-color: var(--superficie);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6c78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: var(--sombra-baja);
+}
+
+.calendario__region select:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+}
+
+.calendario__cuenta {
+  margin-bottom: 12px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.calendario__accion {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  margin-top: 32px;
+}
+
+.calendario__accion p {
+  color: var(--tinta-2);
+}
+
+.calendario__siguen {
+  margin-top: 32px;
+}
+
+.calendario__subtitulo {
+  margin-bottom: 12px;
+  font-size: var(--t-cuerpo);
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.calendario > .letra-chica {
+  margin-top: 40px;
+}

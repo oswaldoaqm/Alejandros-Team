@@ -1,7 +1,19 @@
 import { describe, expect, it } from "vitest";
+import type { Dia } from "./api/tipos";
 import { POR_DEFECTO } from "./consulta";
 import { plano } from "./pruebas/texto";
-import { aplicarSugerencia, conQueSeViaja, entrada, textoDeSugerencia, tipoDeDia } from "./textos";
+import {
+  aplicarSugerencia,
+  climaCorto,
+  conQueSeViaja,
+  entrada,
+  imperdibles,
+  nombreDelViaje,
+  razonesQueFaltan,
+  resumenDeLugares,
+  textoDeSugerencia,
+  tipoDeDia,
+} from "./textos";
 
 const NOMBRES = {
   origenes: { cusco: "Cusco" },
@@ -71,5 +83,49 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(texto("presupuesto", null)).toBe("Quitar el tope de presupuesto");
     expect(texto("mes", 8)).toBe("Probar en agosto");
     expect(texto("origen", "cusco")).toBe("Salir desde Cusco");
+  });
+});
+
+describe("cómo se nombra y se resume un viaje", () => {
+  it("el nombre va en dos partes cuando el motor desambigua la zona", () => {
+    expect(nombreDelViaje("Huancayo")).toEqual({ titulo: "Huancayo", subtitulo: null });
+    expect(nombreDelViaje("Cusco · Machu Picchu")).toEqual({ titulo: "Cusco", subtitulo: "Machu Picchu" });
+  });
+
+  it("los imperdibles son los de jerarquía 3 o 4, de mayor a menor y sin repetir", () => {
+    const parada = (nombre: string, jerarquia: number | null) => ({ recurso: { nombre, jerarquia } });
+    const dias = [
+      { paradas: [parada("Capilla", 2), parada("Convento", 3)] },
+      { paradas: [parada("Santuario", 4), parada("Convento", 3)] },
+      { paradas: null },
+    ] as unknown as Dia[];
+    expect(imperdibles(dias)).toEqual(["Santuario", "Convento"]);
+  });
+
+  it("de los motivos del motor, quedan los que la pantalla no dice ya en otro lado", () => {
+    expect(
+      razonesQueFaltan([
+        "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
+        "Todas sus paradas son de historia y arqueología o naturaleza",
+        "Julio es temporada seca aquí",
+        "Fuera del circuito de Lima y Cusco",
+        "A 6 h de Lima por carretera",
+      ]),
+    ).toEqual([
+      "Todas sus paradas son de historia y arqueología o naturaleza",
+      "Fuera del circuito de Lima y Cusco",
+    ]);
+  });
+
+  it("una lista larga de lugares se acorta, pero no para dejar uno solo afuera", () => {
+    expect(resumenDeLugares(["A", "B", "C"])).toBe("A, B y C");
+    expect(resumenDeLugares(["A", "B", "C", "D"])).toBe("A, B y 2 lugares más");
+    expect(resumenDeLugares(["A", "B", "C", "D"], 3)).toBe("A, B, C y D");
+  });
+
+  it("el clima del mes, en palabras de viajero", () => {
+    expect(climaCorto("viable", 7)).toBe("Buen clima en julio");
+    expect(climaCorto("advertencia", 3)).toBe("Puede llover en marzo");
+    expect(climaCorto("desaconsejado", 2)).toBe("Temporada de lluvias en febrero");
   });
 });

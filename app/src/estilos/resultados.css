@@ -1,0 +1,352 @@
+/* Los tres viajes (vistas/Resultados.tsx): la consulta en una frase, el título y una tarjeta por
+   viaje. En celular van uno debajo del otro; en pantalla ancha, lado a lado para comparar. */
+
+.resultados {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+/* La consulta, como la barra de búsqueda de una app de viajes: se lee de un vistazo y se cambia. */
+.resultados__consulta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 10px 18px;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.resultados__consulta > div {
+  min-width: 0;
+}
+
+.resultados__frase {
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.resultados__demas {
+  margin-top: 2px;
+  font-size: var(--t-pie);
+  line-height: 1.35;
+  color: var(--tinta-2);
+}
+
+.resultados__consulta .boton {
+  flex: none;
+}
+
+.resultados__titulo {
+  margin-top: 8px;
+  font-size: var(--t-titulo);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.resultados__estado {
+  margin-top: -12px;
+  color: var(--tinta-2);
+}
+
+.resultados__estado:empty {
+  display: none;
+}
+
+.resultados__nota {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* ── Las tarjetas ─────────────────────────────────────────────────────────────── */
+
+.viajes {
+  display: grid;
+  gap: 16px;
+}
+
+.viajes--espera {
+  opacity: 0.55;
+  transition: opacity var(--movimiento);
+}
+
+.viaje-tarjeta {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+  transition:
+    box-shadow var(--movimiento),
+    transform var(--movimiento);
+}
+
+.viaje-tarjeta:hover {
+  box-shadow: var(--sombra-flota);
+}
+
+.viaje-tarjeta:active {
+  transform: scale(0.99);
+}
+
+.viaje-tarjeta__arte {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 188px;
+  padding: 22px;
+  background: var(--lago-claro);
+}
+
+.viaje-tarjeta__arte .flor {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+}
+
+/* Con foto, la foto llena el recuadro y la flor queda de sello en una esquina. */
+.viaje-tarjeta__arte--foto {
+  padding: 0;
+}
+
+.viaje-tarjeta__foto {
+  position: absolute;
+  inset: 0;
+}
+
+.viaje-tarjeta__foto img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El crédito va en una pastilla oscura: se lee sobre cualquier foto, también sobre un cielo blanco. */
+.viaje-tarjeta__foto .foto__credito {
+  position: absolute;
+  right: 10px;
+  bottom: 12px;
+  max-width: calc(100% - 90px);
+  margin: 0;
+  padding: 3px 8px;
+  overflow: hidden;
+  font-size: 0.6875rem;
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgb(0 0 0 / 55%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+}
+
+.viaje-tarjeta__arte .sello-flor {
+  width: 46px;
+  height: 46px;
+  padding: 6px;
+}
+
+.viaje-tarjeta__sello {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 11px;
+  font-size: var(--t-pie);
+  font-weight: 650;
+  color: var(--tinta);
+  background: var(--cristal);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-radius: 999px;
+}
+
+.viaje-tarjeta__cuerpo {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 18px 20px 20px;
+}
+
+.viaje-tarjeta__nombre {
+  display: grid;
+  font-size: var(--t-titular);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.viaje-tarjeta__sub {
+  margin-top: 2px;
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--tinta-2);
+}
+
+.viaje-tarjeta__gancho {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: var(--t-nota);
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.viaje-tarjeta__gancho .icono {
+  margin-top: 2px;
+  color: var(--ichu);
+}
+
+.viaje-tarjeta__datos {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  border-top: 1px solid var(--linea);
+}
+
+.viaje-tarjeta__datos li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: center;
+}
+
+.viaje-tarjeta__datos .icono {
+  color: var(--tinta-3);
+}
+
+.viaje-tarjeta__precio {
+  font-size: var(--t-cuerpo);
+  color: var(--tinta);
+}
+
+.viaje-tarjeta__precio .num {
+  font-size: var(--t-titular);
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.viaje-tarjeta__exceso {
+  flex-basis: 100%;
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--aviso-tinta);
+}
+
+/* ── Sin viajes, y el aviso que flota ─────────────────────────────────────────── */
+
+.vacio-viajes {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  padding: 24px 20px;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.vacio-viajes h2 {
+  font-size: var(--t-titular);
+  font-weight: 750;
+}
+
+.vacio-viajes p {
+  color: var(--tinta-2);
+}
+
+.sugerencias {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.sugerencias li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+}
+
+.sugerencias__efecto {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* Lo que se acaba de hacer (guardar, copiar el enlace): flota abajo y se va solo. */
+.aviso-flotante {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--barra-inferior) + 16px + env(safe-area-inset-bottom));
+  left: 16px;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.aviso-flotante:empty {
+  display: none;
+}
+
+.aviso-flotante > span {
+  display: grid;
+  gap: 8px;
+  max-width: 440px;
+  padding: 12px 18px;
+  font-size: var(--t-nota);
+  font-weight: 550;
+  color: var(--superficie);
+  pointer-events: auto;
+  background: var(--tinta);
+  border-radius: var(--r-control);
+  box-shadow: var(--sombra-flota);
+  animation: hoja-sube var(--movimiento);
+}
+
+.aviso-flotante input {
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 0;
+  border-radius: var(--r-chico);
+}
+
+@media (min-width: 720px) {
+  .viajes {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+  }
+
+  .resultados__consulta {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 960px) {
+  .resultados {
+    gap: 24px;
+  }
+
+  .resultados__titulo {
+    font-size: var(--t-display);
+    letter-spacing: -0.035em;
+  }
+
+  .viaje-tarjeta__arte {
+    height: 220px;
+  }
+
+  .aviso-flotante {
+    bottom: 24px;
+  }
+}

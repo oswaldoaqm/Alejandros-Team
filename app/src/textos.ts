@@ -87,3 +87,65 @@ export function textoDeSugerencia(s: Sugerencia, nombres: Nombres): string {
         : "Cambiar el origen";
   }
 }
+
+// ── El rediseño: cómo se nombra y se resume un viaje para quien lo elige ──────────────
+
+/**
+ * El nombre del viaje en dos partes. El motor desambigua las zonas que comparten base con
+ * «Base · lugar principal»: arriba va la base y abajo, si hay, su lugar principal.
+ */
+export function nombreDelViaje(nombre: string): { titulo: string; subtitulo: string | null } {
+  const [titulo = nombre, ...resto] = nombre.split(" · ");
+  return { titulo, subtitulo: resto.length > 0 ? resto.join(" · ") : null };
+}
+
+/** Los imperdibles: los lugares de jerarquía 3 o 4, de mayor a menor, sin repetir. */
+export function imperdibles(dias: readonly Dia[]): string[] {
+  const vistos = new Map<string, number>();
+  for (const dia of dias)
+    for (const p of dia.paradas ?? [])
+      if ((p.recurso.jerarquia ?? 0) >= 3) vistos.set(p.recurso.nombre, p.recurso.jerarquia ?? 0);
+  return [...vistos.entries()].sort((a, b) => b[1] - a[1]).map(([nombre]) => nombre);
+}
+
+/** Cuántos lugares visita el viaje en total. */
+export function lugaresDelViaje(dias: readonly Dia[]): number {
+  return dias.reduce((suma, d) => suma + (d.paradas ?? []).length, 0);
+}
+
+/** Lo que dice el veredicto del mes, en palabras de viajero. */
+export function climaCorto(
+  veredicto: "viable" | "advertencia" | "desaconsejado",
+  mesDelViaje: number,
+): string {
+  if (veredicto === "viable") return `Buen clima en ${mes(mesDelViaje)}`;
+  if (veredicto === "advertencia") return `Puede llover en ${mes(mesDelViaje)}`;
+  return `Temporada de lluvias en ${mes(mesDelViaje)}`;
+}
+
+/** Una altura que vale la pena avisar: desde 2 500 m el cuerpo la siente. */
+export const ALTURA_QUE_SE_SIENTE = 2500;
+
+/**
+ * De los motivos del motor, los que dicen algo que la pantalla del viaje no dice ya en otro
+ * lado: los imperdibles van con su estrella, y el clima y el tiempo de ida van en los datos de
+ * arriba. Se reconocen por las frases fijas del motor (dreemgo/motor/viaje.py, `motivos`); si
+ * una cambia, lo peor que pasa es que algo se lea dos veces.
+ */
+export function razonesQueFaltan(motivos: readonly string[]): string[] {
+  return motivos.filter((m) => !/jerarqu[ií]a/i.test(m) && !/temporada seca/i.test(m) && !/^A \d/.test(m));
+}
+
+/** El clima del mes en dos o tres palabras, para los datos de arriba del viaje. */
+export const CLIMA_EN_POCAS_PALABRAS: Record<"viable" | "advertencia" | "desaconsejado", string> = {
+  viable: "Buen clima",
+  advertencia: "Puede llover",
+  desaconsejado: "Lluvias",
+};
+
+/** «Catedral de Huancayo, Plaza Huamanmarca y 4 lugares más». */
+export function resumenDeLugares(nombres: readonly string[], cuantos = 2): string {
+  if (nombres.length <= cuantos + 1) return lista([...nombres]);
+  const resto = nombres.length - cuantos;
+  return `${nombres.slice(0, cuantos).join(", ")} y ${resto} lugares más`;
+}

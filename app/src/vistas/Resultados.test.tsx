@@ -6,6 +6,7 @@ import { leerViajes } from "../almacen";
 import type { PropsDeMapa } from "../piezas/MapaRuta";
 import { irA, pedidosA, ponerApi, RESPUESTA, VERSION, viajesPara } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
+import { nombreDelViaje } from "../textos";
 
 // El mapa de verdad necesita WebGL, que aquí no hay: en su lugar va un bloque que dice qué recibió.
 vi.mock("../piezas/MapaRuta", () => ({
@@ -21,11 +22,8 @@ vi.mock("../piezas/MapaRuta", () => ({
 
 const CONSULTA =
   "origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500";
-const [A, B] = RESPUESTA.rutas;
-if (!A || !B) throw new Error("El ejemplo del contrato trae menos de dos rutas.");
-
-/** Para buscar por nombre accesible sin tropezar con los espacios que no parten la línea. */
-const conNombre = (texto: string) => (nombre: string) => plano(nombre) === texto;
+const [A, B, C] = RESPUESTA.rutas;
+if (!A || !B || !C) throw new Error("El ejemplo del contrato trae menos de tres rutas.");
 
 async function abrir(direccion = `/?${CONSULTA}`, rutas: Parameters<typeof ponerApi>[0] = {}) {
   irA(direccion);
@@ -35,85 +33,89 @@ async function abrir(direccion = `/?${CONSULTA}`, rutas: Parameters<typeof poner
 }
 
 async function tarjetas() {
-  return within(await screen.findByRole("list", { name: "Rutas propuestas" })).getAllByRole("link");
+  return within(await screen.findByRole("list", { name: "Viajes propuestos" })).getAllByRole("link");
 }
 
-const tituloDelDetalle = () =>
-  plano(screen.getByRole("heading", { level: 2, name: /^Ruta [ABC]/ }).textContent);
+/** El viaje abierto, cuando ya llegó: su título en la portada. */
+async function viajeAbierto() {
+  await screen.findByRole("link", { name: "Tus viajes" });
+  return plano(screen.getByRole("heading", { level: 1 }).textContent);
+}
 
-describe("los resultados", () => {
-  it("muestra las rutas para comparar y abre la primera", async () => {
+describe("los tres viajes", () => {
+  it("muestra los viajes para elegir, con lo que deciden: precio, tiempo de ida y clima", async () => {
     await abrir();
     const lista = await tarjetas();
-    expect(lista).toHaveLength(RESPUESTA.rutas.length);
+    expect(lista).toHaveLength(3);
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Tres viajes para ti");
     RESPUESTA.rutas.forEach((ruta, i) => {
       const texto = plano(lista[i]?.textContent);
-      expect(texto).toContain(ruta.polo.nombre);
-      expect(texto).toContain(`${ruta.indicadores.paradas} paradas`);
-      expect(texto).toContain("4 días");
+      expect(texto).toContain(nombreDelViaje(ruta.polo.nombre).titulo);
+      expect(texto).toContain("por persona");
+      expect(texto).toContain(`desde ${ruta.traslado.desde}`);
+      expect(texto).toContain("en julio");
     });
-    expect(lista[0]?.getAttribute("aria-current")).toBe("true");
-    expect(lista[1]?.getAttribute("aria-current")).toBeNull();
-    expect(tituloDelDetalle()).toBe(`Ruta A${A.polo.nombre}`);
-    expect(
-      screen.getByText("Tres rutas desde Lima para julio, de la más a la menos recomendada."),
-    ).toBeDefined();
+    expect(lista[0]?.getAttribute("href")).toBe(`?${CONSULTA}&v=${VERSION}#/ruta/1`);
   });
 
-  it("el detalle trae motivos, avisos, itinerario con fichas, costo, mes y fuentes", async () => {
+  it("dice la consulta en una frase y lo demás que se pidió", async () => {
     await abrir();
     await tarjetas();
-    for (const motivo of A.motivos) expect(screen.getByText(motivo)).toBeDefined();
-    for (const aviso of A.avisos ?? []) expect(screen.getByText(plano(aviso.mensaje))).toBeDefined();
-    expect(screen.getAllByRole("link", { name: /Ficha oficial/ })).toHaveLength(A.indicadores.paradas);
-    expect(screen.getAllByRole("heading", { level: 4 })).toHaveLength(A.dias.length);
-    expect(screen.getByText(A.estacionalidad.explicacion)).toBeDefined();
-    for (const linea of RESPUESTA.atribucion) expect(screen.getByText(linea)).toBeDefined();
-    const mapa = await screen.findByTestId("mapa");
-    expect(mapa.dataset.puntos).toBe(String(A.indicadores.paradas));
-    expect(mapa.dataset.base).toBe(A.polo.base.nombre);
-  });
-
-  it("al elegir otra tarjeta cambia el detalle y la URL, sin volver a pedir nada", async () => {
-    const api = await abrir();
-    const lista = await tarjetas();
-    await userEvent.click(lista[1] as HTMLElement);
-    expect(tituloDelDetalle()).toBe(`Ruta B${B.polo.nombre}`);
-    expect(window.location.hash).toBe("#/ruta/2");
-    expect((await tarjetas())[1]?.getAttribute("aria-current")).toBe("true");
-    expect(pedidosA(api, "/v1/viajes")).toHaveLength(1);
-  });
-
-  it("un enlace con #/ruta/3 abre la tercera", async () => {
-    await abrir(`/?${CONSULTA}#/ruta/3`);
-    await tarjetas();
-    expect(tituloDelDetalle()).toBe(`Ruta C${RESPUESTA.rutas[2]?.polo.nombre}`);
-  });
-
-  it("la consulta se ve como chips, y quitar uno pide otra consulta", async () => {
-    const api = await abrir();
-    await tarjetas();
-    const chips = within(screen.getByRole("list", { name: "Tu consulta" })).getAllByRole("listitem");
-    expect(chips.map((c) => plano(c.textContent))).toEqual([
-      "Desde Lima",
-      "4 días",
-      "Julio",
-      "Historia y arqueología",
-      "Naturaleza",
-      "Hasta S/ 700",
-      "Hasta 3 500 m",
-      "Editar",
-    ]);
-    // El mes es obligatorio: no se puede quitar.
-    expect(screen.queryByRole("link", { name: conNombre("Quitar: Julio") })).toBeNull();
-
-    await userEvent.click(screen.getByRole("link", { name: conNombre("Quitar: Hasta S/ 700") }));
-    await waitFor(() => expect(pedidosA(api, "/v1/viajes")).toHaveLength(2));
-    expect(pedidosA(api, "/v1/viajes")[1]).toBe(
-      "/v1/viajes?origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&altitud_max=3500",
+    expect(plano(screen.getByText(/^Desde Lima/).textContent)).toBe("Desde Lima, 4 días en julio");
+    expect(plano(screen.getByText(/^Historia y arqueología/).textContent)).toBe(
+      "Historia y arqueología y Naturaleza, hasta S/ 700 por persona, hasta 3 500 m de altura",
     );
-    await waitFor(() =>
-      expect(screen.queryByRole("link", { name: conNombre("Quitar: Hasta S/ 700") })).toBeNull(),
+  });
+
+  it("marca los viajes que están fuera del circuito cuando no lo están todos", async () => {
+    await abrir();
+    const lista = await tarjetas();
+    const sellos = lista.map((t) => within(t).queryByText("Fuera del circuito") !== null);
+    expect(sellos).toEqual(RESPUESTA.rutas.map((r) => r.polo.fuera_del_circuito));
+  });
+
+  // Los `cuantos` primeros viajes del ejemplo, todos fuera de Lima y de Cusco.
+  const soloFuera = (cuantos: number) => ({
+    "/v1/viajes": (url: URL) => {
+      const respuesta = viajesPara(url);
+      const rutas = respuesta.rutas
+        .slice(0, cuantos)
+        .map((r) => ({ ...r, polo: { ...r.polo, fuera_del_circuito: true } }));
+      return { cuerpo: { ...respuesta, rutas } };
+    },
+  });
+
+  it("si ninguno pasa por Lima ni por Cusco, lo dice una vez arriba y no en cada tarjeta", async () => {
+    await abrir(`/?${CONSULTA}`, soloFuera(3));
+    expect(await tarjetas()).toHaveLength(3);
+    expect(screen.getByText(/están fuera del circuito/).textContent).toContain("Los tres están fuera");
+    expect(screen.queryByText("Fuera del circuito")).toBeNull();
+  });
+
+  it("con dos viajes no dice «los tres»", async () => {
+    await abrir(`/?${CONSULTA}`, soloFuera(2));
+    expect(await tarjetas()).toHaveLength(2);
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Dos viajes para ti");
+    const frase = screen.getByText(/están fuera del circuito/).textContent;
+    expect(frase).toContain("Los dos están fuera");
+    expect(frase).not.toContain("tres");
+  });
+
+  it("un viaje solo lleva su etiqueta: no hay frase que lo diga por él", async () => {
+    await abrir(`/?${CONSULTA}`, soloFuera(1));
+    const [unica] = await tarjetas();
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Un viaje para ti");
+    expect(screen.queryByText(/están fuera del circuito/)).toBeNull();
+    expect(within(unica as HTMLElement).getByText("Fuera del circuito")).toBeDefined();
+  });
+
+  it("«Cambiar» lleva al formulario con la misma consulta", async () => {
+    await abrir();
+    await tarjetas();
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" })).toBeDefined();
+    expect(plano(screen.getByRole("button", { name: /^Qué te gusta/ }).textContent)).toContain(
+      "Historia y arqueología y Naturaleza",
     );
   });
 
@@ -158,7 +160,7 @@ describe("los resultados", () => {
     expect(screen.getByText(/Este enlace se armó con los datos/).textContent).toContain("2026.9.1-e3f9a1c");
   });
 
-  it("sin rutas, dice por qué y ofrece lo que el motor sugiere", async () => {
+  it("sin viajes, dice por qué y ofrece lo que el motor sugiere", async () => {
     const api = await abrir(`/?origen=lima&mes=7&dias=1&altitud_max=0`, {
       "/v1/viajes": (url) =>
         url.searchParams.has("altitud_max")
@@ -175,10 +177,10 @@ describe("los resultados", () => {
             }
           : { cuerpo: viajesPara(url) },
     });
-    expect(await screen.findByText("No hay rutas para esta consulta")).toBeDefined();
+    expect(await screen.findByRole("heading", { name: "No encontramos un viaje así" })).toBeDefined();
     expect(screen.getByText(/En un día no se llega desde Lima/)).toBeDefined();
     expect(screen.getByText("aparecen 3 rutas")).toBeDefined();
-    expect(screen.queryByRole("list", { name: "Rutas propuestas" })).toBeNull();
+    expect(screen.queryByRole("list", { name: "Viajes propuestos" })).toBeNull();
 
     await userEvent.click(screen.getByRole("link", { name: "Quitar el límite de altitud" }));
     expect(await tarjetas()).toHaveLength(3);
@@ -199,8 +201,8 @@ describe("los resultados", () => {
     expect(alerta.textContent).toContain("Días: Debe ser menor o igual que 14.");
     expect(within(alerta).queryByRole("button", { name: "Volver a intentar" })).toBeNull();
 
-    await userEvent.click(within(alerta).getByRole("link", { name: "Revisar la consulta" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "¿Qué viaje quieres hacer?" })).toBeDefined();
+    await userEvent.click(within(alerta).getByRole("link", { name: "Revisar el viaje" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" })).toBeDefined();
   });
 
   it("sin conexión lo dice, y al reintentar sigue", async () => {
@@ -220,99 +222,212 @@ describe("los resultados", () => {
   });
 });
 
+describe("un viaje abierto", () => {
+  it("al tocar un viaje se abre su plan, sin volver a pedir nada", async () => {
+    const api = await abrir();
+    const lista = await tarjetas();
+    await userEvent.click(lista[1] as HTMLElement);
+    expect(await viajeAbierto()).toBe(nombreDelViaje(B.polo.nombre).titulo);
+    expect(window.location.hash).toBe("#/ruta/2");
+    expect(pedidosA(api, "/v1/viajes")).toHaveLength(1);
+  });
+
+  it("un enlace con #/ruta/3 abre el tercero", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/3`);
+    expect(await viajeAbierto()).toBe(nombreDelViaje(C.polo.nombre).titulo);
+  });
+
+  it("«Tus viajes» vuelve a los tres", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/2`);
+    await viajeAbierto();
+    await userEvent.click(screen.getByRole("link", { name: "Tus viajes" }));
+    expect(await tarjetas()).toHaveLength(3);
+    expect(window.location.hash).toBe("");
+  });
+
+  it("dice por qué te va a gustar sin repetir lo que ya está arriba", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    const razones = within(screen.getByRole("region", { name: "Por qué te va a gustar" }))
+      .getAllByRole("listitem")
+      .map((r) => plano(r.textContent));
+    expect(razones[0]).toBe(
+      "2 imperdibles: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa.",
+    );
+    // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
+    expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);
+    expect(razones).toContain("Todas sus paradas son de historia y arqueología o naturaleza.");
+  });
+
+  it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    const antes = screen.getByRole("region", { name: "Antes de ir" });
+    for (const aviso of (A.avisos ?? []).filter((a) => a.tipo !== "datos")) {
+      expect(plano(antes.textContent)).toContain(plano(aviso.mensaje));
+    }
+    const datos = (A.avisos ?? []).find((a) => a.tipo === "datos");
+    if (datos) expect(plano(antes.textContent)).not.toContain(plano(datos.mensaje));
+    for (const linea of RESPUESTA.atribucion) expect(screen.getByText(linea)).toBeDefined();
+    expect(screen.getByText(A.estacionalidad.explicacion)).toBeDefined();
+  });
+
+  it("el plan va de a un día, y el mapa sigue al día elegido", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    const mapa = await screen.findByTestId("mapa");
+    expect(mapa.dataset.dia).toBe("null");
+    expect(mapa.dataset.puntos).toBe(String(A.indicadores.paradas));
+    expect(mapa.dataset.base).toBe(A.polo.base.nombre);
+
+    // Todo el viaje: un renglón por día.
+    expect(screen.getAllByRole("button", { name: /^Día \d/ })).toHaveLength(A.dias.length);
+    await userEvent.click(screen.getByRole("button", { name: /^Día 2/ }));
+    expect(screen.getByTestId("mapa").dataset.dia).toBe("2");
+    expect(screen.getByRole("radio", { name: "Día 2" })).toHaveProperty("checked", true);
+    const lugares = within(screen.getByRole("list", { name: "Lugares del día 2" })).getAllByRole("button");
+    expect(lugares.length).toBeGreaterThan(0);
+
+    await userEvent.click(screen.getByRole("radio", { name: "Todo" }));
+    expect(screen.getByTestId("mapa").dataset.dia).toBe("null");
+  });
+
+  it("al tocar un lugar se abre su hoja con la ficha oficial", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    await userEvent.click(screen.getByRole("radio", { name: "Día 1" }));
+    const primera = A.dias[0]?.paradas?.[0];
+    if (!primera) throw new Error("El primer día del ejemplo no tiene paradas.");
+    await userEvent.click(screen.getByRole("button", { name: new RegExp(primera.recurso.nombre) }));
+    const hoja = screen.getByRole("dialog", { name: primera.recurso.nombre });
+    expect(
+      within(hoja)
+        .getByRole("link", { name: /Ver la ficha oficial/ })
+        .getAttribute("href"),
+    ).toBe(primera.recurso.url_ficha);
+  });
+});
+
 describe("guardar, compartir e imprimir", () => {
-  it("guarda el viaje en el navegador y lo lista en «Mis viajes»", async () => {
-    await abrir();
-    await tarjetas();
+  it("guarda el viaje abierto en el navegador, y Guardados vuelve a ese viaje", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/2`);
+    const nombre = await viajeAbierto();
     const guardar = screen.getByRole("button", { name: "Guardar" });
     expect(guardar.getAttribute("aria-pressed")).toBe("false");
     await userEvent.click(guardar);
     expect(screen.getByRole("button", { name: "Guardado" }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByText("Guardado en Mis viajes, en este navegador.")).toBeDefined();
+    expect(screen.getByText("Guardado en este navegador.")).toBeDefined();
     expect(leerViajes()).toHaveLength(1);
     expect(leerViajes()[0]).toMatchObject({
+      ruta: 2,
+      titulo: B.polo.nombre,
       version: VERSION,
       consulta: { origen: "lima", mes: 7, dias: 4 },
     });
 
-    await userEvent.click(screen.getByRole("link", { name: "Mis viajes" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Mis viajes" })).toBeDefined();
-    const guardado = screen.getByRole("link", { name: /Lima · julio · 4.días/ });
-    expect(guardado.getAttribute("href")).toBe(`?${CONSULTA}&v=${VERSION}`);
+    const [enLaCabecera] = screen.getAllByRole("link", { name: "Guardados" });
+    await userEvent.click(enLaCabecera as HTMLElement);
+    expect(await screen.findByRole("heading", { level: 1, name: "Guardados" })).toBeDefined();
+    // Se reconoce por su nombre, y debajo dice lo que se pidió.
+    const guardado = screen.getByRole("link", { name: new RegExp(`^${B.polo.nombre}`) });
+    expect(plano(guardado.textContent)).toContain("Desde Lima, 4 días en julio");
+    expect(guardado.getAttribute("href")).toBe(`?${CONSULTA}&v=${VERSION}#/ruta/2`);
 
-    // El enlace guardado vuelve al mismo viaje.
+    // El enlace guardado abre el mismo viaje, no los tres.
     await userEvent.click(guardado);
-    await tarjetas();
+    expect(await viajeAbierto()).toBe(nombre);
     expect(screen.getByRole("button", { name: "Guardado" })).toBeDefined();
 
-    await userEvent.click(screen.getByRole("link", { name: "Mis viajes" }));
-    await userEvent.click(await screen.findByRole("button", { name: /^Quitar Lima/ }));
-    expect(screen.getByText(/Todavía no guardaste ningún viaje/)).toBeDefined();
+    await userEvent.click(screen.getAllByRole("link", { name: "Guardados" })[0] as HTMLElement);
+    await userEvent.click(
+      await screen.findByRole("button", { name: new RegExp(`^Quitar ${B.polo.nombre}`) }),
+    );
+    expect(screen.getByText("Todavía no guardaste ningún viaje")).toBeDefined();
     expect(leerViajes()).toEqual([]);
   });
 
-  it("comparte el enlace completo: la consulta, la versión y la ruta abierta", async () => {
+  it("guardar un viaje no da por guardados los otros dos", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    await userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    await userEvent.click(screen.getByRole("link", { name: "Tus viajes" }));
+    await userEvent.click((await tarjetas())[2] as HTMLElement);
+    await viajeAbierto();
+    expect(screen.getByRole("button", { name: "Guardar" }).getAttribute("aria-pressed")).toBe("false");
+    await userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    expect(leerViajes().map((v) => [v.titulo, v.ruta])).toEqual([
+      [C.polo.nombre, 3],
+      [A.polo.nombre, 1],
+    ]);
+  });
+
+  it("lo guardado cuando no se elegía un viaje sigue abriendo los tres", async () => {
+    localStorage.setItem(
+      "dreemgo.viajes.v1",
+      JSON.stringify([
+        {
+          consulta: {
+            origen: "lima",
+            mes: 7,
+            fecha_inicio: null,
+            dias: 4,
+            intereses: [],
+            presupuesto: null,
+            altitud_max: null,
+            sorpresa: false,
+          },
+          version: VERSION,
+          titulo: "Desde Lima, 4 días en julio",
+          guardado: "2026-10-01T10:00:00Z",
+        },
+      ]),
+    );
+    await abrir("/#/mis-viajes");
+    const guardado = await screen.findByRole("link", { name: /^Desde Lima, 4.días en julio/ });
+    expect(guardado.getAttribute("href")).toBe(`?origen=lima&mes=7&dias=4&v=${VERSION}`);
+    await userEvent.click(guardado);
+    expect(await tarjetas()).toHaveLength(3);
+  });
+
+  it("comparte el enlace completo: la consulta, la versión y el viaje abierto", async () => {
     const usuario = userEvent.setup();
-    await abrir();
-    const lista = await tarjetas();
-    await usuario.click(lista[1] as HTMLElement);
+    await abrir(`/?${CONSULTA}#/ruta/2`);
+    await viajeAbierto();
     await usuario.click(screen.getByRole("button", { name: "Compartir" }));
     expect(await screen.findByText(/Enlace copiado/)).toBeDefined();
-    expect(await window.navigator.clipboard.readText()).toBe(
-      `${window.location.origin}/?${CONSULTA}&v=${VERSION}#/ruta/2`,
+    await waitFor(async () =>
+      expect(await window.navigator.clipboard.readText()).toBe(
+        `${window.location.origin}/?${CONSULTA}&v=${VERSION}#/ruta/2`,
+      ),
     );
   });
 
   it("si el navegador no deja copiar, muestra el enlace para copiarlo a mano", async () => {
-    await abrir();
-    await tarjetas();
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
     vi.stubGlobal("navigator", { ...window.navigator, clipboard: undefined, share: undefined });
     await userEvent.click(screen.getByRole("button", { name: "Compartir" }));
     const enlace = await screen.findByRole("textbox", { name: "Enlace del viaje" });
-    expect(enlace).toHaveProperty("value", `${window.location.origin}/?${CONSULTA}&v=${VERSION}`);
+    expect(enlace).toHaveProperty("value", `${window.location.origin}/?${CONSULTA}&v=${VERSION}#/ruta/1`);
   });
 
   it("antes de imprimir abre lo plegado, que si no, no sale en el papel", async () => {
-    await abrir();
-    await tarjetas();
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
     const imprimir = vi.fn();
     vi.stubGlobal("print", imprimir);
     expect([...document.querySelectorAll("details")].some((d) => d.open)).toBe(false);
-    await userEvent.click(screen.getByRole("button", { name: "Imprimir" }));
+    await userEvent.click(screen.getByRole("button", { name: "Imprimir o guardar en PDF" }));
     expect(imprimir).toHaveBeenCalledOnce();
     expect([...document.querySelectorAll("details")].every((d) => d.open)).toBe(true);
   });
-});
 
-describe("el mapa y el itinerario", () => {
-  it("«Ver el día en el mapa» lleva el mapa a ese día, y el selector lo devuelve a todo el viaje", async () => {
-    await abrir();
-    await tarjetas();
-    const mapa = await screen.findByTestId("mapa");
-    expect(mapa.dataset.dia).toBe("null");
-
-    const conParadas = A.dias.filter((d) => (d.paradas ?? []).length > 0);
-    const segundo = conParadas[1];
-    if (!segundo) throw new Error("La primera ruta del ejemplo tiene paradas en un solo día.");
-    await userEvent.click(screen.getByRole("button", { name: `Ver el día ${segundo.numero} en el mapa` }));
-    expect(screen.getByTestId("mapa").dataset.dia).toBe(String(segundo.numero));
-    expect(screen.getByRole("radio", { name: `Día ${segundo.numero}` })).toHaveProperty("checked", true);
-
-    await userEvent.click(screen.getByRole("radio", { name: "Todo el viaje" }));
-    expect(screen.getByTestId("mapa").dataset.dia).toBe("null");
-    // Solo se ofrecen los días que tienen paradas.
-    expect(screen.getAllByRole("radio", { name: /^Día \d+$/ })).toHaveLength(conParadas.length);
-  });
-
-  it("al cambiar de ruta el mapa vuelve a todo el viaje", async () => {
-    await abrir();
-    const lista = await tarjetas();
-    await screen.findByTestId("mapa");
-    const primerDia = A.dias.find((d) => (d.paradas ?? []).length > 0);
-    await userEvent.click(screen.getByRole("button", { name: `Ver el día ${primerDia?.numero} en el mapa` }));
-    await userEvent.click(lista[1] as HTMLElement);
-    const mapa = await screen.findByTestId("mapa");
-    expect(mapa.dataset.dia).toBe("null");
-    expect(mapa.dataset.puntos).toBe(String(B.indicadores.paradas));
+  it("en papel va el plan completo, todos los días", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    const impreso = document.querySelector(".plan-impreso");
+    expect(impreso?.querySelectorAll("h3")).toHaveLength(A.dias.length);
+    expect(impreso?.querySelectorAll("li")).toHaveLength(A.indicadores.paradas);
   });
 });

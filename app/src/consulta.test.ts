@@ -5,8 +5,8 @@ import {
   type Consulta,
   clave,
   deParametros,
+  detalles,
   POR_DEFECTO,
-  piezas,
   titulo,
 } from "./consulta";
 
@@ -75,44 +75,25 @@ describe("la consulta y la URL", () => {
 });
 
 describe("la consulta en palabras", () => {
-  it("la parte en piezas que se pueden quitar, menos el mes", () => {
-    const lista = piezas(COMPLETA, NOMBRES);
-    expect(lista.map((p) => p.texto)).toEqual([
-      "Desde Cusco",
-      `4${nb}días`,
-      "Julio",
-      "Historia y arqueología",
-      "Playa",
-      `Hasta S/${nb}1${nb}800`,
-      `Hasta 2${nb}500${nb}m`,
-      "Sorpréndeme",
-    ]);
-    expect(lista.find((p) => p.campo === "mes")?.sin).toBeNull();
-    expect(lista.find((p) => p.valor === "playa")?.sin?.intereses).toEqual(["historia"]);
-    expect(lista.find((p) => p.campo === "presupuesto")?.sin?.presupuesto).toBeNull();
-    expect(lista.find((p) => p.campo === "origen")?.sin?.origen).toBe("lima");
-  });
-
-  it("no ofrece quitar lo que ya está en su valor por defecto", () => {
-    const lista = piezas({ ...POR_DEFECTO, mes: 7 }, NOMBRES);
-    expect(lista.map((p) => [p.texto, p.sin])).toEqual([
-      ["Desde Lima", null],
-      [`6${nb}días`, null],
-      ["Julio", null],
-    ]);
-  });
-
-  it("al quitar la fecha se queda con su mes", () => {
-    const lista = piezas({ ...POR_DEFECTO, mes: 7, fecha_inicio: "2027-07-20" }, NOMBRES);
-    const fecha = lista.find((p) => p.campo === "fecha_inicio");
-    expect(fecha?.texto).toBe("Sale el 20 de julio");
-    expect(fecha?.sin).toMatchObject({ fecha_inicio: null, mes: 7 });
-  });
-
-  it("le pone un título corto", () => {
-    expect(titulo(COMPLETA, NOMBRES)).toBe(
-      `Cusco · julio · 4${nb}días · historia y arqueología y playa · sorpréndeme`,
+  it("en una frase: desde dónde, cuántos días y cuándo", () => {
+    expect(titulo(COMPLETA, NOMBRES)).toBe(`Desde Cusco, 4${nb}días en julio`);
+    expect(titulo({ ...POR_DEFECTO, mes: 2 }, NOMBRES)).toBe(`Desde Lima, 6${nb}días en febrero`);
+    expect(titulo({ ...POR_DEFECTO, mes: 7, fecha_inicio: "2027-07-20" }, NOMBRES)).toBe(
+      `Desde Lima, 6${nb}días desde el 20 de julio`,
     );
-    expect(titulo({ ...POR_DEFECTO, mes: 2 }, NOMBRES)).toBe(`Lima · febrero · 6${nb}días`);
+  });
+
+  it("antes de que lleguen los nombres, el origen sale de su identificador", () => {
+    const sinNombres = { origenes: {}, intereses: {} };
+    expect(titulo({ ...POR_DEFECTO, origen: "puerto-maldonado", mes: 2 }, sinNombres)).toBe(
+      `Desde Puerto maldonado, 6${nb}días en febrero`,
+    );
+  });
+
+  it("lo demás que pidió, solo si pidió algo", () => {
+    expect(detalles(COMPLETA, NOMBRES)).toBe(
+      `Historia y arqueología y Playa, hasta S/${nb}1${nb}800 por persona, hasta 2${nb}500${nb}m de altura, solo fuera de Lima y Cusco`,
+    );
+    expect(detalles({ ...POR_DEFECTO, mes: 7 }, NOMBRES)).toBeNull();
   });
 });

@@ -21,8 +21,11 @@ it("si una pantalla falla, el marco sigue en pie y las demás siguen andando", a
   expect(screen.getByRole("heading", { level: 1, name: "Algo falló en esta pantalla" })).toBeDefined();
   expect(screen.getByRole("link", { name: "Volver al inicio" }).getAttribute("href")).toBe("./");
 
-  await userEvent.click(screen.getByRole("link", { name: "Mis viajes" }));
-  expect(screen.getByRole("heading", { level: 1, name: "Mis viajes" })).toBeDefined();
+  // «Guardados» está en la cabecera y en la barra de abajo: es el mismo enlace.
+  const [guardados] = screen.getAllByRole("link", { name: "Guardados" });
+  if (!guardados) throw new Error("No está el enlace a Guardados.");
+  await userEvent.click(guardados);
+  expect(screen.getByRole("heading", { level: 1, name: "Guardados" })).toBeDefined();
   expect(avisos).toHaveBeenCalled();
   errores.mockRestore();
   avisos.mockRestore();

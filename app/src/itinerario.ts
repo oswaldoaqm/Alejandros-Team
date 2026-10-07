@@ -1,5 +1,5 @@
-// El itinerario con sus paradas numeradas de corrido en todo el viaje: el mismo número
-// aparece en la lista y en el mapa.
+// El itinerario con sus paradas en orden y numeradas desde 1 en cada día: se ve un día a la
+// vez, y el mismo número aparece en la lista del día y en el mapa.
 
 import type { Dia, Parada, Ruta } from "./api/tipos";
 
@@ -17,22 +17,20 @@ export interface PuntoDeMapa {
   lat: number;
   lon: number;
   nombre: string;
-  /** El número de la parada en todo el viaje, el mismo del itinerario. */
+  /** El código del lugar en el inventario: con él se abre su ficha. */
+  codigo: string;
+  /** El número de la parada en su día, el mismo de la lista del día. */
   numero: number;
   dia: number;
   hora: string;
 }
 
 export function numerar(dias: readonly Dia[]): DiaNumerado[] {
-  let numero = 0;
   return dias.map((dia) => ({
     dia,
     paradas: [...(dia.paradas ?? [])]
       .sort((a, b) => a.orden - b.orden)
-      .map((parada) => {
-        numero += 1;
-        return { numero, parada };
-      }),
+      .map((parada, indice) => ({ numero: indice + 1, parada })),
   }));
 }
 
@@ -42,6 +40,7 @@ export function puntosDeMapa(dias: readonly DiaNumerado[]): PuntoDeMapa[] {
       lat: parada.recurso.lat,
       lon: parada.recurso.lon,
       nombre: parada.recurso.nombre,
+      codigo: parada.recurso.codigo,
       numero,
       dia: dia.numero,
       hora: parada.llegada,

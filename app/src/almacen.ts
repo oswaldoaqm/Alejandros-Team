@@ -1,12 +1,19 @@
-// «Mis viajes»: las consultas que el viajero guarda, en el almacenamiento local de su
-// navegador. No hay cuentas ni nada que salga del dispositivo (docs/decisiones/0001).
+// «Guardados»: los viajes que el viajero guarda, en el almacenamiento local de su navegador.
+// No hay cuentas ni nada que salga del dispositivo (docs/decisiones/0001). De cada uno se guarda
+// su enlace —la consulta y cuál de sus viajes—, no el plan: al abrirlo, el motor lo vuelve a armar.
 
 import { type Consulta, clave } from "./consulta";
 
 export interface ViajeGuardado {
   consulta: Consulta;
+  /**
+   * Cuál de los viajes de la consulta: 1, 2 o 3, en el orden en que salieron. null: los tres. Así
+   * guardaba la app cuando los tres iban en una misma pantalla, y lo guardado entonces se respeta.
+   */
+  ruta: number | null;
   /** La versión de datos con que se vio el viaje al guardarlo. */
   version: string | null;
+  /** El nombre del viaje («Huancayo»). Sin `ruta` no se muestra: va la frase de la consulta. */
   titulo: string;
   /** Cuándo se guardó, en ISO. */
   guardado: string;
@@ -35,10 +42,19 @@ function esConsulta(c: unknown): c is Consulta {
 }
 
 // Lo guardado pudo escribirlo otra versión de la app, o alguien a mano: se lee con cuidado.
-function esViaje(v: unknown): v is ViajeGuardado {
+function esViaje(v: unknown): v is Omit<ViajeGuardado, "ruta"> & { ruta?: unknown } {
   if (typeof v !== "object" || v === null) return false;
   const viaje = v as Partial<ViajeGuardado>;
   return typeof viaje.titulo === "string" && typeof viaje.guardado === "string" && esConsulta(viaje.consulta);
+}
+
+function esRuta(ruta: unknown): ruta is number {
+  return typeof ruta === "number" && Number.isInteger(ruta) && ruta >= 1 && ruta <= 3;
+}
+
+/** Lo que distingue a un guardado de otro: la consulta y cuál de sus viajes. */
+export function claveDeViaje(consulta: Consulta, ruta: number | null): string {
+  return `${clave(consulta)}#${ruta ?? ""}`;
 }
 
 /** Los viajes guardados, del más reciente al más antiguo. */
@@ -47,7 +63,8 @@ export function leerViajes(): ViajeGuardado[] {
   if (!texto) return [];
   try {
     const lista: unknown = JSON.parse(texto);
-    return Array.isArray(lista) ? lista.filter(esViaje) : [];
+    if (!Array.isArray(lista)) return [];
+    return lista.filter(esViaje).map((v) => ({ ...v, ruta: esRuta(v.ruta) ? v.ruta : null }));
   } catch {
     return [];
   }
@@ -62,18 +79,18 @@ function escribir(viajes: ViajeGuardado[]): boolean {
   }
 }
 
-export function estaGuardado(consulta: Consulta): boolean {
-  const buscada = clave(consulta);
-  return leerViajes().some((v) => clave(v.consulta) === buscada);
+export function estaGuardado(consulta: Consulta, ruta: number | null): boolean {
+  const buscada = claveDeViaje(consulta, ruta);
+  return leerViajes().some((v) => claveDeViaje(v.consulta, v.ruta) === buscada);
 }
 
 /** Guarda el viaje al principio de la lista; si ya estaba, lo actualiza. */
 export function guardarViaje(viaje: ViajeGuardado): boolean {
-  const mia = clave(viaje.consulta);
-  return escribir([viaje, ...leerViajes().filter((v) => clave(v.consulta) !== mia)]);
+  const mia = claveDeViaje(viaje.consulta, viaje.ruta);
+  return escribir([viaje, ...leerViajes().filter((v) => claveDeViaje(v.consulta, v.ruta) !== mia)]);
 }
 
-export function borrarViaje(consulta: Consulta): boolean {
-  const mia = clave(consulta);
-  return escribir(leerViajes().filter((v) => clave(v.consulta) !== mia));
+export function borrarViaje(consulta: Consulta, ruta: number | null): boolean {
+  const mia = claveDeViaje(consulta, ruta);
+  return escribir(leerViajes().filter((v) => claveDeViaje(v.consulta, v.ruta) !== mia));
 }

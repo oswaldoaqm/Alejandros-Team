@@ -1,0 +1,250 @@
+/* Inicio: una pregunta grande y la tarjeta con las filas del viaje. */
+
+.inicio {
+  max-width: 600px;
+}
+
+.inicio__cabeza {
+  margin: 12px 0 24px;
+}
+
+.inicio__titulo {
+  margin: 0 0 10px;
+  font-size: var(--t-display);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.inicio__bajada {
+  max-width: 34ch;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta-2);
+}
+
+.inicio__formulario {
+  display: grid;
+  gap: 20px;
+}
+
+.inicio__grupo {
+  box-shadow: var(--sombra-baja);
+}
+
+.inicio__acciones {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
+/* Lo que va dentro de las hojas */
+
+.hoja__ayuda {
+  margin-bottom: 14px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.buscador {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 0 14px;
+  color: var(--tinta-3);
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta);
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.opciones-lista li + li {
+  border-top: 1px solid var(--linea);
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 4px;
+  font-size: var(--t-cuerpo);
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.opcion[aria-pressed="true"] {
+  font-weight: 650;
+  color: var(--lago);
+}
+
+.opciones-lista__vacia {
+  padding: 16px 4px;
+  color: var(--tinta-2);
+}
+
+.gustos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gusto {
+  position: relative;
+  cursor: pointer;
+}
+
+.gusto input {
+  position: absolute;
+  opacity: 0;
+}
+
+.gusto span {
+  display: grid;
+  gap: 10px;
+  align-content: space-between;
+  min-height: 104px;
+  padding: 14px;
+  font-size: var(--t-nota);
+  font-weight: 650;
+  line-height: 1.25;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+  box-shadow: inset 0 0 0 1.5px transparent;
+  transition:
+    background-color var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.gusto .icono {
+  color: var(--lago);
+}
+
+.gusto input:checked + span {
+  background: var(--lago-claro);
+  box-shadow: inset 0 0 0 2px var(--lago);
+}
+
+.gusto input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.meses-grilla {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mes-opcion {
+  position: relative;
+  cursor: pointer;
+}
+
+.mes-opcion input {
+  position: absolute;
+  opacity: 0;
+}
+
+.mes-opcion span {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.mes-opcion input:checked + span {
+  color: var(--sobre-lago);
+  background: var(--lago);
+}
+
+.mes-opcion input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.fecha-exacta {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.fecha-exacta label {
+  font-weight: 650;
+}
+
+.fecha-exacta input,
+.filtros-hoja input[type="range"] {
+  width: 100%;
+}
+
+.fecha-exacta input {
+  min-height: 48px;
+  padding: 10px 14px;
+  background: var(--superficie-2);
+  border: 0;
+  border-radius: var(--r-control);
+}
+
+.filtros-hoja {
+  display: grid;
+  gap: 28px;
+}
+
+.deslizador__cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.deslizador__cabeza label {
+  font-weight: 650;
+}
+
+.deslizador__cabeza output {
+  font-size: var(--t-titular);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.deslizador input[type="range"] {
+  accent-color: var(--lago);
+  height: 28px;
+}
+
+.deslizador .hoja__ayuda {
+  margin: 8px 0 0;
+}
+
+@media (min-width: 960px) {
+  .inicio {
+    padding-top: 72px;
+  }
+
+  .inicio__cabeza {
+    margin-bottom: 32px;
+  }
+
+  .inicio__bajada {
+    max-width: 44ch;
+  }
+}

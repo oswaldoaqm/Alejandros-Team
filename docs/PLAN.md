@@ -4,6 +4,8 @@
 
 Estado al 2 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que los cuatro revisen el contrato. **Fase 1** casi cerrada: el motor responde `/v1/viajes` con el [contrato 1.2](./CONTRATO.md) y cumple las diez propiedades en 1 000 consultas al azar, y la red ya tiene el tren a Machu Picchu y los botes del Titicaca, las Ballestas y la Amazonía ([decisión 0010](./decisiones/0010-tren-y-botes.md)); falta el clima propio de 186 polos, que baja hasta el 7 de octubre, y volver a armar con él los artefactos. De la **fase 2** ya está la [app](../app/), publicada en GitHub Pages: el formulario, tres rutas para comparar, el itinerario con su mapa, su costo, su mes y sus fiestas, la ficha de cada polo y el calendario, con sus pruebas en CI. Y el lado de la oferta: una municipalidad publica un evento (`POST /v1/eventos` y la página «Publicar un evento») y sale en el calendario y en las rutas que pasan cerca, sin mover ninguna ([decisión 0011](./decisiones/0011-eventos-publicados.md)). El despliegue está listo para ejecutarse ([`infra/README.md`](../infra/README.md)): en AWS, ensayado contra un simulador hasta donde este llega, o en un Space gratuito de Hugging Face mientras no haya cuenta. Falta hacerlo: hasta entonces la app publicada no tiene a quién preguntarle. De la **fase 3** ya está el [informe del prototipo](../deliveries/week10/PrototypeReport.md), que mide qué propone hoy el motor sobre 1 152 consultas y deja escritos sus límites; faltan la presentación y las capturas.
 
+Después, el 6 de octubre, la app se rediseñó: cada viaje se abre en su propia pantalla, con el plan día por día, un mapa de un pétalo por día y la hoja de cada lugar; hay fotos de Wikimedia Commons, con su autor y su licencia, y tema oscuro. Qué fotos van y cómo se revisaron está en [`pipeline/README.md`](../pipeline/README.md#fotos), y las pantallas, en [`app/README.md`](../app/README.md).
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
@@ -28,8 +30,8 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 
 | Pieza | Dónde | Qué hace |
 |---|---|---|
-| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo y red vial |
-| Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/) |
+| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo, red vial y los datos de las fotos |
+| Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/), y elige la foto de cada lugar |
 | Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas, y recibe los eventos que publican los municipios: [contrato](./CONTRATO.md) |
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
 | Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados; y la receta para un Space de Hugging Face |

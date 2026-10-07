@@ -12,15 +12,16 @@ describe("de la URL a la pantalla", () => {
     expect(vista("?origen=cusco")).toEqual({ tipo: "inicio", consulta: null });
   });
 
-  it("con mes o fecha, los resultados, con la versión del enlace", () => {
+  it("con mes o fecha, los tres viajes, con la versión del enlace; con #/ruta/N, ese viaje abierto", () => {
     expect(vista("?origen=lima&mes=7&dias=6&v=2026.10.2")).toEqual({
       tipo: "resultados",
       consulta: JULIO,
       version: "2026.10.2",
-      ruta: 1,
+      ruta: null,
     });
     expect(vista("?mes=7#/ruta/3")).toMatchObject({ tipo: "resultados", ruta: 3, version: null });
-    expect(vista("?mes=7#/ruta/9")).toMatchObject({ tipo: "resultados", ruta: 1 });
+    // Un viaje que no existe deja ver los tres.
+    expect(vista("?mes=7#/ruta/9")).toMatchObject({ tipo: "resultados", ruta: null });
   });
 
   it("las demás pantallas van en el fragmento y conservan la consulta", () => {
@@ -43,18 +44,19 @@ describe("de la URL a la pantalla", () => {
 
   it("un fragmento que no conoce no rompe nada", () => {
     expect(vista("#/polo/abc")).toEqual({ tipo: "inicio", consulta: null });
-    expect(vista("?mes=7#/otra-cosa")).toMatchObject({ tipo: "resultados", ruta: 1 });
+    expect(vista("?mes=7#/otra-cosa")).toMatchObject({ tipo: "resultados", ruta: null });
   });
 });
 
 describe("de la pantalla a la URL", () => {
   it("arma enlaces que vuelven a la misma pantalla", () => {
     expect(enlaces.resultados(JULIO, "2026.10.2", 2)).toBe("?origen=lima&mes=7&dias=6&v=2026.10.2#/ruta/2");
+    expect(enlaces.resultados(JULIO, "2026.10.2")).toBe("?origen=lima&mes=7&dias=6&v=2026.10.2");
     expect(vista(enlaces.resultados(JULIO, "2026.10.2"))).toEqual({
       tipo: "resultados",
       consulta: JULIO,
       version: "2026.10.2",
-      ruta: 1,
+      ruta: null,
     });
     expect(vista(enlaces.resultados(JULIO, "2026.10.2", 2))).toMatchObject({ tipo: "resultados", ruta: 2 });
     expect(vista(enlaces.editar(JULIO))).toEqual({ tipo: "inicio", consulta: JULIO });

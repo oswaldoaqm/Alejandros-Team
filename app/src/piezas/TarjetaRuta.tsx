@@ -1,61 +1,113 @@
-// Una de las tres rutas, resumida para comparar: costo, paradas, días, altitud y km.
+// Uno de los tres viajes, para elegir de un vistazo: su foto (o su flor, si no tiene), su
+// nombre, sus imperdibles y los datos que deciden: cuánto cuesta, cuánto se tarda en llegar,
+// cómo está el clima ese mes y, si se siente, la altura.
 
+import { useMemo, useState } from "react";
 import type { Ruta } from "../api/tipos";
-import { fijo, km, letra, metros, plural, soles } from "../formato";
+import { horas, metros, soles } from "../formato";
+import type { FotoDe } from "../fotos";
+import { numerar, puntosDeMapa } from "../itinerario";
+import { ALTURA_QUE_SE_SIENTE, climaCorto, imperdibles, lugaresDelViaje, nombreDelViaje } from "../textos";
 import { Enlace } from "./Enlace";
-import { Medios, Veredicto } from "./Insignias";
+import { DibujoFlor } from "./Flor";
+import { Foto } from "./Foto";
+import { Icono, type NombreDeIcono } from "./Icono";
 
 interface Props {
   ruta: Ruta;
-  indice: number;
-  elegida: boolean;
   enlace: string;
-  dias: number;
-  alElegir?: () => void;
+  /** Si la etiqueta «Fuera del circuito» distingue a este viaje de los otros dos. */
+  marcarFueraDelCircuito: boolean;
+  /** La foto del viaje (src/fotos.ts); sin ella, va su flor. */
+  foto?: FotoDe | null;
 }
 
-export function TarjetaRuta({ ruta, indice, elegida, enlace, dias, alElegir }: Props) {
+const ICONO_DEL_CLIMA: Record<Ruta["estacionalidad"]["veredicto"], NombreDeIcono> = {
+  viable: "sol",
+  advertencia: "lluvia",
+  desaconsejado: "lluvia",
+};
+
+export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null }: Props) {
+  const [sinFoto, ponerSinFoto] = useState(false);
   const { polo, costo, indicadores, estacionalidad, traslado } = ruta;
+  const { titulo, subtitulo } = nombreDelViaje(polo.nombre);
+  const puntos = useMemo(() => puntosDeMapa(numerar(ruta.dias)), [ruta.dias]);
+  const base = useMemo(() => ({ lat: polo.base.lat, lon: polo.base.lon }), [polo.base.lat, polo.base.lon]);
+  const estrellas = imperdibles(ruta.dias);
+  const total = lugaresDelViaje(ruta.dias);
+  // El imperdible de más jerarquía da nombre al viaje; el resto se cuenta.
+  const principal = estrellas[0];
+  const gancho = principal
+    ? total > 1
+      ? `${principal} y ${total - 1} ${total - 1 === 1 ? "lugar" : "lugares"} más`
+      : principal
+    : `${total} ${total === 1 ? "lugar" : "lugares"} para visitar`;
+  const medio = (traslado.medios ?? []).includes("tren")
+    ? "tren"
+    : (traslado.medios ?? []).includes("bote")
+      ? "bote"
+      : "bus";
+
   return (
-    <Enlace
-      href={enlace}
-      reemplazar
-      conservarPosicion
-      onClick={alElegir}
-      className={`tarjeta${elegida ? " tarjeta--elegida" : ""}`}
-      aria-current={elegida ? "true" : undefined}
-    >
-      <span className="tarjeta__cabeza">
-        <span className="tarjeta__nombre">
-          <span className="tarjeta__letra">Ruta {letra(indice)}</span>
-          {polo.nombre}
-        </span>
-        <span className="tarjeta__costo">
-          {soles(costo.p50)}
-          <span className="tarjeta__banda">
-            entre {soles(costo.p20)} y {soles(costo.p80)}
-          </span>
-        </span>
-      </span>
-      <span className="tarjeta__cifras">
-        <span>{plural(indicadores.paradas, "parada", "paradas")}</span>
-        <span>{plural(dias, "día", "días")}</span>
-        {indicadores.altitud_max_m != null ? <span>máx {metros(indicadores.altitud_max_m)}</span> : null}
-        <span>{km(indicadores.km_total)}</span>
-      </span>
-      <span className="tarjeta__insignias">
-        <Veredicto veredicto={estacionalidad.veredicto} />
-        <Medios medios={traslado.medios ?? ["carretera"]} />
-        {polo.fuera_del_circuito ? (
-          <span className="insignia insignia--fuerte">Fuera del circuito</span>
+    <Enlace href={enlace} className="viaje-tarjeta">
+      <div className={`viaje-tarjeta__arte${foto && !sinFoto ? " viaje-tarjeta__arte--foto" : ""}`}>
+        {foto && !sinFoto ? (
+          <>
+            <Foto
+              foto={foto.foto}
+              alt=""
+              sizes="(min-width: 720px) 380px, calc(100vw - 40px)"
+              tope={960}
+              credito="texto"
+              alFallar={() => ponerSinFoto(true)}
+              className="viaje-tarjeta__foto"
+            />
+            <span className="sello-flor">
+              <DibujoFlor base={base} puntos={puntos} ida={traslado.horas} />
+            </span>
+          </>
+        ) : (
+          <DibujoFlor base={base} puntos={puntos} ida={traslado.horas} />
+        )}
+        {marcarFueraDelCircuito && polo.fuera_del_circuito ? (
+          <span className="viaje-tarjeta__sello">Fuera del circuito</span>
         ) : null}
-        {indicadores.jerarquia_media != null ? (
-          <span className="insignia">Jerarquía media {fijo(indicadores.jerarquia_media)}</span>
-        ) : null}
-        {costo.dentro_del_presupuesto === false ? (
-          <span className="insignia">Pasa tu presupuesto</span>
-        ) : null}
-      </span>
+      </div>
+      <div className="viaje-tarjeta__cuerpo">
+        <h2 className="viaje-tarjeta__nombre">
+          {titulo}
+          {subtitulo ? <span className="viaje-tarjeta__sub">{subtitulo}</span> : null}
+        </h2>
+        <p className="viaje-tarjeta__gancho">
+          {principal ? <Icono nombre="estrella" relleno tamano={15} /> : null}
+          {gancho}
+        </p>
+        <ul className="viaje-tarjeta__datos">
+          <li className="viaje-tarjeta__precio">
+            <span className="num">{soles(costo.p50)}</span> por persona{" "}
+            {costo.dentro_del_presupuesto === false && costo.exceso != null ? (
+              <span className="viaje-tarjeta__exceso">{soles(costo.exceso)} sobre tu presupuesto</span>
+            ) : null}
+          </li>
+          {traslado.horas != null ? (
+            <li>
+              <Icono nombre={medio} />
+              {horas(traslado.horas)} desde {traslado.desde}
+            </li>
+          ) : null}
+          <li>
+            <Icono nombre={ICONO_DEL_CLIMA[estacionalidad.veredicto]} />
+            {climaCorto(estacionalidad.veredicto, estacionalidad.mes)}
+          </li>
+          {indicadores.altitud_max_m != null && indicadores.altitud_max_m >= ALTURA_QUE_SE_SIENTE ? (
+            <li>
+              <Icono nombre="montana" />
+              Hasta {metros(indicadores.altitud_max_m)} de altura
+            </li>
+          ) : null}
+        </ul>
+      </div>
     </Enlace>
   );
 }

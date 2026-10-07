@@ -6,25 +6,28 @@ const [ruta] = RESPUESTA.rutas;
 if (!ruta) throw new Error("El ejemplo del contrato no trae rutas.");
 
 describe("las paradas numeradas", () => {
-  it("se numeran de corrido en todo el viaje, en el orden de cada día", () => {
+  it("se numeran desde 1 en cada día, en el orden de visita", () => {
     const dias = numerar(ruta.dias);
-    const numeros = dias.flatMap((d) => d.paradas.map((p) => p.numero));
-    expect(numeros).toEqual(numeros.map((_, i) => i + 1));
-    expect(numeros).toHaveLength(ruta.indicadores.paradas);
     for (const { paradas } of dias) {
+      expect(paradas.map((p) => p.numero)).toEqual(paradas.map((_, i) => i + 1));
       const ordenes = paradas.map((p) => p.parada.orden);
       expect(ordenes).toEqual([...ordenes].sort((a, b) => a - b));
     }
+    expect(dias.flatMap((d) => d.paradas)).toHaveLength(ruta.indicadores.paradas);
   });
 
-  it("el mapa recibe las mismas paradas con el mismo número", () => {
+  it("el mapa recibe las mismas paradas, con su día, su número y su código", () => {
     const dias = numerar(ruta.dias);
     const puntos = puntosDeMapa(dias);
-    expect(puntos.map((p) => p.numero)).toEqual(dias.flatMap((d) => d.paradas.map((p) => p.numero)));
+    expect(puntos.map((p) => `${p.dia}-${p.numero}`)).toEqual(
+      dias.flatMap((d) => d.paradas.map((p) => `${d.dia.numero}-${p.numero}`)),
+    );
     const primero = dias.find((d) => d.paradas.length > 0);
     expect(puntos[0]).toMatchObject({
       nombre: primero?.paradas[0]?.parada.recurso.nombre,
+      codigo: primero?.paradas[0]?.parada.recurso.codigo,
       dia: primero?.dia.numero,
+      numero: 1,
       hora: primero?.paradas[0]?.parada.llegada,
     });
   });

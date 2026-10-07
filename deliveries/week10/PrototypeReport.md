@@ -2,7 +2,7 @@
 
 **DreemGO — Inteligencia de rutas en Perú**
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
-Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre
+Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6
 
 ## 1 · Qué se puede demostrar hoy
 
@@ -36,15 +36,15 @@ Lo que recibe y devuelve cada uno está en el [contrato](../../docs/CONTRATO.md)
 | Pantalla | Qué permite |
 |---|---|
 | Formulario | Armar la consulta con las opciones que da el API, o pedir una sorpresa |
-| Rutas | Comparar tres tarjetas y abrir cualquiera |
-| Detalle de una ruta | Itinerario día por día, mapa con las paradas numeradas, banda de costo con su desglose, veredicto del mes con los mejores meses, eventos, avisos y motivos |
-| Ficha de un polo | Clima mes a mes, lugares y fiestas |
-| Calendario | Fiestas y eventos de un mes, por región |
-| Mis viajes | Los viajes guardados en el navegador |
+| Los tres viajes | Comparar tres tarjetas, cada una con su foto, su precio, las horas de ida y el clima del mes, y abrir cualquiera |
+| Un viaje | Por qué conviene y qué saber antes de ir; el plan día por día, entero o un día a la vez; un mapa con un pétalo por día y sus lugares numerados; la banda de costo con su desglose; el veredicto del mes con los mejores meses, y las fiestas. Cada lugar abre una hoja con su foto, sus datos y su ficha oficial. Se guarda, se comparte y se imprime |
+| La zona de un viaje | Sus lugares, su clima mes a mes y sus fiestas |
+| Fiestas | Fiestas y eventos de un mes, por región |
+| Guardados | Los viajes guardados en el navegador |
 | Publicar un evento | El formulario para municipios, con un mapa para marcar el lugar |
 | Cómo funciona | De dónde salen los datos y cómo decide el motor |
 
-Está pensada primero para celular. Al abrir baja unos 99 kB; el mapa llega aparte, cuando se abre una ruta.
+Está pensada primero para celular, con tema claro y oscuro. Al abrir baja unos 113 kB; el mapa llega aparte, cuando se abre un viaje. Las fotos son de Wikimedia Commons y cada una lleva su autor y su licencia. En la app, un polo se llama zona, y una ruta, viaje.
 
 ### Los datos
 
@@ -55,6 +55,7 @@ Está pensada primero para celular. Al abrir baja unos 99 kB; el mapa llega apar
 | Tiempos de viaje por carretera, tren y bote, sobre OpenStreetMap | [`pipeline/red_vial.py`](../../pipeline/red_vial.py), [`tiempos.py`](../../pipeline/tiempos.py) |
 | Dónde se duerme en cada polo | [`pipeline/bases.py`](../../pipeline/bases.py) |
 | Clima de cada polo mes a mes y su veredicto | [`pipeline/clima.py`](../../pipeline/clima.py) |
+| Una foto de licencia libre para los lugares y los pueblos donde se duerme, cuando la hay | [`pipeline/fotos.py`](../../pipeline/fotos.py) |
 | Artefactos versionados que carga el motor | [`pipeline/artefactos.py`](../../pipeline/artefactos.py) |
 
 ## 3 · Arquitectura
@@ -65,15 +66,18 @@ flowchart LR
         mincetur["Inventario y fichas<br/>MINCETUR"]
         osm["OpenStreetMap<br/>vías, tren, botes, pueblos"]
         clima["Open-Meteo<br/>clima diario 2016-2025"]
+        commons["Wikimedia Commons<br/>fotos de licencia libre"]
     end
     subgraph pipeline["pipeline/ · lo corre el equipo"]
         procesados["data/procesados/<br/>maestro, eventos, tiempos,<br/>bases y clima"]
         artefactos["dreemgo/datos/<br/>artefactos con versión"]
+        fotos["app/public/fotos.json<br/>qué foto va con cada lugar"]
         procesados --> artefactos
     end
     mincetur --> procesados
     osm --> procesados
     clima --> procesados
+    commons --> fotos
     subgraph usuarios["Quién lo usa"]
         app["Viajero<br/>app/ · React en GitHub Pages"]
         municipio["Municipio<br/>página «Publicar un evento»"]
@@ -84,6 +88,7 @@ flowchart LR
         publicados --> motor
     end
     artefactos -->|"se cargan al arrancar"| motor
+    fotos -->|"se publica con la app"| app
     app -->|"GET /v1/viajes"| motor
     municipio -->|"POST /v1/eventos, con clave"| publicados
     almacen[("DynamoDB, archivo<br/>o memoria")]
@@ -117,6 +122,7 @@ Cómo cambió cada pieza frente al diseño de la Delivery 1, y por qué, está e
 | Ciudades de origen | 24 | [`pipeline/referencia/origenes.csv`](../../pipeline/referencia/origenes.csv) |
 | Acontecimientos con fecha | 739 de 758: 518 con el día que publica la ficha y 221 calculados | [`data/procesados/eventos_v3.csv`](../../data/procesados/) |
 | Polos con su propio clima diario | 36 de 222; los demás usan el clima de su región | [`data/procesados/clima_polo_mes.csv`](../../data/procesados/) |
+| Paradas con foto | 479 de 4 465, y 77 de los 161 imperdibles. En 140 de los 222 polos hay al menos una | [`app/public/fotos.json`](../../app/public/) |
 
 La versión de los datos es `2026.10.2`. Cada tabla de `data/procesados/` tiene su diccionario, y el manifiesto de los artefactos guarda la fecha de cada fuente y la huella de cada archivo. Todas las fuentes son abiertas y su licencia permite redistribuirlas ([`DATA_LICENSES.md`](../../DATA_LICENSES.md)).
 
@@ -151,9 +157,9 @@ Dos cosas de esa tabla son límites del prototipo, y están en la sección sigui
 
 ## 7 · Cómo se prueba
 
-- **605 pruebas del motor, el API y el pipeline**, y **127 de la app**, en cada pull request.
+- **651 pruebas del motor, el API y el pipeline**, y **175 de la app**, en cada pull request.
 - **Diez propiedades del contrato** sobre consultas generadas al azar: ninguna parada pasa la altitud pedida, los días suman lo pedido, ninguna jornada pasa de 8 horas, toda parada enlaza a su ficha, un mes desaconsejado nunca sale sin aviso, el presupuesto ordena pero no esconde, y la misma consulta da la misma respuesta. Al cerrar cada etapa se corren con 1 000 consultas.
-- **26 pruebas de humo en un navegador**, en tamaño de celular y de escritorio, contra el API de verdad: planear un viaje, abrir el mapa, compartir, guardar y publicar un evento. Revisan también que ninguna pantalla se desborde y pasan un analizador de accesibilidad.
+- **28 pruebas de humo en un navegador**, en tamaño de celular y de escritorio, contra el API de verdad: planear un viaje, abrir el mapa, compartir, guardar y publicar un evento. Revisan también que ninguna pantalla se desborde y pasan un analizador de accesibilidad.
 - **Las imágenes del API** se construyen y se arrancan en cada pull request.
 - **El despliegue se ensayó** contra un simulador de AWS antes de tener cuenta: la configuración, la tabla y el API contra ella.
 
@@ -181,8 +187,9 @@ Dos cosas de esa tabla son límites del prototipo, y están en la sección sigui
 
 - **El API no está desplegado**, y su arranque en frío en Lambda no se ha medido. En local arranca en un segundo y usa unos 100 MB.
 - **Publicar eventos** usa una sola clave compartida, sin moderación. Un evento se retira a mano, y su descripción se guarda pero no se muestra.
-- **«Mis viajes»** vive en el navegador: no pasa de un dispositivo a otro.
-- **La app** no tiene modo oscuro, imprime sin el mapa y depende de un servicio externo para el fondo del mapa.
+- **«Guardados»** vive en el navegador: no pasa de un dispositivo a otro.
+- **Fotos:** solo una de cada nueve paradas tiene foto, y menos de la mitad de los imperdibles. Se eligen por cercanía y por nombre, y las 679 propuestas se revisaron a ojo, en miniatura: se quitaron 112. Un error de la fuente que no se vea en la miniatura se queda.
+- **La app** imprime sin el mapa, y le pide el fondo del mapa y las fotos a servicios externos: sin ellos sigue, con un mapa liso y sin fotos. Algunos textos del motor todavía dicen «polo» donde la app dice «zona».
 - **No se ha probado con usuarios.** La prueba de usabilidad es de la semana 12.
 
 ## 9 · Retos técnicos
@@ -200,7 +207,8 @@ Dos cosas de esa tabla son límites del prototipo, y están en la sección sigui
 | Lo que publica un municipio cambia los datos, y la misma consulta tiene que dar la misma respuesta | La versión de los datos lleva la huella de lo publicado, y lo publicado no entra al puntaje |
 | En la nube hay varios servidores a la vez, y quien publica tiene que ver su evento | Cada servidor pregunta cada dos segundos si otro publicó algo |
 | Desplegar sin presupuesto y sin cuenta | Una sola imagen para Lambda y para un host gratuito, y un ensayo contra un simulador que encontró dos errores en la guía |
-| Que abra en un celular con datos móviles | 99 kB al abrir, y el mapa aparte |
+| Que abra en un celular con datos móviles | 113 kB al abrir, y el mapa aparte |
+| Mostrar los lugares sin fotos propias ni presupuesto para comprarlas | Wikidata dice qué foto de Wikimedia Commons corresponde a cada lugar. Solo entran las de licencia libre, con su autor a la vista, y cada una se revisó a ojo |
 
 ## 10 · Lo que falta
 

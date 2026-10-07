@@ -214,13 +214,13 @@ export function Publicar() {
 
   return (
     <section className="pagina pagina--angosta">
-      <p className="sobretitulo">Para municipalidades y oficinas de destino</p>
-      <h1 tabIndex={-1} ref={titulo}>
+      <h1 tabIndex={-1} ref={titulo} className="pagina__titulo">
         Publicar un evento
       </h1>
-      <p className="bajada">
-        Lo que publiques sale en el calendario de fiestas y, si marcas dónde es, en las rutas que pasan cerca
-        en esas fechas, con el nombre de tu entidad. No cambia qué rutas se proponen ni en qué orden.
+      <p className="pagina__bajada">
+        Para municipalidades y oficinas de destino. Lo que publiques sale en el calendario de fiestas y, si
+        marcas dónde es, en los viajes que pasan cerca en esas fechas, con el nombre de tu entidad. No cambia
+        qué viajes se proponen ni en qué orden.
       </p>
 
       {error ? (
@@ -277,7 +277,7 @@ export function Publicar() {
           </div>
           <div className="campo">
             <label htmlFor={`${id}-fin`}>
-              Termina <span className="opcional">Si dura un día, se deja en blanco</span>
+              Termina <span className="opcional">Opcional</span>
             </label>
             <input
               id={`${id}-fin`}
@@ -286,9 +286,12 @@ export function Publicar() {
               max={c.fecha_inicio ? masDias(c.fecha_inicio, DURACION_MAX_DIAS) : undefined}
               value={c.fecha_fin}
               onChange={(e) => cambiar({ fecha_fin: e.target.value })}
-              {...falla("fecha_fin").atributos}
+              {...falla("fecha_fin", `${id}-fin-ayuda`).atributos}
             />
             {falla("fecha_fin").texto}
+            <p className="ayuda" id={`${id}-fin-ayuda`}>
+              Si dura un día, se deja en blanco.
+            </p>
           </div>
         </div>
 
@@ -365,7 +368,7 @@ export function Publicar() {
           </legend>
           <p className="ayuda">
             Toca el mapa en el lugar del evento; la marca se puede arrastrar. Con la marca, el evento sale
-            también en las rutas que duermen o paran a 10 km o menos.
+            también en los viajes que pasan a 10 km o menos.
             {region ? "" : " Al elegir la región, el mapa se acerca a su ciudad principal."}
           </p>
           <ElegirLugar lugar={lugar} cerca={cerca} alElegir={ponerLugar} />
@@ -465,12 +468,12 @@ function Publicado({ evento, conLugar, hoy, otro }: PropsDePublicado) {
           <p>
             Ya está en el calendario de fiestas.{" "}
             {conLugar
-              ? "Como marcaste dónde es, sale también en las rutas que duermen o paran a 10 km o menos en esas fechas."
-              : "Como no marcaste dónde es, no sale en ninguna ruta. Para ponerle el lugar, publícalo otra vez con el mismo nombre, fechas, distrito y entidad."}
+              ? "Como marcaste dónde es, sale también en los viajes que pasan a 10 km o menos en esas fechas."
+              : "Como no marcaste dónde es, no sale en ningún viaje. Para ponerle el lugar, publícalo otra vez con el mismo nombre, fechas, distrito y entidad."}
           </p>
         </div>
       </div>
-      <h2 className="rotulo">Así lo ve el viajero</h2>
+      <h2 className="viaje__titular">Así lo ve el viajero</h2>
       <ListaEventos eventos={[evento]} />
       <div className="formulario__acciones publicado__acciones">
         <button type="button" className="boton boton--secundario boton--grande" onClick={otro}>

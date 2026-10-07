@@ -96,4 +96,4 @@ Lo mismo corre en cada pull request, junto con la construcción de las imágenes
 
 ## Rehacer los datos
 
-Los datos del motor salen del pipeline, que parte de las descargas de las fuentes (inventario y fichas de MINCETUR, OpenStreetMap y Open-Meteo). El orden y lo que tarda cada paso están en [`pipeline/README.md`](../../pipeline/README.md); las licencias de cada fuente, en [`DATA_LICENSES.md`](../../DATA_LICENSES.md).
+Los datos del motor salen del pipeline, que parte de las descargas de las fuentes (inventario y fichas de MINCETUR, OpenStreetMap y Open-Meteo). La lista de fotos que muestra la app sale del mismo pipeline, con Wikidata y Wikimedia Commons. El orden y lo que tarda cada paso están en [`pipeline/README.md`](../../pipeline/README.md); las licencias de cada fuente, en [`DATA_LICENSES.md`](../../DATA_LICENSES.md).
