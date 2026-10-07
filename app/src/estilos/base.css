@@ -74,6 +74,39 @@
   --sombra: var(--sombra-baja);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fondo: #0d1216;
+    --superficie: #151c22;
+    --superficie-2: #1d262e;
+    --cristal: rgb(21 28 34 / 90%);
+    --tinta: #e9eef2;
+    --tinta-2: #a9b6c1;
+    --tinta-3: #8a97a2;
+    --linea: #26313a;
+    --borde: #5d6b77;
+    --lago: #5cb8e6;
+    --lago-tinta: #8fd0f0;
+    --lago-hundido: #7cc6ea;
+    --lago-claro: #10283a;
+    --sobre-lago: #0d1216;
+    --ichu: #f2bf3d;
+    --ichu-claro: #33280a;
+    --bien: #3fbf74;
+    --bien-tinta: #7fd9a3;
+    --bien-fondo: #10291c;
+    --aviso: #f2bf3d;
+    --aviso-tinta: #f5cf6b;
+    --aviso-fondo: #2e2508;
+    --critico: #f07070;
+    --critico-tinta: #f5a3a3;
+    --critico-fondo: #331414;
+    --sombra-flota: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px rgb(0 0 0 / 45%);
+    --sombra-baja: 0 1px 2px rgb(0 0 0 / 40%);
+  }
+}
+
 @media (min-width: 960px) {
   :root {
     --t-display: 3.5rem;
