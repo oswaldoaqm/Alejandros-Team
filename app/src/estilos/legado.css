@@ -160,101 +160,6 @@ h1 {
   background: var(--hundido);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.chip {
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-  min-height: 38px;
-  padding: 0 14px;
-  font-size: 0.94rem;
-  color: var(--tinta);
-  text-decoration: none;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 999px;
-}
-
-.chip:has(.chip__quitar) {
-  padding-right: 5px;
-}
-
-.chip__quitar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  color: var(--tinta-2);
-  border-radius: 50%;
-}
-
-.chip__quitar:hover {
-  color: var(--tinta);
-  background: var(--hundido);
-}
-
-.chip--accion {
-  gap: 6px;
-  font-weight: 600;
-  color: var(--enlace);
-  border-style: dashed;
-}
-
-/* Un chip que se marca: el control de verdad es una casilla o un radio, oculto a la vista. */
-.chip--elegible {
-  position: relative;
-  min-height: 0;
-  padding: 0;
-  background: none;
-  border: 0;
-}
-
-.chip--elegible input,
-.mes input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.chip--elegible span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 14px;
-  cursor: pointer;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 999px;
-}
-
-.chip--elegible input:checked + span,
-.mes input:checked + span {
-  font-weight: 600;
-  color: #fff;
-  background: var(--tinta);
-  border-color: var(--tinta);
-}
-
-.chip--elegible input:focus-visible + span,
-.mes input:focus-visible + span {
-  outline: 2px solid var(--enlace);
-  outline-offset: 2px;
-}
-
-.chip--chico span {
-  min-height: 34px;
-  padding: 0 12px;
-  font-size: 0.86rem;
-  white-space: nowrap;
-}
-
 .insignia {
   display: inline-flex;
   gap: 4px;
@@ -442,22 +347,12 @@ h1 {
   margin-bottom: 8px;
 }
 
-.campo--suelto {
-  margin-top: 16px;
-}
-
-.opcional,
-.obligatorio {
+.opcional {
   margin-left: 6px;
   font-weight: 400;
   color: var(--tinta-3);
   text-transform: none;
   letter-spacing: 0;
-}
-
-.obligatorio {
-  font-weight: 600;
-  color: var(--tinta);
 }
 
 select,
@@ -490,61 +385,24 @@ input::placeholder {
   color: var(--critico-tinta);
 }
 
-.contador {
-  display: inline-flex;
-  align-self: flex-start;
-  overflow: hidden;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 8px;
+/* El mes que se elige: el control de verdad es un radio, oculto a la vista. */
+.mes input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
-.contador:focus-within {
+.mes input:checked + span {
+  font-weight: 600;
+  color: #fff;
+  background: var(--tinta);
+  border-color: var(--tinta);
+}
+
+.mes input:focus-visible + span {
   outline: 2px solid var(--enlace);
   outline-offset: 2px;
-}
-
-.contador button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 46px;
-  padding: 0;
-  cursor: pointer;
-  background: none;
-  border: 0;
-}
-
-.contador button:hover:not(:disabled) {
-  background: var(--hundido);
-}
-
-.contador button:disabled {
-  color: var(--tinta-3);
-  cursor: default;
-  opacity: 0.45;
-}
-
-.contador input {
-  width: 64px;
-  height: 46px;
-  padding: 0;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  appearance: textfield;
-  background: none;
-  border: 0;
-  border-right: 1px solid var(--linea);
-  border-left: 1px solid var(--linea);
-  outline: none;
-}
-
-.contador input::-webkit-outer-spin-button,
-.contador input::-webkit-inner-spin-button {
-  margin: 0;
-  appearance: none;
 }
 
 .meses {
@@ -569,25 +427,11 @@ input::placeholder {
   border-radius: 8px;
 }
 
-.lectura {
-  font-size: 1.15rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
 input[type="range"] {
   width: 100%;
   height: 32px;
   margin: 0;
   accent-color: var(--tinta);
-}
-
-.extremos {
-  display: flex;
-  justify-content: space-between;
-  margin-top: -6px;
-  font-size: 0.8rem;
-  color: var(--tinta-3);
 }
 
 .formulario__acciones {

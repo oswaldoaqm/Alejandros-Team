@@ -28,12 +28,20 @@ test.beforeEach(async ({ context }) => {
 const tarjetas = (pagina: Page) => pagina.getByRole("list", { name: "Viajes propuestos" }).getByRole("link");
 const titulo = (pagina: Page) => pagina.getByRole("heading", { level: 1 });
 
+/** Abre una fila del formulario («Desde», «Cuándo»…) y la cierra con «Listo» si la hoja lo pide. */
+async function elegir(pagina: Page, fila: RegExp, accion: () => Promise<void>, listo = true) {
+  await pagina.getByRole("button", { name: fila }).click();
+  await accion();
+  if (listo) await pagina.getByRole("dialog").getByRole("button", { name: "Listo" }).click();
+}
+
 test("de la consulta al viaje, con su mapa, sus días y la ficha de cada lugar", async ({ page }) => {
   await page.goto("./");
-  await page.getByLabel("Punto de partida").selectOption("lima");
-  await page.getByText("Historia y arqueología").click();
-  await page.getByRole("radio", { name: "Julio" }).check({ force: true });
-  await page.getByRole("button", { name: "Generar mis rutas" }).click();
+  await elegir(page, /^Qué te gusta/, () =>
+    page.getByRole("checkbox", { name: "Historia y arqueología" }).check(),
+  );
+  await elegir(page, /^Cuándo/, () => page.getByRole("radio", { name: "Julio" }).check({ force: true }));
+  await page.getByRole("button", { name: "Ver mis viajes" }).click();
 
   await expect(tarjetas(page)).toHaveCount(3);
   await expect(page).toHaveURL(/\?origen=lima&mes=7&dias=6&intereses=historia&v=\d{4}\.\d+\.\d+/);

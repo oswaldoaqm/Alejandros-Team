@@ -113,10 +113,10 @@ describe("los tres viajes", () => {
     await abrir();
     await tarjetas();
     await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "¿Qué viaje quieres hacer?" })).toBeDefined();
-    expect(screen.getByRole("checkbox", { name: "Historia y arqueología" })).toHaveProperty("checked", true);
-    expect(screen.getByRole("checkbox", { name: "Naturaleza" })).toHaveProperty("checked", true);
-    expect(screen.getByRole("checkbox", { name: "Playa" })).toHaveProperty("checked", false);
+    expect(await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" })).toBeDefined();
+    expect(plano(screen.getByRole("button", { name: /^Qué te gusta/ }).textContent)).toContain(
+      "Historia y arqueología y Naturaleza",
+    );
   });
 
   it("le pone a la URL la versión de datos con que se calculó", async () => {
@@ -202,7 +202,7 @@ describe("los tres viajes", () => {
     expect(within(alerta).queryByRole("button", { name: "Volver a intentar" })).toBeNull();
 
     await userEvent.click(within(alerta).getByRole("link", { name: "Revisar el viaje" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "¿Qué viaje quieres hacer?" })).toBeDefined();
+    expect(await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" })).toBeDefined();
   });
 
   it("sin conexión lo dice, y al reintentar sigue", async () => {
