@@ -1,5 +1,8 @@
 """La foto de cada lugar y de cada base: decisiones puras, sin la red."""
 
+import csv
+import json
+
 import pytest
 
 from pipeline import fotos
@@ -280,3 +283,46 @@ def test_se_avisa_de_la_correccion_que_pone_una_foto_que_no_se_puede_usar():
         ("base", "3", "Sin licencia libre.jpg"),
         ("lugar", "2", "Sin descargar.jpg"),
     ]
+
+
+# ───────────── lo que está en el repositorio: las correcciones y la lista que lee la app ─────────────
+
+
+def paradas_y_bases():
+    recursos = fotos.leer_gz(fotos.DATOS / "recursos.json.gz")
+    polos = fotos.leer_gz(fotos.DATOS / "polos.json.gz")
+    return {r["codigo"] for r in recursos if r.get("es_parada")}, {str(p["id"]): p["base"]["nombre"] for p in polos}
+
+
+def test_las_correcciones_nombran_paradas_y_bases_que_existen():
+    paradas, bases = paradas_y_bases()
+    revisadas = fotos.leer_revisadas()  # si una fila está mal escrita, falla aquí
+    assert len(revisadas) > 100
+    assert [c for t, c in revisadas if t == "lugar" and c not in paradas] == []
+    assert [c for t, c in revisadas if t == "base" and c not in bases] == []
+    # El número de un polo puede cambiar al rehacer los artefactos: el motivo de cada base
+    # empieza con su nombre, y así una fila que quedó apuntando a otro pueblo se nota.
+    with open(fotos.REVISADAS, encoding="utf-8", newline="") as fh:
+        de_bases = [f for f in csv.DictReader(fh, delimiter=";") if f["tipo"] == "base"]
+    assert [f["clave"] for f in de_bases if not f["motivo"].startswith(bases[f["clave"]])] == []
+
+
+def test_la_lista_publicada_es_de_estos_datos_y_respeta_las_correcciones():
+    paradas, bases = paradas_y_bases()
+    publicada = json.loads(fotos.SALIDA.read_text(encoding="utf-8"))
+    manifiesto = json.loads((fotos.DATOS / "manifiesto.json").read_text(encoding="utf-8"))
+    # Si falla: correr «python -m pipeline.fotos» después de rehacer los artefactos o de corregir.
+    assert publicada["version_datos"] == manifiesto["version_datos"]
+    assert set(publicada["lugares"]) <= paradas
+    assert set(publicada["bases"]) <= set(bases)
+    for (tipo, clave), archivo in fotos.leer_revisadas().items():
+        puesta = publicada["lugares" if tipo == "lugar" else "bases"].get(clave, {})
+        assert puesta.get("archivo", "") == archivo, f"{tipo} {clave}"
+    for foto in [*publicada["lugares"].values(), *publicada["bases"].values()]:
+        assert foto["ruta"] == fotos.ruta_en_commons(foto["archivo"])
+        assert foto["ancho"] >= fotos.ANCHO_MINIMO and foto["alto"] > 0
+        assert fotos.LICENCIA_LIBRE.match(foto["licencia"])
+        assert foto["autor"] or fotos.DOMINIO_PUBLICO.match(foto["licencia"])
+        # El crédito se muestra tal cual: va limpio y es un nombre, no una explicación.
+        assert foto["autor"] == fotos.autor_legible(foto["autor"]), foto["archivo"]
+        assert len(foto["autor"]) <= 60, foto["archivo"]
