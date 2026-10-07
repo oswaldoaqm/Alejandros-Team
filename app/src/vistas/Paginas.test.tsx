@@ -108,7 +108,7 @@ describe("el calendario de fiestas", () => {
     await userEvent.selectOptions(region, elegida);
     const deLaRegion = EVENTOS.eventos.filter((e) => e.region === elegida).length;
     expect(
-      screen.getByText(new RegExp(`^${deLaRegion}.eventos? en enero de 2027 · ${elegida}$`)),
+      screen.getByText(new RegExp(`^${deLaRegion}.eventos? en ${elegida}, en enero de 2027$`)),
     ).toBeDefined();
   });
 
@@ -155,9 +155,30 @@ describe("el calendario de fiestas", () => {
     expect(regiones.map((o) => o.textContent)).toContain("Pasco");
   });
 
+  it("lo que empezó el mes anterior va aparte, después de lo que empieza en el mes", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 1));
+    const viene = {
+      ...PUBLICADO,
+      id: "p-viene",
+      nombre: "Feria que viene de octubre",
+      fecha_inicio: "2026-10-28",
+    };
+    await abrir("/#/calendario/11", {
+      "/v1/eventos": { cuerpo: { ...EVENTOS, eventos: [viene, PUBLICADO] } },
+    });
+    const aparte = await screen.findByRole("region", { name: "Empezaron en octubre y siguen en noviembre" });
+    expect(within(aparte).getByRole("link", { name: /Feria que viene de octubre/ })).toBeDefined();
+    const [primeraLista] = screen.getAllByRole("list");
+    expect(
+      within(primeraLista as HTMLElement).getByRole("link", { name: /Feria de Productores/ }),
+    ).toBeDefined();
+    expect(screen.getByText(/^2.eventos en noviembre de 2026$/)).toBeDefined();
+  });
+
   it("invita a publicar a quien organiza un evento", async () => {
     await abrir("/#/calendario");
-    await userEvent.click(await screen.findByRole("link", { name: "¿Organizas uno? Publícalo" }));
+    await userEvent.click(await screen.findByRole("link", { name: "Publícala aquí" }));
     expect(window.location.hash).toBe("#/publicar");
   });
 });

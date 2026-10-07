@@ -162,7 +162,7 @@ describe("publicar un evento", () => {
     await publicar();
     await userEvent.click(await screen.findByRole("link", { name: "Ver el calendario de noviembre" }));
 
-    await screen.findByRole("heading", { level: 1, name: "Fiestas y eventos" });
+    await screen.findByRole("heading", { level: 1, name: "Fiestas" });
     expect(window.location.hash).toBe("#/calendario/11");
     expect(screen.getByRole("radio", { name: "Noviembre" })).toHaveProperty("checked", true);
     const noviembre = "/v1/eventos?desde=2026-11-01&hasta=2026-11-30";

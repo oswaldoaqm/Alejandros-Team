@@ -325,11 +325,6 @@ h1 {
   gap: 24px;
 }
 
-.filtros {
-  display: grid;
-  gap: 16px;
-}
-
 .campo {
   display: flex;
   flex-direction: column;
@@ -383,48 +378,6 @@ input::placeholder {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--critico-tinta);
-}
-
-/* El mes que se elige: el control de verdad es un radio, oculto a la vista. */
-.mes input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.mes input:checked + span {
-  font-weight: 600;
-  color: #fff;
-  background: var(--tinta);
-  border-color: var(--tinta);
-}
-
-.mes input:focus-visible + span {
-  outline: 2px solid var(--enlace);
-  outline-offset: 2px;
-}
-
-.meses {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.mes {
-  position: relative;
-}
-
-.mes > span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 8px;
 }
 
 input[type="range"] {
@@ -957,10 +910,6 @@ th.num {
 
   .formulario__par {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .meses {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 
   .clima__columna {

@@ -172,7 +172,7 @@ test("un municipio publica un evento, con su lugar, y sale en el calendario", as
 
   // Y está en el calendario de su mes, que se pide de nuevo al API.
   await page.getByRole("link", { name: /^Ver el calendario de / }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Fiestas y eventos" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Fiestas" })).toBeVisible();
   const publicado = page.locator(".evento", { hasText: nombre });
   await expect(publicado).toContainText("Huaraz, Áncash");
   await expect(publicado).toContainText(`Publicado por ${entidad}`);
