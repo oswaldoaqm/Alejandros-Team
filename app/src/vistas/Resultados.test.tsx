@@ -252,7 +252,7 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "2 imperdibles: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa.",
+      "2 imperdibles: Líneas y Geoglifos de Nasca y Palpa y Centro Ceremonial Cahuachi.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);
@@ -295,9 +295,11 @@ describe("un viaje abierto", () => {
   it("al tocar un lugar se abre su hoja con la ficha oficial", async () => {
     await abrir(`/?${CONSULTA}#/ruta/1`);
     await viajeAbierto();
-    await userEvent.click(screen.getByRole("radio", { name: "Día 1" }));
-    const primera = A.dias[0]?.paradas?.[0];
-    if (!primera) throw new Error("El primer día del ejemplo no tiene paradas.");
+    // El primer día con lugares: el de llegada puede ser de solo viaje.
+    const dia = A.dias.find((d) => (d.paradas ?? []).length > 0);
+    const primera = dia?.paradas?.[0];
+    if (!dia || !primera) throw new Error("El viaje del ejemplo no tiene ningún día con paradas.");
+    await userEvent.click(screen.getByRole("radio", { name: `Día ${dia.numero}` }));
     await userEvent.click(screen.getByRole("button", { name: new RegExp(primera.recurso.nombre) }));
     const hoja = screen.getByRole("dialog", { name: primera.recurso.nombre });
     expect(

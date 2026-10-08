@@ -48,7 +48,7 @@ Respuesta
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
-[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.2`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.3`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
 
 Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por su red: carretera, tren o bote.
 
@@ -193,12 +193,12 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 ## 6 · El enlace para compartir
 
 ```
-https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.2
+https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.3
 ```
 
-Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.1. Lo que ves está calculado con los datos 2026.10.2…») en vez de mostrar otro viaje en silencio.
+Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.2. Lo que ves está calculado con los datos 2026.10.3…») en vez de mostrar otro viaje en silencio.
 
-La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.2-e3f9a1c`. Sin eventos publicados es solo `2026.10.2`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
+La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.3-e3f9a1c`. Sin eventos publicados es solo `2026.10.3`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
 
 ## 7 · Cómo se cambia el contrato
 

@@ -1,6 +1,6 @@
 {
   "version_contrato": "1.2",
-  "version_datos": "2026.10.2",
+  "version_datos": "2026.10.3",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -15,6 +15,372 @@
     "sorpresa": false
   },
   "rutas": [
+    {
+      "polo": {
+        "id": 27,
+        "nombre": "Nasca",
+        "region": "Ica",
+        "regiones": [
+          "Ica"
+        ],
+        "base": {
+          "nombre": "Nasca",
+          "lat": -14.82772,
+          "lon": -74.937062,
+          "altitud_m": 593
+        },
+        "recursos": 29,
+        "fuera_del_circuito": true
+      },
+      "puntaje": 0.651,
+      "motivos": [
+        "2 lugares de jerarquía 3 o 4: Líneas y Geoglifos de Nasca y Palpa y Centro Ceremonial Cahuachi",
+        "Todas sus paradas son de historia y arqueología o naturaleza",
+        "Julio es temporada seca aquí",
+        "Fuera del circuito de Lima y Cusco"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 0.1,
+        "dias_con_lluvia": null,
+        "horas_sol": null,
+        "temp_min_c": null,
+        "temp_max_c": null,
+        "explicacion": "Julio es temporada seca: 0 mm de lluvia en el mes.",
+        "mejores_meses": [
+          8,
+          9,
+          7,
+          6,
+          5,
+          11,
+          10,
+          4,
+          12,
+          3,
+          2,
+          1
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 8.4,
+        "dias_de_viaje": 2,
+        "medios": [
+          "carretera"
+        ],
+        "acceso": "terrestre",
+        "fuente": "red_vial"
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida",
+          "horas": 8.4,
+          "km": 441.4,
+          "paradas": [],
+          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca."
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.7,
+          "km": 76.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "9020",
+                "nombre": "Acueducto de Achaco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -14.822309,
+                "lon": -74.971004,
+                "altitud_m": 600,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=9020",
+                "descripcion": "Se encuentra ubicado al noroeste de la ciudad de Nasca.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "08:14",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 4.8,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "254",
+                "nombre": "Líneas y Geoglifos de Nasca y Palpa",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Geoglifos (Grabado en tierra)",
+                "jerarquia": 4,
+                "lat": -14.739006,
+                "lon": -75.130016,
+                "altitud_m": 520,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=254",
+                "descripcion": "Ubicado entre las provincias de Nasca y Palpa. Son un conjunto de figuras de forma zoomorfas, antropomorfas, fitomorfas, geométricos y líneas comprendido en un área de 450 km². Entre los km 419 y 443 de la carretera Panamericana Sur.",
+                "ingreso": "pagado",
+                "tarifa_soles": 30.0
+              },
+              "llegada": "10:03",
+              "minutos_traslado": 64,
+              "km_desde_anterior": 26.1,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "251",
+                "nombre": "Centro Ceremonial Cahuachi",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Ciudadelas",
+                "jerarquia": 3,
+                "lat": -14.819147,
+                "lon": -75.115087,
+                "altitud_m": 380,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=251",
+                "descripcion": "Complejo arqueológico que pertenece a la cultura Nazca (Intermedio Temprano, 200 a.C.-700 d.C.). Su sector central está compuesto por varias pirámides truncas construidas en adobe, muchas de las cuales fueron abandonadas durante los siglos IV d.C.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:07",
+              "minutos_traslado": 34,
+              "km_desde_anterior": 12.7,
+              "minutos_visita": 120
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "8091",
+                "nombre": "Geoglifos Las Agujas de Cantayoq",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Geoglifos (Grabado en tierra)",
+                "jerarquia": null,
+                "lat": -14.83395,
+                "lon": -74.903213,
+                "altitud_m": 580,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8091",
+                "descripcion": "Las agujas de Cantayoq representan un extenso y enigmático conjunto de geoglifos prehispánicos que abarca aproximadamente 400 metros de longitud, localizado en el kilómetro 4 de la carretera a Puquio, en la provincia de Nasca, Ica.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "14:04",
+              "minutos_traslado": 57,
+              "km_desde_anterior": 26.7,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "250",
+                "nombre": "Acueducto de Cantayo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -14.826513,
+                "lon": -74.911519,
+                "altitud_m": 638,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=250",
+                "descripcion": "Ubicado al este de la ciudad de Nasca. Es una obra de ingeniería hidráulica de la cultura Nasca (200 a.c. a 700 d.c.), que consistía en extraer las aguas subterráneas (del acuífero del subsuelo) hacia la superficie por gravedad, usando la inclinación propia del valle.",
+                "ingreso": "pagado",
+                "tarifa_soles": 10.0
+              },
+              "llegada": "14:45",
+              "minutos_traslado": 11,
+              "km_desde_anterior": 2.3,
+              "minutos_visita": 45
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.8,
+          "km": 117.9,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "11862",
+                "nombre": "Líneas y Geoglifos de Palpa",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Geoglifos (Grabado en tierra)",
+                "jerarquia": 2,
+                "lat": -14.594583,
+                "lon": -75.201431,
+                "altitud_m": 302,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11862",
+                "descripcion": "Se ubican en la provincia de Palpa, se les puede apreciar realizando sobrevuelos desde el aeródromo María Reiche Newman en Nasca, existe el circuito “Líneas de Palpa” con la orden secuencial: Geoglifo El Colibrí de Palpa, Geoglifo La Estrella, Geoglifo El Viajero, Geoglifos La…",
+                "ingreso": "pagado",
+                "tarifa_soles": 2.0
+              },
+              "llegada": "08:52",
+              "minutos_traslado": 52,
+              "km_desde_anterior": 41.4,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "8451",
+                "nombre": "Cara del Inca.",
+                "categoria": "Sitios naturales",
+                "tipo": "Montañas",
+                "subtipo": "Cerros",
+                "jerarquia": 2,
+                "lat": -14.488279,
+                "lon": -75.216751,
+                "altitud_m": 479,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8451",
+                "descripcion": "Se encuentra ubicada al lado norte de la ciudad de Palpa, a la altura del km. 391 de la carretera Panamericana Sur.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:50",
+              "minutos_traslado": 28,
+              "km_desde_anterior": 16.6,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "8413",
+                "nombre": "Complejo Arqueológico Tumbas de la Muña",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Cementerios",
+                "jerarquia": 2,
+                "lat": -14.523535,
+                "lon": -75.18557,
+                "altitud_m": 357,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8413",
+                "descripcion": "Ubicado al margen izquierdo del río Grande, en el Sector La Muña, distrito Río Grande, provincia Palpa, departamento Ica. En el año 1997 los arqueólogos Dr. Markus Reindel y Lic.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:40",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 7.9,
+              "minutos_visita": 50
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "5161",
+                "nombre": "El Manantial de la Maquina",
+                "categoria": "Sitios naturales",
+                "tipo": "Manantiales",
+                "subtipo": "Manantiales",
+                "jerarquia": 2,
+                "lat": -14.523663,
+                "lon": -75.185549,
+                "altitud_m": 406,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=5161",
+                "descripcion": "Ubicado a 1 km al Norte de la ciudad de Palpa, al pie de los cerros menores que preceden al imponente cerro Pichango, en el fundo de Santo Domingo de La Máquina. A 406 m.s.n.m con una temperatura máxima de 32°C y mínima de 10°C, clima cálido y seco.",
+                "ingreso": "pagado",
+                "tarifa_soles": 15.0
+              },
+              "llegada": "12:38",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "2718",
+                "nombre": "Museo Maria Reiche",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -14.681596,
+                "lon": -75.136771,
+                "altitud_m": 362,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2718",
+                "descripcion": "Está ubicado a 28 kilómetros al norte de la ciudad de Nasca. Este museo alberga los restos de la Dra. María Reiche y de su hermana Renata, quienes estudiaron la Pampa de Nasca por más de 40 años.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "13:57",
+              "minutos_traslado": 34,
+              "km_desde_anterior": 23.5,
+              "minutos_visita": 75
+            }
+          ],
+          "nota": null
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "vuelta",
+          "horas": 8.4,
+          "km": 441.4,
+          "paradas": [],
+          "nota": "Vuelta a Lima: 8 h 27 por carretera."
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 686,
+        "p50": 801,
+        "p80": 914,
+        "desglose": {
+          "transporte": 241,
+          "alojamiento": 246,
+          "alimentacion": 235,
+          "entradas": 79
+        },
+        "dentro_del_presupuesto": false,
+        "exceso": 101,
+        "supuestos": [
+          "Bus interprovincial de ida y vuelta: 882 km",
+          "Movilidad local en colectivo o taxi: 194 km",
+          "Hospedaje económico en Nasca, 3 noches",
+          "Entradas de adulto peruano según la ficha oficial de cada lugar",
+          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
+        ]
+      },
+      "eventos": [],
+      "avisos": [
+        {
+          "tipo": "presupuesto",
+          "nivel": "advertencia",
+          "mensaje": "El costo central (S/ 801) pasa tu presupuesto por S/ 101."
+        },
+        {
+          "tipo": "dias",
+          "nivel": "advertencia",
+          "mensaje": "La ida y la vuelta se llevan 16 h 54 de tus 4 días: con más días, el viaje rinde más."
+        },
+        {
+          "tipo": "datos",
+          "nivel": "info",
+          "mensaje": "El clima de esta zona es el promedio de su región; el de la propia zona todavía no se ha cargado."
+        }
+      ],
+      "indicadores": {
+        "paradas": 10,
+        "jerarquia_media": 2.33,
+        "paradas_jerarquia_alta": 2,
+        "altitud_max_m": 638,
+        "km_total": 1076.7,
+        "valor_capturado": 0.702
+      }
+    },
     {
       "polo": {
         "id": 33,
@@ -32,7 +398,7 @@
         "recursos": 177,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.836,
+      "puntaje": 0.642,
       "motivos": [
         "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
         "Todas sus paradas son de historia y arqueología o naturaleza",
@@ -510,17 +876,17 @@
         {
           "tipo": "aclimatacion",
           "nivel": "advertencia",
-          "mensaje": "Se duerme a 3 256 m en Huancayo. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo."
+          "mensaje": "Se duerme a 3 256 m en Huancayo. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo."
         },
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
+          "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
         },
         {
           "tipo": "datos",
           "nivel": "info",
-          "mensaje": "El clima de este polo es el promedio de su región; el del propio polo todavía no se ha cargado."
+          "mensaje": "El clima de esta zona es el promedio de su región; el de la propia zona todavía no se ha cargado."
         }
       ],
       "indicadores": {
@@ -529,7 +895,7 @@
         "paradas_jerarquia_alta": 2,
         "altitud_max_m": 3441,
         "km_total": 752.7,
-        "valor_capturado": 0.538
+        "valor_capturado": 0.567
       }
     },
     {
@@ -549,10 +915,10 @@
         "recursos": 68,
         "fuera_del_circuito": false
       },
-      "puntaje": 0.703,
+      "puntaje": 0.582,
       "motivos": [
-        "2 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral y Sitio Arqueológico de Vichama",
-        "12 de sus 19 paradas son de historia y arqueología o naturaleza",
+        "3 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral, Fortaleza de Paramonga y Sitio Arqueológico de Vichama",
+        "11 de sus 13 paradas son de historia y arqueología o naturaleza",
         "Julio es temporada seca aquí",
         "Coincide con Expo - Feria Luriama (del 1 al 31 de julio)"
       ],
@@ -596,29 +962,83 @@
           "fecha": null,
           "tipo": "ida_y_visita",
           "horas": 7.7,
-          "km": 164.2,
+          "km": 213.5,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "3379",
-                "nombre": "Plaza de Armas de Huacho",
+                "codigo": "3486",
+                "nombre": "Sitio Arqueológico de Vichama",
                 "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Plazas",
-                "jerarquia": 2,
-                "lat": -11.108528,
-                "lon": -77.610338,
-                "altitud_m": 30,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379",
-                "descripcion": "Plaza de Armas pública ubicada en el centro de la ciudad, considerada como punto principal para toda serie de eventos y acontecimientos.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 3,
+                "lat": -11.030155,
+                "lon": -77.629975,
+                "altitud_m": 75,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
+                "descripcion": "Este sitio arqueológico cuenta con una extensión de 136.37 hectáreas y con un perímetro de 69670 metros, el área monumental pertenece al periodo arcaico tardío con una antigüedad de 3800 años de ideología de nuestros ancestros, con un área de 25 hectáreas ubicado en los cerros…",
+                "ingreso": "pagado",
+                "tarifa_soles": 11.0
               },
-              "llegada": "10:02",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.1,
-              "minutos_visita": 20
+              "llegada": "10:18",
+              "minutos_traslado": 24,
+              "km_desde_anterior": 12.4,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "1237",
+                "nombre": "Ciudad Sagrada de Caral",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Zonas arqueológicas",
+                "jerarquia": 4,
+                "lat": -10.892818,
+                "lon": -77.523228,
+                "altitud_m": 350,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
+                "descripcion": "La Ciudad Sagrada de Caral está a 184 km al norte de Lima y entre 23 km y 25 km desde el litoral, en la sección Media-Baja del valle de Supe y en la margen izquierda de este río, a 365 metros sobre el nivel del mar.",
+                "ingreso": "pagado",
+                "tarifa_soles": 11.0
+              },
+              "llegada": "12:11",
+              "minutos_traslado": 53,
+              "km_desde_anterior": 27.6,
+              "minutos_visita": 90
+            }
+          ],
+          "nota": "Salida de Lima a las 07:00; 2 h 54 por carretera hasta Huacho."
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.7,
+          "km": 164.6,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "11211",
+                "nombre": "Museo Municipal de Hualmay",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Salas de Exhibición",
+                "jerarquia": null,
+                "lat": -11.09665,
+                "lon": -77.613158,
+                "altitud_m": 40,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211",
+                "descripcion": "Este museo fue creado en el mes de diciembre del 2019, está bajo el cargo de la Oficina de Cultura de la Municipalidad distrital de Hualmay.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "10:00",
+              "minutos_traslado": 10,
+              "km_desde_anterior": 2.1,
+              "minutos_visita": 30
             },
             {
               "orden": 2,
@@ -637,111 +1057,13 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "10:35",
+              "llegada": "10:43",
               "minutos_traslado": 13,
-              "km_desde_anterior": 5.3,
+              "km_desde_anterior": 4.0,
               "minutos_visita": 75
             },
             {
               "orden": 3,
-              "recurso": {
-                "codigo": "3486",
-                "nombre": "Sitio Arqueológico de Vichama",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": 3,
-                "lat": -11.030155,
-                "lon": -77.629975,
-                "altitud_m": 75,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
-                "descripcion": "Este sitio arqueológico cuenta con una extensión de 136.37 hectáreas y con un perímetro de 69670 metros, el área monumental pertenece al periodo arcaico tardío con una antigüedad de 3800 años de ideología de nuestros ancestros, con un área de 25 hectáreas ubicado en los cerros…",
-                "ingreso": "pagado",
-                "tarifa_soles": 11.0
-              },
-              "llegada": "12:08",
-              "minutos_traslado": 18,
-              "km_desde_anterior": 7.1,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "11211",
-                "nombre": "Museo Municipal de Hualmay",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Salas de Exhibición",
-                "jerarquia": null,
-                "lat": -11.09665,
-                "lon": -77.613158,
-                "altitud_m": 40,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211",
-                "descripcion": "Este museo fue creado en el mes de diciembre del 2019, está bajo el cargo de la Oficina de Cultura de la Municipalidad distrital de Hualmay.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "13:31",
-              "minutos_traslado": 23,
-              "km_desde_anterior": 11.1,
-              "minutos_visita": 30
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "3373",
-                "nombre": "Casona Pittaluga",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Casa de Valor Arquitectónico",
-                "jerarquia": 2,
-                "lat": -11.108392,
-                "lon": -77.612601,
-                "altitud_m": 30,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3373",
-                "descripcion": "Este Monumento Histórico – Artístico, es de la Época y de estilo Republicano, con líneas neoclásicas y afrancesadas, de las que son comunes en Barranco, Chorrillos, La punta y en la Lima de los años de 1920.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "14:11",
-              "minutos_traslado": 10,
-              "km_desde_anterior": 1.7,
-              "minutos_visita": 20
-            }
-          ],
-          "nota": "Salida de Lima a las 07:00; 2 h 54 por carretera hasta Huacho."
-        },
-        {
-          "numero": 2,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.8,
-          "km": 98.0,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "11830",
-                "nombre": "Iglesia de Vilca-Huaura",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": 2,
-                "lat": -11.07279,
-                "lon": -77.47506,
-                "altitud_m": 80,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11830",
-                "descripcion": "La hacienda Vilca-Huaura (actualmente la iglesia de Vilca-Huaura), fue adquirida por la compañía de Jesús en 1649, adscrita a la mantención del colegio de caciques de Lima.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "09:00",
-              "minutos_traslado": 30,
-              "km_desde_anterior": 19.9,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 2,
               "recurso": {
                 "codigo": "11873",
                 "nombre": "Zona Arqueológica Monumental de Peñico",
@@ -757,76 +1079,32 @@
                 "ingreso": "desconocido",
                 "tarifa_soles": null
               },
-              "llegada": "10:05",
-              "minutos_traslado": 45,
-              "km_desde_anterior": 20.5,
+              "llegada": "12:59",
+              "minutos_traslado": 61,
+              "km_desde_anterior": 35.0,
               "minutos_visita": 45
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "4545",
-                "nombre": "Sitio Arqueológico Miraya",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": 2,
-                "lat": -10.882305,
-                "lon": -77.539772,
-                "altitud_m": 349,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4545",
-                "descripcion": "Miraya es uno de los asentamientos arcaicos que rodean a la Ciudad Sagrada de Caral, ocupa aproximadamente 43 hectáreas y tiene una antigüedad de 3,000 a 1,800 años A.C.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "11:23",
-              "minutos_traslado": 33,
-              "km_desde_anterior": 17.0,
-              "minutos_visita": 60
             },
             {
               "orden": 4,
               "recurso": {
-                "codigo": "4631",
-                "nombre": "Sitio Arqueológico Lurihuasi",
+                "codigo": "1298",
+                "nombre": "Fortaleza de Paramonga",
                 "categoria": "Manifestaciones culturales",
                 "tipo": "Sitios Arqueológicos",
                 "subtipo": "Templos",
-                "jerarquia": 2,
-                "lat": -10.877111,
-                "lon": -77.549726,
-                "altitud_m": 295,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4631",
-                "descripcion": "Complejo arqueológico ubicado en el valle medio inferior de Supe, margen izquierda del río, en una quebrada árida de pendiente pronunciada; la cual permite comunicar y vincular a los pobladores de esta parte del valle con la sección baja del valle de Huaura (Albufera de Medio…",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "12:34",
-              "minutos_traslado": 11,
-              "km_desde_anterior": 1.7,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "1237",
-                "nombre": "Ciudad Sagrada de Caral",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Zonas arqueológicas",
-                "jerarquia": 4,
-                "lat": -10.892818,
-                "lon": -77.523228,
-                "altitud_m": 350,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
-                "descripcion": "La Ciudad Sagrada de Caral está a 184 km al norte de Lima y entre 23 km y 25 km desde el litoral, en la sección Media-Baja del valle de Supe y en la margen izquierda de este río, a 365 metros sobre el nivel del mar.",
+                "jerarquia": 3,
+                "lat": -10.653176,
+                "lon": -77.841393,
+                "altitud_m": 26,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298",
+                "descripcion": "Está construida sobre una colina en el valle del río Fortaleza, es el monumento de mayor importancia que conserva su estructura arquitectónica, presenta una pirámide construida íntegramente en adobe formada por cuatro plataformas macizas con recintos en la parte alta, con un…",
                 "ingreso": "pagado",
-                "tarifa_soles": 11.0
+                "tarifa_soles": 5.0
               },
-              "llegada": "13:49",
-              "minutos_traslado": 15,
-              "km_desde_anterior": 3.9,
-              "minutos_visita": 90
+              "llegada": "15:10",
+              "minutos_traslado": 86,
+              "km_desde_anterior": 61.1,
+              "minutos_visita": 60
             }
           ],
           "nota": null
@@ -835,33 +1113,11 @@
           "numero": 3,
           "fecha": null,
           "tipo": "visita",
-          "horas": 7.1,
-          "km": 9.8,
+          "horas": 7.8,
+          "km": 28.5,
           "paradas": [
             {
               "orden": 1,
-              "recurso": {
-                "codigo": "3375",
-                "nombre": "Club Casino Huacho",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Casa de Valor Arquitectónico",
-                "jerarquia": 2,
-                "lat": -11.108972,
-                "lon": -77.610426,
-                "altitud_m": 32,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375",
-                "descripcion": "Casona construida antes de 1878. El 20 de noviembre de 1938, el Dr. Pedro Luna Arrieta, Alcalde de Huacho, inauguró la construcción de la carretera Panamericana Norte, en el tramo Lima - Huacho, desde el Balcón del Club Casino Huacho contando con la presencia del Gral.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "09:00",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.2,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 2,
               "recurso": {
                 "codigo": "3439",
                 "nombre": "Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión",
@@ -877,10 +1133,32 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "09:28",
+              "llegada": "08:08",
               "minutos_traslado": 8,
-              "km_desde_anterior": 0.4,
+              "km_desde_anterior": 0.5,
               "minutos_visita": 85
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "11107",
+                "nombre": "Playa Chorrillos de Huacho",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Playas",
+                "jerarquia": 2,
+                "lat": -11.110495,
+                "lon": -77.615647,
+                "altitud_m": 3,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11107",
+                "descripcion": "La playa Chorrillos es importante por las actividades económicas que genera en comercio, recreación, pesca artesanal e industrial, que se desarrollan a lo largo de 3 km de extensión.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:42",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 0.9,
+              "minutos_visita": 180
             },
             {
               "orden": 3,
@@ -899,54 +1177,32 @@
                 "ingreso": "desconocido",
                 "tarifa_soles": null
               },
-              "llegada": "11:03",
-              "minutos_traslado": 10,
-              "km_desde_anterior": 1.9,
+              "llegada": "12:53",
+              "minutos_traslado": 11,
+              "km_desde_anterior": 2.5,
               "minutos_visita": 66
             },
             {
               "orden": 4,
               "recurso": {
-                "codigo": "3499",
-                "nombre": "Iglesia San Pedro Apóstol",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": null,
-                "lat": -11.09192,
-                "lon": -77.628178,
-                "altitud_m": 15,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3499",
-                "descripcion": "La iglesia San Pedro Apostol no cuenta con fecha exacta de construcción, pero data del siglo XIX, tiene una antigüedad de 200 años aproximadamente y pertenece a la época colonial – republicana.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
-              },
-              "llegada": "12:21",
-              "minutos_traslado": 12,
-              "km_desde_anterior": 3.5,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "11310",
-                "nombre": "Balneario Ecoturístico La Costanera",
+                "codigo": "3368",
+                "nombre": "Albúfera El Paraíso",
                 "categoria": "Sitios naturales",
-                "tipo": "Costas",
-                "subtipo": "Playas",
-                "jerarquia": null,
-                "lat": -11.096812,
-                "lon": -77.628531,
-                "altitud_m": 9,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11310",
-                "descripcion": "Este Balneario ecoturístico está ubicado dentro de distrito Caleta de Carquín a 3 kilómetros de Huaura, los centros poblados más cercanos que podemos encontrar son: Carquín Alto, Carquín Bajo y Carquín Chico.",
+                "tipo": "Cuerpo de Agua",
+                "subtipo": "Albuferas",
+                "jerarquia": 1,
+                "lat": -11.185663,
+                "lon": -77.590053,
+                "altitud_m": 3,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3368",
+                "descripcion": "Esta Albufera está ubicada en la región natural de costa o chala (0 – 500 n.s.n.m.), con una extensión aproximada de 8 kilómetros de longitud, una superficie de 690 hectáreas y profundidad aproximada de 1 metro con 80 centímetros.",
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "12:49",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.8,
-              "minutos_visita": 180
+              "llegada": "14:25",
+              "minutos_traslado": 26,
+              "km_desde_anterior": 13.3,
+              "minutos_visita": 60
             }
           ],
           "nota": null
@@ -955,95 +1211,73 @@
           "numero": 4,
           "fecha": null,
           "tipo": "visita_y_vuelta",
-          "horas": 7.8,
-          "km": 176.7,
+          "horas": 8.0,
+          "km": 178.5,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "13931",
-                "nombre": "Taller Artesanal Chankay Namú",
-                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
-                "tipo": "Centros Científicos y Técnicos",
-                "subtipo": "Otros",
-                "jerarquia": null,
-                "lat": -11.108524,
-                "lon": -77.61033,
-                "altitud_m": 43,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13931",
-                "descripcion": "El distrito de Huacho, reconocido como la “Capital de la Hospitalidad”, es uno de los doce distritos que conforman la provincia de Huaura.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null
+                "codigo": "3379",
+                "nombre": "Plaza de Armas de Huacho",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 2,
+                "lat": -11.108528,
+                "lon": -77.610338,
+                "altitud_m": 30,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379",
+                "descripcion": "Plaza de Armas pública ubicada en el centro de la ciudad, considerada como punto principal para toda serie de eventos y acontecimientos.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
               },
-              "llegada": "08:07",
-              "minutos_traslado": 7,
+              "llegada": "08:08",
+              "minutos_traslado": 8,
               "km_desde_anterior": 0.1,
-              "minutos_visita": 45
+              "minutos_visita": 20
             },
             {
               "orden": 2,
               "recurso": {
-                "codigo": "3482",
-                "nombre": "Museo Comunitario de Végueta José Mateo García de los Santos",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
+                "codigo": "2054",
+                "nombre": "Reserva Nacional Sistema de Islas, Islotes y Puntas Guaneras – Isla Don Martín",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Islas",
                 "jerarquia": 2,
-                "lat": -11.02284,
-                "lon": -77.64388,
-                "altitud_m": 13,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3482",
-                "descripcion": "Con la inauguración del Museo Comunitario de Vegueta el 23 de febrero del 2008, la Zona Arqueológica Caral dio inicio a la implementación de una “Red de Museo Comunitarios” en el área de influencia de la civilización de los Andes del Perú.",
-                "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "lat": -11.018791,
+                "lon": -77.671032,
+                "altitud_m": 80,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2054",
+                "descripcion": "La Isla Don Martín, se encuentra ubicada 1 kilómetro de la costa veguetana (playa Punta Végueta), su ubicación pertenece a la región natural Costa o Chala (Pulgar, 2014).Forma parte del paisaje marino costero de la corriente de Humboldt, cuenta con una extensión de 18.63…",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
               },
-              "llegada": "09:18",
-              "minutos_traslado": 26,
-              "km_desde_anterior": 15.4,
-              "minutos_visita": 81
+              "llegada": "09:03",
+              "minutos_traslado": 35,
+              "km_desde_anterior": 19.8,
+              "minutos_visita": 180
             },
             {
               "orden": 3,
               "recurso": {
-                "codigo": "3485",
-                "nombre": "Caleta San Martín de Végueta",
-                "categoria": "Sitios naturales",
-                "tipo": "Costas",
-                "subtipo": "Caletas",
-                "jerarquia": 1,
-                "lat": -11.00655,
-                "lon": -77.65527,
-                "altitud_m": 2,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3485",
-                "descripcion": "Ubicada a 1.5 kilómetros del centro histórico del distrito de Végueta, se sitúa 700 metros del centro poblado Santa Fe, pertenece a la región Chala o Costa (0-500 m.s.n.m.), cuenta con una extensión de 500 m de litoral de playa y 40 m de línea de playa, su clima es de templado…",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "10:52",
-              "minutos_traslado": 13,
-              "km_desde_anterior": 3.0,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "3456",
-                "nombre": "Iglesia de Santa María",
+                "codigo": "3375",
+                "nombre": "Club Casino Huacho",
                 "categoria": "Manifestaciones culturales",
                 "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": 1,
-                "lat": -11.086349,
-                "lon": -77.586702,
-                "altitud_m": 81,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3456",
-                "descripcion": "Esta Iglesia está construida de adobe y madera, como se menciona en el inventario mandado hacer por el Arzobispo de Lima, Javier de Luna Pizarro en 1848. Esta iglesia es de época Republicana de los años 1848.",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": 2,
+                "lat": -11.108972,
+                "lon": -77.610426,
+                "altitud_m": 32,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375",
+                "descripcion": "Casona construida antes de 1878. El 20 de noviembre de 1938, el Dr. Pedro Luna Arrieta, Alcalde de Huacho, inauguró la construcción de la carretera Panamericana Norte, en el tramo Lima - Huacho, desde el Balcón del Club Casino Huacho contando con la presencia del Gral.",
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "12:21",
-              "minutos_traslado": 29,
-              "km_desde_anterior": 15.4,
+              "llegada": "12:38",
+              "minutos_traslado": 35,
+              "km_desde_anterior": 19.9,
               "minutos_visita": 20
             }
           ],
@@ -1052,20 +1286,20 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 583,
-        "p50": 698,
-        "p80": 807,
+        "p20": 664,
+        "p50": 784,
+        "p80": 899,
         "desglose": {
-          "transporte": 170,
-          "alojamiento": 251,
-          "alimentacion": 239,
+          "transporte": 258,
+          "alojamiento": 250,
+          "alimentacion": 238,
           "entradas": 38
         },
-        "dentro_del_presupuesto": true,
-        "exceso": null,
+        "dentro_del_presupuesto": false,
+        "exceso": 84,
         "supuestos": [
           "Bus interprovincial de ida y vuelta: 277 km",
-          "Movilidad local en colectivo o taxi: 172 km",
+          "Movilidad local en colectivo o taxi: 308 km",
           "Hospedaje económico en Huacho, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
@@ -1101,449 +1335,20 @@
           "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11833"
         }
       ],
-      "avisos": [],
-      "indicadores": {
-        "paradas": 19,
-        "jerarquia_media": 2.08,
-        "paradas_jerarquia_alta": 2,
-        "altitud_max_m": 600,
-        "km_total": 448.7,
-        "valor_capturado": 0.573
-      }
-    },
-    {
-      "polo": {
-        "id": 151,
-        "nombre": "La Merced",
-        "region": "Junín",
-        "regiones": [
-          "Junín",
-          "Pasco"
-        ],
-        "base": {
-          "nombre": "La Merced",
-          "lat": -11.056057,
-          "lon": -75.328265,
-          "altitud_m": 777
-        },
-        "recursos": 59,
-        "fuera_del_circuito": true
-      },
-      "puntaje": 0.631,
-      "motivos": [
-        "Cascada El León, de jerarquía 3",
-        "12 de sus 13 paradas son de historia y arqueología o naturaleza",
-        "Julio es temporada seca aquí",
-        "Coincide con Festival del Café Villa Rica y Festival Nacional del Café. (del 25 al 31 de julio)"
-      ],
-      "estacionalidad": {
-        "mes": 7,
-        "veredicto": "viable",
-        "lluvia_mm": 34.5,
-        "dias_con_lluvia": 8.2,
-        "horas_sol": null,
-        "temp_min_c": 17.4,
-        "temp_max_c": 26.8,
-        "explicacion": "Julio es temporada seca: 34 mm de lluvia en el mes.",
-        "mejores_meses": [
-          7,
-          8,
-          6,
-          9,
-          5,
-          4
-        ]
-      },
-      "traslado": {
-        "desde": "Lima",
-        "horas": 6.3,
-        "dias_de_viaje": 2,
-        "medios": [
-          "carretera"
-        ],
-        "acceso": "terrestre",
-        "fuente": "red_vial"
-      },
-      "dias": [
-        {
-          "numero": 1,
-          "fecha": null,
-          "tipo": "ida_y_visita",
-          "horas": 7.7,
-          "km": 307.3,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "7702",
-                "nombre": "Catarata La Borgoña",
-                "categoria": "Sitios naturales",
-                "tipo": "Caídas de agua",
-                "subtipo": "Cataratas",
-                "jerarquia": null,
-                "lat": -11.05154,
-                "lon": -75.31693,
-                "altitud_m": 950,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7702",
-                "descripcion": "La Catarata La Borgoña se localiza en la provincia de Chanchamayo, región Junín, dentro del ámbito geográfico de la ceja de selva central, a una altitud aproximada de 950 a 1 050 m s. n. m.",
-                "ingreso": "pagado",
-                "tarifa_soles": 7.0
-              },
-              "llegada": "13:29",
-              "minutos_traslado": 11,
-              "km_desde_anterior": 2.0,
-              "minutos_visita": 60
-            }
-          ],
-          "nota": "Salida de Lima a las 07:00; 6 h 18 por carretera hasta La Merced."
-        },
-        {
-          "numero": 2,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.5,
-          "km": 51.3,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "4096",
-                "nombre": "Casa Hacienda El Naranjal",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Casa-Hacienda",
-                "jerarquia": null,
-                "lat": -11.1397,
-                "lon": -75.4014,
-                "altitud_m": 850,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4096",
-                "descripcion": "La Ex Casa Hacienda El Naranjal, se ubica en el Centro Poblado Naranjal que pertenece al Distrito de San Ramón, Provincia de Chanchamayo.",
-                "ingreso": "pagado",
-                "tarifa_soles": null
-              },
-              "llegada": "08:28",
-              "minutos_traslado": 28,
-              "km_desde_anterior": 16.9,
-              "minutos_visita": 45
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "10262",
-                "nombre": "Jardín Etnobotánico Semilla Bendita",
-                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
-                "tipo": "Centros Científicos y Técnicos",
-                "subtipo": "Jardines Botánicos y Viveros",
-                "jerarquia": null,
-                "lat": -11.135278,
-                "lon": -75.381111,
-                "altitud_m": 1100,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=10262",
-                "descripcion": "El Jardín Etnobotánico Semilla Bendita es un espacio de investigación, conservación y difusión del conocimiento asociado a la flora de la ceja de selva central.",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
-              },
-              "llegada": "09:26",
-              "minutos_traslado": 13,
-              "km_desde_anterior": 3.5,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "14458",
-                "nombre": "Museo del Café",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": null,
-                "lat": -11.12241,
-                "lon": -75.36367,
-                "altitud_m": 860,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14458",
-                "descripcion": "El Museo del Café, localizado en San Ramón; distrito denominado como “La Puerta de Oro de la Selva Central” ubicado en la Provincia de Chanchamayo, a una altitud de 850 msnm en la selva alta de la Región Junín a con un clima cálido húmedo y una temperatura promedio de 25°C.",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
-              },
-              "llegada": "10:38",
-              "minutos_traslado": 12,
-              "km_desde_anterior": 3.4,
-              "minutos_visita": 75
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "10263",
-                "nombre": "Plaza Mayor de San Ramón",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Plazas",
-                "jerarquia": 1,
-                "lat": -11.121339,
-                "lon": -75.35206,
-                "altitud_m": 812,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=10263",
-                "descripcion": "La Plaza Mayor de San Ramón, tuvo por nombre original Parque Augusto Bernardino Leguía, el cual se encuentra en la región natural de Selva Alta a una altitud de 850 msnm., con un clima cálido húmedo y una temperatura promedio de 25°C; su construcción data de inicios del siglo…",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "12:03",
-              "minutos_traslado": 10,
-              "km_desde_anterior": 1.9,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "10265",
-                "nombre": "Comunidad Nativa Shipibo Konibo Shawan Rama",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Pueblos",
-                "subtipo": "Artesanales",
-                "jerarquia": null,
-                "lat": -11.106389,
-                "lon": -75.328889,
-                "altitud_m": 1100,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=10265",
-                "descripcion": "La comunidad nativa Shipibo-Konibo Shawan Rama se encuentra ubicada en el anexo Salsipuedes, distrito de San Ramón, provincia de Chanchamayo, región Junín, en la región natural de Selva Alta, a una altitud aproximada de 1,100 m s. n. m. y con un clima cálido húmedo, con una…",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "12:41",
-              "minutos_traslado": 18,
-              "km_desde_anterior": 5.8,
-              "minutos_visita": 90
-            },
-            {
-              "orden": 6,
-              "recurso": {
-                "codigo": "14391",
-                "nombre": "Mirador Montañas de Bosques Encantados",
-                "categoria": "Sitios naturales",
-                "tipo": "Zonas paisajísticas",
-                "subtipo": "Miradores naturales",
-                "jerarquia": null,
-                "lat": -11.104824,
-                "lon": -75.314879,
-                "altitud_m": 1484,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14391",
-                "descripcion": "Ubicado en el anexo Chunchuyacu, distrito de San Ramón, provincia de Chanchamayo, el Mirador Montaña de Bosques Encantados se emplaza a una altitud de 1 560 m s. n. m., desde donde se despliega un amplio escenario natural que domina el valle de San Ramón y la cadena de montañas…",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
-              },
-              "llegada": "14:35",
-              "minutos_traslado": 24,
-              "km_desde_anterior": 5.6,
-              "minutos_visita": 20
-            }
-          ],
-          "nota": null
-        },
-        {
-          "numero": 3,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.8,
-          "km": 127.5,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "12951",
-                "nombre": "Parque Temático El Duende",
-                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
-                "tipo": "Otros",
-                "subtipo": "Otros",
-                "jerarquia": 2,
-                "lat": -10.743479,
-                "lon": -75.257807,
-                "altitud_m": 1466,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12951",
-                "descripcion": "El Parque Temático El Duende es un destino turístico de gran interés debido a su combinación única de naturaleza, leyendas y cultura ancestral de la Amazonía.",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
-              },
-              "llegada": "09:26",
-              "minutos_traslado": 86,
-              "km_desde_anterior": 55.3,
-              "minutos_visita": 51
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "7257",
-                "nombre": "Plaza Principal de Villa Rica",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Plazas",
-                "jerarquia": 2,
-                "lat": -10.735343,
-                "lon": -75.267876,
-                "altitud_m": 1466,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7257",
-                "descripcion": "La Plaza Principal se encuentra ubicada entre las vías principales del pueblo, como en la Av. Leopoldo Krausse, Jr. Oxapampa, Jr. Cooperativa y Calle Fernando Belaúnde Terry.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "10:33",
-              "minutos_traslado": 16,
-              "km_desde_anterior": 3.8,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "7252",
-                "nombre": "Panteón de los Colonos",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Lugares Históricos",
-                "subtipo": "Campos santos",
-                "jerarquia": 2,
-                "lat": -10.732829,
-                "lon": -75.266708,
-                "altitud_m": 1559,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7252",
-                "descripcion": "El Panteón de los Colonos de Villa Rica es un espacio de gran valor histórico y cultural, construido en la década de 1930 con la llegada de los primeros colonos a Villa Rica.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "11:02",
-              "minutos_traslado": 9,
-              "km_desde_anterior": 0.8,
-              "minutos_visita": 40
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "7275",
-                "nombre": "Cascada El León",
-                "categoria": "Sitios naturales",
-                "tipo": "Caídas de agua",
-                "subtipo": "Cascadas",
-                "jerarquia": 3,
-                "lat": -10.70767,
-                "lon": -75.246046,
-                "altitud_m": 1334,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7275",
-                "descripcion": "La Cascada El León se encuentra ubicado en el Caserío Yezú del distrito de Villa Rica, dentro de la región natural Yunga, a una altitud de 1557 m.s.n.m., con un clima templado a una temperatura promedio de 22 °C.",
-                "ingreso": "pagado",
-                "tarifa_soles": 2.5
-              },
-              "llegada": "12:01",
-              "minutos_traslado": 19,
-              "km_desde_anterior": 5.1,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "7266",
-                "nombre": "Finca Aroma de Montaña",
-                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
-                "tipo": "Explotaciones Agropecuarias y Pesqueras",
-                "subtipo": "Agricultura",
-                "jerarquia": 2,
-                "lat": -10.720861,
-                "lon": -75.269972,
-                "altitud_m": 1654,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7266",
-                "descripcion": "La finca Aroma de Montaña, es una finca cafetalera ubicada en el distrito de Villa Rica, provincia de Oxapampa, dentro de la región natural Yunga, según la clasificación de Javier Pulgar Vidal, situada a 1654 m.s.n.m.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "13:23",
-              "minutos_traslado": 22,
-              "km_desde_anterior": 6.0,
-              "minutos_visita": 60
-            }
-          ],
-          "nota": null
-        },
-        {
-          "numero": 4,
-          "fecha": null,
-          "tipo": "visita_y_vuelta",
-          "horas": 7.4,
-          "km": 323.9,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "14205",
-                "nombre": "Catedral de San Ramón",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": null,
-                "lat": -11.12063,
-                "lon": -75.35205,
-                "altitud_m": 1000,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14205",
-                "descripcion": "La Catedral de San Ramón, también conocida como Sede del Vicariato Apostólico de San Ramón, se alza como el principal templo católico de la ciudad de San Ramón, en la provincia y departamento de Junín, en la selva central del Perú.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "08:20",
-              "minutos_traslado": 20,
-              "km_desde_anterior": 10.3,
-              "minutos_visita": 26
-            }
-          ],
-          "nota": "Vuelta a Lima: 6 h 18 por carretera."
-        }
-      ],
-      "costo": {
-        "moneda": "PEN",
-        "p20": 661,
-        "p50": 778,
-        "p80": 890,
-        "desglose": {
-          "transporte": 219,
-          "alojamiento": 246,
-          "alimentacion": 234,
-          "entradas": 79
-        },
-        "dentro_del_presupuesto": false,
-        "exceso": 78,
-        "supuestos": [
-          "Bus interprovincial de ida y vuelta: 605 km",
-          "Movilidad local en colectivo o taxi: 203 km",
-          "Hospedaje económico en La Merced, 3 noches",
-          "Entradas de adulto peruano según la ficha oficial de cada lugar",
-          "Una parada no publica su tarifa: se estima entre S/ 5 y S/ 20",
-          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
-        ]
-      },
-      "eventos": [
-        {
-          "id": "7265",
-          "nombre": "Festival del Café Villa Rica y Festival Nacional del Café.",
-          "tipo": "Festivales",
-          "fecha_inicio": "2027-07-25",
-          "fecha_fin": "2027-07-31",
-          "precision_fecha": "aproximada",
-          "distrito": "Villa Rica",
-          "provincia": "Oxapampa",
-          "region": "Pasco",
-          "fuente": "mincetur",
-          "publicado_por": null,
-          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7265"
-        }
-      ],
       "avisos": [
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 778) pasa tu presupuesto por S/ 78."
+          "mensaje": "El costo central (S/ 784) pasa tu presupuesto por S/ 84."
         }
       ],
       "indicadores": {
         "paradas": 13,
-        "jerarquia_media": 2.0,
-        "paradas_jerarquia_alta": 1,
-        "altitud_max_m": 1654,
-        "km_total": 810.0,
-        "valor_capturado": 0.366
+        "jerarquia_media": 2.33,
+        "paradas_jerarquia_alta": 3,
+        "altitud_max_m": 600,
+        "km_total": 585.1,
+        "valor_capturado": 0.652
       }
     }
   ],
