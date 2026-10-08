@@ -1,5 +1,6 @@
 """Tiempos por polo sobre la red de juguete (tests/fixtures/red_mini.osm): una sola búsqueda
-por polo da los tiempos entre paradas, la base y los tiempos de la base a cada parada."""
+por polo da los tiempos entre paradas, la base y los tiempos de la base a cada parada. Y dos
+grupos que duermen en el mismo pueblo salen juntos, como un solo polo."""
 
 from pathlib import Path
 
@@ -49,12 +50,27 @@ PARADAS = pd.DataFrame(
 
 
 @pytest.fixture(scope="module")
-def mundo():
+def red_mini():
     red = leer_red(MINI)
     ruteador = Ruteador(red, minutos_por_arista(red, PARAMETROS), vertices_minimos=4)
-    candidatos = bases.candidatos(leer_lugares(MINI), leer_capitales(MINI), leer_hospedajes(MINI))
+    return ruteador, bases.candidatos(leer_lugares(MINI), leer_capitales(MINI), leer_hospedajes(MINI))
+
+
+@pytest.fixture(scope="module")
+def mundo(red_mini):
+    """Cada polo con su pueblo: al del mapa se le suma otro junto a la parada 4, la del polo 2."""
+    ruteador, candidatos = red_mini
+    al_este = candidatos.iloc[:1].assign(nombre="Pueblo del Este", lat=-12.0005, lon=-76.955)
+    candidatos = pd.concat([candidatos, al_este], ignore_index=True)
     pares, elegidas, desde_base = tiempos.recorrer_polos(ruteador, PARAMETROS, PARADAS, candidatos)
     return ruteador, candidatos, pares, elegidas, desde_base
+
+
+@pytest.fixture(scope="module")
+def un_solo_pueblo(red_mini):
+    """Con el único pueblo del mapa, los dos grupos duermen en el mismo lugar."""
+    ruteador, candidatos = red_mini
+    return ruteador, candidatos, *tiempos.recorrer_polos(ruteador, PARAMETROS, PARADAS, candidatos)
 
 
 def _directo(ruteador, desde, hasta, medio_hasta=None):
@@ -82,7 +98,8 @@ def test_pares_de_paradas(mundo):
 
 def test_la_base_es_la_de_menor_costo(mundo):
     ruteador, candidatos, _, elegidas, _ = mundo
-    assert elegidas["polo"].tolist() == [1, 2]
+    assert elegidas["polo"].tolist() == [1, 2] and elegidas["grupos"].tolist() == ["1", "2"]
+    assert elegidas["base"].tolist() == ["Otro Pueblo", "Pueblo del Este"]
     assert (elegidas["criterio"] == "carretera").all()
     base = elegidas.set_index("polo").loc[1]
     # El costo de cada candidato con las paradas 1 y 2 (la 3 no cuenta: está lejos de la red).
@@ -105,6 +122,39 @@ def test_tiempos_de_la_base_a_sus_paradas(mundo):
     )
     assert desde_base.query("codigo == 3")[["minutos", "km"]].isna().all().all()
     assert set(desde_base["codigo"]) == {1, 2, 3, 4}
+
+
+def test_dos_grupos_que_duermen_en_el_mismo_pueblo_son_un_solo_polo(un_solo_pueblo, mundo):
+    ruteador, _, pares, elegidas, desde_base = un_solo_pueblo
+    [polo] = elegidas.to_dict("records")
+    # Lleva el número del menor y dice qué grupos junta, el de más paradas primero; la parada 5,
+    # sin grupo, sigue fuera.
+    assert (polo["polo"], polo["grupos"], polo["base"]) == (1, "1|2", "Otro Pueblo")
+    assert tiempos._de_mayor_a_menor(pd.Series([7, 3, 3, 9, 9, 2])) == [3, 9, 2, 7]
+    assert (polo["paradas"], polo["paradas_con_camino"]) == (4, 3)
+    assert set(pares["polo"]) == set(desde_base["polo"]) == {1}
+    assert set(desde_base["codigo"]) == {1, 2, 3, 4}
+    # Ahora hay camino calculado entre paradas de grupos distintos: el directo, no por la base.
+    ida = pares.query("desde == 1 and hasta == 4").iloc[0]
+    assert (ida["minutos"], ida["km"]) == pytest.approx(_directo(ruteador, (-12.0005, -77.0), (-12.0, -76.9555)))
+    assert pares.query("desde == 4 and hasta == 1").iloc[0]["minutos"] == pytest.approx(ida["minutos"])
+    por_la_base = desde_base.set_index("codigo")["minutos"]
+    assert ida["minutos"] < por_la_base[1] + por_la_base[4]
+    # Lo que ya se sabía de cada grupo no cambia: ni entre sus paradas ni desde su base.
+    _, _, pares_antes, elegidas_antes, desde_base_antes = mundo
+    juntos = pares.set_index(["desde", "hasta"])["minutos"]
+    antes = pares_antes.set_index(["desde", "hasta"])["minutos"]
+    assert juntos.loc[antes.index].to_numpy() == pytest.approx(antes.to_numpy(), nan_ok=True)
+    del_grupo_1 = desde_base_antes[desde_base_antes["polo"] == 1].set_index("codigo")["minutos"]
+    assert por_la_base.loc[del_grupo_1.index].to_numpy() == pytest.approx(del_grupo_1.to_numpy(), nan_ok=True)
+    assert elegidas_antes["base"].iloc[0] == polo["base"]
+
+
+def test_de_que_polo_es_cada_grupo(un_solo_pueblo, mundo):
+    assert bases.polo_de_cada_grupo(un_solo_pueblo[3]) == {1: 1, 2: 1}
+    assert bases.polo_de_cada_grupo(mundo[3]) == {1: 1, 2: 2}
+    # Una tabla de antes de juntar no trae la columna: cada grupo es su polo.
+    assert bases.polo_de_cada_grupo(mundo[3].drop(columns="grupos")) == {1: 1, 2: 2}
 
 
 def test_desde_los_origenes(mundo):

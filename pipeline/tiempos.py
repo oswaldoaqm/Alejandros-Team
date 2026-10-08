@@ -6,11 +6,13 @@ Tiempos de viaje que usa el motor, sobre la red de OpenStreetMap: vías, tren y 
 2. Calibra las velocidades de las vías con los recorridos de las fichas
    (``pipeline/red_calibracion.py``) y les suma los ritmos del tren y del bote
    (``pipeline/referencia/ritmos_fijos.csv``).
-3. Recorre cada polo con una sola búsqueda desde sus paradas, que da a la vez:
+3. Recorre cada grupo de TA-01 con una sola búsqueda desde sus paradas, que da a la vez:
    - los tiempos entre sus paradas, en los dos sentidos;
    - el pueblo donde se duerme, la base (``pipeline/bases.py``);
    - los tiempos de la base a cada parada. Son los mismos de vuelta: en la red cada tramo
      cuesta lo mismo en los dos sentidos.
+   Los grupos que eligen el mismo pueblo son un solo polo: se juntan y se busca otra vez
+   entre todas sus paradas. De ahí en adelante, «polo» es el ya junto.
 4. Calcula los tiempos de cada una de las 24 ciudades de origen a cada parada y a cada base.
 
 Cada tiempo es de puerta a puerta: el camino más rápido por la red (vías, tren y botes),
@@ -25,7 +27,7 @@ Escribe en data/procesados/:
   tiempos_origen.csv               origen → parada: minutos, km y cuántos de esos km van en
                                    tren y en bote (vacío si no hay camino)
   tiempos_polo.csv                 parada → parada dentro de cada polo
-  polos_bases.csv                  la base de cada polo
+  polos_bases.csv                  la base de cada polo y los grupos de TA-01 que junta
   tiempos_base.csv                 base → cada parada de su polo
   tiempos_origen_base.csv          origen → base de cada polo
   red_paradas.csv                  a cuántos metros de la red queda cada parada y en qué capa
@@ -156,107 +158,165 @@ def _sin_ruta_a_nan(tabla: pd.DataFrame, lejos: np.ndarray) -> pd.DataFrame:
     return tabla
 
 
-def recorrer_polos(
-    ruteador: Ruteador, parametros: dict, paradas: pd.DataFrame, candidatos: pd.DataFrame
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """(tiempos entre paradas, base de cada polo, tiempos de la base a cada parada).
+def _de_mayor_a_menor(grupo_de_cada_parada: pd.Series) -> list[int]:
+    """Los grupos de un polo, del que tiene más paradas al que tiene menos; entre iguales, el de
+    número menor."""
+    cuantas = grupo_de_cada_parada.value_counts()
+    return [int(g) for g in sorted(cuantas.index, key=lambda g: (-cuantas[g], g))]
 
-    ``paradas``: codigo, polo, lat, lon, jerarquia y, si lo tiene, acceso (``paradas_de``).
-    ``candidatos``: los de ``bases.candidatos``. Una sola búsqueda por polo, desde sus
-    paradas hasta sus paradas y los candidatos cercanos; solo las paradas obligan a buscar
-    en toda la red si dentro del rectángulo del polo no hay camino (ver ``Ruteador.entre``)."""
-    v, m, capa = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas))
-    vc, mc, capa_c = ruteador.ubicar(candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy())
-    en_capa, en_capa_c = (capa > 0).astype(int), (capa_c > 0).astype(int)
-    clat, clon = candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy()
-    junto_a_la_red = mc <= LEJOS_DE_LA_RED_M
-    pares, elegidas, desde_base = [], [], []
-    for polo, grupo in paradas[paradas["polo"] >= 0].groupby("polo"):
-        i = grupo.index.to_numpy()
-        codigos, n = grupo["codigo"].to_numpy(), len(i)
+
+@dataclass
+class _Recorrido:
+    """Lo que sale de buscar desde las paradas de un polo."""
+
+    pares: pd.DataFrame | None  # tiempos entre sus paradas; None si tiene una sola
+    base: dict  # su fila de polos_bases.csv
+    desde_base: pd.DataFrame
+    candidato: int  # la fila de ``candidatos`` que es su base
+
+
+def _recorrer(ruteador: Ruteador, parametros: dict, polo: int, grupo: pd.DataFrame, lugar: dict, fija: int | None):
+    """Una búsqueda desde las paradas de ``grupo`` hasta ellas mismas y los pueblos que pueden
+    ser su base; con ``fija``, la base ya está elegida y solo se busca hasta ella."""
+    v, m, en_capa = lugar["v"], lugar["m"], lugar["en_capa"]
+    vc, mc, en_capa_c, capa_c = lugar["vc"], lugar["mc"], lugar["en_capa_c"], lugar["capa_c"]
+    candidatos, clat, clon = lugar["candidatos"], lugar["clat"], lugar["clon"]
+    i = grupo.index.to_numpy()
+    codigos, n = grupo["codigo"].to_numpy(), len(i)
+    if fija is None:
         margen = CANDIDATOS_MARGEN_GRADOS
         cerca = np.flatnonzero(
-            junto_a_la_red
+            (mc <= LEJOS_DE_LA_RED_M)
             & (clat >= grupo["lat"].min() - margen)
             & (clat <= grupo["lat"].max() + margen)
             & (clon >= grupo["lon"].min() - margen)
             & (clon <= grupo["lon"].max() + margen)
         )
-        obligatorio = np.r_[np.ones(n, dtype=bool), np.zeros(len(cerca), dtype=bool)]
-        minutos, km, km_tren, km_bote = ruteador.entre(
-            v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio, por_medio=True
-        )
+    else:
+        cerca = np.array([fija])
+    obligatorio = np.r_[np.ones(n, dtype=bool), np.zeros(len(cerca), dtype=bool)]
+    minutos, km, km_tren, km_bote = ruteador.entre(
+        v[i], np.r_[v[i], vc[cerca]], obligatorios=obligatorio, por_medio=True
+    )
 
-        # Entre paradas: cada fila es desde, cada columna hasta.
-        if n >= 2:
-            puntas = en_capa[i][:, None] + en_capa[i][None, :]
-            mp, kp = _puerta_a_puerta(minutos[:, :n], km[:, :n], m[i][:, None] + m[i][None, :], parametros, puntas)
-            desde, hasta = np.nonzero(~np.eye(n, dtype=bool))
-            pares.append(
-                pd.DataFrame(
-                    {
-                        "polo": polo,
-                        "desde": codigos[desde],
-                        "hasta": codigos[hasta],
-                        "minutos": mp[desde, hasta],
-                        "km": kp[desde, hasta],
-                        "km_tren": km_tren[:, :n][desde, hasta],
-                        "km_bote": km_bote[:, :n][desde, hasta],
-                    }
-                )
-            )
-
-        # La base: entre los candidatos, la de menor costo vista desde las paradas junto a la red.
-        puntas = en_capa[i][:, None] + en_capa_c[cerca][None, :]
-        mb, kb = _puerta_a_puerta(minutos[:, n:], km[:, n:], m[i][:, None] + mc[cerca][None, :], parametros, puntas)
-        en_red = m[i] <= LEJOS_DE_LA_RED_M
-        peso = bases_.pesos(grupo["jerarquia"])
-        ajuste = candidatos["ajuste_min"].to_numpy()
-        j = bases_.elegir(mb[en_red], peso[en_red], ajuste[cerca]) if en_red.any() else None
-        if j is not None:
-            elegido, criterio = cerca[j], "carretera"
-            mbj, kbj, ktj, kboj = mb[:, j], kb[:, j], km_tren[:, n + j], km_bote[:, n + j]
-        else:
-            lat, lon = grupo["lat"].to_numpy(), grupo["lon"].to_numpy()
-            elegido = bases_.elegir_en_linea_recta(lat, lon, peso, clat, clon, ajuste)
-            criterio = "linea_recta"
-            mbj = kbj = ktj = kboj = np.full(n, np.inf)
-        con_camino = np.isfinite(mbj) & en_red
-        c = candidatos.iloc[elegido]
-        elegidas.append(
+    # Entre paradas: cada fila es desde, cada columna hasta.
+    pares = None
+    if n >= 2:
+        puntas = en_capa[i][:, None] + en_capa[i][None, :]
+        mp, kp = _puerta_a_puerta(minutos[:, :n], km[:, :n], m[i][:, None] + m[i][None, :], parametros, puntas)
+        desde, hasta = np.nonzero(~np.eye(n, dtype=bool))
+        pares = pd.DataFrame(
             {
                 "polo": polo,
-                "base": c["nombre"],
-                "lat": c["lat"],
-                "lon": c["lon"],
-                "lugar": c["lugar"],
-                "capital_de_distrito": bool(c["capital_de_distrito"]),
-                "hospedajes_osm": int(c["hospedajes_osm"]),
-                "altitud_osm_m": c["altitud_osm_m"],
-                "criterio": criterio,
-                "metros_a_la_red": int(round(float(mc[elegido]))),
-                "capa": CAPAS[capa_c[elegido]],
-                "paradas": n,
-                "paradas_con_camino": int(con_camino.sum()),
-                "minutos_medios": round(float(peso[con_camino] @ mbj[con_camino] / peso[con_camino].sum()), 1)
-                if con_camino.any()
-                else np.nan,
+                "desde": codigos[desde],
+                "hasta": codigos[hasta],
+                "minutos": mp[desde, hasta],
+                "km": kp[desde, hasta],
+                "km_tren": km_tren[:, :n][desde, hasta],
+                "km_bote": km_bote[:, :n][desde, hasta],
             }
         )
-        desde_base.append(
-            pd.DataFrame({"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj, "km_tren": ktj, "km_bote": kboj})
-        )
+
+    # La base: entre los candidatos, la de menor costo vista desde las paradas junto a la red.
+    puntas = en_capa[i][:, None] + en_capa_c[cerca][None, :]
+    mb, kb = _puerta_a_puerta(minutos[:, n:], km[:, n:], m[i][:, None] + mc[cerca][None, :], parametros, puntas)
+    en_red = m[i] <= LEJOS_DE_LA_RED_M
+    peso = bases_.pesos(grupo["jerarquia"])
+    ajuste = candidatos["ajuste_min"].to_numpy()
+    j = bases_.elegir(mb[en_red], peso[en_red], ajuste[cerca]) if en_red.any() else None
+    if j is not None:
+        elegido, criterio = cerca[j], "carretera"
+        mbj, kbj, ktj, kboj = mb[:, j], kb[:, j], km_tren[:, n + j], km_bote[:, n + j]
+    else:
+        lat, lon = grupo["lat"].to_numpy(), grupo["lon"].to_numpy()
+        elegido = bases_.elegir_en_linea_recta(lat, lon, peso, clat, clon, ajuste) if fija is None else fija
+        criterio = "linea_recta"
+        mbj = kbj = ktj = kboj = np.full(n, np.inf)
+    con_camino = np.isfinite(mbj) & en_red
+    c = candidatos.iloc[elegido]
+    base = {
+        "polo": polo,
+        "base": c["nombre"],
+        "lat": c["lat"],
+        "lon": c["lon"],
+        "lugar": c["lugar"],
+        "capital_de_distrito": bool(c["capital_de_distrito"]),
+        "hospedajes_osm": int(c["hospedajes_osm"]),
+        "altitud_osm_m": c["altitud_osm_m"],
+        "criterio": criterio,
+        "metros_a_la_red": int(round(float(mc[elegido]))),
+        "capa": CAPAS[capa_c[elegido]],
+        "paradas": n,
+        "paradas_con_camino": int(con_camino.sum()),
+        "minutos_medios": round(float(peso[con_camino] @ mbj[con_camino] / peso[con_camino].sum()), 1)
+        if con_camino.any()
+        else np.nan,
+        "grupos": "|".join(str(g) for g in _de_mayor_a_menor(grupo["polo"])),
+    }
+    desde_base = pd.DataFrame(
+        {"polo": polo, "codigo": codigos, "minutos": mbj, "km": kbj, "km_tren": ktj, "km_bote": kboj}
+    )
+    return _Recorrido(pares, base, desde_base, int(elegido))
+
+
+def recorrer_polos(
+    ruteador: Ruteador, parametros: dict, paradas: pd.DataFrame, candidatos: pd.DataFrame
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """(tiempos entre paradas, base de cada polo, tiempos de la base a cada parada).
+
+    ``paradas``: codigo, polo, lat, lon, jerarquia y, si lo tiene, acceso (``paradas_de``). Su
+    ``polo`` es el grupo de TA-01. ``candidatos``: los de ``bases.candidatos``.
+
+    Una sola búsqueda por grupo, desde sus paradas hasta sus paradas y los candidatos cercanos;
+    solo las paradas obligan a buscar en toda la red si dentro del rectángulo del grupo no hay
+    camino (ver ``Ruteador.entre``).
+
+    Los grupos que eligen el mismo pueblo se visitan desde la misma base, así que son un solo
+    polo: se juntan con el número del menor y se busca otra vez, ahora entre todas sus paradas.
+    La base no cambia: el costo de un pueblo para el polo junto es el promedio pesado de sus
+    costos para cada grupo, y ese pueblo ya era el mejor para cada uno. ``grupos`` dice qué
+    grupos junta cada polo, del que tiene más paradas al que tiene menos."""
+    v, m, capa = ruteador.ubicar(paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas))
+    vc, mc, capa_c = ruteador.ubicar(candidatos["lat"].to_numpy(), candidatos["lon"].to_numpy())
+    lugar = {
+        "v": v,
+        "m": m,
+        "en_capa": (capa > 0).astype(int),
+        "vc": vc,
+        "mc": mc,
+        "en_capa_c": (capa_c > 0).astype(int),
+        "capa_c": capa_c,
+        "candidatos": candidatos,
+        "clat": candidatos["lat"].to_numpy(),
+        "clon": candidatos["lon"].to_numpy(),
+    }
+    en_polo = paradas[paradas["polo"] >= 0]
+    recorridos = {
+        int(polo): _recorrer(ruteador, parametros, int(polo), grupo, lugar, None)
+        for polo, grupo in en_polo.groupby("polo")
+    }
+    por_base: dict[int, list[int]] = {}
+    for polo, r in recorridos.items():
+        por_base.setdefault(r.candidato, []).append(polo)
+    for candidato, grupos in por_base.items():
+        if len(grupos) > 1:
+            juntos = en_polo[en_polo["polo"].isin(grupos)]
+            for polo in grupos:
+                del recorridos[polo]
+            recorridos[min(grupos)] = _recorrer(ruteador, parametros, min(grupos), juntos, lugar, candidato)
+    recorridos = [recorridos[polo] for polo in sorted(recorridos)]
 
     lejos = set(paradas.loc[m > LEJOS_DE_LA_RED_M, "codigo"])
+    pares = [r.pares for r in recorridos if r.pares is not None]
     pares = (
         pd.concat(pares, ignore_index=True)
         if pares
         else pd.DataFrame(columns=["polo", "desde", "hasta", "minutos", *KM])
     )
     pares = _sin_ruta_a_nan(pares, (pares["desde"].isin(lejos) | pares["hasta"].isin(lejos)).to_numpy())
-    desde_base = pd.concat(desde_base, ignore_index=True)
+    desde_base = pd.concat([r.desde_base for r in recorridos], ignore_index=True)
     desde_base = _sin_ruta_a_nan(desde_base, desde_base["codigo"].isin(lejos).to_numpy())
-    return pares, pd.DataFrame(elegidas), desde_base
+    return pares, pd.DataFrame([r.base for r in recorridos]), desde_base
 
 
 def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -369,13 +429,16 @@ def main() -> None:
     paradas = paradas_de(maestro)
     candidatos = bases_.candidatos(osm.lugares, osm.capitales, osm.hospedajes)
     pares, bases, desde_base = recorrer_polos(ruteador, parametros, paradas, candidatos)
+    a_polo = bases_.polo_de_cada_grupo(bases)
+    paradas = paradas.assign(polo=paradas["polo"].map(lambda grupo: a_polo.get(grupo, grupo)))
     bases["altitud_m"], bases["altitud_fuente"] = bases_.altitud(bases, maestro)
     origenes = pd.read_csv(REFERENCIA / "origenes.csv", sep=";")
     a_paradas, a_bases = tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases)
 
     _escribir(a_paradas, a.salida / "tiempos_origen.csv")
     _escribir(pares, a.salida / "tiempos_polo.csv")
-    _escribir(bases.drop(columns="altitud_osm_m"), a.salida / "polos_bases.csv")
+    columnas = [c for c in bases.columns if c not in ("altitud_osm_m", "grupos")]
+    _escribir(bases[[*columnas, "grupos"]], a.salida / "polos_bases.csv")
     _escribir(desde_base, a.salida / "tiempos_base.csv")
     _escribir(a_bases, a.salida / "tiempos_origen_base.csv")
     _escribir(red_paradas(ruteador, paradas), a.salida / "red_paradas.csv")
