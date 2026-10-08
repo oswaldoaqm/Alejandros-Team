@@ -2,7 +2,7 @@
 
 **DreemGO — Inteligencia de rutas en Perú**
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
-Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6, y el del motor, al 8
+Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6, y el del motor y el despliegue, al 8
 
 ## 1 · Qué se puede demostrar hoy
 
@@ -14,7 +14,7 @@ El flujo principal del producto funciona de punta a punta, con datos reales:
 4. **El viaje se comparte con un enlace.** No hay cuentas: la misma consulta con los mismos datos da siempre la misma respuesta.
 5. **Un municipio publica un evento** con su lugar marcado en un mapa, y el evento sale en el calendario y en las rutas que pasan cerca en esas fechas, con el nombre de quien lo publicó.
 
-La app está publicada en <https://oswaldoaqm.github.io/Alejandros-Team/>. El API todavía no está desplegado: hoy el flujo se demuestra con el API corriendo en una computadora ([`README.md`](./README.md)).
+La app está publicada en <https://oswaldoaqm.github.io/Alejandros-Team/> y le pregunta al API desplegado en Render, <https://alejandros-team.onrender.com>. El mismo flujo corre en una computadora con los pasos del [`README.md`](./README.md).
 
 ## 2 · Funciones implementadas
 
@@ -98,7 +98,7 @@ flowchart LR
 | Pieza | Tecnología | Dónde corre |
 |---|---|---|
 | Pipeline | Python, pandas, scipy, osmium | En la computadora de un integrante, cuando cambia una fuente |
-| Motor y API | Python, numpy, pydantic, FastAPI | Una imagen de contenedor: en AWS Lambda detrás de una HTTP API, en un Space de Hugging Face o en local |
+| Motor y API | Python, numpy, pydantic, FastAPI | Una imagen de contenedor: en AWS Lambda detrás de una HTTP API, en Render o en local |
 | Eventos publicados | DynamoDB en AWS; un archivo o la memoria fuera de AWS | Junto al API |
 | App | React, Vite, TypeScript, MapLibre GL | GitHub Pages |
 | Integración continua | GitHub Actions | En cada pull request: lint, pruebas, imágenes y la app contra el API |
@@ -190,7 +190,7 @@ El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco m
 
 **Del servicio y de la app**
 
-- **El API no está desplegado**, y su arranque en frío en Lambda no se ha medido. En local arranca en un segundo y usa unos 100 MB.
+- **El API corre en un host gratuito.** Render lo duerme a los 15 minutos sin uso, la primera consulta después tarda cerca de un minuto, y lo que publican los municipios se pierde cuando se reinicia. En AWS, el destino, lo publicado dura, pero su arranque en frío todavía no se ha medido. En local arranca en un segundo y usa unos 100 MB.
 - **Publicar eventos** usa una sola clave compartida, sin moderación. Un evento se retira a mano, y su descripción se guarda pero no se muestra.
 - **«Guardados»** vive en el navegador: no pasa de un dispositivo a otro.
 - **Fotos:** solo una de cada nueve paradas tiene foto, y menos de la mitad de los imperdibles. Se eligen por cercanía y por nombre, y las 679 propuestas se revisaron a ojo, en miniatura: se quitaron 112. Un error de la fuente que no se vea en la miniatura se queda.
@@ -220,7 +220,6 @@ El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco m
 
 **Antes del 14 de octubre**
 
-- Desplegar el API y darle su dirección a la app publicada.
 - Rehacer los artefactos con el clima de los 222 grupos.
 - Medir el arranque en frío y probar la app en un celular con datos móviles.
 - La presentación y las capturas de esta entrega.

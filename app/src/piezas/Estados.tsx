@@ -1,14 +1,27 @@
 // Cómo se ve la espera y cómo se ve un error, igual en todas las pantallas.
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import type { ErrorApi } from "../api/cliente";
 import { Icono } from "./Icono";
 
+/** Si la espera pasa de esto, se avisa que el servidor puede estar despertando. */
+const AVISO_MS = 8_000;
+
 export function Cargando({ texto }: { texto: string }) {
+  const [tarda, ponerTarda] = useState(false);
+  useEffect(() => {
+    const reloj = setTimeout(() => ponerTarda(true), AVISO_MS);
+    return () => clearTimeout(reloj);
+  }, []);
   return (
     <p className="cargando" role="status">
       <span className="cargando__punto" aria-hidden="true" />
       {texto}
+      {tarda ? (
+        <span className="cargando__aviso">
+          Si es la primera consulta en un rato, el servidor puede tardar hasta un minuto en despertar.
+        </span>
+      ) : null}
     </p>
   );
 }

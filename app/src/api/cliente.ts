@@ -27,7 +27,7 @@ export class ErrorApi extends Error {
   }
 }
 
-const ESPERA_MS = 30_000; // el primer pedido puede tardar: el servidor arranca en frío
+const ESPERA_MS = 90_000; // el host gratuito se duerme sin uso y tarda cerca de un minuto en despertar
 
 function camposDe(detalle: unknown): ErrorDeCampo[] {
   if (!Array.isArray(detalle)) return [];
