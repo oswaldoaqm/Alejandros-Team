@@ -52,6 +52,8 @@ Respuesta
 
 Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por su red: carretera, tren o bote.
 
+Los textos que el motor escribe para el viajero se muestran tal cual: `motivos`, la `nota` de cada día, los avisos, `estacionalidad.explicacion`, los supuestos del costo y `sin_resultado`. Dicen «zona» y «viaje», como la app, aunque los campos se sigan llamando `polo` y `rutas`. Y separan los miles y el «S/» de su monto con un espacio que no parte la línea (U+00A0), para que «3 500 m» o «S/ 706» no queden entre dos renglones.
+
 ### Cómo decide el motor
 
 El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en la [decisión 0009](./decisiones/0009-viaje-en-estrella.md). En corto:
