@@ -262,13 +262,17 @@ class TestRegiones:
 
 @con_datos
 class TestConElInventario:
-    def test_un_evento_en_huaraz_sale_en_los_polos_que_duermen_en_huaraz(self):
+    def test_un_evento_en_la_plaza_donde_se_duerme_sale_en_ese_polo_aunque_sus_lugares_queden_lejos(self):
         datos = artefactos.cargar()
-        duermen_en_huaraz = {p.id for p in datos.polos.values() if p.base["nombre"] == "Huaraz"}
-        assert len(duermen_en_huaraz) > 1, "el caso que justifica mirar la base y no solo el lugar más cercano"
-        plaza = next(p for p in datos.polos.values() if p.base["nombre"] == "Huaraz").base
-        [polos] = polos_cercanos([publicado(lat=plaza["lat"], lon=plaza["lon"])], datos)
-        assert duermen_en_huaraz <= polos
+        polos = list(datos.polos.values())
+        en_cada_plaza = [publicado(lat=p.base["lat"], lon=p.base["lon"]) for p in polos]
+        for polo, cerca in zip(polos, polos_cercanos(en_cada_plaza, datos), strict=True):
+            assert polo.id in cerca
+        # El caso que justifica mirar la base y no solo los lugares del inventario: hay polos, como
+        # el de Máncora, sin ningún lugar suyo a 10 km de donde se duerme.
+        solo_los_lugares = SimpleNamespace(polos={}, recursos=datos.recursos)
+        por_sus_lugares = polos_cercanos(en_cada_plaza, solo_los_lugares)
+        assert [p.id for p, cerca in zip(polos, por_sus_lugares, strict=True) if p.id not in cerca]
 
     def test_un_evento_en_medio_del_mar_no_sale_en_ninguna_ruta(self):
         assert polos_cercanos([publicado(lat=-12.0, lon=-80.5)], artefactos.cargar()) == [frozenset()]

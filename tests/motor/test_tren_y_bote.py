@@ -125,8 +125,9 @@ def test_a_machu_picchu_se_llega_en_tren():
 
 @con_datos
 def test_a_las_islas_del_titicaca_se_llega_en_bote():
-    polo = artefactos.cargar().polos[274]
-    i = polo.indice()["959"]  # Isla Taquile, desde Puno
+    datos = artefactos.cargar()
+    polo = datos.polos[datos.recursos["959"]["polo"]]  # Isla Taquile, desde Puno
+    i = polo.indice()["959"]
     assert np.isfinite(polo.base_minutos[i]) and polo.base_km_bote[i] > 20
 
 
