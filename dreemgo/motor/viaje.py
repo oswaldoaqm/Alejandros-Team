@@ -6,9 +6,9 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    una vale según su jerarquía: 1, 2, 6 o 24; 2 si MINCETUR no la jerarquizó. Si la consulta
    trae intereses, la que no atiende ninguno vale la cuarta parte.
 2. Cómo se reparten los días: la ida y la vuelta (por carretera, en tren o en bote) y los
-   días en la base. Un viaje de más de 8 horas se parte en partes iguales y se duerme a
-   mitad de camino. El día de llegada y el de salida se usan para visitar si sobran al
-   menos 90 minutos.
+   días en la base. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se
+   parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida
+   se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
 4. El puntaje: (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La
    calidad es el valor que visita el itinerario frente al mejor de la consulta, por la
@@ -68,6 +68,9 @@ from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, m
 from dreemgo.publicados import SIN_PUBLICADOS, Instantanea
 
 JORNADA_MIN = 8 * 60
+# Un día en el que solo se viaja, sin visitas, puede durar una hora más que una jornada: lo que
+# tarda un bus de Lima a Huaraz. Partir ese viaje en dos días le quitaba dos al destino.
+SOLO_VIAJE_MAX_MIN = 9 * 60
 SALIDA_DEL_ORIGEN = 7 * 60
 INICIO_DE_VISITAS = 8 * 60
 MINIMO_PARA_VISITAR = 90
@@ -163,14 +166,15 @@ class Plan:
 
 
 def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Plan | None:
-    """La ida y la vuelta, partidas en partes iguales si pasan de 8 horas, y los días en la
-    base; None si no caben."""
+    """La ida y la vuelta, partidas en partes iguales si pasan de 9 horas, y los días en la
+    base; None si no caben. El día de llegada y el de salida tienen visitas solo si el viaje
+    y las visitas caben juntos en una jornada de 8 horas."""
 
     def dia_semana(n: int) -> int | None:
         return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
 
     ida = int(math.ceil(minutos_ida))
-    k = max(1, math.ceil(ida / JORNADA_MIN))  # días de carretera de ida (y de vuelta)
+    k = max(1, math.ceil(ida / SOLO_VIAJE_MAX_MIN))  # días de viaje de ida (y de vuelta)
     if dias < 2 * k:
         return None
     tramo = math.ceil(ida / k)

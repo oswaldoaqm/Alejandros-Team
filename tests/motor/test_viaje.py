@@ -30,11 +30,34 @@ def test_un_viaje_corto_usa_el_dia_de_llegada_y_el_de_salida():
     assert (salida.inicio, salida.tope) == (viaje.INICIO_DE_VISITAS, 330)
 
 
-def test_mas_de_ocho_horas_se_parten_en_partes_iguales():
+def test_mas_de_nueve_horas_se_parten_en_partes_iguales():
     plan = viaje.plan_de_dias(dias=6, minutos_ida=600, fecha_inicio=None)
     assert plan.tramos == {1: 300, 2: 300, 5: 300, 6: 300}
     assert (plan.llegada, plan.salida) == (2, 5)
-    assert all(t <= viaje.JORNADA_MIN for t in plan.tramos.values())
+    assert plan.dia_de_jornada == [2, 3, 4, 5]  # con 5 horas de viaje, el día de llegada y el de salida se visita
+    # Un minuto más de nueve horas ya son dos días de ida.
+    assert viaje.plan_de_dias(dias=6, minutos_ida=541, fecha_inicio=None).tramos == {1: 271, 2: 270, 5: 270, 6: 271}
+
+
+def test_un_dia_de_solo_viaje_puede_durar_hasta_nueve_horas():
+    for ida in (481, 488, 540):  # 488: de Lima a Huaraz
+        plan = viaje.plan_de_dias(dias=4, minutos_ida=ida, fecha_inicio=None)
+        assert plan.tramos == {1: ida, 4: ida} and (plan.llegada, plan.salida) == (1, 4)
+        assert plan.dia_de_jornada == [2, 3]  # los dos días de viaje no tienen visitas
+        assert [(j.inicio, j.tope) for j in plan.jornadas] == [(viaje.INICIO_DE_VISITAS, viaje.JORNADA_MIN)] * 2
+    # Y un viaje de ida y vuelta en dos días sigue sin caber: no quedaría ningún día allá.
+    assert viaje.plan_de_dias(dias=2, minutos_ida=488, fecha_inicio=None).jornadas == []
+
+
+def test_un_dia_con_visitas_no_pasa_de_ocho_horas_con_el_viaje():
+    for ida in range(30, 2000, 7):
+        plan = viaje.plan_de_dias(dias=14, minutos_ida=ida, fecha_inicio=None)
+        tope = dict(zip(plan.dia_de_jornada, (j.tope for j in plan.jornadas), strict=True))
+        for dia, viaje_min in plan.tramos.items():
+            assert viaje_min <= viaje.SOLO_VIAJE_MAX_MIN
+            if dia in tope:  # ese día, además de viajar, se visita
+                assert viaje_min + tope[dia] <= viaje.JORNADA_MIN
+        assert all(t <= viaje.JORNADA_MIN for t in tope.values())
 
 
 def test_sin_dias_para_ir_y_volver_no_hay_plan():

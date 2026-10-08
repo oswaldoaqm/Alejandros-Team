@@ -80,8 +80,8 @@ def test_las_diez_propiedades(consulta):
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
-        # 3. Ninguna jornada pasa de 8 horas.
-        assert all(d.horas <= 8.0 for d in ruta.dias)
+        # 3. Ninguna jornada con visitas pasa de 8 horas, ni un día de solo viaje de 9.
+        assert all(d.horas <= (8.0 if d.paradas else 9.0) for d in ruta.dias)
         # 4. Toda parada enlaza a su ficha oficial.
         assert all(FICHA.match(str(p.recurso.url_ficha)) for p in paradas)
         # 5. Un mes desaconsejado nunca aparece sin aviso, y hay una alternativa.
