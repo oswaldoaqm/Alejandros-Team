@@ -1,8 +1,8 @@
 # Infraestructura
 
-El API corre como una función **AWS Lambda con imagen de contenedor**, detrás de una **HTTP API**, con una tabla **DynamoDB** para los eventos que publican los municipios. Está descrito en [`template.yaml`](./template.yaml) con AWS SAM. La app web es estática y se publica en **GitHub Pages**, fuera de AWS. Mientras no haya cuenta de AWS, el mismo API corre gratis en un Space de Hugging Face ([más abajo](#sin-cuenta-de-aws)).
+El API corre como una función **AWS Lambda con imagen de contenedor**, detrás de una **HTTP API**, con una tabla **DynamoDB** para los eventos que publican los municipios. Está descrito en [`template.yaml`](./template.yaml) con AWS SAM. La app web es estática y se publica en **GitHub Pages**, fuera de AWS. Mientras no haya cuenta de AWS, el mismo API corre gratis en **Render** ([más abajo](#en-render-gratis-y-sin-tarjeta)).
 
-La decisión y sus alternativas están en [`../docs/decisiones/0002-stack-y-despliegue.md`](../docs/decisiones/0002-stack-y-despliegue.md).
+La decisión y sus alternativas están en [`../docs/decisiones/0002-stack-y-despliegue.md`](../docs/decisiones/0002-stack-y-despliegue.md), y el cambio de host gratuito en la [`0012`](../docs/decisiones/0012-host-gratuito-render.md).
 
 ## Antes de desplegar, una sola vez
 
@@ -79,21 +79,61 @@ Pregunta antes de borrar cada cosa. Se lleva el API, la tabla con los eventos pu
 
 ## Sin cuenta de AWS
 
-### En un Space de Hugging Face
+### En un Space de Hugging Face — ya no sirve
 
-Un Space gratuito corre un contenedor con 2 CPU y 16 GB y le da una dirección pública. Sirve para que la app publicada tenga un API mientras no haya cuenta de AWS, y de respaldo el día de una demostración.
+**Hasta octubre de 2026 era la opción gratuita más simple, y dejó de serlo.** Hugging Face pasó los
+Spaces con cómputo a plan de pago: hoy [su documentación](https://huggingface.co/docs/hub/spaces-overview)
+dice que *"Gradio and Docker Spaces run on compute and require a paid plan to create: PRO for personal
+accounts"*, y a las cuentas gratuitas solo les deja hasta **2 Spaces de Gradio con ZeroGPU**. Un Space
+de **Docker** —el que necesita este API— ya no se puede crear sin suscripción.
 
-1. En [huggingface.co](https://huggingface.co), crear un Space con SDK **Docker**, sin plantilla, en el hardware gratuito y público.
-2. En los archivos del Space, crear `Dockerfile` con el contenido de [`huggingface/Dockerfile`](./huggingface/Dockerfile). No hace falta subir nada más: el código se instala desde este repositorio.
-3. En la configuración del Space, crear el secreto `DREEMGO_CLAVE_PUBLICADOR` con la clave de publicación. Sin él, el API responde consultas y no acepta publicaciones.
-4. Cuando el Space diga que está corriendo, el API está en `https://<usuario>-<nombre-del-space>.hf.space`. Se comprueba abriendo `/v1/salud`, y esa dirección es la que va a la variable `API_URL` del repositorio.
+Se conserva [`huggingface/Dockerfile`](./huggingface/Dockerfile) porque un Space de pago lo sigue
+corriendo tal cual, y porque sirve de ejemplo mínimo de la imagen. Si algún día se paga PRO, los pasos
+seguían siendo: crear el Space con SDK Docker y hardware gratuito, pegar ese `Dockerfile`, y poner el
+secreto `DREEMGO_CLAVE_PUBLICADOR` en su configuración. La dirección queda en
+`https://<usuario>-<nombre-del-space>.hf.space`.
 
-Para publicar una versión nueva se cambia, en el `Dockerfile` del Space, `ARG VERSION=main` por el commit de `main` que se quiere: el Space se reconstruye solo.
+Lo que cambia frente a AWS, si se usa: **lo publicado no dura** (vive en un archivo dentro del
+contenedor y se pierde al reiniciar o reconstruir) y **el Space se duerme**, así que antes de una
+demostración conviene abrir `/v1/salud`.
 
-Lo que cambia frente a AWS:
+### En Render, gratis y sin tarjeta
 
-- **Lo publicado no dura.** Se guarda en un archivo dentro del contenedor, que se pierde cuando el Space se reinicia o se reconstruye. Para una demostración alcanza; para que dure, la tabla de DynamoDB.
-- **Se duerme.** Un Space gratuito que nadie usa en 48 horas se detiene, y arranca solo con la siguiente visita, que tiene que esperar. Antes de una demostración conviene abrir `/v1/salud`.
+La alternativa que sí es gratuita hoy. Render da 750 horas al mes de servicio web, sin pedir tarjeta
+para el plan *Free*.
+
+Lo que hay que saber antes de elegirlo:
+
+- **Se duerme a los 15 minutos sin uso** y la primera visita después tarda unos 50 segundos. Para una
+  demostración, se abre `/v1/salud` unos minutos antes; para la entrega alcanza de sobra.
+- **Cabe de sobra.** El motor carga sus artefactos en memoria una sola vez: medido, son **91 MB de
+  pico** con una consulta completa, contra los 512 MB del plan gratuito.
+- **No hay que tocar el código por el puerto.** Render deja indicar cuál escucha el contenedor, y
+  [`Dockerfile`](./Dockerfile) ya usa 8080. (En Google Cloud Run habría que leer el `PORT` que inyecta
+  el entorno, que es justo lo que [`Dockerfile`](./Dockerfile) ahora respeta.)
+
+Los pasos:
+
+1. Entrar a [render.com](https://render.com) y crear la cuenta con GitHub. Ahí mismo conviene
+   confirmar que el plan *Free* sigue sin tarjeta: las condiciones cambian y esta nota es de
+   octubre de 2026.
+2. En el panel: **New → Web Service**, y autorizar el repositorio
+   [`oswaldoaqm/Alejandros-Team`](https://github.com/oswaldoaqm/Alejandros-Team).
+3. Elegir la rama **`main`**, y en *Language* dejar **Docker**. En *Dockerfile Path*, escribir
+   `infra/Dockerfile`.
+4. Elegir el plan **Free** y crear el servicio. La primera construcción tarda unos minutos.
+5. En **Environment**, agregar:
+   - `DREEMGO_CLAVE_PUBLICADOR` con la clave de publicación (la misma de más arriba). Sin ella, el API
+     responde consultas y no acepta publicaciones.
+   - `DREEMGO_CORS` con los orígenes que pueden llamar al API desde el navegador, separados por comas.
+     Si se omite, quedan los de por defecto: la app publicada y `http://localhost:5173`.
+6. La dirección del servicio es `https://<nombre>.onrender.com`. Se comprueba abriendo
+   `/v1/salud`, y esa es la que va a la variable `API_URL` del repositorio.
+
+Cada push a `main` vuelve a desplegar solo. Si sale bien, esta vía reemplaza al despliegue en AWS
+mientras no haya cuenta, con el mismo límite de siempre: lo publicado vive en un archivo dentro del
+contenedor, así que se pierde al reiniciar. Si Render alguna vez pide tarjeta, [Koyeb](https://www.koyeb.com/)
+mantiene una instancia gratuita que no se duerme, con menos memoria.
 
 ### En local o en otro host de contenedores
 

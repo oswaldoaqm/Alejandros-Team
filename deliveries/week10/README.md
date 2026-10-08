@@ -92,7 +92,7 @@ Lo mismo corre en cada pull request, junto con la construcción de las imágenes
 
 - **La app** se publica sola en GitHub Pages con cada cambio de `main` ([`app/README.md`](../../app/README.md#publicarla)). La dirección del API la toma de la variable `API_URL` del repositorio.
 - **El API** va a AWS, como una función Lambda con imagen de contenedor detrás de una HTTP API, con una tabla de DynamoDB para los eventos publicados. Son cuatro comandos, descritos en [`infra/README.md`](../../infra/README.md).
-- **Mientras no haya cuenta de AWS**, el mismo API corre gratis en un Space de Hugging Face, con los pasos del mismo documento.
+- **Mientras no haya cuenta de AWS**, el mismo API corre gratis en Render, con los pasos del mismo documento. (Un Space de Hugging Face ya no sirve: Hugging Face pasó los Spaces de Docker a plan de pago.)
 
 ## Rehacer los datos
 
