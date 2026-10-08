@@ -5,7 +5,8 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | N.º | Decisión | Estado |
 |---|---|---|
 | [0001](./0001-sin-login-y-enlace-compartible.md) | Sin cuentas: el viaje se comparte por enlace | Vigente |
-| [0002](./0002-stack-y-despliegue.md) | FastAPI en Lambda con imagen de contenedor; app estática en GitHub Pages | Vigente; sin OR-Tools y con el host gratuito corregido por la 0012 || [0003](./0003-artefactos-precalculados.md) | El motor carga artefactos precalculados; no hay base relacional | Vigente; lo que publican los municipios lo versiona la 0011 |
+| [0002](./0002-stack-y-despliegue.md) | FastAPI en Lambda con imagen de contenedor; app estática en GitHub Pages | Vigente; sin OR-Tools y con el host gratuito corregido por la 0012 |
+| [0003](./0003-artefactos-precalculados.md) | El motor carga artefactos precalculados; no hay base relacional | Vigente; lo que publican los municipios lo versiona la 0011 |
 | [0004](./0004-sin-modelos-supervisados.md) | Sin modelos supervisados: agrupamiento, reglas de clima y optimización | Vigente |
 | [0005](./0005-historial-y-erratas.md) | Las entregas se etiquetan y se corrigen en su sitio con erratas | Vigente |
 | [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente; sin horas de sol (actualización del 1 de octubre) |
