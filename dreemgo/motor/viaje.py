@@ -3,7 +3,7 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
 
 1. Por cada polo, qué se puede visitar: las paradas a las que se llega por carretera desde
    la base, que no pasan la altitud máxima y que no son una excursión de varios días. Cada
-   una vale 2^(jerarquía − 1): 1, 2, 4 u 8; 2 si MINCETUR no la jerarquizó. Si la consulta
+   una vale según su jerarquía: 1, 2, 6 o 24; 2 si MINCETUR no la jerarquizó. Si la consulta
    trae intereses, la que no atiende ninguno vale la cuarta parte.
 2. Cómo se reparten los días: la ida y la vuelta (por carretera, en tren o en bote) y los
    días en la base. Un viaje de más de 8 horas se parte en partes iguales y se duerme a
@@ -73,7 +73,12 @@ INICIO_DE_VISITAS = 8 * 60
 MINIMO_PARA_VISITAR = 90
 VISITA_POR_DEFECTO_MIN = 60
 VISITA_MAX_MIN = 6 * 60  # visita más caminata de ida y vuelta: más que esto es una excursión aparte
-VALOR_SIN_JERARQUIA = 2.0
+# Lo que vale una parada según su jerarquía. De un nivel al siguiente se multiplica por 2, por 3
+# y por 4: una de jerarquía 4 vale lo que doce de jerarquía 2, que son dos jornadas llenas. Con
+# 1, 2, 4 y 8, un día de seis paradas de jerarquía 2 valía más que Machu Picchu. Es un supuesto
+# del producto, por calibrar (decisión 0013).
+VALOR_POR_JERARQUIA = {1: 1.0, 2: 2.0, 3: 6.0, 4: 24.0}
+VALOR_SIN_JERARQUIA = 2.0  # como una de jerarquía 2: ni se premia ni se castiga lo que no se evaluó
 FACTOR_SIN_INTERES = 0.25
 FACTOR_TEMPORADA = {"viable": 1.0, "advertencia": 0.75, "desaconsejado": 0.4}
 LAMBDA, LAMBDA_SORPRESA = 0.3, 0.5
@@ -94,7 +99,7 @@ class OrigenDesconocido(ValueError):
 
 
 def valor(recurso: dict, intereses: set[str]) -> float:
-    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else 2.0 ** (recurso["jerarquia"] - 1)
+    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else VALOR_POR_JERARQUIA[recurso["jerarquia"]]
     if intereses and not intereses & set(recurso["intereses"]):
         v *= FACTOR_SIN_INTERES
     return v

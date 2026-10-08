@@ -9,11 +9,10 @@ from dreemgo.motor import viaje
 
 def test_valor_de_una_parada():
     r = {"jerarquia": 4, "intereses": ["historia"]}
-    assert viaje.valor(r, set()) == 8
-    assert viaje.valor({"jerarquia": 1, "intereses": []}, set()) == 1
-    assert viaje.valor({"jerarquia": None, "intereses": []}, set()) == viaje.VALOR_SIN_JERARQUIA
-    assert viaje.valor(r, {"historia", "playa"}) == 8
-    assert viaje.valor(r, {"playa"}) == 8 * viaje.FACTOR_SIN_INTERES
+    assert [viaje.valor({"jerarquia": j, "intereses": []}, set()) for j in (1, 2, 3, 4)] == [1, 2, 6, 24]
+    assert viaje.valor({"jerarquia": None, "intereses": []}, set()) == viaje.VALOR_SIN_JERARQUIA == 2
+    assert viaje.valor(r, {"historia", "playa"}) == 24
+    assert viaje.valor(r, {"playa"}) == 24 * viaje.FACTOR_SIN_INTERES
 
 
 def test_visita_con_caminata_de_ida_y_vuelta():
