@@ -14,7 +14,7 @@ El prototipo es el producto que vive en este repositorio: un motor de itinerario
 | Datos procesados, en CSV y JSON | [`data/procesados/`](../../data/procesados/), con su diccionario |
 | Artefactos analíticos | [`dreemgo/datos/`](../../dreemgo/datos/): lo que el motor carga al arrancar, con su manifiesto y la huella de cada archivo |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
-| URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/> |
+| URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |
 
 Lo que se entrega queda congelado en la etiqueta `entrega/semana-10`, que se pone en el último commit de `main` antes de la fecha ([decisión 0005](../../docs/decisiones/0005-historial-y-erratas.md)).
@@ -23,7 +23,6 @@ Lo que se entrega queda congelado en la etiqueta `entrega/semana-10`, que se pon
 
 - `PresentationWeek10`, la presentación.
 - Las capturas o el video corto de la demostración.
-- La dirección del API: todavía no está desplegado, y sin él la app publicada abre pero no puede responder una consulta. Cómo desplegarlo está [más abajo](#desplegar).
 
 ## Qué hace falta
 
@@ -91,8 +90,8 @@ Lo mismo corre en cada pull request, junto con la construcción de las imágenes
 ## Desplegar
 
 - **La app** se publica sola en GitHub Pages con cada cambio de `main` ([`app/README.md`](../../app/README.md#publicarla)). La dirección del API la toma de la variable `API_URL` del repositorio.
-- **El API** va a AWS, como una función Lambda con imagen de contenedor detrás de una HTTP API, con una tabla de DynamoDB para los eventos publicados. Son cuatro comandos, descritos en [`infra/README.md`](../../infra/README.md).
-- **Mientras no haya cuenta de AWS**, el mismo API corre gratis en Render, con los pasos del mismo documento. (Un Space de Hugging Face ya no sirve: Hugging Face pasó los Spaces de Docker a plan de pago.)
+- **El API corre hoy en Render**, gratis, en <https://alejandros-team.onrender.com>, y se vuelve a desplegar solo con cada cambio de `main`. Se duerme a los 15 minutos sin uso, y la primera consulta después tarda cerca de un minuto. Lo que publican los municipios vive ahí en un archivo del contenedor y se pierde cuando se reinicia. Los pasos están en [`infra/README.md`](../../infra/README.md#en-render-gratis-y-sin-tarjeta), y el porqué, en la [decisión 0012](../../docs/decisiones/0012-host-gratuito-render.md).
+- **El destino es AWS**: una función Lambda con imagen de contenedor detrás de una HTTP API, con una tabla de DynamoDB donde lo publicado sí dura. Son cuatro comandos, descritos en [`infra/README.md`](../../infra/README.md). Un Space de Hugging Face ya no sirve: Hugging Face pasó los Spaces de Docker a plan de pago.
 
 ## Rehacer los datos
 
