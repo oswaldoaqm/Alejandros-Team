@@ -12,6 +12,7 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 | | |
 |---|---|
 | **La app** | <https://oswaldoaqm.github.io/Alejandros-Team/> |
+| **El API** | <https://alejandros-team.onrender.com/v1/docs>, en un host gratuito que se duerme sin uso: la primera consulta después tarda cerca de un minuto |
 | **Correrlo en tu máquina** | [Probarlo](#probarlo), más abajo |
 | **La entrega en curso** | [`deliveries/week10/`](./deliveries/week10/): el prototipo funcional y su [informe](./deliveries/week10/PrototypeReport.md) |
 | **Qué recibe y qué devuelve el API** | [`docs/CONTRATO.md`](./docs/CONTRATO.md) |
@@ -22,7 +23,7 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 
 ## Probarlo
 
-La app publicada necesita el API desplegado, que todavía no lo está ([estado](./docs/PLAN.md)). Mientras tanto, el producto completo corre en una computadora con Python 3.11 o más nuevo y Node 22.12 o más nuevo, en dos terminales:
+La app publicada ya responde: le pregunta al API, desplegado en Render. El producto completo corre también en una computadora con Python 3.11 o más nuevo y Node 22.12 o más nuevo, en dos terminales:
 
 ```bash
 # 1. El API, desde la raíz del repositorio
