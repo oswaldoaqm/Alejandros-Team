@@ -9,9 +9,9 @@ python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline
 python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
 ```
 
-Estas tablas son las de la versión de datos `2026.10.2`. El clima es el de los 36 polos descargados al 30 de septiembre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.3`. El clima es el de los 36 grupos descargados al 30 de septiembre ([`pipeline/README.md`](../../pipeline/README.md)).
 
-El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. El recurso 11136 figuraba como abierto solo los domingos porque su encargado se llama Domingo; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traen ese domingo: se corrige en la versión siguiente.
+El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. El recurso 11136 figuraba como abierto solo los domingos porque su encargado se llama Domingo; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
 `python -m pipeline.artefactos` junta después estas tablas en lo que carga el motor, en [`dreemgo/datos/`](../../dreemgo/datos/).
 
@@ -25,7 +25,7 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `red_paradas.csv` | Dónde queda cada parada respecto de la red: a cuántos metros y en qué capa (vía o ruta de bote) |
 | `red_calibracion.json` | Velocidades calibradas de la red y su error, medido por validación cruzada |
 | `red_calibracion_recorridos.csv` | Cada recorrido de ficha usado para calibrar, con su tiempo en la ficha y en la red |
-| `polos_bases.csv` | Dónde se duerme en cada polo, por qué y a qué altitud |
+| `polos_bases.csv` | Dónde se duerme en cada polo, por qué y a qué altitud, y qué grupos de TA-01 junta |
 | `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
 | `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo |
 | `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
@@ -61,10 +61,12 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 
 | Columna | Qué es | De dónde sale |
 |---|---|---|
-| `polo` | Polo turístico del modelo v2 (TA-01, semana 6); −1 si no tiene | Ver `polo_fuente` |
+| `polo` | Grupo del modelo v2 (TA-01, semana 6); −1 si no tiene. El polo del motor puede juntar varios grupos: ver más abajo | Ver `polo_fuente` |
 | `polo_fuente` | `v2` (4 751): el del modelo v2, con la coordenada igual o todavía dentro del polo. `asignado_v3` (1 267): recursos que en v2 no tenían coordenada o que son nuevos, asignados al polo cuyo miembro más lejano está más cerca, sin pasar de 80 km de viaje efectivo. `v2_revisado` (29): se movieron y cambiaron de polo. `v2_sin_polo` (129), `sin_polo_cercano` (39), `salio_de_su_polo` (1) y `coordenada_revisar` (9): sin polo | `pipeline/maestro.py::asignar_polos` |
 
-Los 222 polos del modelo v2 se mantienen, con sus mismos números. Cada uno sigue cumpliendo que ningún par de sus lugares está a más de 80 km de viaje efectivo. La distancia es la del modelo v2: haversine más 0,06 km por metro de desnivel. El diámetro máximo sigue siendo 79,7 km, igual que en v2. El folclore y los acontecimientos se asocian a un polo, pero no cuentan para el diámetro.
+Los 222 grupos del modelo v2 se mantienen, con sus mismos números. Cada uno sigue cumpliendo que ningún par de sus lugares está a más de 80 km de viaje efectivo. La distancia es la del modelo v2: haversine más 0,06 km por metro de desnivel. El diámetro máximo sigue siendo 79,7 km, igual que en v2. El folclore y los acontecimientos se asocian a un grupo, pero no cuentan para el diámetro.
+
+**Grupo y polo no son lo mismo.** El maestro y los eventos guardan en `polo` el grupo de TA-01. Las tablas de tiempos, bases y clima hablan del polo que usa el motor: lo que se visita desde una base. Los grupos que duermen en el mismo pueblo son un solo polo, con el número del menor, así que de 222 grupos quedan **194 polos**. La columna `grupos` de [`polos_bases.csv`](#polos_basescsv) dice qué grupos junta cada polo, y `pipeline.bases.polo_de_cada_grupo` lleva un número al otro.
 
 ### Valor y altitud
 
@@ -138,7 +140,7 @@ Los 758 acontecimientos programados del inventario (categoría 5) con cuándo se
 | Columna | Qué es |
 |---|---|
 | `codigo`, `nombre`, `tipo`, `subtipo`, `region`, `provincia`, `distrito`, `lat`, `lon`, `url_ficha` | Como en el maestro |
-| `polo` | El polo al que se asocia el acontecimiento; −1 en los 13 que no tienen |
+| `polo` | El grupo de TA-01 al que se asocia el acontecimiento, como en el maestro; −1 en los 13 que no tienen |
 | `regla` | `fija 07-25` (un día), `fija 07-24..07-30` (un rango, que puede cruzar el año: `fija 12-24..01-06`), `pascua -7..0` (días contados desde el Domingo de Pascua), `nesimo 04 2 dom` (el segundo domingo de abril; `-1` es el último), `mes 09` (todo el mes). Vacía si la fecha está por confirmar |
 | `dia_central` | El día o los días que la ficha llama centrales dentro del rango: `07-16` o `07-28..07-29` (113 acontecimientos) |
 | `precision_fecha` | `exacta` (518): la ficha publica el día. `aproximada` (221): calculada desde la Pascua o el santoral, solo el mes, o la fecha de una edición reciente. `por_confirmar` (19): sin fecha |
@@ -163,21 +165,20 @@ La caminata final que registra la ficha (`caminata_min` del maestro) no está in
 | Archivo | Columnas | Filas |
 |---|---|---|
 | `tiempos_origen.csv` | `origen` (el `id` de [`origenes.csv`](../../pipeline/referencia/origenes.csv)), `codigo` de la parada, `minutos`, `km`, `km_tren`, `km_bote` | 109 872: las 24 ciudades por las 4 578 paradas |
-| `tiempos_polo.csv` | `polo`, `desde`, `hasta` (códigos de parada), `minutos`, `km`, `km_tren`, `km_bote`. En los dos sentidos | 176 570, en los 221 polos con dos paradas o más |
+| `tiempos_polo.csv` | `polo`, `desde`, `hasta` (códigos de parada), `minutos`, `km`, `km_tren`, `km_bote`. En los dos sentidos | 215 564: todos los pares de paradas de cada uno de los 194 polos |
 | `red_paradas.csv` | `codigo`, `polo`, `metros_a_la_red`, `lejos_de_la_red` (más de 5 km de la red), `capa` | 4 578 |
 | `tiempos_base.csv` | `polo`, `codigo` de la parada, `minutos`, `km`, `km_tren`, `km_bote`. Valen igual de vuelta: en la red cada tramo cuesta lo mismo en los dos sentidos | 4 465: cada parada de un polo |
-| `tiempos_origen_base.csv` | `origen`, `polo`, `minutos`, `km`, `km_tren`, `km_bote` | 5 328: las 24 ciudades por los 222 polos |
+| `tiempos_origen_base.csv` | `origen`, `polo`, `minutos`, `km`, `km_tren`, `km_bote` | 4 656: las 24 ciudades por los 194 polos |
 
 - **`km`** es el camino entero. **`km_tren`** y **`km_bote`** son la parte que va en tren y en bote; el resto va por carretera. Con ellos el motor dice con qué se viaja y cobra los pasajes.
 - **`capa`** dice dónde se ubica la parada: `vial` (4 548), en la vía más cercana, o `bote` (30), en la ruta de bote más cercana porque su ficha dice que se llega en bote.
 
-`minutos` y los `km` quedan vacíos cuando no hay camino. Pasa en tres casos:
+`minutos` y los `km` quedan vacíos cuando no hay camino. Pasa en dos casos:
 
 - **Paradas lejos de la red:** 128 están a más de 5 km de cualquier vía o ruta de bote. Entre ellas, las de Madre de Dios a las que se llega por río, que OpenStreetMap no registra, y los recursos con su coordenada en medio del lago Titicaca.
-- **Paradas de un mismo polo sin unión:** son 3 166 pares, el 2 %.
-- **Un polo sin ninguna parada junto a la red:** su base se eligió en línea recta y no tiene tiempos desde los orígenes (24 pares).
+- **Paradas de un mismo polo sin unión:** son 4 842 pares, el 2 %.
 
-Desde Lima quedan sin camino 137 paradas y esa base. De la base a sus propias paradas, 106 de 4 465. A Iquitos y la selva baja, que ninguna carretera une con el resto del país, ahora se llega por río.
+Desde Lima quedan sin camino 137 paradas. De la base a sus propias paradas, 106 de 4 465. A todas las bases se llega desde las 24 ciudades: el grupo que no tiene ninguna parada junto a la red duerme en Omate, igual que otro, y los dos son ahora un solo polo. A Iquitos y la selva baja, que ninguna carretera une con el resto del país, se llega por río.
 
 ### `polos_bases.csv`
 
@@ -185,20 +186,23 @@ Cómo se elige está en [`pipeline/bases.py`](../../pipeline/bases.py) y el resu
 
 | Columna | Qué es |
 |---|---|
-| `polo` | Número del polo |
+| `polo` | Número del polo: el de su grupo de TA-01 o, si junta varios, el del menor |
 | `base`, `lat`, `lon` | El lugar de OSM donde se duerme, con sus coordenadas en grados decimales |
 | `lugar` | `ciudad`, `pueblo`, `barrio` o `caserío`, según OSM (`place`) |
 | `capital_de_distrito` | Si OSM lo marca como capital de su distrito |
 | `hospedajes_osm` | Hoteles, hostales, casas de huéspedes y alojamientos que OSM registra a menos de 3 km |
-| `criterio` | `carretera` (221): el de menor costo por la red. `linea_recta` (1): ninguna parada del polo está a menos de 5 km de la red |
-| `metros_a_la_red`, `capa` | A cuántos metros de la red queda la base y en qué capa se ubica: las 222, en la vía (`vial`) |
+| `criterio` | `carretera` (los 194): el de menor costo por la red. `linea_recta` (ninguno): para un polo sin ninguna parada a menos de 5 km de la red |
+| `metros_a_la_red`, `capa` | A cuántos metros de la red queda la base y en qué capa se ubica: las 194, en la vía (`vial`) |
 | `paradas`, `paradas_con_camino` | Paradas del polo y cuántas tienen camino desde la base |
 | `minutos_medios` | Minutos de la base a sus paradas, en promedio pesado por jerarquía |
-| `altitud_m`, `altitud_fuente` | `osm` (196): la que declara el lugar. `recursos_a_2_km` (11): la mediana de los recursos del inventario a menos de 2 km. Vacía en 15 |
+| `altitud_m`, `altitud_fuente` | `osm` (170): la que declara el lugar. `recursos_a_2_km` (11): la mediana de los recursos del inventario a menos de 2 km. Vacía en 13 |
+| `grupos` | Los grupos de TA-01 que junta el polo, separados por `\|`, del que tiene más paradas al que tiene menos. 172 polos son un solo grupo; los otros 22 juntan dos, tres o cuatro (50 grupos entre todos) |
+
+Dos grupos que eligen el mismo pueblo para dormir se visitan desde la misma base, así que para el viajero son un solo lugar al que ir. Al juntarlos, la base no cambia y los tiempos que ya había, tampoco; se suman los 38 994 pares entre paradas de grupos distintos, calculados sobre la red como los demás.
 
 ## `clima_polo_mes.csv`
 
-Doce filas por polo, del clima diario 2016-2025 de Open-Meteo en el centro del polo ([`pipeline/clima.py`](../../pipeline/clima.py), [decisión 0006](../../docs/decisiones/0006-clima-por-polo.md)). **Licencia CC BY 4.0**: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus.
+Doce filas por polo, del clima diario 2016-2025 de Open-Meteo en el centro de un grupo de TA-01: el del polo o, si junta varios, el de su grupo con más paradas que ya esté descargado ([`pipeline/clima.py`](../../pipeline/clima.py), [decisión 0006](../../docs/decisiones/0006-clima-por-polo.md)). **Licencia CC BY 4.0**: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus.
 
 | Columna | Qué es |
 |---|---|
@@ -208,7 +212,7 @@ Doce filas por polo, del clima diario 2016-2025 de Open-Meteo en el centro del p
 | `temp_min_c`, `temp_max_c` | Promedio de las mínimas y de las máximas diarias, llevadas a la altitud de la base con 6,5 °C por km |
 | `puesto_lluvia` | 1 es el mes más lluvioso del polo |
 | `veredicto` | `viable`, `advertencia` o `desaconsejado`: 150 mm o más en el mes, y estar entre los 3 más lluviosos del polo con más de 50 mm. Los dos, desaconsejado; uno, advertencia |
-| `fuente` | `open_meteo_polo` (los 36 polos descargados al 30 de septiembre) o `region_semana6`: mientras la descarga no termina, la capa regional de la semana 6, sin días de lluvia ni temperaturas |
+| `fuente` | `open_meteo_polo` (35 polos: los que tienen alguno de los 36 grupos descargados al 30 de septiembre) o `region_semana6`: mientras la descarga no termina, la capa regional de la semana 6, sin días de lluvia ni temperaturas |
 | `altitud_clima_m`, `altitud_base_m` | La altitud del punto de clima según Open-Meteo y la de la base, para ver el ajuste de temperatura |
 
 `red_calibracion.json` guarda las velocidades por clase de vía, los recargos y el error por tramo de distancia; el resumen está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-estima-los-tiempos-de-viaje). `red_calibracion_recorridos.csv` tiene los 2 259 recorridos de fichas que se consideraron. Por cada uno trae los km y minutos de la ficha y los de la red, y si ambos describen el mismo camino (`misma_distancia`); solo esos entraron al ajuste.
