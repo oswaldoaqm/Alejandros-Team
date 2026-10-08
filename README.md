@@ -181,6 +181,10 @@ El detalle —barridos, ablación, la auditoría de la propia comparación y por
 entre los dos modelos— está en
 [`deliveries/week06/ModelSelection.md`](./deliveries/week06/ModelSelection.md).
 
+Esos 222 grupos son el agrupamiento. El motor propone entre **194 polos**: cuando varios grupos duermen en el
+mismo pueblo, como los cuatro de Huaraz, son un solo lugar al que ir y se juntan en uno
+([decisión 0013](./docs/decisiones/0013-un-polo-por-pueblo.md)).
+
 ---
 
 ## Entregas y cronograma
@@ -250,7 +254,7 @@ python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.clima       # clima por polo y mes
-python -m pipeline.artefactos --version 2026.10.2   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.10.3   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 pytest
