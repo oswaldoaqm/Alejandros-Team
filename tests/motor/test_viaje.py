@@ -60,6 +60,20 @@ def test_un_dia_con_visitas_no_pasa_de_ocho_horas_con_el_viaje():
         assert all(t <= viaje.JORNADA_MIN for t in tope.values())
 
 
+def test_un_viaje_con_mas_dias_de_camino_que_de_visita_no_se_propone():
+    # De Lima al Cusco por tierra son 22 horas y media: con nueve días, seis se irían en el bus.
+    cusco = viaje.plan_de_dias(dias=9, minutos_ida=1348, fecha_inicio=None)
+    assert (viaje.dias_de_solo_viaje(cusco), len(cusco.jornadas)) == (6, 3)
+    assert viaje.mas_camino_que_visita(cusco)
+    # A Huaraz con cuatro días: dos de viaje y dos allá. Un empate sí se propone.
+    huaraz = viaje.plan_de_dias(dias=4, minutos_ida=488, fecha_inicio=None)
+    assert (viaje.dias_de_solo_viaje(huaraz), len(huaraz.jornadas)) == (2, 2)
+    assert not viaje.mas_camino_que_visita(huaraz)
+    # El día de llegada en que también se visita no cuenta como de solo viaje.
+    cerca = viaje.plan_de_dias(dias=4, minutos_ida=150, fecha_inicio=None)
+    assert viaje.dias_de_solo_viaje(cerca) == 0 and not viaje.mas_camino_que_visita(cerca)
+
+
 def test_sin_dias_para_ir_y_volver_no_hay_plan():
     assert viaje.plan_de_dias(dias=3, minutos_ida=600, fecha_inicio=None) is None
 

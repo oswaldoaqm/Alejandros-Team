@@ -9,6 +9,7 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    días en la base. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se
    parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
+   Un viaje que pasaría más días solo viajando que días con visitas no se propone.
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
 4. El puntaje: (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La
    calidad es el valor que visita el itinerario frente al mejor de la consulta, por la
@@ -193,6 +194,18 @@ def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Pl
         jornadas.append(Jornada(INICIO_DE_VISITAS, libre, dia_semana(dias - k + 1)))
         dia_de.append(dias - k + 1)
     return Plan("estrella", jornadas, dia_de, tramos, llegada=k, salida=dias - k + 1)
+
+
+def dias_de_solo_viaje(plan: Plan) -> int:
+    """Los días que se van enteros en el camino: de ida o de vuelta, y sin visitas."""
+    return sum(1 for n in plan.tramos if n not in plan.dia_de_jornada)
+
+
+def mas_camino_que_visita(plan: Plan) -> bool:
+    """Si el viaje pasaría más días solo viajando que días en que se puede visitar. Un viaje así
+    no se propone: sin vuelos, el Cusco desde Lima con nueve días serían seis en el bus y tres
+    allá (decisión 0015). Un empate sí: a Huaraz con cuatro días, dos de viaje y dos allá."""
+    return dias_de_solo_viaje(plan) > len(plan.jornadas)
 
 
 def plan_de_excursion(fecha_inicio: date | None) -> Plan:
@@ -717,7 +730,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         if not np.isfinite(minutos_ida):
             return None
         plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio)
-        if plan is None or not plan.jornadas:
+        if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
     desde = _minutos_desde_deposito(polo, origen, excursion)
     if excursion:  # lo que queda en la misma ciudad del origen no es una excursión
