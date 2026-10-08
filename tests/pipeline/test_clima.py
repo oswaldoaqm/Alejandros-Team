@@ -84,3 +84,35 @@ def test_sin_descarga_usa_la_capa_regional(tmp_path):
     assert regional["veredicto"].iloc[0] == "desaconsejado"
     assert regional[["dias_con_lluvia", "temp_min_c", "temp_max_c"]].isna().all().all()  # la capa no los tenía
     assert (tabla.loc[tabla["polo"] == 1, "fuente"] == "open_meteo_polo").all()
+
+
+def test_un_polo_que_junta_grupos_toma_el_clima_del_mas_grande_que_lo_tenga(tmp_path):
+    _crudo(tmp_path, 9, _diario(lluvia_mm=8.0))
+    _crudo(tmp_path, 3, _diario(lluvia_mm=1.0))
+    semana6 = pd.DataFrame(
+        {
+            "POLO": [6] * 12 + [5] * 12,
+            "MES": [float(m) for m in range(1, 13)] * 2,
+            "precip_mm": [160.0] + [10.0] * 11 + [20.0] * 12,
+            "veredicto": ["desaconsejado"] + ["viable"] * 23,
+        }
+    )
+    # El polo 3 junta los grupos 7, 9 y 3, en ese orden de tamaño; el 5 junta el 6 y el 5.
+    bases = pd.DataFrame({"polo": [3, 5], "altitud_m": [2000.0, 500.0], "grupos": ["7|9|3", "6|5"]})
+    tabla = clima.construir(bases, tmp_path, semana6)
+    assert sorted(tabla["polo"].unique()) == [3, 5] and len(tabla) == 24
+    con_archivo = tabla[tabla["polo"] == 3].set_index("mes")
+    # El grupo 7 es el más grande, pero no tiene archivo: vale el del 9, no el del 3.
+    assert (con_archivo["fuente"] == "open_meteo_polo").all()
+    assert con_archivo.loc[1, "lluvia_mm"] == pytest.approx(15 * 8.0)
+    assert con_archivo.loc[1, "altitud_base_m"] == 2000.0
+    # Ninguno de sus grupos tiene archivo: la capa regional del más grande, el 6, con el número del polo.
+    regional = tabla[tabla["polo"] == 5].set_index("mes")
+    assert (regional["fuente"] == "region_semana6").all()
+    assert (regional.loc[1, "lluvia_mm"], regional.loc[1, "veredicto"]) == (160.0, "desaconsejado")
+
+
+def test_los_grupos_de_un_polo():
+    con, sin = pd.DataFrame({"polo": [3, 4], "grupos": ["5|9|3", "4"]}), pd.DataFrame({"polo": [7]})
+    assert [clima.grupos_de(b) for b in con.itertuples()] == [[5, 9, 3], [4]]
+    assert [clima.grupos_de(b) for b in sin.itertuples()] == [[7]]

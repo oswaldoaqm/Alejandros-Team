@@ -36,6 +36,7 @@ from dreemgo.publicados import RADIO_KM, Instantanea, Publicado
 pytestmark = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 CONSULTAS = int(os.environ.get("DREEMGO_PROPIEDADES", "100"))
 FICHA = re.compile(r"^https://consultasenlinea\.mincetur\.gob\.pe/fichaInventario/index\.aspx\?cod_Ficha=\d+$")
+POLO = re.compile(r"\bpolos?\b", re.IGNORECASE)
 
 
 @st.composite
@@ -80,8 +81,8 @@ def test_las_diez_propiedades(consulta):
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
-        # 3. Ninguna jornada pasa de 8 horas.
-        assert all(d.horas <= 8.0 for d in ruta.dias)
+        # 3. Ninguna jornada con visitas pasa de 8 horas, ni un día de solo viaje de 9.
+        assert all(d.horas <= (8.0 if d.paradas else 9.0) for d in ruta.dias)
         # 4. Toda parada enlaza a su ficha oficial.
         assert all(FICHA.match(str(p.recurso.url_ficha)) for p in paradas)
         # 5. Un mes desaconsejado nunca aparece sin aviso, y hay una alternativa.
@@ -105,6 +106,12 @@ def test_las_diez_propiedades(consulta):
             assert llegadas == sorted(llegadas)
             assert [p.orden for p in d.paradas] == list(range(1, len(d.paradas) + 1))
         assert ruta.indicadores.paradas == len(paradas)
+        # Y lo que el viajero lee del clima habla de la zona, como la app, no del polo.
+        del_clima = [a.mensaje for a in ruta.avisos if a.tipo in ("datos", "estacionalidad")]
+        assert not any(POLO.search(frase) for frase in [ruta.estacionalidad.explicacion, *del_clima])
+    if respuesta.sin_resultado is not None:
+        assert not POLO.search(respuesta.sin_resultado.motivo)
+        assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
 
     # 9. Las rutas son de polos distintos.
     polos = [r.polo.id for r in respuesta.rutas]

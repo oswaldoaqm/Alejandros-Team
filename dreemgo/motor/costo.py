@@ -93,14 +93,16 @@ def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
         )
     if g.km_bote:
         b = parametros["bote_soles_km"]
-        minimo, maximo = (f"{b[k]:.2f}".replace(".", ",") for k in ("minimo", "maximo"))
-        supuestos.append(f"Bote: {textos.miles(g.km_bote)} km, entre S/ {minimo} y S/ {maximo} por km")
+        minimo, maximo = (textos.soles(b[k], 2) for k in ("minimo", "maximo"))
+        supuestos.append(f"Bote: {textos.miles(g.km_bote)} km, entre {minimo} y {maximo} por km")
     if g.noches:
         supuestos.append(f"Hospedaje económico en {g.base}, {g.noches} {'noche' if g.noches == 1 else 'noches'}")
     supuestos.append("Entradas de adulto peruano según la ficha oficial de cada lugar")
     if g.sin_tarifa:
         cuantas = "una parada no publica" if g.sin_tarifa == 1 else f"{g.sin_tarifa} paradas no publican"
-        supuestos.append(f"{cuantas[0].upper()}{cuantas[1:]} su tarifa: se estima entre S/ 5 y S/ 20")
+        supuestos.append(
+            f"{cuantas[0].upper()}{cuantas[1:]} su tarifa: se estima entre {textos.soles(5)} y {textos.soles(20)}"
+        )
     supuestos.append("Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar")
 
     exceso = None if presupuesto is None or p50 <= presupuesto else p50 - presupuesto

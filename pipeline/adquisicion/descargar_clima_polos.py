@@ -1,6 +1,11 @@
 """
 Clima diario 2016-2025 en el centro de cada polo, desde Open-Meteo Archive.
 
+Aquí «polo» es cada uno de los 222 grupos de TA-01, con su número. El motor junta después
+los que duermen en el mismo pueblo (pipeline/tiempos.py), y ese polo toma el clima de su
+grupo con más paradas que ya esté descargado (pipeline/clima.py). El archivo de cada grupo
+se sigue llamando polo_<número del grupo>.json.
+
 Por qué un punto por polo
 -------------------------
 Hasta ahora el clima venía de 24 puntos, uno por capital regional. El polo de

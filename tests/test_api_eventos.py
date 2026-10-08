@@ -20,7 +20,7 @@ con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artef
 AHORA = datetime(2026, 10, 2, 10, 0, tzinfo=HORA_DEL_PERU)
 VIAJE = {"origen": "lima", "fecha_inicio": "2026-11-10", "dias": 5}
 NOVIEMBRE = {"desde": "2026-11-01", "hasta": "2026-11-30"}
-# En la plaza de Huaraz, donde duermen cuatro polos.
+# En la plaza de Huaraz, la base de un polo.
 FESTIVAL = {
     "nombre": "Festival del Café",
     "tipo": "Feria gastronómica",
@@ -131,7 +131,7 @@ class TestDondeAparece:
         duermen_en_huaraz = sorted(p.id for p in datos.polos.values() if p.base["nombre"] == "Huaraz")
         lejos = next(p.id for p in datos.polos.values() if p.base["nombre"] == "Iquitos")
         id_ = sembrar(almacen)
-        assert len(duermen_en_huaraz) > 1
+        assert duermen_en_huaraz
         for polo in duermen_en_huaraz:
             assert [e["id"] for e in publicados_en(cliente, "/v1/eventos", **NOVIEMBRE, polo=polo)] == [id_]
             assert [e["id"] for e in publicados_en(cliente, f"/v1/polos/{polo}")] == [id_]

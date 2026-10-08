@@ -113,6 +113,20 @@ def elegir_en_linea_recta(lat, lon, peso, cand_lat, cand_lon, ajuste) -> int:
     return int(np.argmin(peso @ (km * MINUTOS_POR_KM_EN_LINEA_RECTA) / peso.sum() + ajuste))
 
 
+def polo_de_cada_grupo(bases: pd.DataFrame) -> dict[int, int]:
+    """Grupo de TA-01 → el polo que lo contiene, según ``grupos`` de polos_bases.csv.
+
+    Los grupos que duermen en el mismo pueblo son un solo polo, con el número del menor
+    (``pipeline/tiempos.py``). El maestro, los eventos y la descarga del clima siguen hablando
+    de grupos: con esto se llevan al polo. Una tabla de antes de juntar no trae ``grupos``, y
+    ahí cada grupo es su polo."""
+    if "grupos" not in bases:
+        return {int(p): int(p) for p in bases["polo"]}
+    return {
+        int(g): int(p) for p, grupos in zip(bases["polo"], bases["grupos"], strict=True) for g in str(grupos).split("|")
+    }
+
+
 def altitud(bases: pd.DataFrame, recursos: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     """(altitud en metros, de dónde sale) de cada base.
 

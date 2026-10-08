@@ -316,7 +316,7 @@ class Ruta(_Modelo):
 class Sugerencia(_Modelo):
     campo: Literal["origen", "mes", "fecha_inicio", "dias", "intereses", "presupuesto", "altitud_max"]
     valor: int | str | list[str] | None
-    efecto: str = Field(description="Qué cambia si se acepta, por ejemplo «aparecen 5 rutas».")
+    efecto: str = Field(description="Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».")
 
 
 class SinResultado(_Modelo):

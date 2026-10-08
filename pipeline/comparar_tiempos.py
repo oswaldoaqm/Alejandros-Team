@@ -15,6 +15,13 @@ corrida de antes no lo trae (las de antes del tren y los botes), cuenta como la 
 
 Lo demás sale como «sin explicación» y hay que mirarlo a mano antes de publicar.
 
+Los polos de las dos corridas pueden no ser los mismos: los grupos de TA-01 que duermen en
+el mismo pueblo se juntan en un polo (``grupos`` de polos_bases.csv). Por eso nada se compara
+por el número del polo: los tiempos a una parada o entre dos, por sus códigos; los de un
+origen a la base, por grupo, con la base del polo en que quedó ese grupo en cada corrida. Los
+pares que solo están en la corrida nueva (los de dos grupos que ahora son un polo) se cuentan
+aparte, como nuevos; los que solo están en la de antes salen entre los que pierden su camino.
+
 Uso:  python -m pipeline.comparar_tiempos ANTES DESPUES [--umbral 1]
       (dos carpetas con las salidas de pipeline.tiempos, por ejemplo data/procesados y una
       corrida nueva con --salida)
@@ -27,11 +34,13 @@ from pathlib import Path
 
 import pandas as pd
 
+from pipeline.bases import polo_de_cada_grupo
+
 TABLAS = {
-    "tiempos_origen_base.csv": ["origen", "polo"],
-    "tiempos_base.csv": ["polo", "codigo"],
+    "tiempos_origen_base.csv": ["origen", "grupo"],
+    "tiempos_base.csv": ["codigo"],
     "tiempos_origen.csv": ["origen", "codigo"],
-    "tiempos_polo.csv": ["polo", "desde", "hasta"],
+    "tiempos_polo.csv": ["desde", "hasta"],
 }
 
 
@@ -56,37 +65,56 @@ def _movidos(antes: pd.DataFrame, despues: pd.DataFrame) -> set:
     return set(comun[(a["capa"] != d["capa"]) | (sabe & (a["metros_a_la_red"] != d["metros_a_la_red"]))])
 
 
+def _por_grupo(tabla: pd.DataFrame, bases: pd.DataFrame) -> pd.DataFrame:
+    """La tabla con una fila por grupo de TA-01 (``grupo``) en vez de una por polo."""
+    de_grupo = pd.DataFrame(list(polo_de_cada_grupo(bases).items()), columns=["grupo", "polo"])
+    return de_grupo.merge(tabla, on="polo")
+
+
+def _otra_base(bases_a: pd.DataFrame, bases_d: pd.DataFrame, polo_antes: pd.Series, polo_despues: pd.Series):
+    """Por fila, si la base del polo de antes y la del de después no son el mismo pueblo en el
+    mismo lugar de la red. Una fila que no está en las dos corridas no tiene con qué comparar."""
+    a = _ubicacion(bases_a, "polo").assign(base=bases_a.set_index("polo")["base"]).reindex(polo_antes.to_numpy())
+    d = _ubicacion(bases_d, "polo").assign(base=bases_d.set_index("polo")["base"]).reindex(polo_despues.to_numpy())
+    a, d = a.reset_index(drop=True), d.reset_index(drop=True)
+    sabe = (a["metros_a_la_red"] >= 0) & (d["metros_a_la_red"] >= 0)
+    otra = (a["base"] != d["base"]) | (a["capa"] != d["capa"]) | (sabe & (a["metros_a_la_red"] != d["metros_a_la_red"]))
+    return (otra & a["base"].notna() & d["base"].notna()).to_numpy()
+
+
 def comparar(antes: Path, despues: Path, umbral: float = 1.0) -> dict[str, pd.DataFrame]:
     """Por tabla, los pares que empeoran más de ``umbral`` minutos o pierden su camino, con
     su explicación (vacía si no la hay), y un resumen de cuántos pares cambian."""
     bases_a, bases_d = _leer(antes, "polos_bases.csv"), _leer(despues, "polos_bases.csv")
-    nombre_a = bases_a.set_index("polo")["base"].to_dict()
-    nombre_d = bases_d.set_index("polo")["base"].to_dict()
-    otra_base = {p for p in nombre_a.keys() | nombre_d.keys() if nombre_a.get(p) != nombre_d.get(p)}
-    otra_base |= _movidos(_ubicacion(bases_a, "polo"), _ubicacion(bases_d, "polo"))
     movida = _movidos(
         _ubicacion(_leer(antes, "red_paradas.csv"), "codigo"), _ubicacion(_leer(despues, "red_paradas.csv"), "codigo")
     )
 
     salida, resumen = {}, []
     for nombre, claves in TABLAS.items():
-        t = _leer(antes, nombre).merge(_leer(despues, nombre), on=claves, suffixes=("_antes", "_despues"), how="outer")
+        a, d = _leer(antes, nombre), _leer(despues, nombre)
+        if "grupo" in claves:
+            a, d = _por_grupo(a, bases_a), _por_grupo(d, bases_d)
+        t = a.merge(d, on=claves, suffixes=("_antes", "_despues"), how="outer", indicator="esta")
+        en_las_dos = t["esta"] == "both"
         dif = t["minutos_despues"] - t["minutos_antes"]
-        peor = (dif > umbral) | (t["minutos_antes"].notna() & t["minutos_despues"].isna())
+        pierde = t["minutos_antes"].notna() & t["minutos_despues"].isna()
+        peor = (dif > umbral) | pierde
         resumen.append(
             {
                 "tabla": nombre,
-                "pares": len(t),
+                "pares": int((t["esta"] != "right_only").sum()),
                 "empeoran": int((dif > umbral).sum()),
-                "pierden_camino": int((t["minutos_antes"].notna() & t["minutos_despues"].isna()).sum()),
+                "pierden_camino": int(pierde.sum()),
                 "mejoran": int((dif < -umbral).sum()),
-                "ganan_camino": int((t["minutos_antes"].isna() & t["minutos_despues"].notna()).sum()),
+                "ganan_camino": int((en_las_dos & t["minutos_antes"].isna() & t["minutos_despues"].notna()).sum()),
+                "nuevos": int((t["esta"] == "right_only").sum()),
             }
         )
-        p = t[peor].assign(diferencia=dif[peor].round(1))
+        p = t[peor].assign(diferencia=dif[peor].round(1)).drop(columns="esta")
         motivo = pd.Series("", index=p.index)
-        if "polo" in p:
-            motivo = motivo.mask(p["polo"].isin(otra_base), "base")
+        if "polo_antes" in p:
+            motivo = motivo.mask(_otra_base(bases_a, bases_d, p["polo_antes"], p["polo_despues"]), "base")
         for columna in ("codigo", "desde", "hasta"):
             if columna in p:
                 motivo = motivo.mask((motivo == "") & p[columna].isin(movida), "parada")

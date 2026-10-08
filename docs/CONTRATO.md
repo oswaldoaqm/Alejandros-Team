@@ -2,7 +2,7 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.2** · 1 de octubre de 2026. La 1.2 suma el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). Desde el 2 de octubre responde también `POST /v1/eventos`, con el que un municipio publica un evento (§4.1): la 1.2 ya lo anunciaba y ya traía su modelo, así que la versión no sube. La revisión del equipo sigue antes del 5 de octubre.
+**Versión 1.2** · 1 de octubre de 2026. La 1.2 suma el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). Desde el 2 de octubre responde también `POST /v1/eventos`, con el que un municipio publica un evento (§4.1): la 1.2 ya lo anunciaba y ya traía su modelo, así que la versión no sube. La revisión del equipo sigue antes del 5 de octubre. Desde el 7 de octubre el motor propone entre 194 polos, uno por pueblo donde se duerme, y valora las paradas con otra escala (más abajo, «Cómo decide el motor», y [decisión 0013](./decisiones/0013-un-polo-por-pueblo.md)); ningún campo cambia, así que la versión sigue en 1.2. Ese día cambió también la propiedad 3 (§3): un día de solo viaje, sin visitas, puede llegar a 9 horas ([decisión 0014](./decisiones/0014-dia-de-solo-viaje.md)). Y desde el 8 de octubre no propone un viaje con más días de camino que de visita ([decisión 0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md)).
 
 ## 1 · La consulta
 
@@ -48,23 +48,27 @@ Respuesta
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
-[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.2`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.3`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
 
 Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por su red: carretera, tren o bote.
+
+Los textos que el motor escribe para el viajero se muestran tal cual: `motivos`, la `nota` de cada día, los avisos, `estacionalidad.explicacion`, los supuestos del costo y `sin_resultado`. Dicen «zona» y «viaje», como la app, aunque los campos se sigan llamando `polo` y `rutas`. Y separan los miles y el «S/» de su monto con un espacio que no parte la línea (U+00A0), para que «3 500 m» o «S/ 706» no queden entre dos renglones.
 
 ### Cómo decide el motor
 
 El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en la [decisión 0009](./decisiones/0009-viaje-en-estrella.md). En corto:
 
 - **Un viaje es una estrella:** se duerme en la base del polo y cada día sale un paseo que vuelve a ella. La base es un pueblo real de OpenStreetMap, elegido por lo cerca que deja las paradas y por el hospedaje que registra ([`pipeline/bases.py`](../pipeline/bases.py)).
-- **Valor de una parada:** 2^(jerarquía − 1), es decir 1, 2, 4 u 8; 2 si MINCETUR no la jerarquizó. Si la consulta trae intereses, la que no atiende ninguno vale la cuarta parte.
-- **Días:** la ida y la vuelta, por carretera, en tren o en bote; si pasan de 8 horas se parten en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida tienen visitas si sobran al menos 90 minutos. Como máximo seis paradas por día.
+- **Un polo es lo que se visita desde un pueblo:** los grupos del agrupamiento de la semana 6 que duermen en el mismo pueblo son un solo polo. Huaraz junta cuatro, y de 222 grupos quedan 194 polos ([decisión 0013](./decisiones/0013-un-polo-por-pueblo.md)).
+- **Valor de una parada:** 1, 2, 6 o 24 según su jerarquía; 2 si MINCETUR no la jerarquizó. De un nivel al siguiente se multiplica por 2, por 3 y por 4, para que un lugar de jerarquía 4 pese más que una jornada llena de lugares corrientes. Es un supuesto del producto, todavía sin calibrar. Si la consulta trae intereses, la que no atiende ninguno vale la cuarta parte.
+- **Días:** la ida y la vuelta, por carretera, en tren o en bote. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida tienen visitas si, con el viaje, sobran al menos 90 minutos de una jornada de 8 horas. Como máximo seis paradas por día ([decisión 0014](./decisiones/0014-dia-de-solo-viaje.md)).
+- **Más días allá que en el camino:** no se propone un viaje que pasaría más días solo viajando que días en que se puede visitar. Un empate sí: a Huaraz con cuatro días, dos de viaje y dos allá. Sin vuelos, el Cusco desde Lima solo cabe con doce días o más ([decisión 0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md)).
 - **Tren y bote:** un camino puede ir en tren (a Machu Picchu) o en bote (a las islas del Titicaca, las Ballestas o por los ríos de la Amazonía). Subir o bajar cuesta 15 minutos, y a una parada se llega en bote solo si su ficha lo dice. La nota del día lo cuenta («En bote hasta Isla Taquile.») y el costo cobra cada tramo en tren y cada km en bote, con su fuente y su rango ([decisión 0010](./decisiones/0010-tren-y-botes.md)).
 - **Qué y en qué orden:** orientación por equipos con inserción voraz, 2-opt y tres arranques; se queda el de más valor.
 - **Puntaje:** (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. El presupuesto multiplica por (presupuesto / costo)² cuando el costo central lo pasa, y por 1 si no: reordena, pero no esconde (§3). «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
 - **Eventos publicados:** se suman a `eventos[]` de las rutas que duermen o paran cerca, y nada más. No entran al puntaje ni a los motivos: publicar un evento no mueve ningún polo de su lugar (§4.1 y [decisión 0011](./decisiones/0011-eventos-publicados.md)).
 - **Un viaje sale de su ciudad:** no se propone dormir en un polo cuya base queda a menos de media hora del origen, y un viaje de un día no cuenta las paradas de la misma ciudad.
-- **Tres rutas con bases distintas:** dos polos pueden dormir en el mismo pueblo (Huaraz sirve a cuatro); la respuesta no repite base.
+- **Tres rutas, tres pueblos:** cada polo duerme en su propio pueblo, y la respuesta no repite el nombre de una base.
 
 ## 3 · Lo que el motor garantiza en cada respuesta
 
@@ -72,7 +76,7 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 
 1. Ninguna parada supera `altitud_max`.
 2. Los días del itinerario suman exactamente `dias`, con la ida y la vuelta incluidas.
-3. Ninguna jornada pasa de 8 horas entre traslados y visitas.
+3. Ninguna jornada con visitas pasa de 8 horas entre traslados y visitas. Un día de solo viaje, sin visitas, puede llegar a 9.
 4. Toda parada enlaza a su ficha oficial de MINCETUR (RNF-01).
 5. Un mes desaconsejado nunca aparece sin aviso, y si se descarta hay una alternativa (RF-01).
 6. Un evento solo aparece si cae dentro de las fechas o del mes del viaje (RF-03).
@@ -189,12 +193,12 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 ## 6 · El enlace para compartir
 
 ```
-https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.2
+https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.3
 ```
 
-Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.1. Lo que ves está calculado con los datos 2026.10.2…») en vez de mostrar otro viaje en silencio.
+Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.2. Lo que ves está calculado con los datos 2026.10.3…») en vez de mostrar otro viaje en silencio.
 
-La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.2-e3f9a1c`. Sin eventos publicados es solo `2026.10.2`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
+La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.3-e3f9a1c`. Sin eventos publicados es solo `2026.10.3`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
 
 ## 7 · Cómo se cambia el contrato
 

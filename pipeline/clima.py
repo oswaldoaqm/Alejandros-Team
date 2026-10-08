@@ -1,10 +1,14 @@
 """
 Clima de cada polo mes a mes y su veredicto de temporada (TA-05 v2).
 
-Fuente: diez años (2016-2025) de clima diario de Open-Meteo en el centro de cada polo, que
-baja ``pipeline/adquisicion/descargar_clima_polos.py`` (decisión 0006). Mientras esa
-descarga no termina, un polo sin su archivo usa la capa regional de la semana 6
+Fuente: diez años (2016-2025) de clima diario de Open-Meteo en el centro de cada grupo de
+TA-01, que baja ``pipeline/adquisicion/descargar_clima_polos.py`` (decisión 0006). Mientras
+esa descarga no termina, un polo sin su archivo usa la capa regional de la semana 6
 (``deliveries/week06/data/processed/estacionalidad_polo_mes.csv``) y lo dice en ``fuente``.
+
+Un polo puede juntar varios grupos, los que duermen en el mismo pueblo (``grupos`` de
+polos_bases.csv). Toma el clima de su grupo con más paradas que ya tenga archivo; si ninguno
+lo tiene, la capa regional de su grupo con más paradas.
 
 Por polo y mes, el promedio de los diez años de:
   lluvia_mm              lluvia del mes
@@ -138,15 +142,23 @@ def clima_regional(polo: int, semana6: pd.DataFrame, altitud_base: float | None)
     )
 
 
+def grupos_de(base) -> list[int]:
+    """Los grupos de TA-01 que junta un polo, del que tiene más paradas al que tiene menos. Una
+    tabla de antes de juntar no los trae: ahí el polo es su único grupo."""
+    grupos = getattr(base, "grupos", None)
+    return [int(base.polo)] if grupos is None or pd.isna(grupos) else [int(g) for g in str(grupos).split("|")]
+
+
 def construir(bases: pd.DataFrame, crudo: Path, semana6: pd.DataFrame) -> pd.DataFrame:
     filas = []
     for b in bases.itertuples():
-        leido = leer_crudo(crudo / f"polo_{b.polo}.json")
+        polo, grupos = int(b.polo), grupos_de(b)
         altitud_base = None if pd.isna(b.altitud_m) else float(b.altitud_m)
+        leido = next((clima for g in grupos if (clima := leer_crudo(crudo / f"polo_{g}.json")) is not None), None)
         if leido is not None:
-            filas.append(clima_de_polo(int(b.polo), *leido, altitud_base))
+            filas.append(clima_de_polo(polo, *leido, altitud_base))
         else:
-            filas.append(clima_regional(int(b.polo), semana6, altitud_base))
+            filas.append(clima_regional(grupos[0], semana6, altitud_base).assign(polo=polo))
     return pd.concat(filas, ignore_index=True)[COLUMNAS].sort_values(["polo", "mes"], ignore_index=True)
 
 

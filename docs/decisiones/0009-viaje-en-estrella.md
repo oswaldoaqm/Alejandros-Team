@@ -1,6 +1,6 @@
 # 0009 · El viaje es una estrella desde la base de un polo
 
-**Fecha:** 1 de octubre de 2026 · **Estado:** vigente
+**Fecha:** 1 de octubre de 2026 · **Estado:** vigente. La [0013](./0013-un-polo-por-pueblo.md) junta en un polo los grupos que duermen en el mismo pueblo y cambia el valor de una parada, la [0014](./0014-dia-de-solo-viaje.md) deja que un día de solo viaje llegue a 9 horas, y la [0015](./0015-mas-dias-alla-que-en-el-camino.md) no deja proponer un viaje con más días de camino que de visita
 
 ## Contexto
 
@@ -24,8 +24,16 @@ TA-04 (semana 6) armaba los días desde un «punto base» que era el recurso con
 
 - Un viaje recorre un solo polo. Combinar polos vecinos (el Valle Sagrado y Machu Picchu) es trabajo de la fase 4.
 - ~~Lo que no se alcanza por carretera queda fuera: las islas del Titicaca, el tren a Machu Picchu, los ríos de la Amazonía. Sumar los botes y el tren que registra OSM es la mejora siguiente de la red.~~ Ya entran: ver la actualización.
-- Dos polos pueden compartir base (Huaraz sirve a cuatro); la respuesta no repite base entre sus tres rutas.
+- ~~Dos polos pueden compartir base (Huaraz sirve a cuatro); la respuesta no repite base entre sus tres rutas.~~ Ya no: ver la actualización del 7 de octubre.
 
 ## Actualización · 1 de octubre de 2026
 
 El tren y los botes entraron a la red ([decisión 0010](./0010-tren-y-botes.md)). La estrella no cambia: se sigue durmiendo en una base y cada día sale un paseo que vuelve a ella, pero la ida, la vuelta o un paseo pueden ir en tren (a Machupicchu Pueblo) o en bote (a Taquile desde Puno). La respuesta dice con qué se viaja (`traslado.medios`, contrato 1.2) y el costo cobra los pasajes. La lejanía de la novedad sigue en la escala de la carretera: vale 1 en el polo más lejano al que se llega sin tren ni bote, y también en los que quedan a días de río.
+
+## Actualización · 7 de octubre de 2026
+
+Los grupos de TA-01 que dormían en el mismo pueblo son ahora un solo polo, y una parada vale 1, 2, 6 o 24 según su jerarquía, en vez de 1, 2, 4 u 8 ([decisión 0013](./0013-un-polo-por-pueblo.md)). Así el motor propone Huaraz, y Machu Picchu desde el Cusco. Un día en el que solo se viaja puede durar 9 horas, y no 8, para que Huaraz quepa desde Lima en cuatro días ([decisión 0014](./0014-dia-de-solo-viaje.md)).
+
+## Actualización · 8 de octubre de 2026
+
+Con el valor nuevo, un lugar lleno de imperdibles ganaba aunque el viaje se fuera casi entero en el bus. Ahora no se propone un viaje que pasaría más días solo viajando que días en que se puede visitar ([decisión 0015](./0015-mas-dias-alla-que-en-el-camino.md)).

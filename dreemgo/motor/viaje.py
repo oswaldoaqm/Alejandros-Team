@@ -3,12 +3,13 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
 
 1. Por cada polo, qué se puede visitar: las paradas a las que se llega por carretera desde
    la base, que no pasan la altitud máxima y que no son una excursión de varios días. Cada
-   una vale 2^(jerarquía − 1): 1, 2, 4 u 8; 2 si MINCETUR no la jerarquizó. Si la consulta
+   una vale según su jerarquía: 1, 2, 6 o 24; 2 si MINCETUR no la jerarquizó. Si la consulta
    trae intereses, la que no atiende ninguno vale la cuarta parte.
 2. Cómo se reparten los días: la ida y la vuelta (por carretera, en tren o en bote) y los
-   días en la base. Un viaje de más de 8 horas se parte en partes iguales y se duerme a
-   mitad de camino. El día de llegada y el de salida se usan para visitar si sobran al
-   menos 90 minutos.
+   días en la base. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se
+   parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida
+   se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
+   Un viaje que pasaría más días solo viajando que días con visitas no se propone.
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
 4. El puntaje: (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La
    calidad es el valor que visita el itinerario frente al mejor de la consulta, por la
@@ -68,12 +69,20 @@ from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, m
 from dreemgo.publicados import SIN_PUBLICADOS, Instantanea
 
 JORNADA_MIN = 8 * 60
+# Un día en el que solo se viaja, sin visitas, puede durar una hora más que una jornada: lo que
+# tarda un bus de Lima a Huaraz. Partir ese viaje en dos días le quitaba dos al destino.
+SOLO_VIAJE_MAX_MIN = 9 * 60
 SALIDA_DEL_ORIGEN = 7 * 60
 INICIO_DE_VISITAS = 8 * 60
 MINIMO_PARA_VISITAR = 90
 VISITA_POR_DEFECTO_MIN = 60
 VISITA_MAX_MIN = 6 * 60  # visita más caminata de ida y vuelta: más que esto es una excursión aparte
-VALOR_SIN_JERARQUIA = 2.0
+# Lo que vale una parada según su jerarquía. De un nivel al siguiente se multiplica por 2, por 3
+# y por 4: una de jerarquía 4 vale lo que doce de jerarquía 2, que son dos jornadas llenas. Con
+# 1, 2, 4 y 8, un día de seis paradas de jerarquía 2 valía más que Machu Picchu. Es un supuesto
+# del producto, por calibrar (decisión 0013).
+VALOR_POR_JERARQUIA = {1: 1.0, 2: 2.0, 3: 6.0, 4: 24.0}
+VALOR_SIN_JERARQUIA = 2.0  # como una de jerarquía 2: ni se premia ni se castiga lo que no se evaluó
 FACTOR_SIN_INTERES = 0.25
 FACTOR_TEMPORADA = {"viable": 1.0, "advertencia": 0.75, "desaconsejado": 0.4}
 LAMBDA, LAMBDA_SORPRESA = 0.3, 0.5
@@ -94,7 +103,7 @@ class OrigenDesconocido(ValueError):
 
 
 def valor(recurso: dict, intereses: set[str]) -> float:
-    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else 2.0 ** (recurso["jerarquia"] - 1)
+    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else VALOR_POR_JERARQUIA[recurso["jerarquia"]]
     if intereses and not intereses & set(recurso["intereses"]):
         v *= FACTOR_SIN_INTERES
     return v
@@ -158,14 +167,15 @@ class Plan:
 
 
 def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Plan | None:
-    """La ida y la vuelta, partidas en partes iguales si pasan de 8 horas, y los días en la
-    base; None si no caben."""
+    """La ida y la vuelta, partidas en partes iguales si pasan de 9 horas, y los días en la
+    base; None si no caben. El día de llegada y el de salida tienen visitas solo si el viaje
+    y las visitas caben juntos en una jornada de 8 horas."""
 
     def dia_semana(n: int) -> int | None:
         return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
 
     ida = int(math.ceil(minutos_ida))
-    k = max(1, math.ceil(ida / JORNADA_MIN))  # días de carretera de ida (y de vuelta)
+    k = max(1, math.ceil(ida / SOLO_VIAJE_MAX_MIN))  # días de viaje de ida (y de vuelta)
     if dias < 2 * k:
         return None
     tramo = math.ceil(ida / k)
@@ -184,6 +194,18 @@ def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Pl
         jornadas.append(Jornada(INICIO_DE_VISITAS, libre, dia_semana(dias - k + 1)))
         dia_de.append(dias - k + 1)
     return Plan("estrella", jornadas, dia_de, tramos, llegada=k, salida=dias - k + 1)
+
+
+def dias_de_solo_viaje(plan: Plan) -> int:
+    """Los días que se van enteros en el camino: de ida o de vuelta, y sin visitas."""
+    return sum(1 for n in plan.tramos if n not in plan.dia_de_jornada)
+
+
+def mas_camino_que_visita(plan: Plan) -> bool:
+    """Si el viaje pasaría más días solo viajando que días en que se puede visitar. Un viaje así
+    no se propone: sin vuelos, el Cusco desde Lima con nueve días serían seis en el bus y tres
+    allá (decisión 0015). Un empate sí: a Huaraz con cuatro días, dos de viaje y dos allá."""
+    return dias_de_solo_viaje(plan) > len(plan.jornadas)
 
 
 def plan_de_excursion(fecha_inicio: date | None) -> Plan:
@@ -220,15 +242,15 @@ def estacionalidad(polo: PoloDatos, mes: int) -> Estacionalidad:
     c = polo.clima[mes - 1]
     lluvia, nombre = c["lluvia_mm"], textos.mes(mes).capitalize()
     if c["veredicto"] == "desaconsejado":
-        texto = f"{nombre} es plena temporada de lluvias: {lluvia:.0f} mm, de los tres meses más lluviosos del polo."
+        texto = f"{nombre} es plena temporada de lluvias: {lluvia:.0f} mm, de los tres meses más lluviosos de la zona."
     elif c["veredicto"] == "advertencia" and c["puesto_lluvia"] <= 3:
-        texto = f"{nombre} es de los tres meses más lluviosos del polo ({lluvia:.0f} mm), aunque llueve poco."
+        texto = f"{nombre} es de los tres meses más lluviosos de la zona ({lluvia:.0f} mm), aunque llueve poco."
     elif c["veredicto"] == "advertencia":
-        texto = f"{nombre} es lluvioso aquí ({lluvia:.0f} mm), aunque no de los peores meses del polo."
+        texto = f"{nombre} es lluvioso aquí ({lluvia:.0f} mm), aunque no de los peores meses de la zona."
     elif lluvia < 50:
         texto = f"{nombre} es temporada seca: {lluvia:.0f} mm de lluvia en el mes."
     else:
-        texto = f"{nombre} trae algo de lluvia ({lluvia:.0f} mm), sin ser de los meses más lluviosos del polo."
+        texto = f"{nombre} trae algo de lluvia ({lluvia:.0f} mm), sin ser de los meses más lluviosos de la zona."
     if c["temp_min_c"] is not None and c["temp_min_c"] < 0:
         texto += f" Las noches bajan de cero en la base ({c['temp_min_c']:.0f} °C)."
     return Estacionalidad(
@@ -651,7 +673,7 @@ def avisos(
             Aviso(
                 tipo="datos",
                 nivel="info",
-                mensaje="El clima de este polo es el promedio de su región; el del propio polo "
+                mensaje="El clima de esta zona es el promedio de su región; el de la propia zona "
                 "todavía no se ha cargado.",
             )
         )
@@ -708,7 +730,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         if not np.isfinite(minutos_ida):
             return None
         plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio)
-        if plan is None or not plan.jornadas:
+        if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
     desde = _minutos_desde_deposito(polo, origen, excursion)
     if excursion:  # lo que queda en la misma ciudad del origen no es una excursión
@@ -842,7 +864,7 @@ def _traslado(it: Itinerario, origen: Origen) -> Traslado:
 
 def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bool) -> SinResultado:
     dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
-    motivo = f"Ningún polo cabe en {dias} desde {origen.nombre} con lo que pediste."
+    motivo = f"Ninguna zona cabe en {dias} desde {origen.nombre} con lo que pediste."
     if consulta.dias == 1:
         motivo = f"En un día no se llega desde {origen.nombre} a ninguna parada que cumpla lo que pediste y volver."
     sugerencias = []
@@ -859,6 +881,6 @@ def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bo
             otra = consulta.model_copy(update=cambio)
             n = len(resolver(otra, datos, sugerir=False).rutas)
             if n:
-                efecto = f"aparece{'' if n == 1 else 'n'} {n} ruta{'' if n == 1 else 's'}"
+                efecto = f"aparece{'' if n == 1 else 'n'} {n} viaje{'' if n == 1 else 's'}"
                 sugerencias.append(Sugerencia(campo=campo, valor=valor_nuevo, efecto=efecto))
     return SinResultado(motivo=motivo, sugerencias=sugerencias)

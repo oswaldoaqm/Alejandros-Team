@@ -6,6 +6,8 @@ Estado al 2 de octubre de 2026: **fase 0** con CI en verde en `main`; falta que 
 
 Después, el 6 de octubre, la app se rediseñó: cada viaje se abre en su propia pantalla, con el plan día por día, un mapa de un pétalo por día y la hoja de cada lugar; hay fotos de Wikimedia Commons, con su autor y su licencia, y tema oscuro. Qué fotos van y cómo se revisaron está en [`pipeline/README.md`](../pipeline/README.md#fotos), y las pantallas, en [`app/README.md`](../app/README.md).
 
+Entre el 7 y el 8 de octubre el motor empezó a proponer lo más conocido. Los grupos del agrupamiento que duermen en el mismo pueblo son un solo polo (194 en vez de 222), una parada de jerarquía alta vale más, un día de solo viaje puede durar 9 horas y ningún viaje pasa más días en el camino que allá. Con eso Huaraz sale desde Lima con cuatro días, y Machu Picchu, desde el Cusco. Desde Lima, Machu Picchu sigue sin salir: pide vuelos y viajes de varios polos, que son de la fase 4. Lo que se midió y lo que costó está en las decisiones [0013](./decisiones/0013-un-polo-por-pueblo.md), [0014](./decisiones/0014-dia-de-solo-viaje.md) y [0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md), y en el [informe del prototipo](../deliveries/week10/PrototypeReport.md).
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.

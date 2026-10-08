@@ -9,13 +9,13 @@ python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.2   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.10.3   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.2` usa el clima de los 36 polos que ya estaban descargados el 30 de septiembre, copiados aparte para que la descarga en curso no cambie el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`. Con los 222 polos sale la versión siguiente.
+La versión `2026.10.3` usa el clima de los 36 grupos que ya estaban descargados el 30 de septiembre, copiados aparte para que la descarga en curso no cambie el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`. Con los 222 grupos sale la versión siguiente.
 
 ## Módulos
 
@@ -28,11 +28,11 @@ La versión `2026.10.2` usa el clima de los 36 polos que ya estaban descargados 
 | [`eventos.py`](./eventos.py) | Lee en la ficha de cada acontecimiento cuándo se celebra y lo guarda como una regla (un día, un rango, días desde la Pascua, el segundo domingo de abril, un mes), con su precisión, su día central y la frase que la respalda, en [`data/procesados/eventos_v3.csv`](../data/procesados/). [`dreemgo/calendario.py`](../dreemgo/calendario.py) convierte la regla en fechas para el año del viaje |
 | [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Encima van el tren de pasajeros y los botes, unidos a las vías en las estaciones y en las orillas. Ubica cada punto en la red y busca el camino más rápido |
 | [`red_calibracion.py`](./red_calibracion.py) | Calibra la velocidad de cada clase de vía con los recorridos de acceso de las fichas y mide el error por validación cruzada |
-| [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base, con los km de cada camino que van en tren y en bote. Una sola búsqueda por polo da las tres primeras |
-| [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación |
+| [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base, con los km de cada camino que van en tren y en bote. Una sola búsqueda por grupo de TA-01 da las tres primeras, y los grupos que eligen el mismo pueblo salen juntos, como un solo polo |
+| [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación. Compara por parada y por grupo, así que sirve aunque los polos de las dos corridas no sean los mismos |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
-| [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2) |
-| [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo |
+| [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
+| [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo. Ahí cada recurso y cada evento pasa del grupo de TA-01 que trae el maestro al polo que lo junta |
 | [`fotos.py`](./fotos.py) | Elige la foto de cada parada y de cada base entre lo que Wikidata tiene cerca, por nombre y por clase de lugar; descarta pueblos, regiones, batallas, mapas y fotos sin licencia libre o sin autor. Escribe [`app/public/fotos.json`](../app/public/fotos.json), que la app lee. Las correcciones de la revisión a mano van en [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
@@ -91,7 +91,7 @@ Lo calibrado, en [`data/procesados/red_calibracion.json`](../data/procesados/red
 
 Sin las curvas, el error medio sube a 23,5 %, y sin los minutos fijos, a 25 %: los viajes cortos quedan muy por debajo. Un solo ritmo para todas las vías, o quitar el recargo por km sin asfaltar, casi no cambia el error sobre rutas ya elegidas (22,4 %). Pero las clases hacen falta para elegir la ruta: con un solo ritmo, el camino más rápido sería casi siempre el más corto, aunque fuera una trocha.
 
-La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino es más de 2,7 veces la distancia en línea recta, y 3 166 pares (2 %) no se unen ni con el tren y los botes (4 202 solo por carretera). El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
+La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino es más de 2,7 veces la distancia en línea recta, y 4 842 pares (2 %) no se unen ni con el tren y los botes. El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
 
 ## El tren y los botes
 
@@ -113,10 +113,12 @@ Lo que cambia frente a la red de solo carreteras:
 | Pares origen–base sin camino, de 5 328 | 427 | 24 |
 | Paradas a más de 5 km de la red, de 4 578 | 173 | 128 |
 | Paradas sin camino desde su base, de 4 465 | 144 | 106 |
-| Pares de paradas de un mismo polo sin camino | 4 202 | 3 166 |
+| Pares de paradas de un mismo grupo sin camino | 4 202 | 3 166 |
 | Cusco → Machupicchu Pueblo | 5 h 38 | 3 h 17 |
 | Puno → isla Taquile | sin camino | 2 h 33 |
 | Paracas → islas Ballestas | sin camino | 1 h 48 |
+
+Son las cifras de cuando cada grupo de TA-01 era un polo. Con [un polo por pueblo](#un-pueblo-un-polo) ya no queda ninguna base sin camino.
 
 Ningún par pierde su camino, y lo que empeora tiene explicación. `comparar_tiempos.py` reconoce los pares en los que la base o la parada cambiaron de lugar en la red y deja 14 para mirar a mano, todos del primer caso:
 
@@ -132,17 +134,30 @@ Lo que sigue fuera: los recursos que son un área y tienen su coordenada en medi
 
 Resultado, en [`data/procesados/polos_bases.csv`](../data/procesados/):
 
-- **221 de los 222 polos** duermen en un lugar desde el que se llega a sus paradas por carretera, en tren o en bote; el otro no tiene ninguna parada a menos de 5 km de la red y su base se elige en línea recta.
-- **200 bases tienen hospedaje registrado** a menos de 3 km (la mediana, 7). Son 103 pueblos, 73 caseríos, 45 ciudades y un barrio (Miraflores, en Lima); 198 son capital de distrito.
-- **Altitud:** la del nodo de OSM en 196 bases y la mediana de los recursos a menos de 2 km en 11; 15 caseríos quedan sin altitud.
+- **Los 194 polos** duermen en un lugar desde el que se llega a sus paradas por carretera, en tren o en bote.
+- **173 bases tienen hospedaje registrado** a menos de 3 km (la mediana, 6). Son 96 pueblos, 70 caseríos, 27 ciudades y un barrio (Miraflores, en Lima); 171 son capital de distrito.
+- **Altitud:** la del nodo de OSM en 170 bases y la mediana de los recursos a menos de 2 km en 11; 13 caseríos quedan sin altitud.
 - **Distancia:** desde la base, la parada típica queda a 40 minutos (la mediana de las 4 465; el 90 % a menos de 2 h 19). El promedio pesado por polo va de 13 minutos a 4 horas en los polos de trekking, como Huayhuash.
-- 22 lugares son base de más de un polo: Huaraz de cuatro; Ayacucho, Huánuco, Moquegua y Puerto Maldonado de tres. El motor no repite base entre sus tres rutas.
 
 Todas las bases quedan sobre una vía, también Machupicchu Pueblo, cuyas calles se unen con el resto del país por el tren. Frente a la red de solo carreteras cambian dos bases: la del bajo Urubamba pasa a Camisea, desde donde ahora se llega en bote a 9 de sus 12 paradas, y la de Santa Teresa reemplaza a Sicre.
 
+### Un pueblo, un polo
+
+El agrupamiento de la semana 6 (TA-01) da 222 grupos de recursos, y cada uno elige su base por separado. En 22 pueblos coincidían dos, tres o cuatro grupos: Huaraz era la base de cuatro; Ayacucho, Huánuco, Moquegua y Puerto Maldonado, de tres. Para el viajero son un solo lugar al que ir, pero el motor los tenía como destinos distintos que competían entre sí, y ninguno juntaba lo mejor de sus alrededores ([decisión 0013](../docs/decisiones/0013-un-polo-por-pueblo.md)).
+
+Por eso `tiempos.py` junta en un polo los grupos que eligen el mismo pueblo, con el número del menor, y busca otra vez entre todas sus paradas. De 222 grupos quedan **194 polos**: 172 son un solo grupo y 22 juntan 50.
+
+- **La base no cambia:** el costo de un pueblo para el polo junto es el promedio de sus costos para cada grupo, y ese pueblo ya era el mejor para cada uno.
+- **Los tiempos que había, tampoco:** los 176 570 pares entre paradas de un mismo grupo y los 4 465 de la base a cada parada salen idénticos.
+- **Lo nuevo** son los 38 994 pares entre paradas de grupos distintos, calculados sobre la red como los demás. El camino directo tarda, de mediana, el 90 % de lo que tardaría pasando por la base.
+- **El grupo sin ninguna parada junto a la red** duerme en Omate, igual que otro: ya no hace falta elegir ninguna base en línea recta, y a todas se llega desde las 24 ciudades.
+- **El maestro y los eventos** siguen guardando el grupo de cada recurso. La columna `grupos` de `polos_bases.csv` dice qué grupos junta cada polo, y `artefactos.py` lleva cada recurso y cada evento a su polo.
+
+`comparar_tiempos.py` confirma lo anterior entre la corrida de antes y la nueva: ningún par empeora ni pierde su camino.
+
 ## Clima por polo
 
-`clima.py` promedia los diez años de cada polo mes por mes y aplica la regla de dos ejes de la semana 6, ahora con el clima del propio polo: 150 mm o más en el mes, y estar entre los tres meses más lluviosos del polo con más de 50 mm. Con los 36 polos descargados al 30 de septiembre, 250 de sus 432 meses quedan viables, 100 con advertencia y 82 desaconsejados. Los otros 186 polos usan, hasta que terminen de bajar, la capa regional de la semana 6, y la respuesta del motor lo avisa. Las horas de sol no se publican: el reanálisis no ve la neblina de la costa ([decisión 0006](../docs/decisiones/0006-clima-por-polo.md)).
+`clima.py` promedia los diez años de cada polo mes por mes y aplica la regla de dos ejes de la semana 6, ahora con el clima del propio polo: 150 mm o más en el mes, y estar entre los tres meses más lluviosos del polo con más de 50 mm. El clima se descarga en el centro de cada grupo de TA-01; un polo que junta varios toma el de su grupo con más paradas que ya esté descargado. Con los 36 grupos descargados al 30 de septiembre, 35 polos tienen su propio clima: 245 de sus 420 meses quedan viables, 96 con advertencia y 79 desaconsejados. Los otros 159 polos usan, hasta que terminen de bajar, la capa regional de la semana 6, y la respuesta del motor lo avisa. Las horas de sol no se publican: el reanálisis no ve la neblina de la costa ([decisión 0006](../docs/decisiones/0006-clima-por-polo.md)).
 
 ## Fotos
 
@@ -156,7 +171,7 @@ Las fotos son de Wikimedia Commons, y el repositorio no guarda ninguna. `fotos.p
 
 **El crédito.** La licencia pide mostrar el autor, y Commons lo guarda como lo escribió quien subió la foto, a veces con restos de su wiki. `fotos.py` lo publica como se va a leer: «No machine-readable author provided. Xauxa assumed (based on copyright claims).» queda en «Xauxa», y «User:Pedro Felipe», en «Pedro Felipe»; así se corrigieron 25 de los 580 créditos. «Trabajo propio» o «Unknown author» no nombran a nadie: una foto así solo se usa si es de dominio público.
 
-**La revisión a ojo.** La regla propuso 679 fotos: 548 de paradas y 131 de bases, en 604 archivos distintos. Entre el 2 y el 4 de octubre de 2026 se miraron todas en miniatura, y [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) guarda cada corrección con su motivo. Una de cada seis propuestas no servía: 112 se quitaron y 5 se cambiaron por otra. Otras 13 fotos se pusieron a mano en lugares a los que la regla no les daba ninguna, casi siempre porque su foto estaba en la ficha del pueblo o de un lugar vecino.
+**La revisión a ojo.** La regla propuso 679 fotos: 548 de paradas y 131 de bases, cuando las bases eran 222, en 604 archivos distintos. Entre el 2 y el 4 de octubre de 2026 se miraron todas en miniatura, y [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) guarda cada corrección con su motivo. Una de cada seis propuestas no servía: 112 se quitaron y 5 se cambiaron por otra. Otras 13 fotos se pusieron a mano en lugares a los que la regla no les daba ninguna, casi siempre porque su foto estaba en la ficha del pueblo o de un lugar vecino.
 
 | Por qué se quitó | Fotos |
 |---|---:|
@@ -175,8 +190,8 @@ Un pueblo puede llevar la foto de lo que tiene dentro: su plaza, su iglesia, su 
 |---|---:|---:|
 | Paradas | 479 | 4 465 |
 | Imperdibles (jerarquía 3 y 4) | 77 | 161 |
-| Bases | 101 | 222 |
-| Polos con alguna foto, de un lugar suyo o de su base | 140 | 222 |
+| Bases | 82 | 194 |
+| Polos con alguna foto, de un lugar suyo o de su base | 120 | 194 |
 
 Donde no hay foto, la app muestra la flor del viaje.
 
@@ -187,7 +202,7 @@ Lo que falta:
 - **84 imperdibles sin foto.** Wikidata no tiene un elemento con foto para ellos, o la que tiene no sirve: el Complejo Arqueológico Wari, Túcume, el Templo de la Compañía de Jesús del Cusco. Se resuelven a mano, buscando la foto en Commons.
 - **Las panorámicas.** Wikimedia sirve miniaturas de hasta 1 280 píxeles de ancho. Una foto cuatro veces más ancha que alta llega con unos 315 de alto y, en la portada, se ve blanda. Quedan cuatro: Ayaviri, Chankillo, la Plaza de Armas del Cusco y la laguna Chuchún.
 - **Lo que una miniatura no deja ver.** La revisión se hizo a 330 píxeles de ancho, con las esquinas ampliadas para buscar fechas y marcas. Una marca muy pequeña pudo pasar.
-- **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide.
+- **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide. Pasó el 7 de octubre, al juntar los grupos que duermen en el mismo pueblo: cinco correcciones quedaron con el número de un polo que ya no existe y se quitaron. La misma corrección sigue en el polo que quedó con ese pueblo.
 
 ## Datos personales
 

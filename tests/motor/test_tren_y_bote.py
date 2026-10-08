@@ -106,8 +106,8 @@ def test_el_tren_y_el_bote_se_pagan_aparte():
     bote = costo.estimar(PARAMETROS, _gastos(km_bote=60.0), None)
     assert tren.desglose["transporte"] > sin.desglose["transporte"] and tren.p20 > sin.p20
     assert bote.desglose["transporte"] > sin.desglose["transporte"]
-    assert any(s.startswith("Tren: 2 tramos, entre S/ 18 y S/ 206") for s in tren.supuestos)
-    assert any(s.startswith("Bote: 60 km, entre S/ 0,33 y S/ 1,81 por km") for s in bote.supuestos)
+    assert any(s.startswith("Tren: 2 tramos, entre S/\u00a018 y S/\u00a0206") for s in tren.supuestos)
+    assert any(s.startswith("Bote: 60 km, entre S/\u00a00,33 y S/\u00a01,81 por km") for s in bote.supuestos)
     assert not any(s.startswith(("Tren", "Bote")) for s in sin.supuestos)
 
 
@@ -125,8 +125,9 @@ def test_a_machu_picchu_se_llega_en_tren():
 
 @con_datos
 def test_a_las_islas_del_titicaca_se_llega_en_bote():
-    polo = artefactos.cargar().polos[274]
-    i = polo.indice()["959"]  # Isla Taquile, desde Puno
+    datos = artefactos.cargar()
+    polo = datos.polos[datos.recursos["959"]["polo"]]  # Isla Taquile, desde Puno
+    i = polo.indice()["959"]
     assert np.isfinite(polo.base_minutos[i]) and polo.base_km_bote[i] > 20
 
 
