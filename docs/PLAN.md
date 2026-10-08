@@ -8,6 +8,8 @@ Después, el 6 de octubre, la app se rediseñó: cada viaje se abre en su propia
 
 Entre el 7 y el 8 de octubre el motor empezó a proponer lo más conocido. Los grupos del agrupamiento que duermen en el mismo pueblo son un solo polo (194 en vez de 222), una parada de jerarquía alta vale más, un día de solo viaje puede durar 9 horas y ningún viaje pasa más días en el camino que allá. Con eso Huaraz sale desde Lima con cuatro días, y Machu Picchu, desde el Cusco. Desde Lima, Machu Picchu sigue sin salir: pide vuelos y viajes de varios polos, que son de la fase 4. Lo que se midió y lo que costó está en las decisiones [0013](./decisiones/0013-un-polo-por-pueblo.md), [0014](./decisiones/0014-dia-de-solo-viaje.md) y [0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md), y en el [informe del prototipo](../deliveries/week10/PrototypeReport.md).
 
+El 8 de octubre la app publicada empezó a responder: le pregunta al API, que corre en Render desde `main` ([decisión 0012](./decisiones/0012-host-gratuito-render.md)). Render es gratis, pero se duerme sin uso y lo que publican los municipios no dura. AWS sigue siendo el destino, y la cuenta ya está.
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
