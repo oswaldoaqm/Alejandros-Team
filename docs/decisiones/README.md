@@ -12,8 +12,9 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente; sin horas de sol (actualización del 1 de octubre) |
 | [0007](./0007-red-vial-propia.md) | Tiempos de viaje sobre un extracto propio de OpenStreetMap | Vigente; su calibración la precisa la 0008 y la 0010 le suma el tren y los botes |
 | [0008](./0008-calibrar-con-las-fichas.md) | Calibrar la red vial con los recorridos de las fichas | Vigente |
-| [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010) |
+| [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010), y cada pueblo es la base de un solo polo, con otro valor por parada (0013) |
 | [0010](./0010-tren-y-botes.md) | El tren y los botes entran a la red; cada parada se ubica según su ficha | Vigente |
 | [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente; lo publicado se ve en dos segundos en todos los servidores (actualización del 2 de octubre) |
+| [0013](./0013-un-polo-por-pueblo.md) | Un polo por pueblo, y un valor que distingue lo imperdible | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
