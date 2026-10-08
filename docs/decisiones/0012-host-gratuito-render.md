@@ -1,6 +1,6 @@
 # 0012 · El host gratuito pasa de un Space de Hugging Face a Render
 
-**Fecha:** 9 de octubre de 2026 · **Estado:** vigente
+**Fecha:** 5 de octubre de 2026 · **Estado:** vigente
 
 ## Contexto
 
