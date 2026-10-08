@@ -1,6 +1,6 @@
 # 0014 · Un día de solo viaje puede durar nueve horas
 
-**Fecha:** 7 de octubre de 2026 · **Estado:** vigente · Ajusta la [0009](./0009-viaje-en-estrella.md) y la propiedad 3 del [contrato](../CONTRATO.md)
+**Fecha:** 7 de octubre de 2026 · **Estado:** vigente · Ajusta la [0009](./0009-viaje-en-estrella.md) y la propiedad 3 del [contrato](../CONTRATO.md). La [0015](./0015-mas-dias-alla-que-en-el-camino.md) corrige los viajes que se iban en el camino
 
 ## Contexto
 

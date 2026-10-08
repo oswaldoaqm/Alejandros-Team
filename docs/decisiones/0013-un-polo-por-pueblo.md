@@ -1,6 +1,6 @@
 # 0013 · Un polo por pueblo, y un valor que distingue lo imperdible
 
-**Fecha:** 7 de octubre de 2026 · **Estado:** vigente · Ajusta la [0009](./0009-viaje-en-estrella.md)
+**Fecha:** 7 de octubre de 2026 · **Estado:** vigente · Ajusta la [0009](./0009-viaje-en-estrella.md). La [0015](./0015-mas-dias-alla-que-en-el-camino.md) corrige los viajes que se iban en el camino
 
 ## Contexto
 
