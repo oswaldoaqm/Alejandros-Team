@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+# Un espacio que no parte la línea, para que «3 500» y «S/ 80» no queden a caballo entre dos
+# renglones. La app escribe igual sus propios números (app/src/formato.ts).
+ESPACIO = "\u00a0"
+
 MESES = (
     "",
     "enero",
@@ -35,12 +39,14 @@ def duracion(minutos: float) -> str:
 
 
 def miles(n: float) -> str:
-    """1250 → "1 250"."""
-    return f"{int(round(n)):,}".replace(",", " ")
+    """1250 → "1 250", con un espacio que no parte la línea."""
+    return f"{int(round(n)):,}".replace(",", ESPACIO)
 
 
-def soles(n: float) -> str:
-    return f"S/ {miles(n)}"
+def soles(n: float, decimales: int = 0) -> str:
+    """1250 → "S/ 1 250"; con dos decimales, 0.33 → "S/ 0,33". Tampoco se parte."""
+    monto = f"{n:.{decimales}f}".replace(".", ",") if decimales else miles(n)
+    return f"S/{ESPACIO}{monto}"
 
 
 def lista(cosas: list[str], conjuncion: str = "y") -> str:

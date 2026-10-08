@@ -86,7 +86,10 @@ def test_hora_lista_y_montos():
     assert textos.lista(["a"]) == "a"
     assert textos.lista(["a", "b", "c"]) == "a, b y c"
     assert textos.lista(["a", "b"], "o") == "a o b"
-    assert textos.soles(1250) == "S/ 1 250"
+    # Con espacios que no parten la línea, como los que escribe la app.
+    assert [textos.miles(n) for n in (999, 1250, 1234567)] == ["999", "1\u00a0250", "1\u00a0234\u00a0567"]
+    assert textos.soles(1250) == "S/\u00a01\u00a0250" and textos.soles(80) == "S/\u00a080"
+    assert textos.soles(0.33, 2) == "S/\u00a00,33" and textos.soles(2.5, 2) == "S/\u00a02,50"
     assert textos.a_minutos("08:30", 0) == 510
     assert textos.a_minutos(None, 99) == 99
     assert textos.a_minutos("todo el día", 7) == 7
