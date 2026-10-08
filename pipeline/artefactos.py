@@ -20,6 +20,10 @@ Los archivos son deterministas: con las mismas tablas salen los mismos bytes (JS
 claves ordenadas y gzip sin fecha), así que su huella sirve para comprobar que dos máquinas
 construyeron lo mismo.
 
+Un polo es lo que se visita desde una base. El maestro y los eventos traen el grupo de TA-01
+de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
+recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
+
 Uso:  python -m pipeline.artefactos --version 2026.10.2
       (después de maestro, eventos, tiempos y clima)
 """
@@ -38,6 +42,7 @@ import numpy as np
 import pandas as pd
 
 from dreemgo.contrato import ETIQUETAS_INTERES, Interes
+from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
@@ -88,6 +93,13 @@ def _ingreso(fila) -> str:
     if fila["ingreso"] == "boleto" or (fila["ingreso"] in ("permiso", "otro") and fila["tarifa_soles"] > 0):
         return "pagado"
     return "desconocido"
+
+
+def en_su_polo(tabla: pd.DataFrame, bases: pd.DataFrame) -> pd.DataFrame:
+    """La tabla con el polo de cada fila en vez de su grupo de TA-01; lo que no está en ningún
+    grupo sigue en −1."""
+    a_polo = polo_de_cada_grupo(bases)
+    return tabla.assign(polo=tabla["polo"].map(lambda grupo: a_polo.get(grupo, grupo)).astype(int))
 
 
 def recursos(maestro: pd.DataFrame) -> list[dict]:
@@ -149,7 +161,8 @@ def polos(
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
-    # Nombre: el de la base; si dos polos duermen en el mismo lugar, se agrega su recurso principal.
+    # Nombre: el de la base. Dos polos ya no duermen en el mismo pueblo, pero dos pueblos pueden
+    # llamarse igual: ahí se agrega el recurso principal de cada polo.
     principal = (
         paradas.assign(_j=paradas["jerarquia"].fillna(0))
         .sort_values(["polo", "_j", "codigo"], ascending=[True, False, True])
@@ -333,9 +346,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     def leer(nombre: str, **kw) -> pd.DataFrame:
         return pd.read_csv(entrada / nombre, sep=";", encoding="utf-8-sig", **kw)
 
-    maestro = leer("maestro_v3.csv", dtype={"dias": str})
-    eventos = leer("eventos_v3.csv")
     bases = leer("polos_bases.csv")
+    maestro = en_su_polo(leer("maestro_v3.csv", dtype={"dias": str}), bases)
+    eventos = en_su_polo(leer("eventos_v3.csv"), bases)
     clima = leer("clima_polo_mes.csv")
     tiempos_polo = leer("tiempos_polo.csv")
     tiempos_base = leer("tiempos_base.csv")

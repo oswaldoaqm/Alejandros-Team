@@ -1,4 +1,5 @@
-"""Lo que los artefactos guardan de los caminos en tren y en bote, y cómo lo lee el motor."""
+"""Lo que los artefactos guardan de los caminos en tren y en bote, cómo lo lee el motor y cómo
+cada recurso pasa de su grupo de TA-01 al polo que lo junta."""
 
 import numpy as np
 import pandas as pd
@@ -151,3 +152,37 @@ def test_cada_origen_guarda_minutos_km_y_los_km_en_tren_y_en_bote():
     # Con las tablas de antes, los km en tren y en bote van en cero.
     (antes,) = artefactos.origenes_(ORIGENES, a_base[["origen", "polo", "minutos", "km"]], a_parada)
     assert antes["a_base"]["1"] == [5.0, 1.3, 0.0, 0.0]
+
+
+def test_cada_recurso_lleva_el_polo_que_junta_a_su_grupo():
+    maestro, bases, clima, entre, desde_base, a_base, _, origenes = _tablas_de_dos_polos()
+    # Un grupo más, el 7, que duerme en Puno como el 1: tiempos.py los deja en un solo polo.
+    maestro = pd.concat(
+        [maestro, pd.DataFrame({"codigo": [70, 71], "nombre": ["Chullpa", "Feria"], "polo": [7, -1]})],
+        ignore_index=True,
+    ).assign(es_parada=lambda m: m["codigo"] != 71, jerarquia=2, region="Puno")
+    bases = bases.assign(grupos=["1|7", "2"])
+    eventos = pd.DataFrame({"polo": [7, 2, -1], "codigo": [900, 901, 902]})
+    en_polo = artefactos.en_su_polo(maestro, bases)
+    assert en_polo.set_index("codigo")["polo"].to_dict() == {10: 1, 11: 1, 20: 2, 21: 2, 70: 1, 71: -1}
+    assert artefactos.en_su_polo(eventos, bases)["polo"].tolist() == [1, 2, -1]
+    # Las tablas de tiempos ya vienen por polo: la parada del grupo 7 está entre las del 1.
+    entre = pd.concat(
+        [entre, pd.DataFrame({"polo": 1, "desde": [10, 70, 11, 70], "hasta": [70, 10, 70, 11], "minutos": 30.0})],
+        ignore_index=True,
+    ).fillna({"km": 9.0, "km_tren": 0.0, "km_bote": 0.0})
+    desde_base = pd.concat(
+        [desde_base, pd.DataFrame({"polo": [1], "codigo": [70], "minutos": [25.0], "km": [8.0]})], ignore_index=True
+    ).fillna(0.0)
+    puno, juli = artefactos.polos(
+        en_polo, bases, clima, entre, desde_base, a_base, artefactos.en_su_polo(eventos, bases), origenes
+    )
+    assert (puno["id"], puno["nombre"], puno["paradas"]) == (1, "Puno", ["10", "11", "70"])
+    assert puno["entre_minutos"][0] == [0.0, 120.0, 30.0] and puno["base_minutos"] == [153.2, 8.0, 25.0]
+    assert puno["eventos"] == ["900"] and juli["eventos"] == ["901"]
+    assert puno["recursos"] == 3 and juli["paradas"] == ["20", "21"]
+
+
+def test_las_tablas_de_antes_de_juntar_no_cambian():
+    maestro, bases, *_ = _tablas_de_dos_polos()
+    assert artefactos.en_su_polo(maestro, bases)["polo"].tolist() == maestro["polo"].tolist()
