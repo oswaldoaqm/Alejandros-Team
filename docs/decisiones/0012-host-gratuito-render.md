@@ -25,8 +25,8 @@ de tecnología, y la nota de 0002 era correcta cuando se escribió y dejó de se
   repositorio con cada push a `main`.
 - **La decisión principal no cambia:** AWS Lambda con imagen de contenedor sigue siendo el destino para
   cuando haya cuenta, porque es el único que conserva lo que publican los municipios y el que describe
-  [`infra/template.yaml`](../template.yaml).
-- **La imagen se vuelve portable de verdad.** [`infra/Dockerfile`](../Dockerfile) ahora toma el puerto de
+  [`infra/template.yaml`](../../infra/template.yaml).
+- **La imagen se vuelve portable de verdad.** [`infra/Dockerfile`](../../infra/Dockerfile) ahora toma el puerto de
   `PORT` y deja a uvicorn como proceso principal del contenedor, así que la misma imagen corre en Lambda
   (puerto 8080, el que pone la plantilla), en Docker local y en un host que inyecte su propio puerto, como
   Google Cloud Run, sin recompilarla.
@@ -34,7 +34,7 @@ de tecnología, y la nota de 0002 era correcta cuando se escribió y dejó de se
 ## Alternativas descartadas
 
 - **Pagar Hugging Face PRO**: resuelve el despliegue y contradice la restricción de no gastar. Si algún día
-  se paga, [`infra/huggingface/Dockerfile`](../huggingface/Dockerfile) sigue sirviendo tal cual.
+  se paga, [`infra/huggingface/Dockerfile`](../../infra/huggingface/Dockerfile) sigue sirviendo tal cual.
 - **Google Cloud Run**: su capa gratuita es más generosa (2 millones de peticiones al mes) y no se duerme,
   pero exige cuenta de Google Cloud. Queda como la siguiente opción si Render deja de alcanzar.
 - **Koyeb**: mantiene una instancia gratuita que no se duerme, con menos memoria. Queda como respaldo.
