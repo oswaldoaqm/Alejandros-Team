@@ -153,6 +153,14 @@ def test_viaje_cumple_el_contrato(cliente):
 
 
 @con_datos
+def test_sin_ningun_viaje_dice_por_que_y_que_cambiar_con_las_palabras_de_la_app(cliente):
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 2, "altitud_max": 0}).json()
+    assert r["rutas"] == []
+    assert r["sin_resultado"]["motivo"] == "Ninguna zona cabe en 2 días desde Lima con lo que pediste."
+    assert r["sin_resultado"]["sugerencias"] == [{"campo": "altitud_max", "valor": None, "efecto": "aparecen 3 viajes"}]
+
+
+@con_datos
 def test_origen_desconocido(cliente):
     r = cliente.get("/v1/viajes", params={"origen": "marte", "mes": 7})
     assert r.status_code == 422
@@ -175,7 +183,8 @@ def test_ficha_de_un_polo(cliente):
     assert [c.mes for c in detalle.clima] == list(range(1, 13))
     jerarquias = [x.jerarquia or 0 for x in detalle.recursos]
     assert jerarquias == sorted(jerarquias, reverse=True)
-    assert cliente.get("/v1/polos/99999").status_code == 404
+    no_existe = cliente.get("/v1/polos/99999")
+    assert (no_existe.status_code, no_existe.json()["detail"]) == (404, "No hay una zona con ese número.")
 
 
 @con_datos

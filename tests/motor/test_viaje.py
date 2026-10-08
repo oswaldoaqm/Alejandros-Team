@@ -109,3 +109,28 @@ def test_mejores_meses_de_menos_a_mas_lluvia():
     assert viaje.mejores_meses(tuple(clima)) == [8, 7, 6]
     selva = [{"mes": m, "veredicto": "advertencia", "lluvia_mm": 200 + m} for m in range(1, 13)]
     assert viaje.mejores_meses(tuple(selva))[0] == 1  # sin meses viables, los de advertencia
+
+
+def test_el_clima_se_cuenta_con_las_palabras_de_la_app():
+    """La app dice «zona» donde el contrato dice polo: lo que el viajero lee del clima, también."""
+    from types import SimpleNamespace
+
+    def frase(veredicto, lluvia_mm, puesto_lluvia, temp_min_c=None):
+        mes = {"veredicto": veredicto, "lluvia_mm": lluvia_mm, "puesto_lluvia": puesto_lluvia}
+        mes |= {"mes": 2, "dias_con_lluvia": None, "temp_min_c": temp_min_c, "temp_max_c": None}
+        return viaje.estacionalidad(SimpleNamespace(clima=(mes, mes)), 2).explicacion
+
+    frases = [
+        frase("desaconsejado", 210.4, 1),
+        frase("advertencia", 60.0, 2),
+        frase("advertencia", 180.0, 5),
+        frase("viable", 70.0, 6),
+        frase("viable", 12.0, 9, temp_min_c=-3.2),
+    ]
+    assert frases == [
+        "Febrero es plena temporada de lluvias: 210 mm, de los tres meses más lluviosos de la zona.",
+        "Febrero es de los tres meses más lluviosos de la zona (60 mm), aunque llueve poco.",
+        "Febrero es lluvioso aquí (180 mm), aunque no de los peores meses de la zona.",
+        "Febrero trae algo de lluvia (70 mm), sin ser de los meses más lluviosos de la zona.",
+        "Febrero es temporada seca: 12 mm de lluvia en el mes. Las noches bajan de cero en la base (-3 °C).",
+    ]

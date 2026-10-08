@@ -171,7 +171,7 @@ describe("los tres viajes", () => {
                 sin_resultado: {
                   motivo:
                     "En un día no se llega desde Lima a ninguna parada que cumpla lo que pediste y volver.",
-                  sugerencias: [{ campo: "altitud_max", valor: null, efecto: "aparecen 3 rutas" }],
+                  sugerencias: [{ campo: "altitud_max", valor: null, efecto: "aparecen 3 viajes" }],
                 },
               },
             }
@@ -179,7 +179,7 @@ describe("los tres viajes", () => {
     });
     expect(await screen.findByRole("heading", { name: "No encontramos un viaje así" })).toBeDefined();
     expect(screen.getByText(/En un día no se llega desde Lima/)).toBeDefined();
-    expect(screen.getByText("aparecen 3 rutas")).toBeDefined();
+    expect(screen.getByText("aparecen 3 viajes")).toBeDefined();
     expect(screen.queryByRole("list", { name: "Viajes propuestos" })).toBeNull();
 
     await userEvent.click(screen.getByRole("link", { name: "Quitar el límite de altitud" }));

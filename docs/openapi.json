@@ -1383,7 +1383,7 @@
             "type": "string"
           },
           "efecto": {
-            "description": "Qué cambia si se acepta, por ejemplo «aparecen 5 rutas».",
+            "description": "Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».",
             "title": "Efecto",
             "type": "string"
           },
@@ -1603,7 +1603,7 @@
             "description": "Successful Response"
           },
           "404": {
-            "description": "No hay un polo con ese número."
+            "description": "No hay una zona con ese número."
           },
           "422": {
             "description": "La consulta no cumple el contrato. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`."
@@ -1716,7 +1716,7 @@
             "description": "Successful Response"
           },
           "404": {
-            "description": "No hay un polo con ese número."
+            "description": "No hay una zona con ese número."
           },
           "422": {
             "content": {

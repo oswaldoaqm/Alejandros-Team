@@ -242,15 +242,15 @@ def estacionalidad(polo: PoloDatos, mes: int) -> Estacionalidad:
     c = polo.clima[mes - 1]
     lluvia, nombre = c["lluvia_mm"], textos.mes(mes).capitalize()
     if c["veredicto"] == "desaconsejado":
-        texto = f"{nombre} es plena temporada de lluvias: {lluvia:.0f} mm, de los tres meses más lluviosos del polo."
+        texto = f"{nombre} es plena temporada de lluvias: {lluvia:.0f} mm, de los tres meses más lluviosos de la zona."
     elif c["veredicto"] == "advertencia" and c["puesto_lluvia"] <= 3:
-        texto = f"{nombre} es de los tres meses más lluviosos del polo ({lluvia:.0f} mm), aunque llueve poco."
+        texto = f"{nombre} es de los tres meses más lluviosos de la zona ({lluvia:.0f} mm), aunque llueve poco."
     elif c["veredicto"] == "advertencia":
-        texto = f"{nombre} es lluvioso aquí ({lluvia:.0f} mm), aunque no de los peores meses del polo."
+        texto = f"{nombre} es lluvioso aquí ({lluvia:.0f} mm), aunque no de los peores meses de la zona."
     elif lluvia < 50:
         texto = f"{nombre} es temporada seca: {lluvia:.0f} mm de lluvia en el mes."
     else:
-        texto = f"{nombre} trae algo de lluvia ({lluvia:.0f} mm), sin ser de los meses más lluviosos del polo."
+        texto = f"{nombre} trae algo de lluvia ({lluvia:.0f} mm), sin ser de los meses más lluviosos de la zona."
     if c["temp_min_c"] is not None and c["temp_min_c"] < 0:
         texto += f" Las noches bajan de cero en la base ({c['temp_min_c']:.0f} °C)."
     return Estacionalidad(
@@ -673,7 +673,7 @@ def avisos(
             Aviso(
                 tipo="datos",
                 nivel="info",
-                mensaje="El clima de este polo es el promedio de su región; el del propio polo "
+                mensaje="El clima de esta zona es el promedio de su región; el de la propia zona "
                 "todavía no se ha cargado.",
             )
         )
@@ -864,7 +864,7 @@ def _traslado(it: Itinerario, origen: Origen) -> Traslado:
 
 def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bool) -> SinResultado:
     dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
-    motivo = f"Ningún polo cabe en {dias} desde {origen.nombre} con lo que pediste."
+    motivo = f"Ninguna zona cabe en {dias} desde {origen.nombre} con lo que pediste."
     if consulta.dias == 1:
         motivo = f"En un día no se llega desde {origen.nombre} a ninguna parada que cumpla lo que pediste y volver."
     sugerencias = []
@@ -881,6 +881,6 @@ def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bo
             otra = consulta.model_copy(update=cambio)
             n = len(resolver(otra, datos, sugerir=False).rutas)
             if n:
-                efecto = f"aparece{'' if n == 1 else 'n'} {n} ruta{'' if n == 1 else 's'}"
+                efecto = f"aparece{'' if n == 1 else 'n'} {n} viaje{'' if n == 1 else 's'}"
                 sugerencias.append(Sugerencia(campo=campo, valor=valor_nuevo, efecto=efecto))
     return SinResultado(motivo=motivo, sugerencias=sugerencias)

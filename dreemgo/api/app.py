@@ -212,13 +212,13 @@ def opciones(publicadas: Publicadas) -> Opciones:
     response_model=PoloDetalle,
     tags=["polos"],
     summary="Ficha de un polo: recursos, clima mes a mes y eventos",
-    responses={404: {"description": "No hay un polo con ese número."}, **SIN_DATOS},
+    responses={404: {"description": "No hay una zona con ese número."}, **SIN_DATOS},
 )
 def polo(polo_id: Annotated[int, Path(ge=0)], publicadas: Publicadas) -> PoloDetalle:
     datos = _datos()
     p = datos.polos.get(polo_id)
     if p is None:
-        raise HTTPException(status_code=404, detail="No hay un polo con ese número.")
+        raise HTTPException(status_code=404, detail="No hay una zona con ese número.")
     publicados = publicadas.instantanea(datos)
     desde = date(*(int(x) for x in datos.version.split(".")[:2]), 1)
     hasta = date(desde.year + 1, desde.month, 1) - timedelta(days=1)
@@ -241,7 +241,7 @@ def polo(polo_id: Annotated[int, Path(ge=0)], publicadas: Publicadas) -> PoloDet
     response_model=Eventos,
     tags=["eventos"],
     summary="Eventos entre dos fechas, de un polo o de todos",
-    responses={404: {"description": "No hay un polo con ese número."}, **VALIDACION, **SIN_DATOS},
+    responses={404: {"description": "No hay una zona con ese número."}, **VALIDACION, **SIN_DATOS},
 )
 def eventos(
     publicadas: Publicadas,
@@ -256,7 +256,7 @@ def eventos(
     if (hasta - desde).days > EVENTOS_RANGO_MAX_DIAS:
         raise _error("hasta", f"El rango admite como máximo {EVENTOS_RANGO_MAX_DIAS} días.")
     if polo is not None and polo not in datos.polos:
-        raise HTTPException(status_code=404, detail="No hay un polo con ese número.")
+        raise HTTPException(status_code=404, detail="No hay una zona con ese número.")
     publicados = publicadas.instantanea(datos)
     polos = [datos.polos[polo]] if polo is not None else list(datos.polos.values())
     lista = [e for p in polos for e in viaje.eventos_del_polo(p, desde, hasta, datos)]

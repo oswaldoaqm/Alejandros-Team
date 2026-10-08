@@ -683,7 +683,7 @@ export interface components {
             campo: "origen" | "mes" | "fecha_inicio" | "dias" | "intereses" | "presupuesto" | "altitud_max";
             /**
              * Efecto
-             * @description Qué cambia si se acepta, por ejemplo «aparecen 5 rutas».
+             * @description Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».
              */
             efecto: string;
             /** Valor */
@@ -771,7 +771,7 @@ export interface operations {
                     "application/json": components["schemas"]["Eventos"];
                 };
             };
-            /** @description No hay un polo con ese número. */
+            /** @description No hay una zona con ese número. */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -893,7 +893,7 @@ export interface operations {
                     "application/json": components["schemas"]["PoloDetalle"];
                 };
             };
-            /** @description No hay un polo con ese número. */
+            /** @description No hay una zona con ese número. */
             404: {
                 headers: {
                     [name: string]: unknown;
