@@ -1,0 +1,194 @@
+/* El mapa del viaje (piezas/MapaRuta.tsx): los pétalos los pinta MapLibre; los lugares y la
+   base son botones, para poder tocarlos y recorrerlos con el teclado. */
+
+.mapa-viaje {
+  position: relative;
+  height: min(58vh, 420px);
+  overflow: hidden;
+  background: #e8edf0;
+  border-radius: var(--r-tarjeta);
+  isolation: isolate;
+}
+
+.mapa-viaje__marco,
+.mapa-viaje__lienzo {
+  width: 100%;
+  height: 100%;
+}
+
+/* Mientras MapLibre llega: la flor del viaje, en su lugar. */
+.mapa-viaje__espera {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+  color: var(--tinta-2);
+  text-align: center;
+  background: var(--lago-claro);
+}
+
+.mapa-viaje__espera .flor {
+  width: auto;
+  height: min(100%, 280px);
+  aspect-ratio: 1;
+}
+
+.mapa-viaje__fallo {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  padding: 10px 14px;
+  font-size: var(--t-pie);
+  background: var(--superficie);
+  border-radius: var(--r-control);
+  box-shadow: var(--sombra-flota);
+}
+
+/* ── Los lugares y la base ────────────────────────────────────────────────────── */
+
+.pin {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-family: var(--fuente);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: #0b5c80;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(19 32 43 / 35%);
+}
+
+.pin:hover {
+  background: #084663;
+}
+
+/* Con todo el viaje a la vista, cada lugar es un punto: tocarlo elige su día. */
+.pin--punto {
+  width: 14px;
+  height: 14px;
+  font-size: 0;
+  border-width: 2px;
+}
+
+.pin--oculto {
+  display: none;
+}
+
+.pin-base {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: #0b5c80;
+  cursor: pointer;
+  background: #fff;
+  border: 0;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px #0b5c80,
+    0 2px 8px rgb(19 32 43 / 30%);
+}
+
+.maplibregl-marker.pin {
+  z-index: 1;
+}
+
+.maplibregl-marker.pin-base {
+  z-index: 2;
+}
+
+/* ── Lo de MapLibre, con la forma de la app ─────────────────────────────────────
+   El fondo del mapa es claro en los dos temas, y lo que flota sobre él va con el mapa, no con
+   la página: con el cristal del tema oscuro, los signos de acercar y alejar, que MapLibre
+   dibuja oscuros, no se verían. */
+
+.mapa-viaje .maplibregl-ctrl-group {
+  overflow: hidden;
+  background: rgb(255 255 255 / 86%);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-radius: 12px;
+  box-shadow: var(--sombra-baja);
+}
+
+.mapa-viaje .maplibregl-ctrl-group button {
+  width: 36px;
+  height: 36px;
+}
+
+.mapa-viaje .maplibregl-ctrl-top-right {
+  top: 4px;
+  right: 4px;
+}
+
+/* Las fuentes del mapa van siempre a la vista, pero chicas y en una línea. */
+.mapa-viaje .maplibregl-ctrl-bottom-right {
+  max-width: 100%;
+}
+
+.mapa-viaje .maplibregl-ctrl-attrib {
+  margin: 0 6px 6px;
+  font-family: var(--fuente);
+  font-size: 0.625rem;
+  line-height: 1.5;
+  color: #4b5a66;
+  background: rgb(255 255 255 / 86%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+}
+
+.mapa-viaje .maplibregl-ctrl-attrib a {
+  color: inherit;
+}
+
+/* El globo de la base («Aquí duermes»): con los colores de la página, también en modo oscuro. */
+.maplibregl-popup-content {
+  padding: 10px 14px;
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  line-height: 1.35;
+  color: var(--tinta);
+  background: var(--superficie);
+  border-radius: 12px;
+  box-shadow: var(--sombra-flota);
+}
+
+.maplibregl-popup-content strong {
+  display: block;
+}
+
+.maplibregl-popup-content span {
+  font-size: var(--t-pie);
+  color: var(--tinta-2);
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: var(--superficie);
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: var(--superficie);
+}
+
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: var(--superficie);
+}
+
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: var(--superficie);
+}

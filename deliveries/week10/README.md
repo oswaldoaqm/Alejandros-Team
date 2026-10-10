@@ -4,15 +4,16 @@
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
 Entrega: 14 de octubre de 2026
 
-El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta trae el informe y dice dónde está cada cosa que pide el enunciado, en vez de guardar una segunda copia del código y de los datos.
+El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
 
 ## Qué pide el enunciado y dónde está
 
 | Entregable | Dónde |
 |---|---|
-| Código completo del prototipo | [`dreemgo/`](../../dreemgo/) (motor y API), [`app/`](../../app/) (app web), [`pipeline/`](../../pipeline/) (datos), [`infra/`](../../infra/) (imagen y despliegue) y [`tests/`](../../tests/) |
-| Datos procesados, en CSV y JSON | [`data/procesados/`](../../data/procesados/), con su diccionario |
-| Artefactos analíticos | [`dreemgo/datos/`](../../dreemgo/datos/): lo que el motor carga al arrancar, con su manifiesto y la huella de cada archivo |
+| Código completo del prototipo | [`code/`](./code/): el motor y el API (`dreemgo/`), la app web (`app/`), el pipeline de datos (`pipeline/`), la imagen y el despliegue (`infra/`), las pruebas (`tests/`) y el contrato del API (`docs/`). Es la copia de lo que está en la raíz del repositorio |
+| Datos procesados, en CSV y JSON | [`data/processed/`](./data/processed/), con su diccionario (`README.md`). Es la copia de [`data/procesados/`](../../data/procesados/) |
+| Artefactos analíticos | [`artifacts/`](./artifacts/): lo que el motor carga al arrancar, con su manifiesto y la huella de cada archivo. Es la copia de [`dreemgo/datos/`](../../dreemgo/datos/) |
+| El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales y mide las cifras del informe con el mismo código del API |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
 | URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |

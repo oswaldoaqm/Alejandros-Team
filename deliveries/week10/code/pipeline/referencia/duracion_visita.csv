@@ -1,0 +1,87 @@
+campo;valor;minutos;nota
+categoria;1;60;Sitio natural sin regla más específica
+categoria;2;45;Manifestación cultural sin regla más específica
+categoria;4;45;Realización contemporánea sin regla más específica
+tipo;Caídas de agua;60;Contemplar y fotografiar. La caminata de acceso se suma aparte, desde la ficha
+tipo;Agua termo-mineral;120;Baño
+tipo;Manantiales;45;
+tipo;Cavidades naturales;60;
+tipo;Cañones;90;Miradores del cañón
+tipo;Corrientes de agua;60;
+tipo;Valles;90;
+tipo;Quebradas;90;
+tipo;Pongos;60;
+tipo;Áreas Protegidas;180;Recorrido corto dentro del área
+tipo;Pueblos;90;Caminar el pueblo
+tipo;Museos y otros;60;
+tipo;Lugares Históricos;30;
+tipo;Arquitectura y Espacios Urbanos;20;Edificio o espacio que se recorre en poco tiempo
+tipo;Explotaciones Industriales;60;
+tipo;Explotaciones Agropecuarias y Pesqueras;60;
+subtipo;Playas;180;Medio día de playa
+subtipo;Islas;180;
+subtipo;Lomas;120;
+subtipo;Manglares;120;
+subtipo;Caletas;60;
+subtipo;Lagunas;60;
+subtipo;Lagos;90;
+subtipo;Humedales;60;
+subtipo;Miradores naturales;20;
+subtipo;Bosques;90;
+subtipo;Lugares pintorescos de flora y fauna;60;
+subtipo;Camino Pintoresco;60;
+subtipo;Cerros;90;
+subtipo;Volcanes;90;
+subtipo;Cordillera;180;
+subtipo;Pasos o Abras;20;
+subtipo;Dunas;120;Sandboard o paseo
+subtipo;Salinas;60;
+subtipo;Pampas;45;
+subtipo;Formaciones rocosas(bosque de piedra);60;
+subtipo;Collpas;60;Observación de aves o mamíferos en la collpa
+subtipo;Zonas arqueológicas;90;
+subtipo;Ciudadelas;120;
+subtipo;Parques arqueológicos;120;
+subtipo;Templos;60;Templo prehispánico
+subtipo;Fortalezas;60;
+subtipo;Recintos ceremoniales;45;
+subtipo;Petroglifos (Grabados en piedra);30;
+subtipo;Pintura Rupestre;30;
+subtipo;Geoglifos (Grabado en tierra);30;
+subtipo;Andenes;30;
+subtipo;Cementerios;30;
+subtipo;Museos;75;
+subtipo;Museos de sitio;45;
+subtipo;Casas Museo;45;
+subtipo;Salas de Exhibición;30;
+subtipo;Galerías Expositiva;30;
+subtipo;Pinacotecas(Pinturas);45;
+subtipo;Centros Históricos;90;
+subtipo;Sitios de Batalla;30;
+subtipo;Iglesias;20;
+subtipo;Templo;20;Templo cristiano
+subtipo;Capilla;15;
+subtipo;Catedral;30;
+subtipo;Basílica;30;
+subtipo;Santuario;30;
+subtipo;Convento;45;
+subtipo;Monasterio;60;
+subtipo;Complejo monumental;60;
+subtipo;Casa-Hacienda;45;
+subtipo;Castillo;45;
+subtipo;Palacio;30;
+subtipo;Barrios tradicionales;45;
+subtipo;Malecones;30;
+subtipo;Paseos peatonales;30;
+subtipo;Parques;30;
+subtipo;Plazas;20;
+subtipo;Plazuelas;15;
+subtipo;Puentes;15;
+subtipo;Bodegas de pisco, vinos y/u otros licores;60;Visita con cata
+subtipo;Zoológicos;120;
+subtipo;Jardines Botánicos y Viveros;60;
+subtipo;Centros de rescate o conservación;60;
+subtipo;Mariposarios;45;
+subtipo;Acuarios;60;
+subtipo;Represas;30;
+subtipo;Puentes Modernos;15;

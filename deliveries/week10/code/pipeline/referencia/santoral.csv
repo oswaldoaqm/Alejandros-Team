@@ -1,0 +1,100 @@
+patron;regla;nota
+señor de los temblores;pascua -6;Cusco: Lunes Santo
+semana santa;pascua -7..0;Del Domingo de Ramos al de Pascua
+domingo de resurreccion;pascua 0;
+pascua de resurreccion;pascua 0;
+pascuas de resurreccion;pascua 0;
+domingo de ramos;pascua -7;
+lunes santo;pascua -6;
+jueves santo;pascua -3;
+viernes santo;pascua -2;
+sabado de gloria;pascua -1;
+cuasimodo;pascua 7;Domingo siguiente a la Pascua
+miercoles de ceniza;pascua -46;
+carnaval;pascua -50..-47;Del sábado al martes antes del Miércoles de Ceniza. Llega hasta el Miércoles de Ceniza, el jueves o el domingo de tentación si la ficha lo dice (DIAS_DE_CARNAVAL en pipeline/eventos.py)
+ascension del señor;pascua 39;
+señor de la ascension;pascua 39;
+pentecostes;pascua 49;
+qoyllur rit;pascua 52..56;Los días previos a la Santísima Trinidad
+qoyllurit;pascua 52..56;
+quyllurit;pascua 52..56;
+santisima trinidad;pascua 56;
+octava de corpus;pascua 67..68;Ocho días después del jueves de Corpus
+corpus christi;pascua 60..63;Del jueves de Corpus al domingo siguiente
+año nuevo;fija 01-01;
+bajada de reyes;fija 01-06;
+reyes magos;fija 01-06;
+santos reyes;fija 01-06;
+epifania;fija 01-06;
+san sebastian;fija 01-20;
+candelaria;fija 02-02;
+san blas;fija 02-03;
+virgen de lourdes;fija 02-11;
+san jose;fija 03-19;
+san marcos;fija 04-25;
+virgen de chapi;fija 05-01;
+cruz de mayo;fija 05-03;
+cruz velacuy;fija 05-03;
+santisima cruz;fija 05-03;
+señor de muruhuay;fija 05-03;
+virgen de fatima;fija 05-13;
+san isidro;fija 05-15;San Isidro Labrador
+san antonio de padua;fija 06-13;
+inti raymi;fija 06-24;
+san juan bautista;fija 06-24;
+fiesta de san juan;fija 06-24;
+festividad de san juan;fija 06-24;
+festival de san juan;fija 06-24;
+san pedro y san pablo;fija 06-29;
+fiesta de san pedro;fija 06-29;
+festividad de san pedro;fija 06-29;
+virgen del carmen;fija 07-16;
+mamacha carmen;fija 07-16;
+señora del carmen;fija 07-16;
+santiago apostol;fija 07-25;
+apostol santiago;fija 07-25;
+fiesta de santiago;fija 07-25;
+festividad de santiago;fija 07-25;
+santa ana;fija 07-26;
+virgen de las nieves;fija 08-05;
+santo domingo de guzman;fija 08-08;
+san lorenzo;fija 08-10;
+virgen de la asuncion;fija 08-15;
+asuncion de la virgen;fija 08-15;
+mamacha asunta;fija 08-15;
+san roque;fija 08-16;
+san bartolome;fija 08-24;
+san agustin;fija 08-28;
+santa rosa;fija 08-30;Santa Rosa de Lima
+virgen de cocharcas;fija 09-08;
+virgen de la natividad;fija 09-08;
+natividad de la virgen;fija 09-08;
+señor de huanca;fija 09-14;Exaltación de la Cruz
+exaltacion;fija 09-14;
+virgen de las mercedes;fija 09-24;
+virgen de la merced;fija 09-24;
+san miguel arcangel;fija 09-29;
+arcangel san miguel;fija 09-29;
+san jeronimo;fija 09-30;
+san francisco de asis;fija 10-04;
+fiesta de san francisco;fija 10-04;
+festividad de san francisco;fija 10-04;
+virgen del rosario;fija 10-07;
+señora del rosario;fija 10-07;
+señor de los milagros;fija 10-18;Día central de la procesión. La devoción ocupa todo octubre
+san judas tadeo;fija 10-28;
+todos los santos;fija 11-01..11-02;
+dia de los muertos;fija 11-01..11-02;
+dia de los difuntos;fija 11-01..11-02;
+san martin de porres;fija 11-03;
+santa catalina;fija 11-25;
+san andres;fija 11-30;
+santa barbara;fija 12-04;
+inmaculada concepcion;fija 12-08;
+purisima concepcion;fija 12-08;
+virgen de la concepcion;fija 12-08;
+virgen de guadalupe;fija 12-12;
+santa lucia;fija 12-13;
+virgen de la puerta;fija 12-15;Otuzco
+navidad;fija 12-24..12-25;
+niño jesus;fija 12-24..01-06;Del nacimiento a la Bajada de Reyes

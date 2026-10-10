@@ -1,0 +1,1928 @@
+{
+  "components": {
+    "schemas": {
+      "Aviso": {
+        "additionalProperties": false,
+        "properties": {
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          },
+          "nivel": {
+            "enum": [
+              "info",
+              "advertencia"
+            ],
+            "title": "Nivel",
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "estacionalidad",
+              "altitud",
+              "aclimatacion",
+              "presupuesto",
+              "acceso",
+              "dias",
+              "datos"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo",
+          "nivel",
+          "mensaje"
+        ],
+        "title": "Aviso",
+        "type": "object"
+      },
+      "Consulta": {
+        "additionalProperties": false,
+        "description": "Lo que el viajero pide. Es también el enlace para compartir: el motor es\ndeterminista, así que la misma consulta con la misma versión de datos\ndevuelve el mismo viaje.",
+        "properties": {
+          "altitud_max": {
+            "anyOf": [
+              {
+                "maximum": 6000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Altitud máxima tolerada, en metros. Ninguna parada la supera.",
+            "title": "Altitud Max"
+          },
+          "dias": {
+            "default": 6,
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "maximum": 14.0,
+            "minimum": 1.0,
+            "title": "Dias",
+            "type": "integer"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "title": "Fecha Inicio"
+          },
+          "intereses": {
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "items": {
+              "$ref": "#/components/schemas/Interes"
+            },
+            "maxItems": 8,
+            "title": "Intereses",
+            "type": "array"
+          },
+          "mes": {
+            "anyOf": [
+              {
+                "maximum": 12.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Mes del viaje, 1 a 12. Obligatorio salvo que se dé fecha_inicio.",
+            "title": "Mes"
+          },
+          "origen": {
+            "default": "lima",
+            "description": "Ciudad de partida, por su identificador (la lista está en /v1/opciones).",
+            "maxLength": 40,
+            "minLength": 2,
+            "pattern": "^[a-z0-9-]+$",
+            "title": "Origen",
+            "type": "string"
+          },
+          "presupuesto": {
+            "anyOf": [
+              {
+                "maximum": 50000.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "title": "Presupuesto"
+          },
+          "sorpresa": {
+            "default": false,
+            "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
+            "title": "Sorpresa",
+            "type": "boolean"
+          }
+        },
+        "title": "Consulta",
+        "type": "object"
+      },
+      "Costo": {
+        "additionalProperties": false,
+        "description": "Una banda y no un precio: el motor estima, no vende.",
+        "properties": {
+          "dentro_del_presupuesto": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null si la consulta no trae presupuesto.",
+            "title": "Dentro Del Presupuesto"
+          },
+          "desglose": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.",
+            "title": "Desglose",
+            "type": "object"
+          },
+          "exceso": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Soles por encima del presupuesto, sobre el P50.",
+            "title": "Exceso"
+          },
+          "moneda": {
+            "const": "PEN",
+            "default": "PEN",
+            "title": "Moneda",
+            "type": "string"
+          },
+          "p20": {
+            "minimum": 0.0,
+            "title": "P20",
+            "type": "integer"
+          },
+          "p50": {
+            "minimum": 0.0,
+            "title": "P50",
+            "type": "integer"
+          },
+          "p80": {
+            "minimum": 0.0,
+            "title": "P80",
+            "type": "integer"
+          },
+          "supuestos": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Supuestos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "p20",
+          "p50",
+          "p80"
+        ],
+        "title": "Costo",
+        "type": "object"
+      },
+      "Dia": {
+        "additionalProperties": false,
+        "properties": {
+          "fecha": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha"
+          },
+          "horas": {
+            "description": "Horas ocupadas entre traslados y visitas.",
+            "minimum": 0.0,
+            "title": "Horas",
+            "type": "number"
+          },
+          "km": {
+            "minimum": 0.0,
+            "title": "Km",
+            "type": "number"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota"
+          },
+          "numero": {
+            "minimum": 1.0,
+            "title": "Numero",
+            "type": "integer"
+          },
+          "paradas": {
+            "items": {
+              "$ref": "#/components/schemas/Parada"
+            },
+            "title": "Paradas",
+            "type": "array"
+          },
+          "tipo": {
+            "description": "ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.",
+            "enum": [
+              "ida",
+              "visita",
+              "vuelta",
+              "ida_y_visita",
+              "visita_y_vuelta",
+              "ida_visita_y_vuelta"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "numero",
+          "tipo",
+          "horas",
+          "km"
+        ],
+        "title": "Dia",
+        "type": "object"
+      },
+      "Estacionalidad": {
+        "additionalProperties": false,
+        "properties": {
+          "dias_con_lluvia": {
+            "anyOf": [
+              {
+                "maximum": 31.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dias Con Lluvia"
+          },
+          "explicacion": {
+            "title": "Explicacion",
+            "type": "string"
+          },
+          "horas_sol": {
+            "anyOf": [
+              {
+                "maximum": 24.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Horas de sol por día, promedio del mes. null mientras no haya un dato confiable: el reanálisis no ve la neblina de la costa.",
+            "title": "Horas Sol"
+          },
+          "lluvia_mm": {
+            "description": "Lluvia media del mes, diez años de datos.",
+            "minimum": 0.0,
+            "title": "Lluvia Mm",
+            "type": "number"
+          },
+          "mejores_meses": {
+            "description": "Los meses con mejor veredicto del polo, de menos a más lluvia: los viables o, si no hay ninguno, los de advertencia.",
+            "items": {
+              "type": "integer"
+            },
+            "title": "Mejores Meses",
+            "type": "array"
+          },
+          "mes": {
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Mes",
+            "type": "integer"
+          },
+          "temp_max_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Max C"
+          },
+          "temp_min_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temp Min C"
+          },
+          "veredicto": {
+            "enum": [
+              "viable",
+              "advertencia",
+              "desaconsejado"
+            ],
+            "title": "Veredicto",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mes",
+          "veredicto",
+          "lluvia_mm",
+          "explicacion"
+        ],
+        "title": "Estacionalidad",
+        "type": "object"
+      },
+      "Evento": {
+        "additionalProperties": false,
+        "properties": {
+          "distrito": {
+            "title": "Distrito",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Fin"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Inicio"
+          },
+          "fuente": {
+            "enum": [
+              "mincetur",
+              "publicado"
+            ],
+            "title": "Fuente",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "precision_fecha": {
+            "description": "exacta: la fuente la publica. aproximada: calculada (santoral, cómputo de Pascua). por_confirmar: sin fecha conocida.",
+            "enum": [
+              "exacta",
+              "aproximada",
+              "por_confirmar"
+            ],
+            "title": "Precision Fecha",
+            "type": "string"
+          },
+          "provincia": {
+            "title": "Provincia",
+            "type": "string"
+          },
+          "publicado_por": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publicado Por"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "tipo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tipo"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "precision_fecha",
+          "distrito",
+          "provincia",
+          "region",
+          "fuente"
+        ],
+        "title": "Evento",
+        "type": "object"
+      },
+      "EventoNuevo": {
+        "additionalProperties": false,
+        "description": "Un evento que publica un municipio o una oficina de destino (RF-03).\n\nLos textos se limpian antes de validarse: lo que se mide es lo que se va a mostrar.",
+        "properties": {
+          "descripcion": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "distrito": {
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Distrito",
+            "type": "string"
+          },
+          "fecha_fin": {
+            "format": "date",
+            "title": "Fecha Fin",
+            "type": "string"
+          },
+          "fecha_inicio": {
+            "format": "date",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "maximum": 0.1,
+                "minimum": -18.4,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Dentro del Perú.",
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "maximum": -68.6,
+                "minimum": -81.4,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Dentro del Perú.",
+            "title": "Lon"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "provincia": {
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Provincia",
+            "type": "string"
+          },
+          "publicado_por": {
+            "description": "Entidad que publica.",
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Publicado Por",
+            "type": "string"
+          },
+          "region": {
+            "maxLength": 40,
+            "minLength": 2,
+            "title": "Region",
+            "type": "string"
+          },
+          "tipo": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tipo"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "nombre",
+          "fecha_inicio",
+          "fecha_fin",
+          "distrito",
+          "provincia",
+          "region",
+          "publicado_por"
+        ],
+        "title": "EventoNuevo",
+        "type": "object"
+      },
+      "Eventos": {
+        "additionalProperties": false,
+        "properties": {
+          "desde": {
+            "format": "date",
+            "title": "Desde",
+            "type": "string"
+          },
+          "eventos": {
+            "items": {
+              "$ref": "#/components/schemas/Evento"
+            },
+            "title": "Eventos",
+            "type": "array"
+          },
+          "hasta": {
+            "format": "date",
+            "title": "Hasta",
+            "type": "string"
+          },
+          "version_contrato": {
+            "default": "1.2",
+            "title": "Version Contrato",
+            "type": "string"
+          },
+          "version_datos": {
+            "title": "Version Datos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version_datos",
+          "desde",
+          "hasta",
+          "eventos"
+        ],
+        "title": "Eventos",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Indicadores": {
+        "additionalProperties": false,
+        "properties": {
+          "altitud_max_m": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Altitud Max M"
+          },
+          "jerarquia_media": {
+            "anyOf": [
+              {
+                "maximum": 4.0,
+                "minimum": 1.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jerarquia Media"
+          },
+          "km_total": {
+            "minimum": 0.0,
+            "title": "Km Total",
+            "type": "number"
+          },
+          "paradas": {
+            "minimum": 0.0,
+            "title": "Paradas",
+            "type": "integer"
+          },
+          "paradas_jerarquia_alta": {
+            "description": "Paradas de jerarquía 3 o 4.",
+            "minimum": 0.0,
+            "title": "Paradas Jerarquia Alta",
+            "type": "integer"
+          },
+          "valor_capturado": {
+            "description": "Parte del valor alcanzable del polo que el itinerario visita.",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Valor Capturado",
+            "type": "number"
+          }
+        },
+        "required": [
+          "paradas",
+          "paradas_jerarquia_alta",
+          "km_total",
+          "valor_capturado"
+        ],
+        "title": "Indicadores",
+        "type": "object"
+      },
+      "Interes": {
+        "description": "Intereses del viajero, con su vocabulario y no con la taxonomía de MINCETUR.\nCada uno se traduce a categorías, subtipos y actividades de la ficha oficial;\nla tabla de equivalencias es un artefacto del pipeline.",
+        "enum": [
+          "naturaleza",
+          "historia",
+          "gastronomia",
+          "caminatas",
+          "playa",
+          "fiestas",
+          "arquitectura",
+          "aventura"
+        ],
+        "title": "Interes",
+        "type": "string"
+      },
+      "OpcionInteres": {
+        "additionalProperties": false,
+        "properties": {
+          "etiqueta": {
+            "title": "Etiqueta",
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Interes"
+          },
+          "paradas": {
+            "description": "Paradas posibles que atiende el interés en todo el inventario.",
+            "minimum": 0.0,
+            "title": "Paradas",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "etiqueta",
+          "paradas"
+        ],
+        "title": "OpcionInteres",
+        "type": "object"
+      },
+      "OpcionOrigen": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "El valor que viaja en `origen`.",
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "region"
+        ],
+        "title": "OpcionOrigen",
+        "type": "object"
+      },
+      "Opciones": {
+        "additionalProperties": false,
+        "description": "Lo que la app necesita para armar el formulario sin fijar nada en su código.",
+        "properties": {
+          "altitud_max": {
+            "$ref": "#/components/schemas/Rango"
+          },
+          "dias": {
+            "$ref": "#/components/schemas/Rango"
+          },
+          "intereses": {
+            "items": {
+              "$ref": "#/components/schemas/OpcionInteres"
+            },
+            "title": "Intereses",
+            "type": "array"
+          },
+          "origenes": {
+            "items": {
+              "$ref": "#/components/schemas/OpcionOrigen"
+            },
+            "title": "Origenes",
+            "type": "array"
+          },
+          "presupuesto": {
+            "$ref": "#/components/schemas/Rango"
+          },
+          "version_contrato": {
+            "default": "1.2",
+            "title": "Version Contrato",
+            "type": "string"
+          },
+          "version_datos": {
+            "title": "Version Datos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version_datos",
+          "origenes",
+          "intereses",
+          "dias",
+          "presupuesto",
+          "altitud_max"
+        ],
+        "title": "Opciones",
+        "type": "object"
+      },
+      "Parada": {
+        "additionalProperties": false,
+        "properties": {
+          "km_desde_anterior": {
+            "minimum": 0.0,
+            "title": "Km Desde Anterior",
+            "type": "number"
+          },
+          "llegada": {
+            "description": "Hora estimada de llegada, HH:MM.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Llegada",
+            "type": "string"
+          },
+          "minutos_traslado": {
+            "description": "Desde la parada anterior o desde la base.",
+            "minimum": 0.0,
+            "title": "Minutos Traslado",
+            "type": "integer"
+          },
+          "minutos_visita": {
+            "minimum": 0.0,
+            "title": "Minutos Visita",
+            "type": "integer"
+          },
+          "orden": {
+            "description": "Posición dentro del día.",
+            "minimum": 1.0,
+            "title": "Orden",
+            "type": "integer"
+          },
+          "recurso": {
+            "$ref": "#/components/schemas/Recurso"
+          }
+        },
+        "required": [
+          "orden",
+          "recurso",
+          "llegada",
+          "minutos_traslado",
+          "km_desde_anterior",
+          "minutos_visita"
+        ],
+        "title": "Parada",
+        "type": "object"
+      },
+      "Polo": {
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/Punto",
+            "description": "Dónde se duerme: el punto de partida de cada día."
+          },
+          "fuera_del_circuito": {
+            "description": "Ningún recurso del polo está en Lima ni en Cusco.",
+            "title": "Fuera Del Circuito",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "description": "Nombre legible del polo, armado con su localidad principal.",
+            "title": "Nombre",
+            "type": "string"
+          },
+          "recursos": {
+            "description": "Recursos del inventario dentro del polo.",
+            "minimum": 1.0,
+            "title": "Recursos",
+            "type": "integer"
+          },
+          "region": {
+            "description": "Región con más recursos del polo.",
+            "title": "Region",
+            "type": "string"
+          },
+          "regiones": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Regiones",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "region",
+          "regiones",
+          "base",
+          "recursos",
+          "fuera_del_circuito"
+        ],
+        "title": "Polo",
+        "type": "object"
+      },
+      "PoloDetalle": {
+        "additionalProperties": false,
+        "description": "Ficha de un polo: sus recursos, su clima mes a mes y sus eventos del año.",
+        "properties": {
+          "atribucion": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Atribucion",
+            "type": "array"
+          },
+          "clima": {
+            "description": "Los doce meses, de enero a diciembre.",
+            "items": {
+              "$ref": "#/components/schemas/Estacionalidad"
+            },
+            "title": "Clima",
+            "type": "array"
+          },
+          "eventos": {
+            "description": "Los acontecimientos del polo en los próximos doce meses.",
+            "items": {
+              "$ref": "#/components/schemas/Evento"
+            },
+            "title": "Eventos",
+            "type": "array"
+          },
+          "polo": {
+            "$ref": "#/components/schemas/Polo"
+          },
+          "recursos": {
+            "description": "Las paradas posibles del polo, de mayor a menor jerarquía.",
+            "items": {
+              "$ref": "#/components/schemas/Recurso"
+            },
+            "title": "Recursos",
+            "type": "array"
+          },
+          "version_contrato": {
+            "default": "1.2",
+            "title": "Version Contrato",
+            "type": "string"
+          },
+          "version_datos": {
+            "title": "Version Datos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version_datos",
+          "polo",
+          "recursos",
+          "clima",
+          "eventos",
+          "atribucion"
+        ],
+        "title": "PoloDetalle",
+        "type": "object"
+      },
+      "Punto": {
+        "additionalProperties": false,
+        "properties": {
+          "altitud_m": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Altitud M"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "lat",
+          "lon"
+        ],
+        "title": "Punto",
+        "type": "object"
+      },
+      "Rango": {
+        "additionalProperties": false,
+        "properties": {
+          "defecto": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Defecto"
+          },
+          "maximo": {
+            "title": "Maximo",
+            "type": "integer"
+          },
+          "minimo": {
+            "title": "Minimo",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "minimo",
+          "maximo"
+        ],
+        "title": "Rango",
+        "type": "object"
+      },
+      "Recurso": {
+        "additionalProperties": false,
+        "description": "Un recurso turístico del inventario oficial, con lo que la ficha publica.",
+        "properties": {
+          "altitud_m": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Altitud M"
+          },
+          "categoria": {
+            "title": "Categoria",
+            "type": "string"
+          },
+          "codigo": {
+            "description": "Código del recurso en el inventario de MINCETUR.",
+            "title": "Codigo",
+            "type": "string"
+          },
+          "descripcion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "ingreso": {
+            "default": "desconocido",
+            "enum": [
+              "libre",
+              "pagado",
+              "desconocido"
+            ],
+            "title": "Ingreso",
+            "type": "string"
+          },
+          "jerarquia": {
+            "anyOf": [
+              {
+                "maximum": 4.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Jerarquía oficial de 1 a 4. null cuando MINCETUR no la asigna («No aplica», «POR JERARQUIZAR»): nunca se imputa.",
+            "title": "Jerarquia"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "subtipo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtipo"
+          },
+          "tarifa_soles": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tarifa Soles"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          },
+          "url_ficha": {
+            "description": "Ficha oficial: toda parada es verificable en la fuente (RNF-01).",
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url Ficha",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "nombre",
+          "categoria",
+          "tipo",
+          "lat",
+          "lon",
+          "url_ficha"
+        ],
+        "title": "Recurso",
+        "type": "object"
+      },
+      "Respuesta": {
+        "additionalProperties": false,
+        "properties": {
+          "atribucion": {
+            "description": "Fuentes y licencias que la app muestra junto al resultado.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Atribucion",
+            "type": "array"
+          },
+          "consulta": {
+            "$ref": "#/components/schemas/Consulta",
+            "description": "La consulta tal como la entendió el motor."
+          },
+          "rutas": {
+            "description": "Hasta tres polos distintos, del mejor al peor.",
+            "items": {
+              "$ref": "#/components/schemas/Ruta"
+            },
+            "maxItems": 3,
+            "title": "Rutas",
+            "type": "array"
+          },
+          "sin_resultado": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SinResultado"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Presente solo si no hay ninguna ruta: por qué y qué relajar."
+          },
+          "version_contrato": {
+            "default": "1.2",
+            "title": "Version Contrato",
+            "type": "string"
+          },
+          "version_datos": {
+            "description": "Versión de los artefactos con que se calculó; va en el enlace.",
+            "title": "Version Datos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version_datos",
+          "consulta",
+          "rutas",
+          "atribucion"
+        ],
+        "title": "Respuesta",
+        "type": "object"
+      },
+      "Ruta": {
+        "additionalProperties": false,
+        "properties": {
+          "avisos": {
+            "items": {
+              "$ref": "#/components/schemas/Aviso"
+            },
+            "title": "Avisos",
+            "type": "array"
+          },
+          "costo": {
+            "$ref": "#/components/schemas/Costo"
+          },
+          "dias": {
+            "items": {
+              "$ref": "#/components/schemas/Dia"
+            },
+            "title": "Dias",
+            "type": "array"
+          },
+          "estacionalidad": {
+            "$ref": "#/components/schemas/Estacionalidad"
+          },
+          "eventos": {
+            "items": {
+              "$ref": "#/components/schemas/Evento"
+            },
+            "title": "Eventos",
+            "type": "array"
+          },
+          "indicadores": {
+            "$ref": "#/components/schemas/Indicadores"
+          },
+          "motivos": {
+            "description": "Por qué el motor propone este polo, en frases cortas.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Motivos",
+            "type": "array"
+          },
+          "polo": {
+            "$ref": "#/components/schemas/Polo"
+          },
+          "puntaje": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Puntaje",
+            "type": "number"
+          },
+          "traslado": {
+            "$ref": "#/components/schemas/Traslado"
+          }
+        },
+        "required": [
+          "polo",
+          "puntaje",
+          "motivos",
+          "estacionalidad",
+          "traslado",
+          "dias",
+          "costo",
+          "indicadores"
+        ],
+        "title": "Ruta",
+        "type": "object"
+      },
+      "Salud": {
+        "additionalProperties": false,
+        "properties": {
+          "estado": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Estado",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "version_contrato": {
+            "default": "1.2",
+            "title": "Version Contrato",
+            "type": "string"
+          },
+          "version_datos": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null mientras el motor no tiene artefactos cargados.",
+            "title": "Version Datos"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "Salud",
+        "type": "object"
+      },
+      "SinResultado": {
+        "additionalProperties": false,
+        "properties": {
+          "motivo": {
+            "title": "Motivo",
+            "type": "string"
+          },
+          "sugerencias": {
+            "items": {
+              "$ref": "#/components/schemas/Sugerencia"
+            },
+            "title": "Sugerencias",
+            "type": "array"
+          }
+        },
+        "required": [
+          "motivo"
+        ],
+        "title": "SinResultado",
+        "type": "object"
+      },
+      "Sugerencia": {
+        "additionalProperties": false,
+        "properties": {
+          "campo": {
+            "enum": [
+              "origen",
+              "mes",
+              "fecha_inicio",
+              "dias",
+              "intereses",
+              "presupuesto",
+              "altitud_max"
+            ],
+            "title": "Campo",
+            "type": "string"
+          },
+          "efecto": {
+            "description": "Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».",
+            "title": "Efecto",
+            "type": "string"
+          },
+          "valor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valor"
+          }
+        },
+        "required": [
+          "campo",
+          "valor",
+          "efecto"
+        ],
+        "title": "Sugerencia",
+        "type": "object"
+      },
+      "Traslado": {
+        "additionalProperties": false,
+        "properties": {
+          "acceso": {
+            "description": "terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.",
+            "enum": [
+              "terrestre",
+              "sin_acceso_terrestre",
+              "desconocido"
+            ],
+            "title": "Acceso",
+            "type": "string"
+          },
+          "desde": {
+            "description": "Nombre de la ciudad de origen.",
+            "title": "Desde",
+            "type": "string"
+          },
+          "dias_de_viaje": {
+            "description": "Días del viaje que se van en la ida y la vuelta.",
+            "minimum": 0.0,
+            "title": "Dias De Viaje",
+            "type": "integer"
+          },
+          "fuente": {
+            "description": "red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. estimado: línea recta por un factor calibrado.",
+            "enum": [
+              "red_vial",
+              "estimado"
+            ],
+            "title": "Fuente",
+            "type": "string"
+          },
+          "horas": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Horas de viaje de ida: por carretera, en tren o en bote.",
+            "title": "Horas"
+          },
+          "medios": {
+            "description": "Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.",
+            "items": {
+              "enum": [
+                "carretera",
+                "tren",
+                "bote"
+              ],
+              "type": "string"
+            },
+            "title": "Medios",
+            "type": "array"
+          }
+        },
+        "required": [
+          "desde",
+          "dias_de_viaje",
+          "acceso",
+          "fuente"
+        ],
+        "title": "Traslado",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ClavePublicador": {
+        "description": "La clave que el equipo de DreemGO entrega a los municipios y oficinas de destino que publican.",
+        "in": "header",
+        "name": "X-Clave-Publicador",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "summary": "Itinerarios por polos turísticos del Perú, con estacionalidad, rutas y costo.",
+    "title": "DreemGO API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/v1/eventos": {
+      "get": {
+        "description": "Los del calendario oficial y los que publicaron los municipios (`fuente: \"publicado\"`).",
+        "operationId": "eventos_v1_eventos_get",
+        "parameters": [
+          {
+            "description": "Primer día, AAAA-MM-DD.",
+            "in": "query",
+            "name": "desde",
+            "required": true,
+            "schema": {
+              "description": "Primer día, AAAA-MM-DD.",
+              "format": "date",
+              "title": "Desde",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Último día, AAAA-MM-DD. Hasta un año después de `desde`.",
+            "in": "query",
+            "name": "hasta",
+            "required": true,
+            "schema": {
+              "description": "Último día, AAAA-MM-DD. Hasta un año después de `desde`.",
+              "format": "date",
+              "title": "Hasta",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Solo los de este polo.",
+            "in": "query",
+            "name": "polo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Solo los de este polo.",
+              "title": "Polo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Eventos"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No hay una zona con ese número."
+          },
+          "422": {
+            "description": "La consulta no cumple el contrato. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`."
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados."
+          }
+        },
+        "summary": "Eventos entre dos fechas, de un polo o de todos",
+        "tags": [
+          "eventos"
+        ]
+      },
+      "post": {
+        "description": "Lo usan los municipios y las oficinas de destino. El evento se suma al calendario y, si\ntrae coordenadas, a las rutas de los polos que duermen o tienen algún lugar a 10 km o menos.\nNo cambia qué polos se proponen ni en qué orden.\n\nPublicar otra vez el mismo evento (mismo nombre, fechas, lugar y entidad) lo corrige: no lo\nduplica. La respuesta es el evento tal como lo verá el viajero.",
+        "operationId": "publicar_v1_eventos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoNuevo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            },
+            "description": "El evento, como lo verá el viajero."
+          },
+          "401": {
+            "description": "Falta la cabecera `X-Clave-Publicador` o la clave no es la correcta."
+          },
+          "403": {
+            "description": "Este servidor no tiene una clave de publicador: no acepta publicaciones."
+          },
+          "422": {
+            "description": "El evento no cumple el contrato, su región no es una del país, ya terminó o falta más de un año para que empiece. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`."
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados, el evento no se pudo guardar o el calendario publicado está lleno."
+          }
+        },
+        "security": [
+          {
+            "ClavePublicador": []
+          }
+        ],
+        "summary": "Publicar un evento",
+        "tags": [
+          "eventos"
+        ]
+      }
+    },
+    "/v1/opciones": {
+      "get": {
+        "operationId": "opciones_v1_opciones_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Opciones"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados."
+          }
+        },
+        "summary": "Orígenes, intereses y rangos del formulario",
+        "tags": [
+          "viajes"
+        ]
+      }
+    },
+    "/v1/polos/{polo_id}": {
+      "get": {
+        "operationId": "polo_v1_polos__polo_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "polo_id",
+            "required": true,
+            "schema": {
+              "minimum": 0,
+              "title": "Polo Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoloDetalle"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No hay una zona con ese número."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados."
+          }
+        },
+        "summary": "Ficha de un polo: recursos, clima mes a mes y eventos",
+        "tags": [
+          "polos"
+        ]
+      }
+    },
+    "/v1/salud": {
+      "get": {
+        "operationId": "salud_v1_salud_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salud"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Estado del servicio",
+        "tags": [
+          "servicio"
+        ]
+      }
+    },
+    "/v1/viajes": {
+      "get": {
+        "description": "La consulta viaja en la URL, igual que en el enlace para compartir: el motor es\ndeterminista, así que la misma consulta con la misma versión de datos da el mismo viaje.",
+        "operationId": "viajes_v1_viajes_get",
+        "parameters": [
+          {
+            "description": "Ciudad de partida, por su identificador (la lista está en /v1/opciones).",
+            "in": "query",
+            "name": "origen",
+            "required": false,
+            "schema": {
+              "default": "lima",
+              "description": "Ciudad de partida, por su identificador (la lista está en /v1/opciones).",
+              "maxLength": 40,
+              "minLength": 2,
+              "pattern": "^[a-z0-9-]+$",
+              "title": "Origen",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Mes del viaje, 1 a 12. Obligatorio salvo que se dé fecha_inicio.",
+            "in": "query",
+            "name": "mes",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 12,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Mes del viaje, 1 a 12. Obligatorio salvo que se dé fecha_inicio.",
+              "title": "Mes"
+            }
+          },
+          {
+            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "in": "query",
+            "name": "fecha_inicio",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+              "title": "Fecha Inicio"
+            }
+          },
+          {
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "in": "query",
+            "name": "dias",
+            "required": false,
+            "schema": {
+              "default": 6,
+              "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+              "maximum": 14,
+              "minimum": 1,
+              "title": "Dias",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "in": "query",
+            "name": "intereses",
+            "required": false,
+            "schema": {
+              "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+              "items": {
+                "$ref": "#/components/schemas/Interes"
+              },
+              "maxItems": 8,
+              "title": "Intereses",
+              "type": "array"
+            }
+          },
+          {
+            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "in": "query",
+            "name": "presupuesto",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 50000,
+                  "minimum": 100,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+              "title": "Presupuesto"
+            }
+          },
+          {
+            "description": "Altitud máxima tolerada, en metros. Ninguna parada la supera.",
+            "in": "query",
+            "name": "altitud_max",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 6000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Altitud máxima tolerada, en metros. Ninguna parada la supera.",
+              "title": "Altitud Max"
+            }
+          },
+          {
+            "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
+            "in": "query",
+            "name": "sorpresa",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
+              "title": "Sorpresa",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Respuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "La consulta no cumple el contrato. `detail` trae, por cada error, el `campo`, un `mensaje` en español y el `tipo`."
+          },
+          "503": {
+            "description": "El motor no tiene sus artefactos cargados."
+          }
+        },
+        "summary": "Hasta tres viajes para una consulta",
+        "tags": [
+          "viajes"
+        ]
+      }
+    }
+  }
+}

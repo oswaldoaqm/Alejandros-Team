@@ -1,0 +1,20 @@
+# Copiar como infra/samconfig.toml (git lo ignora) y ajustar. sam lo encuentra solo si se le
+# llama desde infra/, que es donde busca: junto a la plantilla.
+# La clave de publicación NO va aquí: se pasa al desplegar (ver infra/README.md).
+version = 0.1
+
+[default.global.parameters]
+stack_name = "dreemgo"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+region = "sa-east-1"
+capabilities = "CAPABILITY_IAM"
+# sam crea y cuida el bucket donde deja las plantillas y el repositorio donde sube la imagen.
+resolve_s3 = true
+resolve_image_repos = true
+confirm_changeset = true
+parameter_overrides = "OrigenesCors=https://oswaldoaqm.github.io"

@@ -3,3 +3,6 @@
 dreemgo/datos/** -text
 # La app, siempre con fin de línea LF: es lo que espera su formateador (Biome), también en Windows.
 app/** text=auto eol=lf
+# La copia congelada de la semana 10, con las mismas reglas: los artefactos byte por byte y la app con LF.
+deliveries/week10/artifacts/** -text
+deliveries/week10/code/app/** text=auto eol=lf

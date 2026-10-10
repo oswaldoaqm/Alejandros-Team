@@ -1,0 +1,959 @@
+/* Lo que queda del primer diseño y todavía se usa: el texto de las páginas de prosa, los campos
+   de Publicar, los avisos, el mapa donde se marca un evento, el costo y el clima. Usa los mismos
+   tokens que el resto, y lo que el rediseño cambió lo pisan las hojas que vienen después. */
+
+/* ── Texto ─────────────────────────────────────────────────────────────────── */
+
+h1 {
+  margin: 4px 0 8px;
+  font-size: var(--t-titulo);
+  font-weight: 750;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.bajada {
+  margin-bottom: 16px;
+  color: var(--tinta-2);
+}
+
+.ayuda {
+  font-size: 0.85rem;
+  color: var(--tinta-2);
+}
+
+.ayuda--centrada {
+  text-align: center;
+}
+
+.lista-simple {
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.volver {
+  margin-bottom: 8px;
+}
+
+.volver a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 36px;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.prosa h2 {
+  margin: 26px 0 6px;
+  font-size: 1.1rem;
+}
+
+.prosa p + p,
+.prosa ul,
+.prosa ol {
+  margin-top: 8px;
+}
+
+.prosa ul {
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.prosa ol {
+  padding-left: 22px;
+  list-style: decimal;
+}
+
+.prosa li + li {
+  margin-top: 6px;
+}
+
+.prosa .boton {
+  margin-top: 16px;
+}
+
+/* ── Botones e insignias ───────────────────────────────────────────────────── */
+
+.boton {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.boton--primario {
+  color: #fff;
+  background: var(--tinta);
+}
+
+.boton--primario:hover {
+  background: #2b2b2a;
+}
+
+.boton--secundario {
+  color: var(--tinta);
+  background: var(--superficie);
+  border-color: var(--borde);
+}
+
+.boton--secundario:hover {
+  background: #f0efe9;
+}
+
+.boton--secundario[aria-pressed="true"] {
+  background: var(--bien-fondo);
+  border-color: var(--bien-tinta);
+}
+
+.boton--secundario[aria-pressed="true"] .icono {
+  color: var(--bien-tinta);
+}
+
+.boton--grande {
+  min-height: 52px;
+  font-size: 1.05rem;
+}
+
+.boton--texto {
+  min-height: 36px;
+  padding: 0;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--enlace);
+  background: none;
+  border: 0;
+}
+
+.boton--icono {
+  width: 44px;
+  padding: 0;
+  color: var(--tinta-2);
+  background: none;
+  border: 0;
+}
+
+.boton--icono:hover {
+  color: var(--tinta);
+  background: var(--hundido);
+}
+
+.insignia {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: #efeee8;
+  border-radius: 6px;
+}
+
+.insignia .icono {
+  vertical-align: 0;
+}
+
+.insignia--viable {
+  background: var(--bien-fondo);
+}
+
+.insignia--viable .icono {
+  color: var(--bien-tinta);
+}
+
+.insignia--advertencia {
+  background: var(--aviso-fondo);
+}
+
+.insignia--advertencia .icono {
+  color: var(--aviso-tinta);
+}
+
+.insignia--desaconsejado {
+  background: var(--critico-fondo);
+}
+
+.insignia--desaconsejado .icono {
+  color: var(--critico-tinta);
+}
+
+/* ── Estados: espera, avisos y errores ─────────────────────────────────────── */
+
+.cargando {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 16px 0;
+  color: var(--tinta-2);
+}
+
+.cargando__punto {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  background: var(--tinta);
+  border-radius: 50%;
+  animation: pulso 0.9s ease-in-out infinite alternate;
+}
+
+.cargando__aviso {
+  flex-basis: 100%;
+  padding-left: 20px;
+  color: var(--tinta-3);
+  font-size: 0.9em;
+}
+
+@keyframes pulso {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.aviso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 0.94rem;
+  border: 1px solid;
+  border-radius: var(--radio);
+}
+
+.aviso > .icono {
+  margin-top: 2px;
+}
+
+.aviso--info {
+  background: var(--azul-fondo);
+  border-color: #c5d9f3;
+}
+
+.aviso--info > .icono {
+  color: var(--enlace);
+}
+
+.aviso--critico {
+  background: var(--critico-fondo);
+  border-color: #f0b8b2;
+}
+
+.aviso--critico > .icono {
+  color: var(--critico-tinta);
+}
+
+.aviso--bien {
+  background: var(--bien-fondo);
+  border-color: #b5dcb5;
+}
+
+.aviso--bien > .icono {
+  color: var(--bien-tinta);
+}
+
+.aviso p + p {
+  margin-top: 6px;
+}
+
+.aviso__titulo {
+  font-weight: 700;
+}
+
+.aviso__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.aviso__acciones:empty {
+  display: none;
+}
+
+.pagina > .aviso {
+  margin-top: 14px;
+  scroll-margin-top: 12px; /* al llevar la vista hasta él, no queda pegado al borde */
+}
+
+.sugerencias {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 2px;
+}
+
+.sugerencias li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+}
+
+.sugerencias__efecto {
+  font-size: 0.9rem;
+  color: var(--tinta-2);
+}
+
+/* ── Formulario ────────────────────────────────────────────────────────────── */
+
+.formulario {
+  display: grid;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.formulario__par {
+  display: grid;
+  gap: 24px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo > label,
+.campo > legend {
+  font-size: var(--t-nota);
+  font-weight: 650;
+  color: var(--tinta);
+}
+
+.campo > legend {
+  margin-bottom: 8px;
+}
+
+.opcional {
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--tinta-3);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+select,
+input[type="date"],
+input[type="text"],
+input[type="url"],
+input[type="password"] {
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+}
+
+input::placeholder {
+  color: var(--tinta-3);
+  opacity: 1;
+}
+
+/* Una casilla con un error: el borde lo marca y el texto de abajo lo dice. */
+[aria-invalid="true"] {
+  border-color: var(--critico-tinta);
+  box-shadow: inset 0 0 0 1px var(--critico-tinta);
+}
+
+.campo__error {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--critico-tinta);
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--tinta);
+}
+
+.formulario__acciones {
+  display: grid;
+  gap: 12px;
+}
+
+/* Una sola acción ocupa todo el ancho, también donde las acciones van de a dos. */
+.formulario__acciones > :only-child {
+  grid-column: 1 / -1;
+}
+
+.procedencia {
+  padding-top: 12px;
+  font-size: 0.8rem;
+  color: var(--tinta-3);
+  border-top: 1px solid var(--linea);
+}
+
+/* ── Resultados ────────────────────────────────────────────────────────────── */
+
+.resultado--espera {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+/* ── Mapa ──────────────────────────────────────────────────────────────────── */
+
+.mapa {
+  position: relative;
+  height: min(62vh, 380px);
+  overflow: hidden;
+  background: var(--hundido);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+/* Con alto y ancho, no con posición absoluta: MapLibre le pone `position: relative` a su contenedor. */
+.mapa__lienzo {
+  width: 100%;
+  height: 100%;
+}
+
+.mapa--vacio {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+/* El mapa donde se marca el lugar de un evento: más bajo, también en pantalla ancha, y con la cruz de «aquí». */
+.mapa.mapa--elegir {
+  height: min(52vh, 340px);
+}
+
+.mapa--elegir .maplibregl-canvas {
+  cursor: crosshair;
+}
+
+.lugar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.lugar__lectura {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.publicado__acciones {
+  margin-top: 24px;
+}
+
+.mapa__fallo {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  background: var(--superficie);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgb(11 11 11 / 25%);
+}
+
+.marcador {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-family: var(--fuente);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: var(--tinta);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(11 11 11 / 40%);
+}
+
+/* La marca del lugar de un evento: un punto con su aro, que se puede arrastrar. */
+.marcador--lugar {
+  width: 26px;
+  height: 26px;
+  cursor: grab;
+  background: var(--enlace);
+  border-width: 3px;
+}
+
+.marcador--lugar::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* La marca del evento queda encima de lo que dibuja el mapa. */
+.maplibregl-marker.marcador {
+  z-index: 1;
+}
+
+/* ── Itinerario ────────────────────────────────────────────────────────────── */
+
+.plegable summary {
+  min-height: 28px;
+  padding: 2px 0;
+  font-weight: 500;
+  color: var(--enlace);
+  cursor: pointer;
+}
+
+.plegable > :not(summary) {
+  margin-top: 6px;
+}
+
+.plegable--chico p {
+  color: var(--tinta-2);
+}
+
+/* ── Costo ─────────────────────────────────────────────────────────────────── */
+
+.costo {
+  display: grid;
+  gap: 10px;
+}
+
+.costo__central {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  align-items: baseline;
+}
+
+.costo__numero {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.costo__nota {
+  font-size: 0.9rem;
+  color: var(--tinta-2);
+}
+
+.banda {
+  padding-top: 8px;
+}
+
+.banda__pista {
+  position: relative;
+  height: 12px;
+  background: var(--hundido);
+  border-radius: 6px;
+}
+
+.banda__tramo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--azul);
+  border-radius: 6px;
+}
+
+.banda__centro {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 4px;
+  margin-left: -2px;
+  background: var(--tinta);
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px var(--pagina);
+}
+
+.banda__tope {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  width: 0;
+  border-left: 2px dashed var(--tinta);
+}
+
+.banda__rotulos {
+  position: relative;
+  height: 1.3em;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-2);
+}
+
+.banda__rotulos span {
+  position: absolute;
+  top: 0;
+  min-width: max-content;
+}
+
+.banda__rotulos span:first-child {
+  left: 0;
+  text-align: right;
+}
+
+.banda__rotulos span:last-child {
+  right: 0;
+  text-align: left;
+}
+
+.costo__leyenda {
+  font-size: 0.9rem;
+  color: var(--tinta-2);
+}
+
+.costo__tope-clave {
+  display: inline-block;
+  width: 0;
+  height: 12px;
+  margin: 0 3px;
+  vertical-align: -1px;
+  border-left: 2px dashed var(--tinta);
+}
+
+.desglose {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.desglose li {
+  display: grid;
+  grid-template-columns: 7.2em minmax(0, 1fr) 4.6em;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.92rem;
+}
+
+.desglose__barra {
+  height: 8px;
+  overflow: hidden;
+  background: var(--hundido);
+  border-radius: 4px;
+}
+
+.desglose__barra span {
+  display: block;
+  height: 100%;
+  background: var(--azul);
+  border-radius: 0 4px 4px 0;
+}
+
+.desglose__monto {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ── El mes ────────────────────────────────────────────────────────────────── */
+
+.temporada {
+  display: grid;
+  gap: 10px;
+}
+
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 10px 16px;
+}
+
+.cifras dt {
+  font-size: 0.78rem;
+  color: var(--tinta-2);
+}
+
+.cifras dd {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cifras + .ayuda {
+  margin-top: 8px;
+}
+
+.tira-meses {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.tira-meses__mes {
+  padding: 5px 0;
+  font-size: 0.72rem;
+  color: var(--tinta-2);
+  text-align: center;
+  background: var(--hundido);
+  border-radius: 4px;
+}
+
+.tira-meses__mes--mejor,
+.tira-meses__clave--mejor {
+  font-weight: 700;
+  color: var(--bien-tinta);
+  background: var(--bien-fondo);
+  box-shadow: inset 0 -3px 0 var(--bien);
+}
+
+.tira-meses__mes--elegido,
+.tira-meses__clave--elegido {
+  font-weight: 700;
+  color: var(--tinta);
+  outline: 2px solid var(--tinta);
+  outline-offset: -2px;
+}
+
+.tira-meses__clave {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+  background: var(--hundido);
+  border-radius: 3px;
+}
+
+.clima {
+  display: grid;
+  gap: 10px;
+}
+
+.clima__grafico {
+  position: relative;
+  padding-top: 18px;
+}
+
+.clima__tope {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-3);
+}
+
+.clima__meses {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 2px;
+  border-top: 1px dashed var(--linea);
+}
+
+.clima__mes {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding-bottom: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.clima__columna {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.clima__barra {
+  display: block;
+  width: 58%;
+  max-width: 22px;
+  background: var(--azul);
+  border-radius: 4px 4px 0 0;
+}
+
+.clima__estado {
+  line-height: 0;
+}
+
+.clima__clave .clima__estado {
+  display: inline-block;
+  vertical-align: -3px;
+}
+
+.clima__mes--viable .clima__estado,
+.clima__estado.clima__mes--viable {
+  color: var(--bien-tinta);
+}
+
+.clima__mes--advertencia .clima__estado,
+.clima__estado.clima__mes--advertencia {
+  color: var(--aviso-tinta);
+}
+
+.clima__mes--desaconsejado .clima__estado,
+.clima__estado.clima__mes--desaconsejado {
+  color: var(--critico-tinta);
+}
+
+.clima__nombre {
+  font-size: 0.7rem;
+  color: var(--tinta-2);
+}
+
+.clima__mes:hover {
+  background: var(--hundido);
+}
+
+.clima__mes input:checked ~ .clima__nombre {
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.clima__mes input:checked ~ .clima__columna .clima__barra {
+  background: var(--enlace);
+}
+
+.clima__mes input:checked ~ .clima__columna {
+  border-bottom: 3px solid var(--tinta);
+}
+
+.clima__mes input:focus-visible ~ .clima__columna {
+  outline: 2px solid var(--enlace);
+  outline-offset: 1px;
+}
+
+.clima__lectura {
+  padding: 10px 12px;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+}
+
+.clima__lectura p + p {
+  margin-top: 4px;
+  color: var(--tinta-2);
+}
+
+.tabla-marco {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 6px 10px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--linea);
+}
+
+thead th {
+  font-size: 0.78rem;
+  color: var(--tinta-2);
+}
+
+tbody th {
+  font-weight: 600;
+}
+
+td.num,
+th.num {
+  text-align: right;
+}
+
+/* ── Pantallas anchas ──────────────────────────────────────────────────────── */
+
+@media (min-width: 480px) {
+  .formulario__acciones {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 640px) {
+  h1 {
+    font-size: 1.9rem;
+  }
+
+  .pagina {
+    padding: 28px 24px 64px;
+  }
+
+  .cabecera__ancho {
+    padding: 10px 24px;
+  }
+
+  .formulario__par {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clima__columna {
+    height: 150px;
+  }
+}
+
+@media (min-width: 960px) {
+  .mapa {
+    height: min(calc(100vh - 170px), 600px);
+  }
+}
+
+/* ── Sin movimiento, e impresión ───────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .saltar,
+  .cabecera nav,
+  .boton,
+  .volver,
+  .pie {
+    display: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+    background: #fff;
+  }
+
+  .pagina {
+    max-width: none;
+    padding: 0;
+  }
+
+  .evento,
+  .costo {
+    break-inside: avoid;
+  }
+
+  a {
+    color: inherit;
+  }
+}
