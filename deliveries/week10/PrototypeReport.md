@@ -122,7 +122,7 @@ Cómo cambió cada pieza frente al diseño de la Delivery 1, y por qué, está e
 | Ciudades de origen | 24 | [`pipeline/referencia/origenes.csv`](../../pipeline/referencia/origenes.csv) |
 | Acontecimientos con fecha | 739 de 758: 518 con el día que publica la ficha y 221 calculados | [`data/procesados/eventos_v3.csv`](../../data/procesados/) |
 | Polos con su propio clima diario | Los 194: un punto por cada uno de los 222 grupos, y el polo que junta varios toma el de su grupo con más paradas | [`data/procesados/clima_polo_mes.csv`](../../data/procesados/) |
-| Paradas con foto | 479 de 4 465, y 77 de los 161 imperdibles. En 120 de los 194 polos hay al menos una | [`app/public/fotos.json`](../../app/public/) |
+| Paradas con foto | 494 de 4 465, y 92 de los 161 imperdibles. En 128 de los 194 polos hay al menos una | [`app/public/fotos.json`](../../app/public/) |
 
 La versión de los datos es `2026.10.4`. Cada tabla de `data/procesados/` tiene su diccionario, y el manifiesto de los artefactos guarda la fecha de cada fuente y la huella de cada archivo. Todas las fuentes son abiertas y su licencia permite redistribuirlas ([`DATA_LICENSES.md`](../../DATA_LICENSES.md)).
 
@@ -163,7 +163,7 @@ El 10 de octubre entró el clima propio de cada polo, con los datos `2026.10.4`,
 
 ## 7 · Cómo se prueba
 
-- **674 pruebas del motor, el API y el pipeline**, y **177 de la app**, en cada pull request.
+- **679 pruebas del motor, el API y el pipeline**, y **177 de la app**, en cada pull request.
 - **Diez propiedades del contrato** sobre consultas generadas al azar: ninguna parada pasa la altitud pedida, los días suman lo pedido, ninguna jornada con visitas pasa de 8 horas ni un día de solo viaje de 9, toda parada enlaza a su ficha, un mes desaconsejado nunca sale sin aviso, el presupuesto ordena pero no esconde, y la misma consulta da la misma respuesta. Al cerrar cada etapa se corren con 1 000 consultas.
 - **28 pruebas de humo en un navegador**, en tamaño de celular y de escritorio, contra el API de verdad: planear un viaje, abrir el mapa, compartir, guardar y publicar un evento. Revisan también que ninguna pantalla se desborde y pasan un analizador de accesibilidad.
 - **Las imágenes del API** se construyen y se arrancan en cada pull request.
@@ -195,7 +195,7 @@ El 10 de octubre entró el clima propio de cada polo, con los datos `2026.10.4`,
 - **El API corre en un host gratuito.** Render lo duerme a los 15 minutos sin uso, la primera consulta después tarda cerca de un minuto, y lo que publican los municipios se pierde cuando se reinicia. En AWS, el destino, lo publicado dura, pero su arranque en frío todavía no se ha medido. En local arranca en un segundo y usa unos 100 MB.
 - **Publicar eventos** usa una sola clave compartida, sin moderación. Un evento se retira a mano, y su descripción se guarda pero no se muestra.
 - **«Guardados»** vive en el navegador: no pasa de un dispositivo a otro.
-- **Fotos:** solo una de cada nueve paradas tiene foto, y menos de la mitad de los imperdibles. Se eligen por cercanía y por nombre, y las 679 propuestas se revisaron a ojo, en miniatura: se quitaron 112. Un error de la fuente que no se vea en la miniatura se queda.
+- **Fotos:** solo una de cada nueve paradas tiene foto, y poco más de la mitad de los imperdibles. Se eligen por cercanía y por nombre, en Wikidata o por las coordenadas de la foto en Commons, y las 711 propuestas se revisaron a ojo, en miniatura: se quitaron 121. Un error de la fuente que no se vea en la miniatura se queda.
 - **La app** imprime sin el mapa, y le pide el fondo del mapa y las fotos a servicios externos: sin ellos sigue, con un mapa liso y sin fotos.
 - **No se ha probado con usuarios.** La prueba de usabilidad es de la semana 12.
 
@@ -216,7 +216,7 @@ El 10 de octubre entró el clima propio de cada polo, con los datos `2026.10.4`,
 | En la nube hay varios servidores a la vez, y quien publica tiene que ver su evento | Cada servidor pregunta cada dos segundos si otro publicó algo |
 | Desplegar sin presupuesto y sin cuenta | Una sola imagen para Lambda y para un host gratuito, y un ensayo contra un simulador que encontró dos errores en la guía |
 | Que abra en un celular con datos móviles | 113 kB al abrir, y el mapa aparte |
-| Mostrar los lugares sin fotos propias ni presupuesto para comprarlas | Wikidata dice qué foto de Wikimedia Commons corresponde a cada lugar. Solo entran las de licencia libre, con su autor a la vista, y cada una se revisó a ojo |
+| Mostrar los lugares sin fotos propias ni presupuesto para comprarlas | Wikidata dice qué foto de Wikimedia Commons corresponde a cada lugar y, donde no, las coordenadas de la foto. Solo entran las de licencia libre, con su autor a la vista, y cada una se revisó a ojo |
 
 ## 10 · Lo que falta
 
