@@ -10,6 +10,8 @@ Entre el 7 y el 8 de octubre el motor empezó a proponer lo más conocido. Los g
 
 El 8 de octubre la app publicada empezó a responder: le pregunta al API, que corre en Render desde `main` ([decisión 0012](./decisiones/0012-host-gratuito-render.md)). Render es gratis, pero se duerme sin uso y lo que publican los municipios no dura. AWS sigue siendo el destino, y la cuenta ya está.
 
+El 10 de octubre entró el clima propio de los 194 polos, con los datos `2026.10.4`: ninguno usa ya el de su región. Cambió la respuesta de 156 de las 1 152 consultas; lo que se movió y por qué está en el [informe del prototipo](../deliveries/week10/PrototypeReport.md).
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
