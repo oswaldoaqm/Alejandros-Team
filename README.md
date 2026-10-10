@@ -255,7 +255,7 @@ python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.clima       # clima por polo y mes
-python -m pipeline.artefactos --version 2026.10.3   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.10.4   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 pytest
