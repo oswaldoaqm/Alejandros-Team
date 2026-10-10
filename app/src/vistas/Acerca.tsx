@@ -84,10 +84,6 @@ export function Acerca() {
       <ul>
         <li>Un viaje visita una sola zona. Combinar varias en un mismo viaje es lo siguiente.</li>
         <li>No conoce horarios ni disponibilidad de buses, trenes, botes u hospedajes.</li>
-        <li>
-          Donde todavía no se cargó el clima propio de una zona, usa el promedio de su región y lo avisa en el
-          viaje.
-        </li>
       </ul>
 
       <h2>Tus datos</h2>
