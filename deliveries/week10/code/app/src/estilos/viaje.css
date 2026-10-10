@@ -1,0 +1,935 @@
+/* La pantalla de un viaje (piezas/DetalleRuta.tsx). En celular, una columna: portada, datos,
+   por qué, antes de ir, el plan con su mapa, el costo, el clima, las fiestas y la letra chica.
+   Desde 960 px, el contenido a la izquierda y el mapa fijo a la derecha. */
+
+.viaje {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 12px var(--margen) 48px;
+}
+
+.viaje__aviso {
+  margin-bottom: 16px;
+}
+
+.viaje__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.viaje__titular {
+  margin-bottom: 14px;
+  font-size: var(--t-titular);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 72px;
+}
+
+.viaje__bloque > .recorrido__zona {
+  margin-top: 6px;
+}
+
+/* ── La portada ───────────────────────────────────────────────────────────────── */
+
+.portada {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+/* Flex y no grid: con un alto definido, el alto en % de la flor se resuelve contra él. */
+.portada__arte {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5 / 4;
+  padding: 36px 28px 28px;
+  background: var(--lago-claro);
+  border-radius: var(--r-portada);
+}
+
+.portada__arte .flor {
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+}
+
+/* Con foto: la foto llena la portada; abajo, la flor de sello y qué muestra la foto. */
+.portada__arte--foto {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.portada__foto {
+  position: absolute;
+  inset: 0;
+}
+
+.portada__foto img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.portada__arte--foto .sello-flor {
+  z-index: 1;
+}
+
+.portada__arte .sello-flor .flor {
+  width: 100%;
+  height: 100%;
+}
+
+/* Qué muestra la foto y de quién es, en una pastilla oscura: se lee sobre cualquier foto. */
+.portada__credito {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: grid;
+  justify-items: end;
+  max-width: calc(100% - 88px);
+  padding: 6px 10px;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: #fff;
+  text-align: right;
+  background: rgb(0 0 0 / 55%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+}
+
+/* Mientras la foto no llega, tampoco su crédito. */
+.portada__arte--foto:not(:has(.foto--lista)) .portada__credito {
+  visibility: hidden;
+}
+
+.portada__credito a {
+  color: inherit;
+}
+
+.portada__lugar {
+  font-size: var(--t-pie);
+  font-weight: 650;
+  color: #fff;
+}
+
+/* Sobre la portada: volver a un lado; guardar, compartir e imprimir al otro. */
+.portada__barra {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portada__acciones {
+  display: flex;
+  gap: 8px;
+}
+
+/* En celular los botones de la portada son círculos: el nombre queda para el lector de pantalla. */
+.portada__barra .boton__texto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.portada__barra .boton[aria-pressed="true"] {
+  color: var(--sobre-lago);
+  background: var(--lago);
+}
+
+.portada__texto {
+  display: grid;
+  gap: 4px;
+}
+
+.portada__texto > .datos-clave {
+  margin-top: 20px;
+}
+
+.portada__titulo {
+  font-size: var(--t-display);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.portada__sub {
+  font-size: var(--t-titular);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--tinta-2);
+}
+
+.portada__datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 10px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.portada__datos li {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.portada__datos .icono {
+  color: var(--tinta-3);
+}
+
+/* ── Los datos que deciden ────────────────────────────────────────────────────── */
+
+.datos-clave {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.datos-clave__dato {
+  padding: 14px 16px;
+}
+
+.datos-clave__dato:nth-child(even) {
+  border-left: 1px solid var(--linea);
+}
+
+.datos-clave__dato:nth-child(n + 3) {
+  border-top: 1px solid var(--linea);
+}
+
+/* Con tres datos, el tercero ocupa la fila entera: la franja no queda con un hueco. */
+.datos-clave__dato:nth-child(3):last-child {
+  grid-column: 1 / -1;
+}
+
+.datos-clave__dato--imperdible .icono {
+  color: var(--ichu);
+}
+
+.datos-clave dd {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+}
+
+.datos-clave .icono {
+  grid-row: span 2;
+  color: var(--lago);
+}
+
+.datos-clave__valor {
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.datos-clave__nota {
+  font-size: var(--t-pie);
+  line-height: 1.3;
+  color: var(--tinta-3);
+}
+
+.datos-clave__nota--aviso {
+  font-weight: 600;
+  color: var(--aviso-tinta);
+}
+
+/* ── Por qué te va a gustar ───────────────────────────────────────────────────── */
+
+.razones {
+  display: grid;
+  gap: 14px;
+}
+
+.razon {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.razon .icono {
+  margin-top: 2px;
+  color: var(--lago);
+}
+
+.razon--imperdible .icono {
+  color: var(--ichu);
+}
+
+.razon strong {
+  font-weight: 650;
+}
+
+/* ── Antes de ir ──────────────────────────────────────────────────────────────── */
+
+.antes {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.antes__aviso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
+  font-size: var(--t-nota);
+  line-height: 1.45;
+}
+
+.antes__aviso + .antes__aviso {
+  border-top: 1px solid var(--linea);
+}
+
+.antes__aviso > .icono {
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 7px;
+  color: var(--lago);
+  background: var(--lago-claro);
+  border-radius: 10px;
+}
+
+.antes__aviso--advertencia > .icono {
+  color: var(--aviso-tinta);
+  background: var(--aviso-fondo);
+}
+
+/* ── Día por día ──────────────────────────────────────────────────────────────── */
+
+.recorrido {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.recorrido__titulo {
+  margin-bottom: 0;
+}
+
+/* El selector de días queda a mano mientras se recorre el día (bajo la cabecera, que mide 56 px). */
+.recorrido__selector {
+  position: sticky;
+  top: 56px;
+  z-index: 6;
+  margin: -4px calc(var(--margen) * -1) 0;
+  padding: 8px var(--margen);
+  background: color-mix(in srgb, var(--fondo) 86%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+}
+
+.selector-de-dias {
+  scroll-padding-inline: 16px;
+}
+
+.recorrido__plan {
+  display: grid;
+  gap: 16px;
+}
+
+.recorrido__zona {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  justify-self: start;
+  min-height: 44px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.recorrido__zona:hover {
+  text-decoration: underline;
+}
+
+/* Todos los días: una lista agrupada, como en Ajustes. */
+.dias-lista {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.dias-lista > li + li {
+  border-top: 1px solid var(--linea);
+}
+
+.dia-fila {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 14px 12px 16px;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.dia-fila:hover {
+  background: var(--superficie-2);
+}
+
+.dia-fila__dia {
+  display: grid;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dia-fila__fecha {
+  font-size: var(--t-pie);
+  font-weight: 500;
+  color: var(--tinta-3);
+}
+
+.dia-fila__texto {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dia-fila__tipo {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.dia-fila__lugares {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--t-nota);
+  line-height: 1.35;
+  color: var(--tinta-2);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.dia-fila > .icono,
+.lugar-fila > .icono {
+  color: var(--tinta-3);
+}
+
+/* Un día: su cabeza, su nota y sus lugares en una línea de tiempo. */
+.un-dia {
+  display: grid;
+  gap: 14px;
+}
+
+.un-dia__cabeza {
+  display: grid;
+  gap: 2px;
+}
+
+.un-dia__titulo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  align-items: baseline;
+  font-size: var(--t-titular);
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.un-dia__fecha {
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--tinta-2);
+}
+
+.un-dia__resumen {
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.un-dia__nota,
+.un-dia__fiesta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  font-size: var(--t-nota);
+  line-height: 1.45;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.un-dia__nota .icono {
+  margin-top: 2px;
+  color: var(--tinta-2);
+}
+
+.un-dia__fiesta {
+  background: var(--lago-claro);
+}
+
+.un-dia__fiesta .icono {
+  margin-top: 2px;
+  color: var(--lago);
+}
+
+.un-dia__libre {
+  color: var(--tinta-2);
+}
+
+.un-dia__siguiente {
+  justify-self: start;
+}
+
+.lugares {
+  padding: 6px 0;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.lugares > li {
+  position: relative;
+}
+
+/* El hilo que une los lugares del día, de número en número. Su centro: 12 + 46 + 10 + 13 px. */
+.lugares > li::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 80px;
+  width: 2px;
+  content: "";
+  background: color-mix(in srgb, var(--lago) 22%, transparent);
+}
+
+.lugares > li:first-child::before {
+  top: 50%;
+}
+
+.lugares > li:last-child::before {
+  bottom: 50%;
+}
+
+.lugares > li:only-child::before {
+  display: none;
+}
+
+.lugar-fila {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px 26px minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 14px 10px 12px;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.lugar-fila:hover {
+  background: var(--superficie-2);
+}
+
+.lugar-fila__hora {
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.lugar-fila__numero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--sobre-lago);
+  background: var(--lago);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--superficie);
+}
+
+.lugar-fila__texto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.lugar-fila__nombre {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.lugar-fila__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* ── Un lugar, en su hoja ─────────────────────────────────────────────────────── */
+
+.lugar-hoja {
+  display: grid;
+  gap: 18px;
+}
+
+.lugar-hoja .foto img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--r-control);
+}
+
+.lugar-hoja__clase {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.lugar-hoja__datos {
+  overflow: hidden;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.lugar-hoja__datos > div {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 14px;
+}
+
+.lugar-hoja__datos > div + div {
+  border-top: 1px solid color-mix(in srgb, var(--borde) 28%, transparent);
+}
+
+.lugar-hoja__datos dt {
+  color: var(--tinta-2);
+}
+
+.lugar-hoja__datos dd {
+  font-weight: 600;
+  text-align: right;
+}
+
+.lugar-hoja__descripcion {
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+/* ── El costo, el clima y las fiestas: tarjetas blancas como el resto ───────────── */
+
+.viaje .costo,
+.viaje .temporada {
+  padding: 18px 20px;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.viaje .costo {
+  gap: 14px;
+}
+
+.viaje .costo__numero {
+  font-size: 2rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.viaje .costo__nota,
+.viaje .costo__leyenda {
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.viaje .banda__pista {
+  height: 10px;
+  background: var(--superficie-2);
+  border-radius: 5px;
+}
+
+.viaje .banda__tramo {
+  background: color-mix(in srgb, var(--lago) 55%, var(--superficie));
+  border-radius: 5px;
+}
+
+.viaje .banda__centro {
+  background: var(--lago-hundido);
+  box-shadow: 0 0 0 2px var(--superficie);
+}
+
+.viaje .banda__rotulos {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+.viaje .desglose li {
+  font-size: var(--t-nota);
+}
+
+.viaje .desglose__barra {
+  height: 6px;
+  background: var(--superficie-2);
+  border-radius: 3px;
+}
+
+.viaje .desglose__barra span {
+  background: var(--lago);
+  border-radius: 3px;
+}
+
+.viaje .plegable summary {
+  font-weight: 600;
+  color: var(--lago);
+}
+
+.viaje .lista-simple {
+  display: grid;
+  gap: 6px;
+  padding-left: 18px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  list-style: disc;
+}
+
+.viaje .temporada {
+  gap: 14px;
+}
+
+.viaje .temporada .cifras {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  padding-top: 14px;
+  border-top: 1px solid var(--linea);
+}
+
+.viaje .cifras dt {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+.viaje .cifras dd {
+  font-size: var(--t-cuerpo);
+}
+
+.viaje .tira-meses__mes {
+  padding: 6px 0;
+  font-size: var(--t-pie);
+  background: var(--superficie-2);
+  border-radius: 6px;
+}
+
+.viaje .ayuda {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* ── La letra chica ───────────────────────────────────────────────────────────── */
+
+.letra-chica {
+  display: grid;
+  gap: 8px;
+  padding-top: 20px;
+  font-size: var(--t-pie);
+  line-height: 1.5;
+  color: var(--tinta-3);
+  border-top: 1px solid var(--linea);
+}
+
+.letra-chica__titulo {
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  font-weight: 650;
+  color: var(--tinta-2);
+}
+
+.letra-chica__fuentes {
+  display: grid;
+  gap: 2px;
+}
+
+.solo-impresion {
+  display: none;
+}
+
+/* ── Pantalla ancha: el mapa fijo a la derecha ────────────────────────────────── */
+
+@media (min-width: 600px) {
+  /* Una columna por dato, sean tres o cuatro. */
+  .datos-clave {
+    grid-template-columns: none;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+  }
+
+  .datos-clave__dato:nth-child(3):last-child {
+    grid-column: auto;
+  }
+
+  .datos-clave__dato:nth-child(n) {
+    border-top: 0;
+    border-left: 1px solid var(--linea);
+  }
+
+  .datos-clave__dato:first-child {
+    border-left: 0;
+  }
+
+  .datos-clave dd {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  .datos-clave .icono {
+    grid-row: auto;
+    margin-bottom: 6px;
+  }
+}
+
+@media (min-width: 960px) {
+  .viaje {
+    padding-top: 28px;
+  }
+
+  /* Sin espacio entre filas: lo dan los márgenes. Las filas vacías que cruza el mapa no suman. */
+  .viaje__cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    gap: 0 48px;
+    align-items: start;
+  }
+
+  .viaje__cuerpo > *,
+  .recorrido > * {
+    grid-column: 1;
+    margin-bottom: 40px;
+  }
+
+  .portada {
+    grid-template-areas:
+      "barra barra"
+      "texto arte";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    column-gap: 48px;
+    row-gap: 24px;
+    align-items: center;
+  }
+
+  .viaje__cuerpo > .portada {
+    grid-column: 1 / -1;
+    margin-bottom: 28px;
+  }
+
+  .portada__barra {
+    position: static;
+    grid-area: barra;
+  }
+
+  .portada__barra .boton--flotante {
+    width: auto;
+    padding: 0 16px;
+    color: var(--tinta);
+    background: var(--superficie);
+    box-shadow: var(--sombra-baja);
+  }
+
+  .portada__barra .boton--flotante:hover {
+    background: var(--superficie-2);
+  }
+
+  .portada__barra .boton__texto {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .portada__barra .portada__volver {
+    padding-left: 12px;
+    color: var(--lago);
+  }
+
+  .portada__texto {
+    grid-area: texto;
+    gap: 8px;
+  }
+
+  .portada__arte {
+    grid-area: arte;
+    aspect-ratio: auto;
+    height: 360px;
+    padding: 36px;
+  }
+
+  .portada__datos {
+    margin-top: 14px;
+  }
+
+  /* El recorrido se reparte en la grilla de la página: el mapa, a la derecha y fijo. */
+  .recorrido {
+    display: contents;
+  }
+
+  .recorrido > .recorrido__titulo {
+    margin-bottom: 14px;
+  }
+
+  .recorrido > .recorrido__selector {
+    position: static;
+    margin: 0 0 16px;
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .recorrido > .recorrido__mapa {
+    position: sticky;
+    top: 88px;
+    grid-row: 2 / span 12;
+    grid-column: 2;
+    height: min(calc(100vh - 112px), 860px);
+    margin: 0;
+  }
+
+  .recorrido__mapa .mapa-viaje {
+    height: 100%;
+  }
+
+  .viaje .letra-chica {
+    margin-bottom: 0;
+  }
+}

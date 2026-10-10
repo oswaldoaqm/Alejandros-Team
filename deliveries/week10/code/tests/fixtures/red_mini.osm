@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Red de juguete para las pruebas de pipeline/red_vial.py. Coordenadas inventadas. -->
+<osm version="0.6" generator="a mano">
+  <node id="1" version="1" lat="-12.000" lon="-77.000"/>
+  <node id="2" version="1" lat="-12.000" lon="-76.991"/>
+  <node id="3" version="1" lat="-12.000" lon="-76.982"/>
+  <node id="4" version="1" lat="-12.000" lon="-76.973"/>
+  <node id="5" version="1" lat="-11.991" lon="-76.982"/>
+  <node id="6" version="1" lat="-11.991" lon="-76.973"/>
+  <node id="7" version="1" lat="-12.009" lon="-76.973"/>
+  <node id="8" version="1" lat="-12.009" lon="-77.000"/>
+  <node id="9" version="1" lat="-12.001" lon="-76.991"/>
+  <node id="20" version="1" lat="-12.000" lon="-76.964"/>
+  <node id="21" version="1" lat="-12.000" lon="-76.955"/>
+  <node id="22" version="1" lat="-12.000" lon="-76.920"/>
+  <node id="30" version="1" lat="-12.100" lon="-77.100"/>
+  <node id="31" version="1" lat="-12.100" lon="-77.090"/>
+  <node id="50" version="1" lat="-12.050" lon="-77.050"/>
+  <node id="51" version="1" lat="-12.050" lon="-77.047"/>
+  <node id="52" version="1" lat="-12.047" lon="-77.047"/>
+  <node id="40" version="1" lat="-12.005" lon="-76.985">
+    <tag k="place" v="village"/>
+    <tag k="name" v="Pueblo Prueba"/>
+    <tag k="ele" v="3399"/>
+  </node>
+  <node id="41" version="1" lat="-12.020" lon="-77.010">
+    <tag k="place" v="town"/>
+    <tag k="name" v="Otro Pueblo"/>
+  </node>
+  <node id="42" version="1" lat="-12.030" lon="-77.020">
+    <tag k="place" v="hamlet"/>
+  </node>
+  <node id="60" version="1" lat="-12.006" lon="-76.986">
+    <tag k="tourism" v="hotel"/>
+    <tag k="name" v="Hotel Prueba"/>
+  </node>
+  <node id="61" version="1" lat="-12.0200" lon="-77.0120"/>
+  <node id="62" version="1" lat="-12.0200" lon="-77.0110"/>
+  <node id="63" version="1" lat="-12.0210" lon="-77.0110"/>
+  <node id="64" version="1" lat="-12.0210" lon="-77.0120"/>
+  <node id="65" version="1" lat="-12.004" lon="-76.984">
+    <tag k="tourism" v="viewpoint"/>
+  </node>
+  <node id="80" version="1" lat="-12.0005" lon="-76.982">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación Prueba"/>
+  </node>
+  <node id="81" version="1" lat="-12.010" lon="-76.982"/>
+  <node id="82" version="1" lat="-12.030" lon="-76.982">
+    <tag k="railway" v="halt"/>
+    <tag k="name" v="Paradero Lejano"/>
+  </node>
+  <node id="83" version="1" lat="-12.040" lon="-76.982"/>
+  <node id="85" version="1" lat="-12.030" lon="-76.960"/>
+  <node id="86" version="1" lat="-12.030" lon="-76.950">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación Turística"/>
+  </node>
+  <node id="87" version="1" lat="-12.0302" lon="-76.9601">
+    <tag k="railway" v="station"/>
+    <tag k="name" v="Estación al lado del riel"/>
+  </node>
+  <node id="90" version="1" lat="-12.060" lon="-76.950"/>
+  <node id="91" version="1" lat="-12.060" lon="-76.900"/>
+  <way id="10" version="1">
+    <nd ref="1"/><nd ref="2"/><nd ref="3"/><nd ref="4"/>
+    <tag k="highway" v="primary"/>
+  </way>
+  <way id="11" version="1">
+    <nd ref="3"/><nd ref="5"/><nd ref="6"/>
+    <tag k="highway" v="track"/>
+    <tag k="surface" v="unpaved"/>
+  </way>
+  <way id="12" version="1">
+    <nd ref="6"/><nd ref="4"/>
+    <tag k="highway" v="secondary"/>
+  </way>
+  <way id="13" version="1">
+    <nd ref="4"/><nd ref="7"/>
+    <tag k="highway" v="residential"/>
+    <tag k="access" v="private"/>
+  </way>
+  <way id="14" version="1">
+    <nd ref="1"/><nd ref="8"/>
+    <tag k="highway" v="footway"/>
+  </way>
+  <way id="15" version="1">
+    <nd ref="2"/><nd ref="9"/>
+    <tag k="highway" v="service"/>
+    <tag k="service" v="parking_aisle"/>
+  </way>
+  <way id="16" version="1">
+    <nd ref="4"/><nd ref="20"/>
+    <tag k="route" v="ferry"/>
+    <tag k="name" v="Balsa cautiva"/>
+  </way>
+  <way id="17" version="1">
+    <nd ref="20"/><nd ref="21"/>
+    <tag k="highway" v="tertiary"/>
+  </way>
+  <way id="18" version="1">
+    <nd ref="21"/><nd ref="22"/>
+    <tag k="route" v="ferry"/>
+  </way>
+  <way id="19" version="1">
+    <nd ref="30"/><nd ref="31"/>
+    <tag k="highway" v="primary"/>
+  </way>
+  <way id="23" version="1">
+    <nd ref="50"/><nd ref="51"/><nd ref="52"/>
+    <tag k="highway" v="unclassified"/>
+  </way>
+  <way id="24" version="1">
+    <nd ref="61"/><nd ref="62"/><nd ref="63"/><nd ref="64"/><nd ref="61"/>
+    <tag k="tourism" v="hostel"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="30" version="1">
+    <nd ref="80"/><nd ref="81"/><nd ref="82"/>
+    <tag k="railway" v="rail"/>
+  </way>
+  <way id="31" version="1">
+    <nd ref="82"/><nd ref="83"/>
+    <tag k="railway" v="rail"/>
+    <tag k="usage" v="industrial"/>
+  </way>
+  <way id="32" version="1">
+    <nd ref="82"/><nd ref="85"/><nd ref="86"/>
+    <tag k="railway" v="narrow_gauge"/>
+    <tag k="usage" v="tourism"/>
+  </way>
+  <way id="33" version="1">
+    <nd ref="90"/><nd ref="91"/>
+    <tag k="route" v="ferry"/>
+    <tag k="name" v="Bote de un río mapeado a trozos"/>
+  </way>
+  <relation id="100" version="1">
+    <member type="node" ref="40" role="admin_centre"/>
+    <tag k="type" v="boundary"/>
+    <tag k="boundary" v="administrative"/>
+    <tag k="admin_level" v="8"/>
+    <tag k="name" v="Distrito de Prueba"/>
+  </relation>
+  <relation id="101" version="1">
+    <member type="way" ref="30" role=""/>
+    <member type="way" ref="31" role=""/>
+    <member type="node" ref="80" role="stop"/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="train"/>
+    <tag k="name" v="Tren de prueba"/>
+  </relation>
+</osm>

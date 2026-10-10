@@ -1,0 +1,163 @@
+/* El marco: la cabecera, la barra de pestañas del celular, el ancho de las páginas y el pie. */
+
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--cristal);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid color-mix(in srgb, var(--linea) 70%, transparent);
+}
+
+.cabecera__ancho {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--ancho);
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 var(--margen);
+}
+
+.marca {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--fuente-titular);
+  font-size: 1.1875rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.marca__flor {
+  width: 26px;
+  height: 26px;
+  color: var(--lago);
+}
+
+/* En celular, las secciones van en la barra de abajo, al alcance del pulgar. */
+.cabecera__nav {
+  display: none;
+}
+
+.cabecera__nav a {
+  padding: 8px 12px;
+  font-size: var(--t-nota);
+  font-weight: 550;
+  color: var(--tinta-2);
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+.cabecera__nav a:hover {
+  color: var(--tinta);
+  background: var(--superficie-2);
+}
+
+.cabecera__nav a[aria-current="page"] {
+  color: var(--tinta);
+  background: var(--superficie-2);
+}
+
+.barra-inferior {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: var(--cristal);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid color-mix(in srgb, var(--linea) 70%, transparent);
+}
+
+.barra-inferior a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--tinta-3);
+  text-decoration: none;
+  border-radius: var(--r-chico);
+}
+
+.barra-inferior a[aria-current="page"] {
+  color: var(--lago);
+}
+
+.barra-inferior .icono {
+  vertical-align: 0;
+}
+
+/* El espacio para la barra de abajo lo deja el pie, que siempre va después. */
+main {
+  min-height: calc(100vh - 56px);
+}
+
+main:focus {
+  outline: none;
+}
+
+.pagina {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 20px var(--margen) 48px;
+}
+
+.pagina--angosta {
+  max-width: 680px;
+}
+
+.pagina--media {
+  max-width: 880px;
+}
+
+.pie {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px var(--margen) calc(var(--barra-inferior) + 32px + env(safe-area-inset-bottom));
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+.pie p + p {
+  margin-top: 6px;
+}
+
+.pie a {
+  color: var(--tinta-2);
+}
+
+@media (min-width: 960px) {
+  .cabecera__ancho {
+    height: 64px;
+  }
+
+  .cabecera__nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .barra-inferior {
+    display: none;
+  }
+
+  .pagina {
+    padding-top: 32px;
+  }
+
+  .pie {
+    padding-bottom: 40px;
+  }
+}
