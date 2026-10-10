@@ -10,11 +10,17 @@ Qué baja
    con qué lugar.
 2. De Wikidata, el nombre de cada tipo (P31) que aparece: con él se reconoce un pueblo, un
    distrito o una provincia, que no son la foto de un lugar.
-3. De Wikimedia Commons, el autor, la licencia y el tamaño de cada foto de lo que quedó a
+3. De Wikimedia Commons, las fotos con coordenadas a menos de 2 km de cada base y a menos de
+   2,5 km de cada imperdible (jerarquía 3 o 4): muchas no tienen un elemento en Wikidata, pero
+   su nombre dice qué muestran («Catarata El León.jpg»). ``pipeline/fotos.py`` las usa cuando
+   Wikidata no da ninguna.
+4. De Wikimedia Commons, el autor, la licencia y el tamaño de cada foto de lo que quedó a
    menos de 3 km de una parada o a menos de 10 km de una base: lo que la licencia exige para
    mostrarla, y lo que hace falta para pedir una miniatura del tamaño justo. También los de
    las fotos que la revisión a mano puso en ``pipeline/referencia/fotos_revisadas.csv``,
-   vengan de donde vengan en Commons.
+   vengan de donde vengan en Commons, y los de las fotos con coordenadas del punto 3 cuyo
+   nombre comparte una palabra con el del lugar: pedir los de todas serían miles de archivos
+   que no pueden ser.
 
 No baja las fotos: la app las pide a Wikimedia, del tamaño que necesita cada pantalla.
 
@@ -27,6 +33,7 @@ cuando lo hay. A Commons le pide los archivos de a 50.
 Salida (fuera de git; lo que entra al repositorio lo arma ``python -m pipeline.fotos``)
   data/externos/fotos/wikidata/<celda>.json   lo de Wikidata en cada celda
   data/externos/fotos/tipos.json              el nombre en inglés y en español de cada tipo
+  data/externos/fotos/cerca_en_commons.json   las fotos con coordenadas cerca de cada base e imperdible
   data/externos/fotos/commons.json            autor, licencia y tamaño de cada archivo
 
 Licencias: los datos de Wikidata son CC0. Cada foto de Commons tiene la suya (CC BY, CC
@@ -47,6 +54,7 @@ import json
 import math
 import re
 import time
+import unicodedata
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -60,6 +68,7 @@ DIR = EXTERNOS / "fotos"
 CELDAS = DIR / "wikidata"
 METADATOS = DIR / "commons.json"
 TIPOS = DIR / "tipos.json"
+CERCA = DIR / "cerca_en_commons.json"
 
 DATOS = RAIZ / "dreemgo" / "datos"
 REVISADAS = RAIZ / "pipeline" / "referencia" / "fotos_revisadas.csv"
@@ -68,6 +77,10 @@ CERCA_DE_BASE_KM = 10.0
 PAUSA_S = 1.5  # entre pedidos a Wikidata
 PAUSA_COMMONS_S = 3.0  # Commons corta antes que Wikidata
 LOTE = 50  # archivos por pedido a Commons: el máximo que acepta sin cuenta
+RADIO_BASE_M = 2000  # una foto del pueblo donde se duerme
+RADIO_IMPERDIBLE_M = 2500  # como la regla de pipeline/fotos.py para un elemento de Wikidata
+POR_PUNTO = 100  # archivos con coordenadas por punto, los más cercanos primero
+VACIAS = {"de", "del", "la", "las", "el", "los", "y", "en", "con", "por", "para", "peru", "jpg", "jpeg"}
 
 CONSULTA = """
 SELECT ?item (SAMPLE(?es) AS ?nombre) (SAMPLE(?en) AS ?nombre_en) (SAMPLE(?coord) AS ?coord)
@@ -100,6 +113,27 @@ def leer_puntos() -> tuple[list[tuple[float, float]], list[tuple[float, float]]]
     paradas = [(r["lat"], r["lon"]) for r in recursos if r.get("es_parada")]
     bases = [(p["base"]["lat"], p["base"]["lon"]) for p in polos]
     return paradas, bases
+
+
+def leer_lugares() -> dict[str, tuple[float, float, int, str]]:
+    """Dónde buscar fotos con coordenadas: cada base y cada imperdible, con su radio y su
+    nombre. La clave es «base:<polo>» o «lugar:<código>», como en fotos_revisadas.csv."""
+    recursos = json.loads(gzip.decompress((DATOS / "recursos.json.gz").read_bytes()))
+    polos = json.loads(gzip.decompress((DATOS / "polos.json.gz").read_bytes()))
+    lugares = {}
+    for p in polos:
+        b = p["base"]
+        lugares[f"base:{p['id']}"] = (b["lat"], b["lon"], RADIO_BASE_M, b["nombre"])
+    for r in recursos:
+        if r.get("es_parada") and (r.get("jerarquia") or 0) >= 3:
+            lugares[f"lugar:{r['codigo']}"] = (r["lat"], r["lon"], RADIO_IMPERDIBLE_M, r["nombre"])
+    return lugares
+
+
+def palabras_de(texto: str) -> set[str]:
+    """Las palabras de cuatro letras o más, en minúsculas y sin tildes."""
+    plano = "".join(c for c in unicodedata.normalize("NFKD", texto.lower()) if not unicodedata.combining(c))
+    return {p for p in re.split(r"[^a-z0-9]+", plano) if len(p) >= 4 and p not in VACIAS}
 
 
 def celdas(puntos: list[tuple[float, float]], margen: float = 0.1) -> list[tuple[int, int]]:
@@ -253,6 +287,53 @@ def puestas_a_mano(ruta: Path = REVISADAS) -> set[str]:
         return {(f.get("archivo") or "").strip() for f in csv.DictReader(fh, delimiter=";")} - {""}
 
 
+def bajar_cerca(sesion: requests.Session, lugares: dict[str, tuple], rehacer: bool) -> dict[str, list[dict]]:
+    """Las fotos de Commons con coordenadas cerca de cada lugar, las más cercanas primero."""
+    halladas: dict = {} if rehacer or not CERCA.exists() else json.loads(CERCA.read_text(encoding="utf-8"))
+    faltan = [clave for clave in lugares if clave not in halladas]
+    print(f"Commons por coordenadas: {len(lugares)} lugares, {len(faltan)} por pedir.", flush=True)
+    for n, clave in enumerate(faltan, 1):
+        lat, lon, radio, _ = lugares[clave]
+        r = pedir(
+            sesion,
+            "GET",
+            COMMONS,
+            params={
+                "action": "query",
+                "format": "json",
+                "formatversion": "2",
+                "maxlag": "5",
+                "list": "geosearch",
+                "gscoord": f"{lat}|{lon}",
+                "gsradius": str(radio),
+                "gsnamespace": "6",
+                "gslimit": str(POR_PUNTO),
+            },
+        )
+        halladas[clave] = [
+            {"archivo": f["title"].removeprefix("File:"), "lat": f["lat"], "lon": f["lon"], "m": round(f["dist"])}
+            for f in r.json().get("query", {}).get("geosearch", [])
+        ]
+        if n % 10 == 0 or n == len(faltan):
+            escribir_json(CERCA, halladas)
+            print(f"  {n}/{len(faltan)}", flush=True)
+        time.sleep(PAUSA_COMMONS_S)
+    return halladas
+
+
+def con_nombre_parecido(cerca: dict[str, list[dict]], lugares: dict[str, tuple]) -> set[str]:
+    """Las fotos JPEG con coordenadas cuyo nombre comparte una palabra con el del lugar."""
+    salida = set()
+    for clave, archivos in cerca.items():
+        if clave not in lugares:
+            continue
+        nombre = palabras_de(lugares[clave][3])
+        for f in archivos:
+            if re.search(r"\.jpe?g$", f["archivo"], re.IGNORECASE) and nombre & palabras_de(f["archivo"]):
+                salida.add(f["archivo"])
+    return salida
+
+
 def bajar_commons(sesion: requests.Session, archivos: list[str], rehacer: bool) -> dict:
     metadatos: dict = {} if rehacer or not METADATOS.exists() else json.loads(METADATOS.read_text(encoding="utf-8"))
     faltan = [a for a in archivos if a not in metadatos]
@@ -317,7 +398,10 @@ def main() -> None:
     print(f"{miles(len(elementos))} elementos con foto; {miles(len(utiles))} cerca de una parada o una base.")
     print(f"{len(a_mano)} fotos puestas a mano en {REVISADAS.relative_to(RAIZ)}.")
     bajar_tipos(sesion, sorted({t for e in utiles for t in e["tipos"]}), a.rehacer)
-    metadatos = bajar_commons(sesion, archivos, a.rehacer)
+    lugares = leer_lugares()
+    parecidas = con_nombre_parecido(bajar_cerca(sesion, lugares, a.rehacer), lugares)
+    print(f"{miles(len(parecidas))} fotos con coordenadas cuyo nombre se parece al de su lugar.")
+    metadatos = bajar_commons(sesion, sorted(set(archivos) | parecidas), a.rehacer)
     libres = sum(1 for m in metadatos.values() if m and m["licencia"])
     print(f"Listo: {miles(libres)} fotos con autor y licencia en {Path(METADATOS).relative_to(RAIZ)}.")
 

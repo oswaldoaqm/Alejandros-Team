@@ -32,6 +32,11 @@ Cómo se decide
 - El autor se publica como se va a leer junto a la foto: sin los restos de la wiki con que
   Commons lo guarda («User:», «No machine-readable author provided…»). «Trabajo propio» o
   «Unknown author» no nombran a nadie: una foto así solo sirve si es de dominio público.
+- Si Wikidata no da ninguna, a una base o a un imperdible le sirve una foto de Commons con
+  coordenadas a menos de 2 km de la base o de 2,5 km del imperdible, cuyo nombre trae todo lo
+  que distingue al lugar: «Catarata El León - panoramio.jpg» para la Catarata El León. Si el
+  imperdible tiene clase, el nombre de la foto tiene que traer una de la misma familia: el
+  «Restaurante El León» de al lado no es la catarata. De esas gana la apaisada, la más cercana.
 - ``pipeline/referencia/fotos_revisadas.csv`` corrige a mano lo que la regla no ve: quita la
   foto que eligió, o pone otra.
 
@@ -59,6 +64,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 EXTERNOS = RAIZ / "data" / "externos" / "fotos"
 DATOS = RAIZ / "dreemgo" / "datos"
 REVISADAS = RAIZ / "pipeline" / "referencia" / "fotos_revisadas.csv"
+CERCA = EXTERNOS / "cerca_en_commons.json"
 CAMPOS_REVISADAS = ["tipo", "clave", "archivo", "motivo"]
 SALIDA = RAIZ / "app" / "public" / "fotos.json"
 
@@ -406,6 +412,37 @@ def mejor_foto(elementos: list[dict], metadatos: dict) -> dict | None:
     return None
 
 
+def titulo_de(archivo: str) -> str:
+    """Lo que dice el nombre de un archivo de Commons, sin la extensión ni lo que agregan la
+    cámara o la plataforma de donde vino: «IMG_1234», «DSC01234», « - panoramio (2)»."""
+    t = re.sub(r"\.jpe?g$", "", archivo, flags=re.IGNORECASE).replace("_", " ")
+    t = re.sub(r"\s*-\s*panoramio(\s*\(\d+\))?$", "", t, flags=re.IGNORECASE)
+    return re.sub(r"\b(img|dsc|dscn|cimg|pict|p)\s*\d{3,}\b", " ", t, flags=re.IGNORECASE)
+
+
+def de_commons(lugar: Nombre, archivos: list[dict], metadatos: dict, base: bool) -> dict | None:
+    """La foto con coordenadas que muestra el lugar, cuando Wikidata no dio ninguna: su nombre
+    trae todo lo que distingue al lugar y, si es un imperdible con clase, una clase de la misma
+    familia. De esas, la apaisada más cercana."""
+    if not lugar.propias:
+        return None  # «Plaza de Armas»: cualquier plaza de la zona se llama así
+    buenas = []
+    for f in archivos:
+        archivo, meta = f["archivo"], metadatos.get(f["archivo"])
+        if not libre(meta, archivo):
+            continue
+        otro = Nombre.de(titulo_de(archivo))
+        if cobertura(lugar, otro) < 1:
+            continue
+        if not base and lugar.familias and not (lugar.familias & otro.familias):
+            continue
+        buenas.append((meta["ancho"] < meta["alto"], f["m"], -meta["ancho"] * meta["alto"], archivo))
+    if not buenas:
+        return None
+    elegido = min(buenas)[-1]
+    return foto(elegido, metadatos[elegido], "")
+
+
 def leer_revisadas(ruta: Path = REVISADAS) -> dict[tuple[str, str], str]:
     """Lo corregido a mano: (lugar|base, clave) → archivo, o "" si no lleva foto.
 
@@ -443,8 +480,11 @@ def elegir(
     tipos: dict[str, dict],
     metadatos: dict,
     revisadas: dict[tuple[str, str], str],
+    cerca: dict[str, list[dict]] | None = None,
 ) -> dict:
-    """Las fotos de los lugares que pueden ser parada y de las bases."""
+    """Las fotos de los lugares que pueden ser parada y de las bases. `cerca` son las fotos de
+    Commons con coordenadas cerca de cada base e imperdible («base:<polo>», «lugar:<código>»)."""
+    cerca = cerca or {}
     lugares, bases = {}, {}
     for r in recursos:
         if not r.get("es_parada"):
@@ -456,6 +496,8 @@ def elegir(
                 lugares[r["codigo"]] = foto(archivo, metadatos[archivo], "")
             continue
         elegida = mejor_foto(candidatos_del_lugar(r, elementos, tipos), metadatos)
+        if not elegida:
+            elegida = de_commons(Nombre.de(r["nombre"]), cerca.get(f"lugar:{r['codigo']}", []), metadatos, False)
         if elegida:
             lugares[r["codigo"]] = elegida
     for p in polos:
@@ -466,6 +508,8 @@ def elegir(
                 bases[str(p["id"])] = foto(archivo, metadatos[archivo], "")
             continue
         elegida = mejor_foto(candidatos_de_la_base(p["base"], elementos, tipos), metadatos)
+        if not elegida:
+            elegida = de_commons(Nombre.de(p["base"]["nombre"]), cerca.get(f"base:{p['id']}", []), metadatos, True)
         if elegida:
             bases[str(p["id"])] = elegida
     return {"lugares": lugares, "bases": bases}
@@ -497,12 +541,13 @@ def main() -> None:
     elementos = leer_elementos()
     tipos = json.loads((EXTERNOS / "tipos.json").read_text(encoding="utf-8"))
     metadatos = json.loads((EXTERNOS / "commons.json").read_text(encoding="utf-8"))
+    cerca = json.loads(CERCA.read_text(encoding="utf-8")) if CERCA.exists() else {}
 
     revisadas = leer_revisadas()
-    elegidas = elegir(recursos, polos, elementos, tipos, metadatos, revisadas)
+    elegidas = elegir(recursos, polos, elementos, tipos, metadatos, revisadas, cerca)
     salida = {
         "version_datos": manifiesto.get("version_datos", ""),
-        "fuente": "Wikimedia Commons, a través de Wikidata",
+        "fuente": "Wikimedia Commons, a través de Wikidata o de las coordenadas de cada foto",
         **elegidas,
     }
     a.salida.parent.mkdir(parents=True, exist_ok=True)

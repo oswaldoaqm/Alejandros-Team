@@ -212,6 +212,67 @@ def test_lo_revisado_a_mano_manda():
     assert "5" not in corregido["bases"]
 
 
+def con_coordenadas(archivo, m=100):
+    return {"archivo": archivo, "lat": -12.0, "lon": -75.0, "m": m}
+
+
+def test_el_nombre_de_un_archivo_sin_lo_que_agregan_la_camara_y_panoramio():
+    assert fotos.titulo_de("Catarata El León - panoramio (2).jpg") == "Catarata El León"
+    assert fotos.titulo_de("IMG_4521 Laguna Churup.JPG").strip() == "Laguna Churup"
+    assert fotos.titulo_de("Plaza_de_Armas_DSC01234.jpeg").strip() == "Plaza de Armas"
+
+
+def test_sin_foto_en_wikidata_sirve_una_de_commons_que_nombra_al_lugar_y_su_clase():
+    catarata = Nombre.de("Catarata El León")
+    archivos = [
+        con_coordenadas("Restaurante El León.jpg", m=50),  # otra cosa: no dice que es una catarata
+        con_coordenadas("Vista del valle.jpg", m=80),  # no nombra al lugar
+        con_coordenadas("Catarata El León - panoramio.jpg", m=900),
+        con_coordenadas("Cascada El León vertical.jpg", m=300),  # la misma familia, pero vertical
+    ]
+    metadatos = {a["archivo"]: meta() for a in archivos} | {"Cascada El León vertical.jpg": meta(1000, 1500)}
+    elegida = fotos.de_commons(catarata, archivos, metadatos, base=False)
+    assert elegida["archivo"] == "Catarata El León - panoramio.jpg"
+    assert elegida["wikidata"] == ""
+
+
+def test_de_commons_solo_fotos_libres_y_nunca_para_un_nombre_de_pura_clase():
+    archivos = [con_coordenadas("Plaza de Armas de Tarma.jpg")]
+    assert (
+        fotos.de_commons(Nombre.de("Plaza de Armas"), archivos, {"Plaza de Armas de Tarma.jpg": meta()}, False) is None
+    )
+    tarma = Nombre.de("Tarma")
+    assert (
+        fotos.de_commons(tarma, archivos, {"Plaza de Armas de Tarma.jpg": meta(licencia="All rights reserved")}, True)
+        is None
+    )
+    assert (
+        fotos.de_commons(tarma, archivos, {"Plaza de Armas de Tarma.jpg": meta()}, True)["archivo"]
+        == archivos[0]["archivo"]
+    )
+
+
+def test_commons_por_coordenadas_solo_cuando_wikidata_no_da_nada_y_lo_revisado_manda():
+    r = recurso("7", "Wariwillka") | {"es_parada": True}
+    sin_foto = recurso("8", "Catarata El León", tipo="Caídas de agua") | {"es_parada": True}
+    polo = {"id": 5, "base": {"nombre": "La Merced", "lat": -12.0, "lon": -75.0}}
+    elementos = [elemento("Q1", "Huarihuilca", -12.0, -75.0, imagenes=["De Wikidata.jpg"])]
+    cerca = {
+        "lugar:7": [con_coordenadas("Wariwillka.jpg")],
+        "lugar:8": [con_coordenadas("Catarata El León.jpg")],
+        "base:5": [con_coordenadas("La Merced 001 - panoramio.jpg")],
+    }
+    nombres = ["De Wikidata.jpg", "Wariwillka.jpg", "Catarata El León.jpg", "La Merced 001 - panoramio.jpg"]
+    metadatos = {a: meta() for a in nombres}
+    elegidas = fotos.elegir([r, sin_foto], [polo], elementos, TIPOS, metadatos, {}, cerca)
+    assert elegidas["lugares"]["7"]["archivo"] == "De Wikidata.jpg"
+    assert elegidas["lugares"]["8"]["archivo"] == "Catarata El León.jpg"
+    assert elegidas["bases"]["5"]["archivo"] == "La Merced 001 - panoramio.jpg"
+    revisadas = {("lugar", "8"): "", ("base", "5"): ""}
+    corregidas = fotos.elegir([r, sin_foto], [polo], elementos, TIPOS, metadatos, revisadas, cerca)
+    assert "8" not in corregidas["lugares"] and "5" not in corregidas["bases"]
+
+
 def test_el_elemento_no_puede_ser_sobre_otra_cosa():
     plaza = recurso("1", "Plaza de Armas de Huánuco", tipo="Arquitectura y Espacios Urbanos", subtipo="Plazas")
     mercado = elemento("Q1", "Mercado Viejo de Huánuco", -12.0, -75.0)
