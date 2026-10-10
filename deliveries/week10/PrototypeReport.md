@@ -1,7 +1,7 @@
 # Informe del prototipo · Semana 10
 
 **DreemGO — Inteligencia de rutas en Perú**
-DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
+DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
 Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6; el del motor y el despliegue, al 8, y el de los datos, al 10
 
 ## 1 · Qué se puede demostrar hoy

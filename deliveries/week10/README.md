@@ -1,7 +1,7 @@
 # DreemGO — Semana 10 · Prototipo funcional
 
 **Primera versión funcional del producto**
-DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
+DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
 Entrega: 14 de octubre de 2026
 
 El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta trae el informe y dice dónde está cada cosa que pide el enunciado, en vez de guardar una segunda copia del código y de los datos.

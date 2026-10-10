@@ -7,7 +7,7 @@ Perú. Combina el inventario turístico oficial de MINCETUR con datos climático
 optimización de rutas, para entregar en segundos lo que hoy toma días de búsqueda dispersa.
 
 > Proyecto final del curso **DS3022 — Desarrollo de Producto de Datos**
-> Universidad de Ingeniería y Tecnología (UTEC) · Prof. Germain Garcia-Zanabria · Ciclo 2026-2
+> Universidad de Ingeniería y Tecnología (UTEC) · Prof. Carlos Abel Dominguez Bautista · Ciclo 2026-2
 
 | | |
 |---|---|
