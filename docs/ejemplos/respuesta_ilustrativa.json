@@ -1,6 +1,6 @@
 {
   "version_contrato": "1.2",
-  "version_datos": "2026.10.3",
+  "version_datos": "2026.10.4",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -42,25 +42,25 @@
       "estacionalidad": {
         "mes": 7,
         "veredicto": "viable",
-        "lluvia_mm": 0.1,
-        "dias_con_lluvia": null,
+        "lluvia_mm": 0.0,
+        "dias_con_lluvia": 0.0,
         "horas_sol": null,
-        "temp_min_c": null,
-        "temp_max_c": null,
+        "temp_min_c": 12.0,
+        "temp_max_c": 24.4,
         "explicacion": "Julio es temporada seca: 0 mm de lluvia en el mes.",
         "mejores_meses": [
+          7,
           8,
           9,
-          7,
-          6,
-          5,
           11,
+          5,
+          6,
           10,
           4,
           12,
           3,
-          2,
-          1
+          1,
+          2
         ]
       },
       "traslado": {
@@ -365,11 +365,6 @@
           "tipo": "dias",
           "nivel": "advertencia",
           "mensaje": "La ida y la vuelta se llevan 16 h 54 de tus 4 días: con más días, el viaje rinde más."
-        },
-        {
-          "tipo": "datos",
-          "nivel": "info",
-          "mensaje": "El clima de esta zona es el promedio de su región; el de la propia zona todavía no se ha cargado."
         }
       ],
       "indicadores": {
@@ -408,15 +403,15 @@
       "estacionalidad": {
         "mes": 7,
         "veredicto": "viable",
-        "lluvia_mm": 16.3,
-        "dias_con_lluvia": null,
+        "lluvia_mm": 7.8,
+        "dias_con_lluvia": 2.0,
         "horas_sol": null,
-        "temp_min_c": null,
-        "temp_max_c": null,
-        "explicacion": "Julio es temporada seca: 16 mm de lluvia en el mes.",
+        "temp_min_c": 4.5,
+        "temp_max_c": 18.5,
+        "explicacion": "Julio es temporada seca: 8 mm de lluvia en el mes.",
         "mejores_meses": [
-          6,
           7,
+          6,
           8,
           5,
           9,
@@ -882,11 +877,6 @@
           "tipo": "presupuesto",
           "nivel": "advertencia",
           "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
-        },
-        {
-          "tipo": "datos",
-          "nivel": "info",
-          "mensaje": "El clima de esta zona es el promedio de su región; el de la propia zona todavía no se ha cargado."
         }
       ],
       "indicadores": {
