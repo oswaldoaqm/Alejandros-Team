@@ -3,6 +3,8 @@ donde y cuando se puede ir, y que no mande a nadie más días en el bus que de v
 contra los artefactos de dreemgo/datos: si un cambio en los datos o en el puntaje los saca de
 las tres rutas, aquí se nota (decisiones 0013 a 0015)."""
 
+import re
+
 import pytest
 
 from dreemgo.contrato import Consulta
@@ -45,6 +47,18 @@ def test_en_febrero_la_lluvia_de_la_sierra_saca_a_huaraz():
     rutas = viaje.resolver(Consulta(mes=2, **NATURALEZA), artefactos.cargar()).rutas
     assert rutas and "Huaraz" not in [r.polo.base.nombre for r in rutas]
     assert all(r.estacionalidad.veredicto != "desaconsejado" for r in rutas)
+
+
+def test_con_mas_de_tres_imperdibles_el_motivo_nombra_algunos():
+    """Urubamba, desde el Cusco, tiene cuatro: el motivo nombra tres y dice que son algunos."""
+    rutas = viaje.resolver(Consulta(origen="cusco", mes=6, dias=2), artefactos.cargar()).rutas
+    [urubamba] = [r for r in rutas if r.polo.base.nombre == "Urubamba"]
+    assert any(m.startswith("4 lugares de jerarquía 3 o 4, entre ellos ") for m in urubamba.motivos)
+    for ruta in rutas:
+        for motivo in ruta.motivos:
+            cuantos = re.match(r"(\d+) lugares de jerarquía 3 o 4", motivo)
+            if cuantos:
+                assert (", entre ellos " in motivo) == (int(cuantos.group(1)) > 3), motivo
 
 
 def test_ningun_viaje_pasa_mas_dias_en_el_camino_que_alla():

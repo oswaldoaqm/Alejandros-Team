@@ -567,8 +567,10 @@ def motivos(
     if len(altas) == 1:
         salida.append(f"{altas[0]['nombre']}, de jerarquía {altas[0]['jerarquia']}")
     elif altas:
+        # Se nombran tres a lo más: con más, la frase dice que son algunos de ellos.
         nombres = textos.lista([r["nombre"] for r in altas[:3]])
-        salida.append(f"{len(altas)} lugares de jerarquía 3 o 4: {nombres}")
+        enlace = ", entre ellos" if len(altas) > 3 else ":"
+        salida.append(f"{len(altas)} lugares de jerarquía 3 o 4{enlace} {nombres}")
     if consulta.intereses:
         pedidos = {i.value for i in consulta.intereses}
         atienden = sum(1 for r in visitadas if pedidos & set(r["intereses"]))
