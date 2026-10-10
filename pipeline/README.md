@@ -169,6 +169,8 @@ Las fotos son de Wikimedia Commons, y el repositorio no guarda ninguna. `fotos.p
 - Separa lo que distingue al lugar de su clase (iglesia, plaza, laguna), y no deja pasar una clase por otra: una iglesia no es la foto de una plaza.
 - Un pueblo, un distrito o una provincia solo sirven para la base que se llama igual, o para el recurso que es el pueblo.
 
+Si Wikidata no da ninguna, a una base o a un imperdible le sirve una foto de Commons con coordenadas, aunque no tenga elemento en Wikidata. `descargar_fotos.py` baja las que están a menos de 2 km de cada base y de 2,5 km de cada imperdible: 9 647 archivos distintos. `fotos.py` usa la que trae en su nombre todo lo que distingue al lugar y, si el imperdible tiene clase, una de la misma familia: «Catarata El León.jpg» sí, «Restaurante El León.jpg» no.
+
 **El crédito.** La licencia pide mostrar el autor, y Commons lo guarda como lo escribió quien subió la foto, a veces con restos de su wiki. `fotos.py` lo publica como se va a leer: «No machine-readable author provided. Xauxa assumed (based on copyright claims).» queda en «Xauxa», y «User:Pedro Felipe», en «Pedro Felipe»; así se corrigieron 25 de los 580 créditos. «Trabajo propio» o «Unknown author» no nombran a nadie: una foto así solo se usa si es de dominio público.
 
 **La revisión a ojo.** La regla propuso 679 fotos: 548 de paradas y 131 de bases, cuando las bases eran 222, en 604 archivos distintos. Entre el 2 y el 4 de octubre de 2026 se miraron todas en miniatura, y [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) guarda cada corrección con su motivo. Una de cada seis propuestas no servía: 112 se quitaron y 5 se cambiaron por otra. Otras 13 fotos se pusieron a mano en lugares a los que la regla no les daba ninguna, casi siempre porque su foto estaba en la ficha del pueblo o de un lugar vecino.
@@ -184,14 +186,16 @@ Las fotos son de Wikimedia Commons, y el repositorio no guarda ninguna. `fotos.p
 
 Un pueblo puede llevar la foto de lo que tiene dentro: su plaza, su iglesia, su castillo. No la de un sitio de las afueras que es otra parada, como el obelisco de la pampa de Ayacucho para Quinua.
 
+El 10 de octubre, la búsqueda por coordenadas propuso 32 fotos más, y se revisaron igual, con las esquinas ampliadas a 1 280 píxeles. Se quitaron 9: un abejorro, un oso, una nutria, un hotel, la nave de una iglesia, una foto de 360 grados, el cauce seco de un río, una casa de las afueras y un letrero con un teléfono, y para ese pueblo se eligió a mano otra del mismo lugar. Además, de los 19 lugares que la primera revisión había dejado sin foto y que ahora tenían fotos con coordenadas, se eligió una a mano en 12: entre ellos, la Plaza Mayor de Puno, el Templo de la Compañía de Jesús del Cusco, Tarapoto y Yurimaguas.
+
 **Cobertura.**
 
 | | Con foto | De |
 |---|---:|---:|
-| Paradas | 479 | 4 465 |
-| Imperdibles (jerarquía 3 y 4) | 77 | 161 |
-| Bases | 82 | 194 |
-| Polos con alguna foto, de un lugar suyo o de su base | 120 | 194 |
+| Paradas | 494 | 4 465 |
+| Imperdibles (jerarquía 3 y 4) | 92 | 161 |
+| Bases | 103 | 194 |
+| Polos con alguna foto, de un lugar suyo o de su base | 128 | 194 |
 
 Donde no hay foto, la app muestra la flor del viaje.
 
@@ -199,7 +203,8 @@ Donde no hay foto, la app muestra la flor del viaje.
 
 Lo que falta:
 
-- **84 imperdibles sin foto.** Wikidata no tiene un elemento con foto para ellos, o la que tiene no sirve: el Complejo Arqueológico Wari, Túcume, el Templo de la Compañía de Jesús del Cusco. Se resuelven a mano, buscando la foto en Commons.
+- **69 imperdibles sin foto.** Ni Wikidata ni las fotos de Commons con coordenadas tienen una que sirva: el Complejo Arqueológico Wari, o Túcume, cuya foto más cercana es un letrero. Se resuelven a mano, buscando la foto en Commons por su nombre.
+- **91 bases sin foto.** Casi todas son pueblos pequeños: Commons no tiene fotos con coordenadas a menos de 2 km, o las que tiene no muestran el pueblo.
 - **Las panorámicas.** Wikimedia sirve miniaturas de hasta 1 280 píxeles de ancho. Una foto cuatro veces más ancha que alta llega con unos 315 de alto y, en la portada, se ve blanda. Quedan cuatro: Ayaviri, Chankillo, la Plaza de Armas del Cusco y la laguna Chuchún.
 - **Lo que una miniatura no deja ver.** La revisión se hizo a 330 píxeles de ancho, con las esquinas ampliadas para buscar fechas y marcas. Una marca muy pequeña pudo pasar.
 - **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide. Pasó el 7 de octubre, al juntar los grupos que duermen en el mismo pueblo: cinco correcciones quedaron con el número de un polo que ya no existe y se quitaron. La misma corrección sigue en el polo que quedó con ese pueblo.
