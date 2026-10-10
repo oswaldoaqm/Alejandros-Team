@@ -48,7 +48,7 @@ Respuesta
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
-[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.3`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.4`. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
 
 Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por su red: carretera, tren o bote.
 

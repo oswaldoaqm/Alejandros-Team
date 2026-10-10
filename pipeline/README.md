@@ -9,13 +9,13 @@ python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.3   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.10.4   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.3` usa el clima de los 36 grupos que ya estaban descargados el 30 de septiembre, copiados aparte para que la descarga en curso no cambie el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`. Con los 222 grupos sale la versión siguiente.
+La versión `2026.10.4` usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 

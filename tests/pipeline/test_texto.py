@@ -447,8 +447,8 @@ def test_sin_contactos_deja_los_lugares_las_instituciones_y_los_dias(texto, qued
 
 
 def test_el_nombre_del_encargado_no_se_lee_como_un_dia():
-    # 11136: su encargado se llama Domingo, y el recurso figuraba como abierto los domingos.
-    texto = "Lunes a sábado. Con orientación del presidente de la junta, sr. Santos Domingo Mengano al cel. 987654321."
+    # Un encargado con nombre de día de la semana hacía que su recurso figurara como abierto ese día.
+    texto = "Lunes a sábado. Con orientación del presidente de la junta, sr. Fulano Domingo Mengano al cel. 987654321."
     assert leer_dias(texto) == (0, 1, 2, 3, 4, 5, 6)
     assert leer_dias(sin_contactos(texto)) == (0, 1, 2, 3, 4, 5)
 

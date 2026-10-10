@@ -1,8 +1,8 @@
 # Informe del prototipo · Semana 10
 
 **DreemGO — Inteligencia de rutas en Perú**
-DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Germain Garcia-Zanabria
-Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6, y el del motor y el despliegue, al 8
+DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
+Entrega: 14 de octubre de 2026 · Estado del prototipo al 2 de octubre; el de la app, al 6; el del motor y el despliegue, al 8, y el de los datos, al 10
 
 ## 1 · Qué se puede demostrar hoy
 
@@ -121,10 +121,10 @@ Cómo cambió cada pieza frente al diseño de la Delivery 1, y por qué, está e
 | Polos | 194, uno por cada pueblo donde se duerme. Salen de los 222 grupos del agrupamiento: los 50 que compartían pueblo se juntaron en 22 | [`data/procesados/polos_bases.csv`](../../data/procesados/) |
 | Ciudades de origen | 24 | [`pipeline/referencia/origenes.csv`](../../pipeline/referencia/origenes.csv) |
 | Acontecimientos con fecha | 739 de 758: 518 con el día que publica la ficha y 221 calculados | [`data/procesados/eventos_v3.csv`](../../data/procesados/) |
-| Polos con su propio clima diario | 35 de 194; los demás usan el clima de su región | [`data/procesados/clima_polo_mes.csv`](../../data/procesados/) |
+| Polos con su propio clima diario | Los 194: un punto por cada uno de los 222 grupos, y el polo que junta varios toma el de su grupo con más paradas | [`data/procesados/clima_polo_mes.csv`](../../data/procesados/) |
 | Paradas con foto | 479 de 4 465, y 77 de los 161 imperdibles. En 120 de los 194 polos hay al menos una | [`app/public/fotos.json`](../../app/public/) |
 
-La versión de los datos es `2026.10.3`. Cada tabla de `data/procesados/` tiene su diccionario, y el manifiesto de los artefactos guarda la fecha de cada fuente y la huella de cada archivo. Todas las fuentes son abiertas y su licencia permite redistribuirlas ([`DATA_LICENSES.md`](../../DATA_LICENSES.md)).
+La versión de los datos es `2026.10.4`. Cada tabla de `data/procesados/` tiene su diccionario, y el manifiesto de los artefactos guarda la fecha de cada fuente y la huella de cada archivo. Todas las fuentes son abiertas y su licencia permite redistribuirlas ([`DATA_LICENSES.md`](../../DATA_LICENSES.md)).
 
 ## 5 · El componente analítico
 
@@ -149,19 +149,21 @@ Para saber qué recomienda el prototipo, se recorrió una rejilla de 1 152 consu
 |---|---|---|
 | Consultas con tres rutas | 1 104 de 1 152 | 1 092. Las otras 60 dan dos: salen de Iquitos o de Puerto Maldonado, que casi no tienen carretera |
 | Rutas que duermen en Machupicchu Pueblo | 0 | 9, todas desde el Cusco |
-| Rutas que duermen en Huaraz | 0 | 70, desde siete ciudades, Lima entre ellas |
+| Rutas que duermen en Huaraz | 0 | 72, desde siete ciudades, Lima entre ellas |
 | Rutas fuera del circuito de Lima y Cusco | 84 % | 77 % |
-| Polos que aparecen al menos una vez | 83 de 222 | 72 de 194 |
+| Polos que aparecen al menos una vez | 83 de 222 | 63 de 194 |
 | Polos distintos que ve un mismo origen | 11 de mediana, entre 4 y 18 | 10 de mediana, entre 2 y 15 |
 | Rutas que se llevan los diez polos más propuestos | 50 % | 57 % |
-| Rutas con el aviso de que la ida y la vuelta se llevan buena parte del viaje | 27 % | 36 % |
+| Rutas con el aviso de que la ida y la vuelta se llevan buena parte del viaje | 27 % | 37 % |
 | Tiempo de respuesta, en la misma computadora de dos núcleos | 0,26 s de mediana y 1,0 s como máximo | 0,25 s de mediana y 1,0 s como máximo |
 
 El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco menos. Hay menos rutas fuera del circuito, los diez polos más propuestos se llevan más rutas y más viajes llevan el aviso de que se pasa mucho tiempo en el camino. Desde Iquitos, con nueve días, quedan dos opciones: la tercera era de ocho días de río para uno de visita. Si el balance es bueno no lo dice la rejilla; se mide en la semana 12, con consultas anotadas por el equipo.
 
+El 10 de octubre entró el clima propio de cada polo, con los datos `2026.10.4`, y la tabla ya lo incluye: cambió la respuesta de 156 de las 1 152 consultas. Casi todas las cifras se mantienen; lo que más se movió son los polos que aparecen, que bajaron de 72 a 63. El clima de la región, medido en su capital, daba por secos todo el año a polos de la sierra como Huamachuco o Agallpampa, porque la capital de La Libertad es Trujillo, en la costa. Con su propio clima tienen tres meses desaconsejados y salen menos. Al revés, Nuevo Chimbote, en la costa de Áncash, dejó de cargar las lluvias de Huaraz, la capital de su región, y ahora sale. 140 de las 3 396 rutas caen en un mes desaconsejado, siempre con su aviso; con el clima regional eran 95.
+
 ## 7 · Cómo se prueba
 
-- **672 pruebas del motor, el API y el pipeline**, y **175 de la app**, en cada pull request.
+- **674 pruebas del motor, el API y el pipeline**, y **177 de la app**, en cada pull request.
 - **Diez propiedades del contrato** sobre consultas generadas al azar: ninguna parada pasa la altitud pedida, los días suman lo pedido, ninguna jornada con visitas pasa de 8 horas ni un día de solo viaje de 9, toda parada enlaza a su ficha, un mes desaconsejado nunca sale sin aviso, el presupuesto ordena pero no esconde, y la misma consulta da la misma respuesta. Al cerrar cada etapa se corren con 1 000 consultas.
 - **28 pruebas de humo en un navegador**, en tamaño de celular y de escritorio, contra el API de verdad: planear un viaje, abrir el mapa, compartir, guardar y publicar un evento. Revisan también que ninguna pantalla se desborde y pasan un analizador de accesibilidad.
 - **Las imágenes del API** se construyen y se arrancan en cada pull request.
@@ -181,7 +183,7 @@ El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco m
 
 **De los datos**
 
-- **Clima:** solo 35 de los 194 polos tienen su propio clima diario. Los otros 159 usan el de su región, y la respuesta lo avisa. La descarga de los demás grupos sigue en curso.
+- **Clima:** cada polo tiene el suyo, pero es un solo punto por grupo: en un valle profundo o en una ladera, la lluvia de verdad puede ser otra. Las horas de sol no se publican, porque el reanálisis no ve la neblina de la costa.
 - **Tiempos de viaje:** el error medio es de 22 %. En tramos de menos de 10 km llega a 31 %, que son 4 minutos de mediana.
 - **Costos:** los parámetros de alojamiento, comida y transporte vienen de fuentes publicadas, pero no están calibrados con viajes reales. Por eso el costo se da como banda.
 - **Acontecimientos:** 19 no tienen fecha, y no se leen las fechas lunares ni las relativas a otra fiesta.
@@ -209,7 +211,7 @@ El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco m
 | Las fichas publican el teléfono y el nombre de quien atiende cada lugar | Un filtro los reemplaza al leer la ficha y se revisó a mano sobre las 6 225: ninguno llega al repositorio ni a los artefactos |
 | El centro de un polo no es un lugar donde dormir | Cada polo duerme en un pueblo real, elegido por lo cerca que deja las paradas y por su hospedaje |
 | Huaraz era la base de cuatro grupos del agrupamiento, que competían entre sí, y el motor no proponía ninguno | Los grupos que duermen en el mismo pueblo son un solo polo, con los tiempos entre sus paradas calculados sobre la red: ninguno de los que ya había cambió |
-| El clima de la capital regional no es el del polo: Pozuzo, a 748 m, recibía el de Cerro de Pasco, a más de 4 000 | Un punto de clima por grupo del agrupamiento. La cuota gratuita de la fuente da para 36 por día |
+| El clima de la capital regional no es el del polo: Pozuzo, a 748 m, recibía el de Cerro de Pasco, a más de 4 000 | Un punto de clima por grupo del agrupamiento. La cuota gratuita de la fuente da para 36 por día, y los 222 estuvieron el 9 de octubre |
 | Lo que publica un municipio cambia los datos, y la misma consulta tiene que dar la misma respuesta | La versión de los datos lleva la huella de lo publicado, y lo publicado no entra al puntaje |
 | En la nube hay varios servidores a la vez, y quien publica tiene que ver su evento | Cada servidor pregunta cada dos segundos si otro publicó algo |
 | Desplegar sin presupuesto y sin cuenta | Una sola imagen para Lambda y para un host gratuito, y un ensayo contra un simulador que encontró dos errores en la guía |
@@ -220,7 +222,6 @@ El cambio tiene un precio, y está en la misma tabla: el motor reparte un poco m
 
 **Antes del 14 de octubre**
 
-- Rehacer los artefactos con el clima de los 222 grupos.
 - Medir el arranque en frío y probar la app en un celular con datos móviles.
 - La presentación y las capturas de esta entrega.
 

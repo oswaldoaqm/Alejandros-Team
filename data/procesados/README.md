@@ -9,9 +9,9 @@ python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline
 python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
 ```
 
-Estas tablas son las de la versión de datos `2026.10.3`. El clima es el de los 36 grupos descargados al 30 de septiembre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.4`. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
-El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. El recurso 11136 figuraba como abierto solo los domingos porque su encargado se llama Domingo; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
+El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
 `python -m pipeline.artefactos` junta después estas tablas en lo que carga el motor, en [`dreemgo/datos/`](../../dreemgo/datos/).
 
@@ -212,7 +212,7 @@ Doce filas por polo, del clima diario 2016-2025 de Open-Meteo en el centro de un
 | `temp_min_c`, `temp_max_c` | Promedio de las mínimas y de las máximas diarias, llevadas a la altitud de la base con 6,5 °C por km |
 | `puesto_lluvia` | 1 es el mes más lluvioso del polo |
 | `veredicto` | `viable`, `advertencia` o `desaconsejado`: 150 mm o más en el mes, y estar entre los 3 más lluviosos del polo con más de 50 mm. Los dos, desaconsejado; uno, advertencia |
-| `fuente` | `open_meteo_polo` (35 polos: los que tienen alguno de los 36 grupos descargados al 30 de septiembre) o `region_semana6`: mientras la descarga no termina, la capa regional de la semana 6, sin días de lluvia ni temperaturas |
+| `fuente` | `open_meteo_polo` en los 194 polos. `region_semana6` queda para un polo cuyo grupo no tenga su clima descargado: la capa regional de la semana 6, sin días de lluvia ni temperaturas |
 | `altitud_clima_m`, `altitud_base_m` | La altitud del punto de clima según Open-Meteo y la de la base, para ver el ajuste de temperatura |
 
 `red_calibracion.json` guarda las velocidades por clase de vía, los recargos y el error por tramo de distancia; el resumen está en [`pipeline/README.md`](../../pipeline/README.md#qué-tan-bien-estima-los-tiempos-de-viaje). `red_calibracion_recorridos.csv` tiene los 2 259 recorridos de fichas que se consideraron. Por cada uno trae los km y minutos de la ficha y los de la red, y si ambos describen el mismo camino (`misma_distancia`); solo esos entraron al ajuste.

@@ -32,6 +32,21 @@ def test_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
     assert huaraz.traslado.dias_de_viaje == 2 and 8.0 < huaraz.dias[0].horas <= 9.0
 
 
+# El ejemplo de la guía del avance del 9 de octubre: desde Lima, cuatro días, para alguien a quien le
+# gustan la naturaleza y las caminatas, con hasta S/ 1 000. Si deja de cumplirse, la guía miente.
+NATURALEZA = {"origen": "lima", "dias": 4, "intereses": ["naturaleza", "caminatas"], "presupuesto": 1000}
+
+
+def test_con_naturaleza_y_caminatas_julio_lleva_a_huaraz():
+    assert "Huaraz" in _duermen_en(mes=7, **NATURALEZA)
+
+
+def test_en_febrero_la_lluvia_de_la_sierra_saca_a_huaraz():
+    rutas = viaje.resolver(Consulta(mes=2, **NATURALEZA), artefactos.cargar()).rutas
+    assert rutas and "Huaraz" not in [r.polo.base.nombre for r in rutas]
+    assert all(r.estacionalidad.veredicto != "desaconsejado" for r in rutas)
+
+
 def test_ningun_viaje_pasa_mas_dias_en_el_camino_que_alla():
     """Sin vuelos, el Cusco desde Lima con nueve días eran seis en el bus y tres allá; y Tarapoto
     desde Iquitos, ocho días de río y uno allá."""
