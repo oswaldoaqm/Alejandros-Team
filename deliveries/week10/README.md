@@ -15,15 +15,12 @@ El prototipo es el producto que vive en este repositorio: un motor de itinerario
 | Artefactos analíticos | [`artifacts/`](./artifacts/): lo que el motor carga al arrancar, con su manifiesto y la huella de cada archivo. Es la copia de [`dreemgo/datos/`](../../dreemgo/datos/) |
 | El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales y mide las cifras del informe con el mismo código del API |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
+| Presentación | [`PresentationWeek10.pptx`](./PresentationWeek10.pptx) y su versión en [PDF](./PresentationWeek10.pdf). Usa Lexend y Quattrocento Sans, de Google Fonts, como la de la semana 7; el PDF las lleva dentro |
+| Capturas de la demostración | [`capturas/`](./capturas/): 17 pantallas en celular y en escritorio, con lo que muestra cada una |
 | URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |
 
 Lo que se entrega queda congelado en la etiqueta `entrega/semana-10`, que se pone en el último commit de `main` antes de la fecha ([decisión 0005](../../docs/decisiones/0005-historial-y-erratas.md)).
-
-## Falta en esta carpeta
-
-- `PresentationWeek10`, la presentación.
-- Las capturas o el video corto de la demostración.
 
 ## Qué hace falta
 

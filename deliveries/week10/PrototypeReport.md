@@ -220,16 +220,12 @@ El 10 de octubre entró el clima propio de cada polo, con los datos `2026.10.4`,
 
 ## 10 · Lo que falta
 
-**Antes del 14 de octubre**
-
-- Medir el arranque en frío y probar la app en un celular con datos móviles.
-- La presentación y las capturas de esta entrega.
-
 **Para la semana 12**
 
 - Calibrar el valor de una parada, que hoy es un supuesto, con las consultas anotadas por el equipo.
 - Viajes de varios polos y poder pedir un destino.
 - La evaluación: la brecha contra el óptimo exacto, consultas anotadas por el equipo con su acuerdo medido, una prueba de usabilidad con cinco personas y tres casos de estudio.
+- Desplegar el API en AWS y medir su arranque en frío, y probar la app en un celular con datos móviles.
 
 **Para la entrega final**
 

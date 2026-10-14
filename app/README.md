@@ -103,7 +103,7 @@ public/fotos.json          la lista de fotos: la escribe el pipeline, no se edit
 - **Lo que escribe el motor no se reescribe.** Motivos, avisos, notas de cada día y explicaciones del mes se muestran tal como llegan.
 - **El mapa es un croquis del viaje, no el trazo del camino.** Cada día es un pétalo que sale de donde se duerme y abarca los lugares de ese día; con un día elegido, sus lugares llevan el número que tienen en la lista. La misma idea, en chico, es la flor de cada viaje: el tallo es el camino de ida y cada pétalo, un día, más largo cuanto más lejos se llega y más ancho cuantos más lugares tiene.
 - **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo no carga, queda un lienzo liso con los pétalos y los lugares en su sitio; si el mapa entero falla, el plan dice lo mismo con palabras; y al publicar un evento, el lugar se puede escribir en coordenadas.
-- **Las fotos son de Wikimedia Commons y no se guardan aquí.** `public/fotos.json` dice qué foto va con cada lugar y con cada pueblo donde se duerme: lo escribe el pipeline, que las elige con Wikidata y deja fuera las que se quitaron al revisarlas ([`pipeline/README.md`](../pipeline/README.md#fotos)). La app le pide a Wikimedia la miniatura del ancho que necesita cada pantalla y muestra el autor y la licencia junto a cada foto. Lo que no tiene foto, o cuya foto no carga, muestra la flor del viaje o un ícono.
+- **Las fotos son de Wikimedia Commons y no se guardan aquí.** `public/fotos.json` dice qué foto va con cada lugar y con cada pueblo donde se duerme: lo escribe el pipeline, que las elige con Wikidata o, para una base o un imperdible que no tienen ahí, por las coordenadas de cada foto en Commons, y deja fuera las que se quitaron al revisarlas ([`pipeline/README.md`](../pipeline/README.md#fotos)). La app le pide a Wikimedia la miniatura del ancho que necesita cada pantalla y muestra el autor y la licencia junto a cada foto. Lo que no tiene foto, o cuya foto no carga, muestra la flor del viaje o un ícono.
 - **Claro y oscuro.** La app sigue el tema del sistema. Los colores y las medidas de los dos temas están en `src/estilos/base.css`; el mapa es claro en los dos.
 - **La clave de publicador no se guarda.** Vive en la página mientras está abierta y viaja solo en la cabecera del pedido que publica.
 - **El estado no va solo en el color.** El veredicto del mes y los avisos llevan siempre su ícono y su palabra.
@@ -134,7 +134,7 @@ El build usa rutas relativas (`base: "./"`), así que la misma carpeta `dist/` s
 
 - Al imprimir o guardar como PDF sale el viaje entero, con la dirección de cada ficha oficial, pero sin el mapa ni la foto.
 - Con todo el viaje a la vista, los lugares muy juntos se enciman en el mapa; al elegir un día se corren hacia los lados para que se lea cada número.
-- Tienen foto 479 de las 4 465 paradas y 77 de los 161 imperdibles. Lo demás muestra la flor del viaje o un ícono.
+- Tienen foto 494 de las 4 465 paradas y 92 de los 161 imperdibles. Lo demás muestra la flor del viaje o un ícono.
 - Las fotos y el fondo del mapa se piden a Wikimedia y a OpenFreeMap desde el navegador del viajero. Sin ellos la app sigue: sin fotos y con el mapa liso.
 - El mapa es claro también con el tema oscuro.
 - Un viaje guardado o compartido se recuerda por su puesto entre los tres. Si los datos cambian, en ese puesto puede salir otro viaje: la app lo avisa.
