@@ -2,7 +2,7 @@
 
 **Primera versión funcional del producto**
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
-Entrega: 14 de octubre de 2026
+Entrega: 21 de octubre de 2026
 
 El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
 
