@@ -12,6 +12,8 @@ El 8 de octubre la app publicada empezó a responder: le pregunta al API, que co
 
 El 10 de octubre entró el clima propio de los 194 polos, con los datos `2026.10.4`: ninguno usa ya el de su región. Cambió la respuesta de 156 de las 1 152 consultas; lo que se movió y por qué está en el [informe del prototipo](../deliveries/week10/PrototypeReport.md).
 
+El 14 de octubre el profesor movió la entrega de la semana 10, con su exposición, al 21 de octubre. La carpeta [`deliveries/week10/`](../deliveries/week10/) ya tiene todo lo que pide el enunciado, con la presentación y las capturas.
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
@@ -23,14 +25,14 @@ El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué
 | 0 · Cimientos | 30 sep – 3 oct | Descargas de datos; erratas y etiquetas de las entregas 4 a 7; esqueleto del repositorio; [contrato de la API](./CONTRATO.md); CI; infraestructura lista para AWS | CI en verde y el contrato revisado por los cuatro |
 | 1 · Datos v3 y motor | 3 – 9 oct | Maestro v3 con procedencia por campo; calendario de eventos real; clima por polo; tiempos de viaje por carretera, tren y bote; motor v2 detrás del API | `GET /v1/viajes` devuelve el contrato y las 10 propiedades de [CONTRATO §3](./CONTRATO.md) se cumplen en 1 000 consultas |
 | 2 · App y despliegue | 6 – 12 oct | App web contra el contrato; eventos que publican los municipios; API desplegada | La app abre en un celular con datos móviles y resuelve una consulta |
-| 3 · Entrega de la semana 10 | 12 – 14 oct | `PrototypeReport`, presentación, capturas y video, README con instalación y despliegue | Carpeta `deliveries/week10/` completa |
-| **Semana 10 · prototipo** | **14 oct** | | |
+| 3 · Entrega de la semana 10 | 12 – 21 oct | `PrototypeReport`, presentación, capturas y video, README con instalación y despliegue | Carpeta `deliveries/week10/` completa |
+| **Semana 10 · prototipo** | **21 oct** | | |
 | 4 · Refinar y evaluar | 15 – 27 oct | Viajes de varios polos; TA-01 v3 sobre horas reales; evaluación: brecha contra el óptimo, sensibilidad, consultas anotadas con acuerdo medido, prueba de usabilidad con cinco personas, tres casos de estudio | `EvaluationReport` con cada cifra reproducible |
 | **Semana 12 · evaluación** | **28 oct** | | |
 | 5 · Pulido y final | 29 oct – 17 nov | Informe final, presentación, video, página del proyecto, Canvas y requisitos finales, declaración de contribución y reflexión | Un ensayo completo con preguntas difíciles, sin tropiezos |
 | **Delivery 2 · final** | **18 nov** | | |
 
-Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato y el [ejemplo ilustrativo](./ejemplos/respuesta_ilustrativa.json) mientras el motor termina. Lo que no alcance para el 14 de octubre pasa a la fase 4; la fecha no se mueve.
+Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato y el [ejemplo ilustrativo](./ejemplos/respuesta_ilustrativa.json) mientras el motor termina. Lo que no alcance para la entrega de la semana 10 pasa a la fase 4.
 
 ## Qué es cada pieza
 
