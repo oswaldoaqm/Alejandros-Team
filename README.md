@@ -196,7 +196,7 @@ mismo pueblo, como los cuatro de Huaraz, son un solo lugar al que ir y se juntan
 | 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | [`week05/`](./deliveries/week05/) | Entregado |
 | 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | [`week06/`](./deliveries/week06/) | Entregado |
 | 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | [`week07/`](./deliveries/week07/) | Entregado |
-| 10 | 14 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | En curso |
+| 10 | 21 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | En curso |
 | 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | | Pendiente |
 | 15 | 18 nov 2026 | Presentación final y **Delivery 2** | | Pendiente |
 
