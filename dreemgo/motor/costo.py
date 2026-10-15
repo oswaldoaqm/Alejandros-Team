@@ -3,7 +3,10 @@ Cuánto cuesta un viaje, por persona: una banda y no un precio.
 
     transporte   bus interprovincial de ida y vuelta (intercepto + soles por km), la
                  movilidad local de cada paseo (soles por km recorrido), cada tramo en tren
-                 (un pasaje por tramo) y los km en bote (soles por km)
+                 (un pasaje por tramo) y los km en bote (soles por km). Si se vuela, el bus
+                 es lo que se hace por tierra hasta y desde los aeropuertos
+    vuelos       el pasaje de cada tramo aéreo, de ida y de vuelta, en su banda: de la tarifa
+                 más baja publicada a 2,2 veces esa (pipeline/vuelos.py). Solo si se vuela
     alojamiento  noches × tarifa por noche
     alimentación días × gasto diario
     entradas     la tarifa de adulto peruano que publica cada ficha; un boleto combinado
@@ -44,24 +47,34 @@ class Gastos:
     base: str
     tramos_tren: int = 0  # cada viaje en tren, de ida o de vuelta, es un pasaje
     km_bote: float = 0.0  # ida, vuelta y paseos
+    vuelos: tuple[str, ...] = ()  # el parámetro de cada tramo aéreo de la ida («vuelo_LIM_CUZ»); la vuelta, igual
+    tramos_aereos: tuple[str, ...] = ()  # los mismos tramos, para los supuestos: «Lima–Cusco»
 
 
-def _muestras(parametros: dict) -> dict[str, np.ndarray]:
+def _muestras(parametros: dict, nombres) -> dict[str, np.ndarray]:
     """Las simulaciones de cada parámetro, cada uno con su propia secuencia, sembrada con su
     nombre: la misma consulta da siempre el mismo número, y sumar un parámetro a la tabla no
-    cambia las muestras de los demás."""
+    cambia las muestras de los demás. Se simulan solo los que usa el viaje (``nombres``): los
+    pasajes de las rutas aéreas que no toma no hacen falta."""
     return {
         n: np.random.default_rng([SEMILLA, zlib.crc32(n.encode())]).uniform(p["minimo"], p["maximo"], SIMULACIONES)
         for n, p in parametros.items()
+        if n in nombres
     }
+
+
+def _usados(parametros: dict, g: Gastos) -> set[str]:
+    return {n for n in parametros if not n.startswith("vuelo_")} | set(g.vuelos)
 
 
 def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
     bus = 2 * (p["bus_intercepto"] + p["bus_soles_km"] * g.km_interprovincial) if g.km_interprovincial else 0.0
     tren = g.tramos_tren * p["tren_tramo"] if g.tramos_tren else 0.0
     bote = g.km_bote * p["bote_soles_km"] if g.km_bote else 0.0
-    return {
-        "transporte": bus + p["movilidad_soles_km"] * g.km_locales + tren + bote,
+    componentes = {"transporte": bus + p["movilidad_soles_km"] * g.km_locales + tren + bote}
+    if g.vuelos:  # ida y vuelta: cada tramo dos veces. Va junto al transporte en el desglose
+        componentes["vuelos"] = 2 * sum(p[v] for v in g.vuelos)
+    return componentes | {
         "alojamiento": g.noches * p["alojamiento_noche"],
         "alimentacion": g.dias * p["alimentacion_dia"],
         "entradas": sum(g.tarifas) + max(g.combinados, default=0.0) + g.sin_tarifa * p["entrada_sin_tarifa"],
@@ -69,18 +82,29 @@ def _componentes(p: dict, g: Gastos) -> dict[str, np.ndarray | float]:
 
 
 def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
-    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros), g).values())
+    usados = _usados(parametros, g)
+    total = sum(np.broadcast_to(v, (SIMULACIONES,)) for v in _componentes(_muestras(parametros, usados), g).values())
     p20, p50, p80 = (int(round(x)) for x in np.percentile(total, [20, 50, 80]))
 
     # El desglose reparte el P50 en proporción a cada componente con los valores centrales.
-    central = _componentes({n: v["valor"] for n, v in parametros.items()}, g)
+    central = _componentes({n: v["valor"] for n, v in parametros.items() if n in usados}, g)
     suma = sum(central.values()) or 1.0
     desglose = {k: int(round(p50 * v / suma)) for k, v in central.items()}
     mayor = max(sorted(desglose), key=desglose.get)
     desglose[mayor] += p50 - sum(desglose.values())  # lo que se pierde al redondear, al componente mayor
 
     supuestos = []
-    if g.km_interprovincial:
+    for vuelo, tramo in zip(g.vuelos, g.tramos_aereos, strict=True):
+        v = parametros[vuelo]
+        supuestos.append(
+            f"Vuelo {tramo}, de ida y de vuelta: entre {textos.soles(v['minimo'])} y {textos.soles(v['maximo'])} "
+            "por tramo, de la tarifa más baja publicada a 2,2 veces esa"
+        )
+    if g.km_interprovincial and g.vuelos:
+        supuestos.append(
+            f"Por tierra, hasta y desde los aeropuertos: {textos.miles(2 * g.km_interprovincial)} km de ida y vuelta"
+        )
+    elif g.km_interprovincial:
         supuestos.append(f"Bus interprovincial de ida y vuelta: {textos.miles(2 * g.km_interprovincial)} km")
     if g.km_locales:
         supuestos.append(f"Movilidad local en colectivo o taxi: {textos.miles(g.km_locales)} km")
@@ -103,7 +127,8 @@ def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
         supuestos.append(
             f"{cuantas[0].upper()}{cuantas[1:]} su tarifa: se estima entre {textos.soles(5)} y {textos.soles(20)}"
         )
-    supuestos.append("Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar")
+    con_vuelos = "vuelos, transporte" if g.vuelos else "transporte"
+    supuestos.append(f"Banda del percentil 20 al 80: {con_vuelos}, hospedaje y comida en su rango, sin calibrar")
 
     exceso = None if presupuesto is None or p50 <= presupuesto else p50 - presupuesto
     return Costo(
