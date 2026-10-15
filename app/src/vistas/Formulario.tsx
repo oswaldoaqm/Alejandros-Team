@@ -433,7 +433,7 @@ function ElegirFiltros({ c, cambiar }: { c: Consulta; cambiar: (p: Partial<Consu
           }}
         />
         <p className="hoja__ayuda">
-          Para todo el viaje. Ordena los viajes y te avisa si uno se pasa; no esconde ninguno.
+          Para todo el viaje. Elige y ordena los viajes, y te avisa si uno se pasa.
         </p>
       </div>
       <div className="deslizador">
