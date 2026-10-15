@@ -1,7 +1,7 @@
 """Lo que cualquiera espera del motor: que proponga Machu Picchu y la Cordillera Blanca desde
-donde y cuando se puede ir, y que no mande a nadie más días en el bus que de visita. Corre
-contra los artefactos de dreemgo/datos: si un cambio en los datos o en el puntaje los saca de
-las tres rutas, aquí se nota (decisiones 0013 a 0015)."""
+donde y cuando se puede ir, que desde Lima se vuele al Cusco, y que no mande a nadie más días
+en el bus que de visita. Corre contra los artefactos de dreemgo/datos: si un cambio en los
+datos o en el puntaje los saca de las tres rutas, aquí se nota (decisiones 0013 a 0016)."""
 
 import re
 
@@ -22,13 +22,19 @@ def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_lleva_a_machu_picchu(
     assert "Machupicchu Pueblo" in _duermen_en(origen="cusco", mes=6, dias=2)
 
 
-def test_desde_lima_seis_dias_de_julio_llevan_a_huaraz():
-    assert "Huaraz" in _duermen_en(origen="lima", mes=7, dias=6)
+def test_desde_lima_seis_dias_de_julio_se_vuela_al_cusco():
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=6), artefactos.cargar()).rutas
+    [cusco] = [r for r in rutas if r.polo.base.nombre == "Cuzco"]
+    assert cusco.traslado.medios[0] == "avion" and [d.tipo for d in cusco.dias][1:5] == ["visita"] * 4
 
 
-def test_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
+def test_por_tierra_desde_lima_seis_dias_de_julio_llevan_a_huaraz():
+    assert "Huaraz" in _duermen_en(origen="lima", mes=7, dias=6, solo_por_tierra=True)
+
+
+def test_por_tierra_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
     """Son 8 horas y 8 minutos de viaje: un día de ida, dos allá y un día de vuelta."""
-    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=4), artefactos.cargar()).rutas
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=4, solo_por_tierra=True), artefactos.cargar()).rutas
     [huaraz] = [r for r in rutas if r.polo.base.nombre == "Huaraz"]
     assert [d.tipo for d in huaraz.dias] == ["ida", "visita", "visita", "vuelta"]
     assert huaraz.traslado.dias_de_viaje == 2 and 8.0 < huaraz.dias[0].horas <= 9.0
@@ -62,11 +68,13 @@ def test_con_mas_de_tres_imperdibles_el_motivo_nombra_algunos():
 
 
 def test_ningun_viaje_pasa_mas_dias_en_el_camino_que_alla():
-    """Sin vuelos, el Cusco desde Lima con nueve días eran seis en el bus y tres allá; y Tarapoto
-    desde Iquitos, ocho días de río y uno allá."""
+    """Por tierra, el Cusco desde Lima con nueve días eran seis en el bus y tres allá; y Tarapoto
+    desde Iquitos, ocho días de río y uno allá. En avión sí caben."""
     for origen, mes, fuera in (("lima", 7, "Cuzco"), ("iquitos", 6, "Tarapoto")):
-        rutas = viaje.resolver(Consulta(origen=origen, mes=mes, dias=9), artefactos.cargar()).rutas
-        assert rutas and fuera not in [r.polo.base.nombre for r in rutas]
-        for ruta in rutas:
-            de_camino = sum(1 for d in ruta.dias if d.tipo in ("ida", "vuelta") and not d.paradas)
-            assert de_camino <= len(ruta.dias) - de_camino, ruta.polo.nombre
+        for solo_por_tierra in (True, False):
+            consulta = Consulta(origen=origen, mes=mes, dias=9, solo_por_tierra=solo_por_tierra)
+            rutas = viaje.resolver(consulta, artefactos.cargar()).rutas
+            assert rutas and (fuera not in [r.polo.base.nombre for r in rutas] or not solo_por_tierra)
+            for ruta in rutas:
+                de_camino = sum(1 for d in ruta.dias if d.tipo in ("ida", "vuelta") and not d.paradas)
+                assert de_camino <= len(ruta.dias) - de_camino, ruta.polo.nombre

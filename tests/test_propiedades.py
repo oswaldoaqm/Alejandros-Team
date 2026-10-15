@@ -53,6 +53,7 @@ def consultas(draw) -> Consulta:
         presupuesto=draw(st.one_of(st.none(), st.integers(PRESUPUESTO_MIN, PRESUPUESTO_MAX))),
         altitud_max=draw(st.one_of(st.none(), st.integers(0, ALTITUD_MAX_M))),
         sorpresa=draw(st.booleans()),
+        solo_por_tierra=draw(st.booleans()),
     )
 
 
