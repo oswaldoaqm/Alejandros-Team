@@ -104,7 +104,8 @@ class Consulta(_Modelo):
         None,
         ge=PRESUPUESTO_MIN,
         le=PRESUPUESTO_MAX,
-        description="Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+        description="Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa "
+        "sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
     )
     altitud_max: int | None = Field(
         None,

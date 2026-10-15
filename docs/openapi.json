@@ -120,7 +120,7 @@
                 "type": "null"
               }
             ],
-            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
             "title": "Presupuesto"
           },
           "solo_por_tierra": {
@@ -1919,7 +1919,7 @@
             }
           },
           {
-            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
             "in": "query",
             "name": "presupuesto",
             "required": false,
@@ -1934,7 +1934,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+              "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
               "title": "Presupuesto"
             }
           },

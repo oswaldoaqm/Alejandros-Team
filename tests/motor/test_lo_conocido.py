@@ -49,6 +49,16 @@ def test_con_naturaleza_y_caminatas_julio_lleva_a_huaraz():
     assert "Huaraz" in _duermen_en(mes=7, **NATURALEZA)
 
 
+def test_con_presupuesto_los_vuelos_que_lo_pasan_no_desplazan_a_los_que_entran():
+    """Sin presupuesto, desde Lima con cuatro días se vuela a Arequipa y al Cusco; con S/ 1 000,
+    que esos vuelos pasan, los tres viajes van en bus y entran (decisión 0016)."""
+    rutas = viaje.resolver(Consulta(mes=7, **NATURALEZA), artefactos.cargar()).rutas
+    assert len(rutas) == 3 and not any(r.traslado.vuelos for r in rutas)
+    assert all(r.costo.dentro_del_presupuesto for r in rutas)
+    sin_tope = viaje.resolver(Consulta(mes=7, **(NATURALEZA | {"presupuesto": None})), artefactos.cargar()).rutas
+    assert any(r.traslado.vuelos for r in sin_tope)
+
+
 def test_en_febrero_la_lluvia_de_la_sierra_saca_a_huaraz():
     rutas = viaje.resolver(Consulta(mes=2, **NATURALEZA), artefactos.cargar()).rutas
     assert rutas and "Huaraz" not in [r.polo.base.nombre for r in rutas]

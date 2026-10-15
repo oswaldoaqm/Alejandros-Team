@@ -165,7 +165,7 @@ export interface components {
             origen: string;
             /**
              * Presupuesto
-             * @description Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.
+             * @description Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).
              */
             presupuesto?: number | null;
             /**
@@ -993,7 +993,7 @@ export interface operations {
                 dias?: number;
                 /** @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. */
                 intereses?: components["schemas"]["Interes"][];
-                /** @description Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas. */
+                /** @description Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba). */
                 presupuesto?: number | null;
                 /** @description Altitud máxima tolerada, en metros. Ninguna parada la supera. */
                 altitud_max?: number | null;

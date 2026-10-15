@@ -1012,29 +1012,35 @@ def resolver(
             itinerarios.append((p, it))
             bases_planificadas.add(p.polo.base["nombre"])
 
-    # Primero se eligen tres bases distintas por su puntaje sin el presupuesto, que solo
-    # reordena esas tres y avisa: un presupuesto corto nunca esconde una ruta (CONTRATO §3.7).
+    # Las tres bases distintas se eligen por su puntaje, con el presupuesto: un viaje que lo
+    # pasa compite castigado por (presupuesto / costo)², así que sale solo si es mucho mejor que
+    # los que entran, y siempre con su aviso. Sin presupuesto, elegir no necesita el costo
+    # (CONTRATO §3.7 y decisión 0016).
     mejor = max((it.valor for _, it in itinerarios), default=1.0)
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
         calidad = it.valor / mejor * ocupacion * p.temporada
-        puntuados.append((calidad, (1 - lam) * calidad + lam * it.polo.novedad, p, it))
-    puntuados.sort(key=lambda x: (-x[1], x[2].polo.id))
+        dias = costo = None
+        if consulta.presupuesto is not None:
+            dias = dias_del_viaje(it, consulta, origen, datos)
+            costo = costo_del_viaje(it, consulta, datos, dias)
+        puntaje = (1 - lam) * calidad * por_presupuesto(costo, consulta.presupuesto) + lam * it.polo.novedad
+        puntuados.append((puntaje, p, it, dias, costo))
+    puntuados.sort(key=lambda x: (-x[0], x[1].polo.id))
     desde, hasta = ventana(consulta, datos.version)
     elegidas, bases = [], set()
-    for calidad, _, p, it in puntuados:
+    for puntaje, p, it, dias, costo in puntuados:
         if it.polo.base["nombre"] in bases:
             continue
         bases.add(it.polo.base["nombre"])
-        dias = dias_del_viaje(it, consulta, origen, datos)
-        costo = costo_del_viaje(it, consulta, datos, dias)
+        if dias is None or costo is None:
+            dias = dias_del_viaje(it, consulta, origen, datos)
+            costo = costo_del_viaje(it, consulta, datos, dias)
         est = estacionalidad(it.polo, consulta.mes)
         eventos = eventos_del_polo(it.polo, desde, hasta, datos)
         # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.
         todos = sorted(eventos + publicados.entre(desde, hasta, it.polo.id), key=lambda e: (e.fecha_inicio, e.id))
-        presupuesto = 1.0 if not costo.exceso else (consulta.presupuesto / costo.p50) ** 2
-        puntaje = (1 - lam) * calidad * presupuesto + lam * it.polo.novedad
         elegidas.append(
             Ruta(
                 polo=polo_publico(it.polo),
@@ -1061,6 +1067,12 @@ def resolver(
         sin_resultado=sin_resultado,
         atribucion=list(datos.atribucion),
     )
+
+
+def por_presupuesto(costo: Costo | None, presupuesto: int | None) -> float:
+    """Lo que el presupuesto multiplica en el puntaje: 1 si no hay presupuesto o el costo central
+    entra; si lo pasa, (presupuesto / costo)²."""
+    return 1.0 if costo is None or presupuesto is None or not costo.exceso else (presupuesto / costo.p50) ** 2
 
 
 def _traslado(it: Itinerario, origen: Origen, datos: Datos) -> Traslado:
