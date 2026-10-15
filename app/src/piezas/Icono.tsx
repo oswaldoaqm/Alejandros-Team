@@ -22,6 +22,9 @@ export const TRAZOS = {
     "M15 14h.01",
   ],
   bote: ["M3 14h18l-2.5 5h-13L3 14Z", "M12 14V4", "M12 5l6 6h-6"],
+  avion: [
+    "M12 3c.9 0 1.5.8 1.5 2v5l7 4v2l-7-2v4l2 1.5V21l-3.5-1-3.5 1v-1.5l2-1.5v-4l-7 2v-2l7-4V5c0-1.2.6-2 1.5-2Z",
+  ],
   compartir: ["M12 15V4", "m8 8 4-4 4 4", "M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"],
   guardar: ["M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1Z"],
   imprimir: [
@@ -122,6 +125,14 @@ export const TRAZOS = {
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;
+
+/** El ícono de la ida: el avión si se vuela; si no, el tren o el bote si van, y si no, el bus. */
+export function iconoDeLaIda(medios: readonly string[] | null | undefined): NombreDeIcono {
+  const m = medios ?? [];
+  if (m.includes("avion")) return "avion";
+  if (m.includes("tren")) return "tren";
+  return m.includes("bote") ? "bote" : "bus";
+}
 
 export function Icono({
   nombre,

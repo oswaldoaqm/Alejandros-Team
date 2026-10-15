@@ -1,7 +1,7 @@
 // Frases cortas que la app arma con los datos del contrato. Lo que ya viene escrito del
 // motor (motivos, avisos, notas, explicaciones) se muestra tal cual: aquí no se reescribe.
 
-import type { Dia, Medio, Recurso, Sugerencia } from "./api/tipos";
+import type { Dia, Medio, Recurso, Sugerencia, Traslado } from "./api/tipos";
 import type { Consulta, Nombres } from "./consulta";
 import { fecha, lista, mes, metros, plural, soles, solesExactos } from "./formato";
 
@@ -31,6 +31,13 @@ const CON_QUE: Record<Medio, string> = {
 export function conQueSeViaja(medios: readonly Medio[] | null | undefined): string {
   const dichos = (medios ?? []).map((m) => CON_QUE[m]);
   return dichos.length > 0 ? lista(dichos) : CON_QUE.carretera;
+}
+
+/** Si la ida vuela: «con vuelo» o, con escala en Lima, «con dos vuelos»; null si va por tierra. */
+export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
+  const cuantos = (traslado.vuelos ?? []).length;
+  if (cuantos === 0) return null;
+  return cuantos === 1 ? "con vuelo" : "con dos vuelos";
 }
 
 /** Lo que la ficha dice del ingreso. Si no publica la tarifa, se dice: no se inventa. */

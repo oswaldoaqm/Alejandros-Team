@@ -14,6 +14,7 @@ import { enlaces } from "../ruta";
 import {
   ALTURA_QUE_SE_SIENTE,
   CLIMA_EN_POCAS_PALABRAS,
+  conVuelos,
   imperdibles,
   lugaresDelViaje,
   nombreDelViaje,
@@ -25,7 +26,7 @@ import { type Dato, DatosClave } from "./DatosClave";
 import { Enlace } from "./Enlace";
 import { DibujoFlor } from "./Flor";
 import { CreditoDeFoto, Foto } from "./Foto";
-import { Icono, type NombreDeIcono } from "./Icono";
+import { Icono, iconoDeLaIda, type NombreDeIcono } from "./Icono";
 import { HojaDeLugar, Itinerario, type LugarAbierto, PlanParaImprimir, SelectorDeDias } from "./Itinerario";
 import { ListaEventos } from "./Listas";
 import { Mapa } from "./Mapa";
@@ -52,7 +53,7 @@ interface Props {
 
 function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
   const { costo, traslado, estacionalidad, indicadores } = ruta;
-  const medios = traslado.medios ?? [];
+  const vuelo = conVuelos(traslado);
   const datos: Dato[] = [
     {
       etiqueta: "Costo",
@@ -65,9 +66,9 @@ function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
   if (traslado.horas != null) {
     datos.push({
       etiqueta: excursion ? "Hasta el primer lugar" : "Viaje de ida",
-      icono: medios.includes("tren") ? "tren" : medios.includes("bote") ? "bote" : "bus",
+      icono: iconoDeLaIda(traslado.medios),
       valor: horas(traslado.horas),
-      nota: `desde ${traslado.desde}`,
+      nota: vuelo ? `desde ${traslado.desde}, ${vuelo}` : `desde ${traslado.desde}`,
     });
   }
   datos.push({
@@ -136,10 +137,22 @@ const ICONO_DEL_AVISO: Record<Aviso["tipo"], NombreDeIcono> = {
   altitud: "montana",
   aclimatacion: "montana",
   presupuesto: "billete",
-  acceso: "bote",
+  acceso: "pin",
   dias: "reloj",
   datos: "info",
 };
+
+/**
+ * Los avisos de acceso hablan del avión, del tren o de una caminata larga (dreemgo/motor/viaje.py,
+ * `avisos`): cada uno con su ícono. Si una frase cambia, lo peor que pasa es que vaya el pin.
+ */
+function iconoDelAviso(a: Aviso): NombreDeIcono {
+  if (a.tipo !== "acceso") return ICONO_DEL_AVISO[a.tipo];
+  if (/avi[oó]n/i.test(a.mensaje)) return "avion";
+  if (/\btren\b/i.test(a.mensaje)) return "tren";
+  if (/caminar/i.test(a.mensaje)) return "caminatas";
+  return ICONO_DEL_AVISO.acceso;
+}
 
 function AntesDeIr({ avisos }: { avisos: Aviso[] }) {
   if (avisos.length === 0) return null;
@@ -151,7 +164,7 @@ function AntesDeIr({ avisos }: { avisos: Aviso[] }) {
       <ul className="antes">
         {avisos.map((a) => (
           <li key={`${a.tipo}-${a.mensaje}`} className={`antes__aviso antes__aviso--${a.nivel}`}>
-            <Icono nombre={ICONO_DEL_AVISO[a.tipo]} />
+            <Icono nombre={iconoDelAviso(a)} />
             <p>
               <span className="solo-lector">
                 {a.nivel === "advertencia" ? "Importante: " : "Para saber: "}
