@@ -14,6 +14,8 @@ El 10 de octubre entró el clima propio de los 194 polos, con los datos `2026.10
 
 El 14 de octubre el profesor movió la entrega de la semana 10, con su exposición, al 21 de octubre. La carpeta [`deliveries/week10/`](../deliveries/week10/) ya tiene todo lo que pide el enunciado, con la presentación y las capturas.
 
+Después de esa entrega entran los vuelos, con el [contrato 1.3](./CONTRATO.md) y los datos `2026.10.5`. Se vuela solo a lo que por tierra queda a más de 16 horas, y no en viajes cortos: desde Lima salen el Cusco, Arequipa y Puno en avión, y Huaraz y Trujillo siguen en bus. El presupuesto entra ahora a elegir las tres rutas. Quien no quiere volar apaga el interruptor «Vuelos». Lo que se midió está en la [decisión 0016](./decisiones/0016-vuelos.md).
+
 ## Qué promete el producto
 
 El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
