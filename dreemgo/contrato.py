@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.2"
+VERSION_CONTRATO = "1.3"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -115,6 +115,11 @@ class Consulta(_Modelo):
     sorpresa: bool = Field(
         False,
         description="Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
+    )
+    solo_por_tierra: bool = Field(
+        False,
+        description="Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el "
+        "motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
     )
 
     @field_validator("intereses")
@@ -210,24 +215,45 @@ class Estacionalidad(_Modelo):
     )
 
 
-Medio = Literal["carretera", "tren", "bote"]
+Medio = Literal["avion", "carretera", "tren", "bote"]
+
+
+class TramoAereo(_Modelo):
+    """Un vuelo de la ida. La vuelta hace los mismos al revés."""
+
+    desde: str = Field(description="Ciudad del aeropuerto de salida.")
+    hasta: str = Field(description="Ciudad del aeropuerto de llegada.")
+    codigo_desde: str = Field(min_length=3, max_length=3, description="Código IATA del aeropuerto de salida.")
+    codigo_hasta: str = Field(min_length=3, max_length=3, description="Código IATA del aeropuerto de llegada.")
+    horas: float | None = Field(None, ge=0, description="Duración publicada del vuelo.")
 
 
 class Traslado(_Modelo):
     desde: str = Field(description="Nombre de la ciudad de origen.")
-    horas: float | None = Field(None, ge=0, description="Horas de viaje de ida: por carretera, en tren o en bote.")
+    horas: float | None = Field(
+        None,
+        ge=0,
+        description="Horas de la ida, de puerta a puerta: por carretera, en tren o en bote y, si se vuela, "
+        "con el tiempo en los aeropuertos y en el aire.",
+    )
     dias_de_viaje: int = Field(ge=0, description="Días del viaje que se van en la ida y la vuelta.")
     medios: list[Medio] = Field(
         default_factory=lambda: ["carretera"],
-        description="Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje "
-        "de un día, con qué se recorre el día.",
+        description="Con qué se hace la ida, en este orden: avión (desde 1.3), carretera, tren, bote (desde "
+        "1.2). En un viaje de un día, con qué se recorre el día.",
+    )
+    vuelos: list[TramoAereo] = Field(
+        default_factory=list,
+        description="Los vuelos de la ida, en orden; vacío si no se vuela (desde 1.3).",
     )
     acceso: Literal["terrestre", "sin_acceso_terrestre", "desconocido"] = Field(
-        description="terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.",
+        description="El del camino por tierra, aunque se vuele. terrestre: se llega por carretera o en tren. "
+        "sin_acceso_terrestre: hace falta bote.",
     )
-    fuente: Literal["red_vial", "estimado"] = Field(
+    fuente: Literal["red_vial", "red_vial_y_vuelos", "estimado"] = Field(
         description="red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. "
-        "estimado: línea recta por un factor calibrado.",
+        "red_vial_y_vuelos: lo mismo hasta y desde los aeropuertos, más la duración publicada de cada vuelo "
+        "(desde 1.3). estimado: línea recta por un factor calibrado.",
     )
 
 
@@ -240,7 +266,8 @@ class Costo(_Modelo):
     p80: int = Field(ge=0)
     desglose: dict[str, int] = Field(
         default_factory=dict,
-        description="Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.",
+        description="Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas "
+        "y, si se vuela, vuelos (desde 1.3).",
     )
     dentro_del_presupuesto: bool | None = Field(None, description="null si la consulta no trae presupuesto.")
     exceso: int | None = Field(None, ge=0, description="Soles por encima del presupuesto, sobre el P50.")
@@ -314,8 +341,10 @@ class Ruta(_Modelo):
 
 
 class Sugerencia(_Modelo):
-    campo: Literal["origen", "mes", "fecha_inicio", "dias", "intereses", "presupuesto", "altitud_max"]
-    valor: int | str | list[str] | None
+    campo: Literal[
+        "origen", "mes", "fecha_inicio", "dias", "intereses", "presupuesto", "altitud_max", "solo_por_tierra"
+    ]
+    valor: int | str | list[str] | bool | None
     efecto: str = Field(description="Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».")
 
 

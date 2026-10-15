@@ -123,6 +123,12 @@
             "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
             "title": "Presupuesto"
           },
+          "solo_por_tierra": {
+            "default": false,
+            "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+            "title": "Solo Por Tierra",
+            "type": "boolean"
+          },
           "sorpresa": {
             "default": false,
             "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
@@ -153,7 +159,7 @@
             "additionalProperties": {
               "type": "integer"
             },
-            "description": "Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.",
+            "description": "Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas y, si se vuela, vuelos (desde 1.3).",
             "title": "Desglose",
             "type": "object"
           },
@@ -633,7 +639,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.3",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -817,7 +823,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.3",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -974,7 +980,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.3",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1222,7 +1228,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué relajar."
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.3",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1322,7 +1328,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.3",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1377,7 +1383,8 @@
               "dias",
               "intereses",
               "presupuesto",
-              "altitud_max"
+              "altitud_max",
+              "solo_por_tierra"
             ],
             "title": "Campo",
             "type": "string"
@@ -1402,6 +1409,9 @@
                 "type": "array"
               },
               {
+                "type": "boolean"
+              },
+              {
                 "type": "null"
               }
             ],
@@ -1416,11 +1426,62 @@
         "title": "Sugerencia",
         "type": "object"
       },
+      "TramoAereo": {
+        "additionalProperties": false,
+        "description": "Un vuelo de la ida. La vuelta hace los mismos al revés.",
+        "properties": {
+          "codigo_desde": {
+            "description": "Código IATA del aeropuerto de salida.",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Codigo Desde",
+            "type": "string"
+          },
+          "codigo_hasta": {
+            "description": "Código IATA del aeropuerto de llegada.",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Codigo Hasta",
+            "type": "string"
+          },
+          "desde": {
+            "description": "Ciudad del aeropuerto de salida.",
+            "title": "Desde",
+            "type": "string"
+          },
+          "hasta": {
+            "description": "Ciudad del aeropuerto de llegada.",
+            "title": "Hasta",
+            "type": "string"
+          },
+          "horas": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Duración publicada del vuelo.",
+            "title": "Horas"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta",
+          "codigo_desde",
+          "codigo_hasta"
+        ],
+        "title": "TramoAereo",
+        "type": "object"
+      },
       "Traslado": {
         "additionalProperties": false,
         "properties": {
           "acceso": {
-            "description": "terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.",
+            "description": "El del camino por tierra, aunque se vuele. terrestre: se llega por carretera o en tren. sin_acceso_terrestre: hace falta bote.",
             "enum": [
               "terrestre",
               "sin_acceso_terrestre",
@@ -1441,9 +1502,10 @@
             "type": "integer"
           },
           "fuente": {
-            "description": "red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. estimado: línea recta por un factor calibrado.",
+            "description": "red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. red_vial_y_vuelos: lo mismo hasta y desde los aeropuertos, más la duración publicada de cada vuelo (desde 1.3). estimado: línea recta por un factor calibrado.",
             "enum": [
               "red_vial",
+              "red_vial_y_vuelos",
               "estimado"
             ],
             "title": "Fuente",
@@ -1459,13 +1521,14 @@
                 "type": "null"
               }
             ],
-            "description": "Horas de viaje de ida: por carretera, en tren o en bote.",
+            "description": "Horas de la ida, de puerta a puerta: por carretera, en tren o en bote y, si se vuela, con el tiempo en los aeropuertos y en el aire.",
             "title": "Horas"
           },
           "medios": {
-            "description": "Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.",
+            "description": "Con qué se hace la ida, en este orden: avión (desde 1.3), carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.",
             "items": {
               "enum": [
+                "avion",
                 "carretera",
                 "tren",
                 "bote"
@@ -1473,6 +1536,14 @@
               "type": "string"
             },
             "title": "Medios",
+            "type": "array"
+          },
+          "vuelos": {
+            "description": "Los vuelos de la ida, en orden; vacío si no se vuela (desde 1.3).",
+            "items": {
+              "$ref": "#/components/schemas/TramoAereo"
+            },
+            "title": "Vuelos",
             "type": "array"
           }
         },
@@ -1896,6 +1967,18 @@
               "default": false,
               "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
               "title": "Sorpresa",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+            "in": "query",
+            "name": "solo_por_tierra",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+              "title": "Solo Por Tierra",
               "type": "boolean"
             }
           }

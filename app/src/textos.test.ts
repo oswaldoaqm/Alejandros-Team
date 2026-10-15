@@ -35,6 +35,7 @@ describe("con qué se viaja", () => {
     expect(conQueSeViaja(["carretera"])).toBe("por carretera");
     expect(conQueSeViaja(["carretera", "bote"])).toBe("por carretera y en bote");
     expect(conQueSeViaja(["carretera", "tren", "bote"])).toBe("por carretera, en tren y en bote");
+    expect(conQueSeViaja(["avion", "carretera"])).toBe("en avión y por carretera");
     expect(conQueSeViaja(undefined)).toBe("por carretera");
   });
 });
@@ -63,17 +64,24 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(
       aplicarSugerencia({ ...JULIO, fecha_inicio: "2027-07-20" }, { campo: "mes", valor: 8, efecto: "" }),
     ).toMatchObject({ mes: 8, fecha_inicio: null });
+    expect(
+      aplicarSugerencia(
+        { ...JULIO, solo_por_tierra: true },
+        { campo: "solo_por_tierra", valor: false, efecto: "" },
+      )?.solo_por_tierra,
+    ).toBe(false);
   });
 
   it("una sugerencia que no se entiende no se ofrece", () => {
     expect(aplicarSugerencia(JULIO, { campo: "dias", valor: "muchos", efecto: "" })).toBeNull();
     expect(aplicarSugerencia(JULIO, { campo: "origen", valor: 3, efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "solo_por_tierra", valor: "no", efecto: "" })).toBeNull();
   });
 
   it("se escriben como una acción", () => {
     const texto = (
       campo: Parameters<typeof textoDeSugerencia>[0]["campo"],
-      valor: number | string | string[] | null,
+      valor: number | string | string[] | boolean | null,
     ) => plano(textoDeSugerencia({ campo, valor, efecto: "" }, NOMBRES));
     expect(texto("dias", 8)).toBe("Probar con 8 días");
     expect(texto("altitud_max", null)).toBe("Quitar el límite de altitud");
@@ -83,6 +91,7 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(texto("presupuesto", null)).toBe("Quitar el tope de presupuesto");
     expect(texto("mes", 8)).toBe("Probar en agosto");
     expect(texto("origen", "cusco")).toBe("Salir desde Cusco");
+    expect(texto("solo_por_tierra", false)).toBe("Buscar también con vuelos");
   });
 });
 

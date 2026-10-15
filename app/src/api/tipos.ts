@@ -24,6 +24,7 @@ export type Salud = Modelo["Salud"];
 export type SinResultado = Modelo["SinResultado"];
 export type Sugerencia = Modelo["Sugerencia"];
 export type Traslado = Modelo["Traslado"];
+export type TramoAereo = Modelo["TramoAereo"];
 
 export type Veredicto = Estacionalidad["veredicto"];
 export type Medio = NonNullable<Traslado["medios"]>[number];
