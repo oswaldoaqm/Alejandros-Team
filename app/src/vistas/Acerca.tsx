@@ -36,8 +36,9 @@ export function Acerca() {
           queda cerca de donde sales, el viaje puede ser de ida y vuelta en el día.
         </li>
         <li>
-          Reparte tus días entre la ida, la vuelta y los días en la zona. Cada día es un paseo que sale de
-          donde duermes y vuelve, con jornadas de hasta 8 horas y hasta seis lugares.
+          Reparte tus días entre la ida, la vuelta y los días en la zona. A lo que por tierra queda a más de
+          16 horas se va en avión, si el viaje no es corto y no pediste ir solo por tierra. Cada día es un
+          paseo que sale de donde duermes y vuelve, con jornadas de hasta 8 horas y hasta seis lugares.
         </li>
         <li>
           Elige qué visitar y en qué orden para aprovechar el tiempo: un lugar más importante vale más, y si
@@ -45,8 +46,9 @@ export function Acerca() {
         </li>
         <li>
           Ordena las zonas con un puntaje que combina cuánto vale lo que se visita, si el mes conviene, si
-          entra en tu presupuesto y cuánto se aleja del circuito de Lima y Cusco. El presupuesto ordena y
-          avisa, pero no esconde ningún viaje. «Sorpréndeme» busca solo fuera de ese circuito.
+          entra en tu presupuesto y cuánto se aleja del circuito de Lima y Cusco. Un viaje que pasa tu
+          presupuesto sale solo si es mucho mejor que los que entran, y siempre con su aviso. «Sorpréndeme»
+          busca solo fuera de ese circuito.
         </li>
       </ol>
 
@@ -60,8 +62,8 @@ export function Acerca() {
       <h2>El costo</h2>
       <p>
         Es una banda y no un precio: lo más probable es que el gasto por persona caiga entre sus dos extremos.
-        Suma transporte, hospedaje económico, alimentación y las entradas que publican las fichas. Los
-        supuestos van al lado de cada costo.
+        Suma transporte, los vuelos si los hay, hospedaje económico, alimentación y las entradas que publican
+        las fichas. Los supuestos van al lado de cada costo.
       </p>
 
       <h2>Las fiestas y los eventos</h2>

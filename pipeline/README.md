@@ -8,14 +8,15 @@ pytest tests/pipeline
 python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
+python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red y la misma calibración
 python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.4   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.10.5   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.4` usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.10.5` suma los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -29,6 +30,7 @@ La versión `2026.10.4` usa el clima de los 222 grupos, que se terminó de desca
 | [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Encima van el tren de pasajeros y los botes, unidos a las vías en las estaciones y en las orillas. Ubica cada punto en la red y busca el camino más rápido |
 | [`red_calibracion.py`](./red_calibracion.py) | Calibra la velocidad de cada clase de vía con los recorridos de acceso de las fichas y mide el error por validación cruzada |
 | [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base, con los km de cada camino que van en tren y en bote. Una sola búsqueda por grupo de TA-01 da las tres primeras, y los grupos que eligen el mismo pueblo salen juntos, como un solo polo |
+| [`vuelos.py`](./vuelos.py) | El viaje en avión de cada ciudad de origen a cada base, de puerta a puerta: por tierra hasta un aeropuerto sobre la misma red, los vuelos desde Lima (con escala en Lima entre otros dos aeropuertos) y por tierra hasta la base, con el aeropuerto más rápido en cada punta. También la banda del pasaje de cada ruta, en soles |
 | [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación. Compara por parada y por grupo, así que sirve aunque los polos de las dos corridas no sean los mismos |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
@@ -127,6 +129,39 @@ Ningún par pierde su camino, y lo que empeora tiene explicación. `comparar_tie
 - **La Amazonía:** cruzar un río cuesta 30 minutos, y donde OpenStreetMap no registra la ruta local (las comunidades alrededor de Nauta) el camino da un rodeo y el tiempo sale mayor que el de la ficha.
 
 Lo que sigue fuera: los recursos que son un área y tienen su coordenada en medio del agua (la Reserva Nacional del Titicaca, el lago Titicaca), y Madre de Dios, donde OpenStreetMap no registra rutas de bote (el lago Sandoval, los lagos del Tambopata).
+
+## Los vuelos
+
+[`vuelos.py`](./vuelos.py) arma la ida en avión de cada ciudad de origen a cada base ([decisión 0016](../docs/decisiones/0016-vuelos.md)). Las rutas son las 22 regulares que salen de Lima, con su duración publicada ([`referencia/rutas_aereas.csv`](./referencia/rutas_aereas.csv)); entre dos aeropuertos que no son Lima se vuela con escala en Lima. De puerta a puerta se suman:
+
+1. el camino por tierra del origen a un aeropuerto, sobre la misma red y con la misma calibración que los demás tiempos;
+2. dos horas antes del vuelo, lo que piden los aeropuertos para un vuelo nacional;
+3. el vuelo o, con escala, los dos vuelos y dos horas entre ellos (un **supuesto del equipo**);
+4. media hora para salir del aeropuerto, sin maleta en bodega (otro supuesto);
+5. el camino por tierra del aeropuerto de llegada a la base.
+
+Se prueban los 23 aeropuertos en cada punta y queda el más rápido. Algunos tiempos de la rejilla, contra el mejor camino por tierra:
+
+| | En avión | Por tierra |
+|---|---:|---:|
+| Lima → Cusco | 4 h 28 | 22 h 28 |
+| Lima → Machupicchu Pueblo | 7 h 34 | 24 h 36 |
+| Lima → Iquitos | 5 h 03 | 52 h 55 |
+| Lima → Puno, por Juliaca | 5 h 26 | 24 h 19 |
+| Trujillo → Cusco, con escala en Lima | 7 h 40 | 33 h 24 |
+| Lima → Huaraz | 4 h 27 | 8 h 07 |
+
+Que se vuele o no lo decide el motor: solo a lo que por tierra pasa de 16 horas, así que a Huaraz se va en bus aunque el avión llegue 3 h 40 antes ([`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), `conviene_volar`).
+
+El pasaje de cada ruta es una banda por tramo: de la tarifa más baja publicada (la «desde» de Sky Airline, en dólares, pasada a soles con el tipo de cambio del BCRP del 5 de octubre) a 2,2 veces esa, con 1,5 veces como valor central. Los factores salen de los rangos típicos de una sola vía que Kayak publica para Lima–Cusco, Lima–Arequipa y Lima–Iquitos, que van de 1,1 a 2,3 veces el más barato. Seis rutas sin tarifa que se pueda citar toman la mediana de las demás. La banda no está calibrada contra lo que pagan los viajeros.
+
+Lo que queda fuera:
+
+- **Los horarios y las frecuencias.** El motor supone que hay un vuelo cuando se llega al aeropuerto. Las rutas con pocos vuelos por semana, como Huaraz, Chachapoyas o Mazamari, cuentan como si salieran todos los días.
+- **Las rutas sin escala entre regiones**, como Arequipa–Cusco o Cusco–Puerto Maldonado: las fuentes que las nombran son de 2020 a 2022 y no se pudo confirmar que sigan.
+- **Las avionetas** y los aeródromos sin vuelos regulares, como el de Nasca.
+
+Los caminos por tierra salen de la misma red que los tiempos de la `2026.10.4`: rehecha para los vuelos, reproduce sus 4 656 tiempos de origen a base al décimo de minuto.
 
 ## Dónde duerme cada polo
 

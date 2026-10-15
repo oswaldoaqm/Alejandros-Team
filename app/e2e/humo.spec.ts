@@ -91,6 +91,22 @@ test("el enlace es el viaje: quien lo abre ve el mismo", async ({ page, context 
   await expect(otra.getByText(/Este enlace se armó con los datos/)).toHaveCount(0);
 });
 
+test("desde Lima con seis días al Cusco se vuela, y con «Solo por tierra» no vuela ninguno", async ({
+  page,
+}) => {
+  await page.goto("./?origen=lima&mes=7&dias=6");
+  await expect(tarjetas(page)).toHaveCount(3);
+  const cusco = tarjetas(page).filter({ hasText: "Cuzco" });
+  await expect(cusco).toContainText("con vuelo");
+  await cusco.click();
+  await expect(page.getByText("desde Lima, con vuelo")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Cuánto cuesta" })).toContainText("Vuelos");
+
+  await page.goto("./?origen=lima&mes=7&dias=6&solo_por_tierra=true");
+  await expect(tarjetas(page)).toHaveCount(3);
+  await expect(tarjetas(page).filter({ hasText: /con (dos )?vuelos?/ })).toHaveCount(0);
+});
+
 test("guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él", async ({
   page,
 }) => {

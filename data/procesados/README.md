@@ -6,10 +6,11 @@ Lo que construye el pipeline a partir de las descargas de `data/externos/` (fuer
 python -m pipeline.maestro
 python -m pipeline.eventos
 python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
+python -m pipeline.vuelos      # después de tiempos: usa la misma red
 python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
 ```
 
-Estas tablas son las de la versión de datos `2026.10.4`. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.5`, que suma los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -29,6 +30,8 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
 | `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo |
 | `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
+| `vuelos_rutas.csv` | Cada ruta aérea desde Lima: minutos de vuelo y la banda del pasaje por tramo, en soles |
+| `vuelos_origen_base.csv` | El viaje en avión de cada ciudad de origen a la base de cada polo, de puerta a puerta |
 
 ## `maestro_v3.csv`
 
@@ -199,6 +202,19 @@ Cómo se elige está en [`pipeline/bases.py`](../../pipeline/bases.py) y el resu
 | `grupos` | Los grupos de TA-01 que junta el polo, separados por `\|`, del que tiene más paradas al que tiene menos. 172 polos son un solo grupo; los otros 22 juntan dos, tres o cuatro (50 grupos entre todos) |
 
 Dos grupos que eligen el mismo pueblo para dormir se visitan desde la misma base, así que para el viajero son un solo lugar al que ir. Al juntarlos, la base no cambia y los tiempos que ya había, tampoco; se suman los 38 994 pares entre paradas de grupos distintos, calculados sobre la red como los demás.
+
+## Vuelos
+
+Los arma [`pipeline/vuelos.py`](../../pipeline/vuelos.py) con las 22 rutas regulares que salen de Lima ([`rutas_aereas.csv`](../../pipeline/referencia/rutas_aereas.csv)) y los 23 aeropuertos ([`aeropuertos.csv`](../../pipeline/referencia/aeropuertos.csv)); entre dos aeropuertos que no son Lima se vuela con escala en Lima ([decisión 0016](../../docs/decisiones/0016-vuelos.md)). Lo que va por tierra, hasta y desde los aeropuertos, se mide sobre la misma red que los tiempos de arriba: también es **obra derivada de OpenStreetMap**.
+
+De puerta a puerta, la ida en avión suma el camino por tierra hasta el aeropuerto, dos horas antes del vuelo, el vuelo (o los dos, con dos horas de escala en Lima), media hora para salir del aeropuerto y el camino por tierra hasta la base. Se prueban todos los aeropuertos en las dos puntas y queda el más rápido. Si conviene volar lo decide el motor.
+
+| Archivo | Columnas | Filas |
+|---|---|---|
+| `vuelos_rutas.csv` | `desde` (siempre `LIM`), `hasta` (código IATA), `minutos` de vuelo, `tarifa_minima`, `tarifa_central` y `tarifa_maxima` por tramo en soles, `tarifa_publicada` (si la mínima es una tarifa publicada o la mediana de las demás) y su `fuente` | 22 |
+| `vuelos_origen_base.csv` | `origen`, `polo`, `minutos` de puerta a puerta, `km` por tierra en las dos puntas (y cuántos de ellos van en tren, `km_tren`, y en bote, `km_bote`), `aeropuertos` del camino («LIM-CUZ» o, con escala, «TRU-LIM-CUZ»), `minutos_vuelo` (con la escala), `minutos_hasta_aeropuerto` y `km_hasta_aeropuerto` por tierra hasta el de salida, `minutos_desde_aeropuerto` por tierra desde el de llegada | 4 656: las 24 ciudades por los 194 polos |
+
+La banda del pasaje va de la tarifa más baja publicada, pasada a soles al tipo de cambio del BCRP del 5 de octubre de 2026 (3,436), a 2,2 veces esa, con 1,5 veces como valor central. Seis rutas no tienen una tarifa publicada que se pueda citar y toman la mediana de las demás: Andahuaylas, Chachapoyas, Huaraz, Huánuco, Mazamari y Tingo María.
 
 ## `clima_polo_mes.csv`
 

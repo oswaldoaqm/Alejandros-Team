@@ -119,6 +119,7 @@ export function consultaDe(url: URL): Respuesta["consulta"] {
     presupuesto: numero("presupuesto"),
     altitud_max: numero("altitud_max"),
     sorpresa: p.get("sorpresa") === "true",
+    solo_por_tierra: p.get("solo_por_tierra") === "true",
   };
 }
 

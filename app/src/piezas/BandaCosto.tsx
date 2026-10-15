@@ -6,6 +6,7 @@ import { mayuscula, soles } from "../formato";
 
 const COMPONENTES: Record<string, string> = {
   transporte: "Transporte",
+  vuelos: "Vuelos",
   alojamiento: "Alojamiento",
   alimentacion: "Alimentación",
   entradas: "Entradas",

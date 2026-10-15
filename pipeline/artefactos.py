@@ -12,9 +12,10 @@ que entran a la imagen del API:
                       de sus km van en cada uno
   origenes.json.gz    las 24 ciudades de partida, con sus tiempos a cada base y a las paradas a
                       menos de 4 horas, que son las que caben en un viaje de un día: minutos, km,
-                      km en tren y km en bote
+                      km en tren y km en bote; y el viaje en avión a cada base (pipeline/vuelos.py)
   eventos.json.gz     los acontecimientos programados con la regla de su fecha
-  costos.json         los parámetros del costo (pipeline/referencia/costos.csv)
+  costos.json         los parámetros del costo (pipeline/referencia/costos.csv) y el pasaje de
+                      cada ruta aérea, por tramo (data/procesados/vuelos_rutas.csv)
 
 Los archivos son deterministas: con las mismas tablas salen los mismos bytes (JSON con las
 claves ordenadas y gzip sin fecha), así que su huella sirve para comprobar que dos máquinas
@@ -24,8 +25,8 @@ Un polo es lo que se visita desde una base. El maestro y los eventos traen el gr
 de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
 recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
 
-Uso:  python -m pipeline.artefactos --version 2026.10.4
-      (después de maestro, eventos, tiempos y clima)
+Uso:  python -m pipeline.artefactos --version 2026.10.5
+      (después de maestro, eventos, tiempos, vuelos y clima)
 """
 
 from __future__ import annotations
@@ -47,7 +48,7 @@ from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.4"
+VERSION_DATOS = "2026.10.5"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
 MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote
@@ -276,23 +277,46 @@ def _tiempos(fila) -> list:
     return [_redondo(getattr(fila, c, 0.0)) for c in ("minutos", *MEDIOS_KM)]
 
 
-def origenes_(origenes: pd.DataFrame, tiempos_origen_base: pd.DataFrame, tiempos_origen: pd.DataFrame) -> list[dict]:
+def _en_avion(fila) -> list:
+    """[minutos de puerta a puerta, km por tierra, km en tren, km en bote, minutos de vuelo,
+    minutos y km por tierra hasta el aeropuerto, minutos desde el de llegada, aeropuertos]."""
+    numeros = (
+        "minutos",
+        *MEDIOS_KM,
+        "minutos_vuelo",
+        "minutos_hasta_aeropuerto",
+        "km_hasta_aeropuerto",
+        "minutos_desde_aeropuerto",
+    )
+    return [*(_redondo(getattr(fila, c)) for c in numeros), fila.aeropuertos]
+
+
+def origenes_(
+    origenes: pd.DataFrame,
+    tiempos_origen_base: pd.DataFrame,
+    tiempos_origen: pd.DataFrame,
+    vuelos_origen_base: pd.DataFrame | None = None,
+) -> list[dict]:
     salida = []
     for o in origenes.itertuples():
         a_base = tiempos_origen_base[tiempos_origen_base["origen"] == o.id].sort_values("polo")
         cerca = tiempos_origen[(tiempos_origen["origen"] == o.id) & (tiempos_origen["minutos"] <= EXCURSION_MAX_MIN)]
         cerca = cerca.sort_values("codigo")
-        salida.append(
-            {
-                "id": o.id,
-                "nombre": o.ciudad,
-                "region": o.region,
-                "lat": o.lat,
-                "lon": o.lon,
-                "a_base": {str(p): _tiempos(f) for p, f in zip(a_base["polo"], a_base.itertuples(), strict=True)},
-                "a_parada": {str(c): _tiempos(f) for c, f in zip(cerca["codigo"], cerca.itertuples(), strict=True)},
+        fila = {
+            "id": o.id,
+            "nombre": o.ciudad,
+            "region": o.region,
+            "lat": o.lat,
+            "lon": o.lon,
+            "a_base": {str(p): _tiempos(f) for p, f in zip(a_base["polo"], a_base.itertuples(), strict=True)},
+            "a_parada": {str(c): _tiempos(f) for c, f in zip(cerca["codigo"], cerca.itertuples(), strict=True)},
+        }
+        if vuelos_origen_base is not None:
+            avion = vuelos_origen_base[vuelos_origen_base["origen"] == o.id].sort_values("polo")
+            fila["a_base_en_avion"] = {
+                str(p): _en_avion(f) for p, f in zip(avion["polo"], avion.itertuples(), strict=True)
             }
-        )
+        salida.append(fila)
     return salida
 
 
@@ -317,12 +341,33 @@ def eventos_(eventos: pd.DataFrame) -> list[dict]:
     return salida
 
 
-def costos_() -> dict:
+def costos_(vuelos_rutas: pd.DataFrame | None = None) -> dict:
     t = pd.read_csv(REFERENCIA / "costos.csv", sep=";")
-    return {
+    salida = {
         f.parametro: {"valor": f.valor, "minimo": f.minimo, "maximo": f.maximo, "unidad": f.unidad, "fuente": f.fuente}
         for f in t.itertuples()
     }
+    for r in [] if vuelos_rutas is None else vuelos_rutas.itertuples():
+        fuente = (
+            f"{r.fuente}, recogida el 15 de octubre de 2026 y pasada a soles: el mínimo"
+            if r.tarifa_publicada
+            else f"{r.fuente}: la mediana de las demás rutas como mínimo"
+        )
+        salida[f"vuelo_{r.desde}_{r.hasta}"] = {
+            "valor": float(r.tarifa_central),
+            "minimo": float(r.tarifa_minima),
+            "maximo": float(r.tarifa_maxima),
+            "unidad": "S/ por persona y tramo",
+            "fuente": f"{fuente}. Central y máximo: 1,5 y 2,2 veces el mínimo (pipeline/vuelos.py). Sin calibrar",
+        }
+    return salida
+
+
+def aeropuertos_(vuelos_rutas: pd.DataFrame) -> dict:
+    """Cada aeropuerto con su ciudad y los minutos de su vuelo a Lima, para los textos del motor."""
+    aeropuertos = pd.read_csv(REFERENCIA / "aeropuertos.csv", sep=";")
+    minutos = dict(zip(vuelos_rutas["hasta"], vuelos_rutas["minutos"].astype(int), strict=True))
+    return {a.iata: {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)} for a in aeropuertos.itertuples()}
 
 
 def _fecha(aaaammdd) -> str:
@@ -356,6 +401,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     tiempos_origen = leer("tiempos_origen.csv")
     origenes = pd.read_csv(REFERENCIA / "origenes.csv", sep=";")
     calibracion = json.loads((entrada / "red_calibracion.json").read_text(encoding="utf-8"))
+    hay_vuelos = (entrada / "vuelos_origen_base.csv").exists()
+    vuelos_origen_base = leer("vuelos_origen_base.csv") if hay_vuelos else None
+    vuelos_rutas = leer("vuelos_rutas.csv") if hay_vuelos else None
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {
@@ -365,11 +413,11 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             destino / "polos.json.gz",
         ),
         "origenes.json.gz": _escribir_gz(
-            origenes_(origenes, tiempos_origen_base, tiempos_origen), destino / "origenes.json.gz"
+            origenes_(origenes, tiempos_origen_base, tiempos_origen, vuelos_origen_base), destino / "origenes.json.gz"
         ),
         "eventos.json.gz": _escribir_gz(eventos_(eventos), destino / "eventos.json.gz"),
     }
-    costos = _bytes_json(costos_())
+    costos = _bytes_json(costos_(vuelos_rutas))
     (destino / "costos.json").write_bytes(costos)
     huellas["costos.json"] = hashlib.sha256(costos).hexdigest()
 
@@ -396,6 +444,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
         "atribucion": ATRIBUCION,
         "archivos": huellas,
     }
+    if vuelos_rutas is not None:
+        manifiesto["aeropuertos"] = aeropuertos_(vuelos_rutas)
+        manifiesto["fuentes"]["vuelos"] = {"rutas": len(vuelos_rutas), "consultadas": "2026-10-15"}
     (destino / "manifiesto.json").write_text(
         json.dumps(manifiesto, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
