@@ -69,10 +69,20 @@ describe("los tres viajes", () => {
   });
 
   it("marca los viajes que están fuera del circuito cuando no lo están todos", async () => {
-    await abrir();
+    // El primero, en el circuito; los otros dos, fuera, sea cual sea el ejemplo del contrato.
+    await abrir(`/?${CONSULTA}`, {
+      "/v1/viajes": (url: URL) => {
+        const respuesta = viajesPara(url);
+        const rutas = respuesta.rutas.map((r, i) => ({
+          ...r,
+          polo: { ...r.polo, fuera_del_circuito: i > 0 },
+        }));
+        return { cuerpo: { ...respuesta, rutas } };
+      },
+    });
     const lista = await tarjetas();
     const sellos = lista.map((t) => within(t).queryByText("Fuera del circuito") !== null);
-    expect(sellos).toEqual(RESPUESTA.rutas.map((r) => r.polo.fuera_del_circuito));
+    expect(sellos).toEqual([false, true, true]);
   });
 
   // Los `cuantos` primeros viajes del ejemplo, todos fuera de Lima y de Cusco.
