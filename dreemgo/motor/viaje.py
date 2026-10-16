@@ -664,6 +664,13 @@ def _minutos_desde_deposito(polo: PoloDatos, origen: Origen, excursion: bool) ->
     return np.array([origen.a_parada.get(c, (np.nan, np.nan))[0] for c in polo.paradas], dtype=float)
 
 
+def _desde_para_visitar(polo: PoloDatos, origen: Origen, excursion: bool) -> np.ndarray:
+    """Los minutos del depósito a cada parada. En una excursión, lo que queda en la misma ciudad
+    del origen no cuenta: no es una excursión."""
+    desde = _minutos_desde_deposito(polo, origen, excursion)
+    return np.where(desde < CASA_MIN, np.nan, desde) if excursion else desde
+
+
 def _visitadas(it: Itinerario) -> list[Candidata]:
     return [v.candidata for r in it.recorridos for v in r.visitas]
 
@@ -925,9 +932,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio, vuelo)
         if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
-    desde = _minutos_desde_deposito(polo, origen, excursion)
-    if excursion:  # lo que queda en la misma ciudad del origen no es una excursión
-        desde = np.where(desde < CASA_MIN, np.nan, desde)
+    desde = _desde_para_visitar(polo, origen, excursion)
     cands = candidatas(polo, consulta, datos, desde)
     if not cands:
         return None
@@ -1125,6 +1130,8 @@ def _vuelos_de_ida(vuelo: Vuelo | None, datos: Datos) -> list[TramoAereo]:
 
 
 def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bool) -> SinResultado:
+    if consulta.destino is not None:
+        return _sin_viaje_al_destino(consulta, origen, datos, sugerir)
     dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
     motivo = f"Ninguna zona cabe en {dias} desde {origen.nombre} con lo que pediste."
     if consulta.dias == 1:
@@ -1145,6 +1152,115 @@ def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bo
             otra = consulta.model_copy(update=cambio)
             n = len(resolver(otra, datos, sugerir=False).rutas)
             if n:
-                efecto = f"aparece{'' if n == 1 else 'n'} {n} viaje{'' if n == 1 else 's'}"
-                sugerencias.append(Sugerencia(campo=campo, valor=valor_nuevo, efecto=efecto))
+                sugerencias.append(Sugerencia(campo=campo, valor=valor_nuevo, efecto=_efecto(n)))
     return SinResultado(motivo=motivo, sugerencias=sugerencias)
+
+
+def _efecto(n: int) -> str:
+    return f"aparece{'' if n == 1 else 'n'} {n} viaje{'' if n == 1 else 's'}"
+
+
+def _sin_viaje_al_destino(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bool) -> SinResultado:
+    """Sin viaje a la zona pedida: por qué (``_por_que_no``) y, si ``sugerir``, cada cambio de un
+    solo campo con el que el viaje sí sale. De los días, los menos que hacen falta. Si ninguno
+    alcanza solo, el motivo dice qué cambios juntos sí: volar, quitar el límite de altitud y cuántos
+    días."""
+    polo = datos.polos[consulta.destino]
+    motivo = _por_que_no(polo, consulta, origen, datos)
+    sugerencias = []
+    if sugerir:
+
+        def con(cambio: dict) -> Respuesta:
+            return resolver(consulta.model_copy(update=cambio), datos, sugerir=False)
+
+        def proponer(campo: str, valor, respuesta: Respuesta) -> None:
+            [ruta] = respuesta.rutas
+            como = "con vuelo" if "avion" in ruta.traslado.medios else "sin volar"
+            sugerencias.append(Sugerencia(campo=campo, valor=valor, efecto=f"sale el viaje, {como}"))
+
+        for mas in range(consulta.dias + 1, DIAS_MAX + 1):
+            if (r := con({"dias": mas})).rutas:
+                proponer("dias", mas, r)
+                break
+        if consulta.dias > 1 and (r := con({"dias": 1})).rutas:
+            proponer("dias", 1, r)
+        if consulta.solo_por_tierra and (r := con({"solo_por_tierra": False})).rutas:
+            proponer("solo_por_tierra", False, r)
+        if consulta.altitud_max is not None and (r := con({"altitud_max": None})).rutas:
+            proponer("altitud_max", None, r)
+        if not sugerencias and (juntos := _cambios_juntos(consulta, con)):
+            motivo = f"{motivo} {juntos}"
+        if n := len(con({"destino": None}).rutas):
+            sugerencias.append(Sugerencia(campo="destino", valor=None, efecto=_efecto(n)))
+    return SinResultado(motivo=motivo, sugerencias=sugerencias)
+
+
+def _cambios_juntos(consulta: Consulta, con) -> str | None:
+    """Lo que hace salir el viaje cuando ningún cambio solo alcanza: volar o quitar el límite de
+    altitud (o las dos cosas), con los menos días que hagan falta. «Volando, cabe en 4 días.»"""
+    volar = {"solo_por_tierra": False} if consulta.solo_por_tierra else None
+    sin_limite = {"altitud_max": None} if consulta.altitud_max is not None else None
+    juntos = [
+        (cambio, texto)
+        for cambio, texto in (
+            (volar, "volando"),
+            (sin_limite, "sin el límite de altitud"),
+            ({**volar, **sin_limite} if volar and sin_limite else None, "volando y sin el límite de altitud"),
+        )
+        if cambio
+    ]
+    for dias in range(consulta.dias, DIAS_MAX + 1):
+        for cambio, texto in juntos:
+            if con({**cambio, "dias": dias}).rutas:
+                cuando = "sí cabe" if dias == consulta.dias else f"cabe en {dias} días"
+                return f"{texto[0].upper()}{texto[1:]}, {cuando}."
+    return None
+
+
+def _horas(minutos: float) -> str:
+    """Una duración larga, redondeada: «unas 22 horas». Las cortas, como ``textos.duracion``."""
+    return f"unas {round(minutos / 60)} horas" if minutos >= 120 else textos.duracion(minutos)
+
+
+def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) -> str:
+    """Por qué no sale un viaje a ``polo``: lo primero que lo impide, en el orden en que lo miran
+    ``preparar`` y el planificador."""
+    nombre, de = polo.nombre, origen.nombre
+    dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
+    limite, altura = consulta.altitud_max, polo.base["altitud_m"]
+    if limite is not None and altura is not None and altura > limite:
+        return f"{nombre} está a {textos.miles(altura)} m, más arriba de tu límite de {textos.miles(limite)} m."
+    excursion = consulta.dias == 1
+    en_casa = origen.a_base.get(polo.id, (np.inf,))[0] < CASA_MIN
+    plan, toma = None, ""
+    if not excursion:
+        if en_casa:
+            return f"Estás a menos de media hora de {nombre}: no hace falta dormir allá."
+        minutos, _, _, _, vuelo = ida(polo, consulta, origen)
+        if not np.isfinite(minutos):
+            return f"No encontramos cómo llegar de {de} a {nombre}."
+        por = "en avión" if vuelo is not None else textos.por_medios(medios_por_tierra(polo, origen))
+        toma = f"{por}, solo la ida toma {_horas(minutos)}"
+        # Si en un viaje más largo se volaría, también se cuenta por qué en este no.
+        otro = None if consulta.solo_por_tierra or vuelo is not None else origen.a_base_en_avion.get(polo.id)
+        if otro is not None and conviene_volar(minutos, otro, DIAS_MAX):
+            toma += f", y en avión, ir y volver son {_horas(2 * otro.minutos)}: demasiado para {dias}"
+        plan = plan_de_dias(consulta.dias, minutos, consulta.fecha_inicio, vuelo)
+        if plan is None or not plan.jornadas:
+            return f"En {dias} no da para ir de {de} a {nombre} y volver: {toma}."
+        if mas_camino_que_visita(plan):
+            return f"En {dias} se pasaría más tiempo en el camino que en {nombre}: {toma}."
+    desde = _desde_para_visitar(polo, origen, excursion)
+    sin_lugares = not candidatas(polo, consulta, datos, desde)
+    if sin_lugares and limite is not None:
+        if candidatas(polo, consulta.model_copy(update={"altitud_max": None}), datos, desde):
+            return f"En {nombre} no encontramos lugares para visitar por debajo de {textos.miles(limite)} m."
+    if excursion and en_casa:
+        return f"Lo que hay en {nombre} queda a menos de media hora de {de}: se visita sin armar un viaje."
+    if excursion:
+        return f"En un día no da para ir de {de} a {nombre}, visitar algo y volver."
+    if sin_lugares:
+        return f"En {nombre} no encontramos lugares que se puedan visitar en una jornada."
+    if all(j.tope < JORNADA_MIN for j in plan.jornadas):
+        return f"En {dias}, el camino a {nombre} deja muy poco tiempo allá: {toma}."
+    return f"Un viaje de {dias} a {nombre} no cabe con lo que pediste."
