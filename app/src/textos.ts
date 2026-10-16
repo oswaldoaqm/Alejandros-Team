@@ -72,6 +72,9 @@ export function aplicarSugerencia(c: Consulta, s: Sugerencia): Consulta | null {
       return typeof valor === "string" ? { ...c, origen: valor } : null;
     case "solo_por_tierra":
       return typeof valor === "boolean" ? { ...c, solo_por_tierra: valor } : null;
+    case "destino":
+      if (valor === null) return { ...c, destino: null };
+      return typeof valor === "number" ? { ...c, destino: valor, sorpresa: false } : null;
   }
 }
 
@@ -101,6 +104,8 @@ export function textoDeSugerencia(s: Sugerencia, nombres: Nombres): string {
         : "Cambiar el origen";
     case "solo_por_tierra":
       return valor === true ? "Buscar solo por tierra" : "Buscar también con vuelos";
+    case "destino":
+      return valor === null ? "Ver viajes a otras zonas" : "Ir a otra zona";
   }
 }
 

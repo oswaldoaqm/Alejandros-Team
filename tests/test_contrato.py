@@ -25,7 +25,7 @@ EJEMPLO = Path(__file__).parents[1] / "docs" / "ejemplos" / "respuesta_ilustrati
 class TestConsulta:
     def test_valores_por_defecto(self):
         c = Consulta(mes=7)
-        assert (c.origen, c.dias, c.intereses, c.sorpresa) == ("lima", 6, [], False)
+        assert (c.origen, c.dias, c.intereses, c.sorpresa, c.destino) == ("lima", 6, [], False, None)
 
     def test_exige_mes_o_fecha(self):
         with pytest.raises(ValidationError, match="mes de viaje o la fecha"):
@@ -54,11 +54,17 @@ class TestConsulta:
             ("origen", "Lima"),
             ("origen", "l"),
             ("intereses", ["museos"]),
+            ("destino", -1),
         ],
     )
     def test_fuera_de_rango(self, campo, valor):
         with pytest.raises(ValidationError):
             Consulta(**{"mes": 7, campo: valor})
+
+    def test_con_un_destino_no_hay_sorpresa(self):
+        assert Consulta(mes=7, destino=4).destino == 4
+        with pytest.raises(ValidationError, match="no hay sorpresa"):
+            Consulta(mes=7, destino=4, sorpresa=True)
 
     def test_rechaza_campos_que_no_existen(self):
         with pytest.raises(ValidationError):

@@ -110,6 +110,15 @@
   background: var(--lago-claro);
 }
 
+/* «Ir a esta fiesta»: alineado con el texto de arriba, y discreto: en un mes hay cien. El área
+   que se toca sigue siendo de 32 px de alto (WCAG 2.5.8 pide 24). */
+.evento__ir {
+  min-height: 32px;
+  padding: 4px 0;
+  margin: 4px 0 -6px;
+  font-size: var(--t-pie);
+}
+
 .eventos__mas {
   margin-top: 12px;
 }

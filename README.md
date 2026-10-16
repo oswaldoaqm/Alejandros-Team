@@ -259,6 +259,7 @@ python -m pipeline.clima       # clima por polo y mes
 python -m pipeline.artefactos --version 2026.10.5   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
+python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»
 pytest
 ```
 

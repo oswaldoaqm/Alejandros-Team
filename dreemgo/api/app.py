@@ -183,6 +183,8 @@ def viajes(consulta: Annotated[Consulta, Query()], publicadas: Publicadas) -> Re
     except viaje.OrigenDesconocido as e:
         opciones = ", ".join(datos.origenes)
         raise _error("origen", f"Origen desconocido. Opciones: {opciones}.") from e
+    except viaje.DestinoDesconocido as e:
+        raise _error("destino", "No hay una zona con ese número.") from e
 
 
 @app.get(
@@ -328,4 +330,4 @@ def publicar(
     bitacora.info(
         "Evento %s publicado; sale en los polos %s.", publicado.id, sorted(instantanea.polos_de(publicado.id))
     )
-    return publicado.evento()
+    return publicado.evento(instantanea.zona_de(publicado.id))

@@ -70,12 +70,20 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
         { campo: "solo_por_tierra", valor: false, efecto: "" },
       )?.solo_por_tierra,
     ).toBe(false);
+    // Buscar en todas las zonas quita el destino; ir a otra lo cambia, y sin sorpresa.
+    expect(
+      aplicarSugerencia({ ...JULIO, destino: 36 }, { campo: "destino", valor: null, efecto: "" })?.destino,
+    ).toBeNull();
+    expect(
+      aplicarSugerencia({ ...JULIO, sorpresa: true }, { campo: "destino", valor: 4, efecto: "" }),
+    ).toMatchObject({ destino: 4, sorpresa: false });
   });
 
   it("una sugerencia que no se entiende no se ofrece", () => {
     expect(aplicarSugerencia(JULIO, { campo: "dias", valor: "muchos", efecto: "" })).toBeNull();
     expect(aplicarSugerencia(JULIO, { campo: "origen", valor: 3, efecto: "" })).toBeNull();
     expect(aplicarSugerencia(JULIO, { campo: "solo_por_tierra", valor: "no", efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "destino", valor: "cusco", efecto: "" })).toBeNull();
   });
 
   it("se escriben como una acción", () => {
@@ -92,6 +100,7 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(texto("mes", 8)).toBe("Probar en agosto");
     expect(texto("origen", "cusco")).toBe("Salir desde Cusco");
     expect(texto("solo_por_tierra", false)).toBe("Buscar también con vuelos");
+    expect(texto("destino", null)).toBe("Ver viajes a otras zonas");
   });
 });
 

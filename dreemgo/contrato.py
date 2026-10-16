@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.3"
+VERSION_CONTRATO = "1.4"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -122,6 +122,12 @@ class Consulta(_Modelo):
         description="Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el "
         "motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
     )
+    destino: int | None = Field(
+        None,
+        ge=0,
+        description="La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma "
+        "solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+    )
 
     @field_validator("intereses")
     @classmethod
@@ -136,6 +142,8 @@ class Consulta(_Modelo):
             self.mes = self.fecha_inicio.month
         elif self.mes is None:
             raise ValueError("Indica el mes de viaje o la fecha de inicio.")
+        if self.destino is not None and self.sorpresa:
+            raise ValueError("Con un destino elegido no hay sorpresa: quita uno de los dos.")
         return self
 
 
@@ -297,6 +305,12 @@ class Evento(_Modelo):
     fuente: Literal["mincetur", "publicado"]
     publicado_por: str | None = None
     url: HttpUrl | None = None
+    polo: int | None = Field(
+        None,
+        ge=0,
+        description="La zona donde cae, por su número de polo: la del inventario o, si lo publicó un municipio, "
+        "la que duerme más cerca. null si no queda cerca de ninguna (desde 1.4).",
+    )
 
 
 class Aviso(_Modelo):
@@ -343,7 +357,15 @@ class Ruta(_Modelo):
 
 class Sugerencia(_Modelo):
     campo: Literal[
-        "origen", "mes", "fecha_inicio", "dias", "intereses", "presupuesto", "altitud_max", "solo_por_tierra"
+        "origen",
+        "mes",
+        "fecha_inicio",
+        "dias",
+        "intereses",
+        "presupuesto",
+        "altitud_max",
+        "solo_por_tierra",
+        "destino",
     ]
     valor: int | str | list[str] | bool | None
     efecto: str = Field(description="Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».")
@@ -358,10 +380,13 @@ class Respuesta(_Modelo):
     version_contrato: str = VERSION_CONTRATO
     version_datos: str = Field(description="Versión de los artefactos con que se calculó; va en el enlace.")
     consulta: Consulta = Field(description="La consulta tal como la entendió el motor.")
-    rutas: list[Ruta] = Field(max_length=RUTAS_MAX, description="Hasta tres polos distintos, del mejor al peor.")
+    rutas: list[Ruta] = Field(
+        max_length=RUTAS_MAX,
+        description="Hasta tres polos distintos, del mejor al peor; con destino, solo el de esa zona.",
+    )
     sin_resultado: SinResultado | None = Field(
         None,
-        description="Presente solo si no hay ninguna ruta: por qué y qué relajar.",
+        description="Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga.",
     )
     atribucion: list[str] = Field(description="Fuentes y licencias que la app muestra junto al resultado.")
 

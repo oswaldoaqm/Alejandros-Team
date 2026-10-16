@@ -51,6 +51,11 @@ export function Acerca() {
           busca solo fuera de ese circuito.
         </li>
       </ol>
+      <p>
+        Si eliges a dónde ir, arma solo el viaje a esa zona, con las mismas reglas: es el mismo viaje que te
+        propondría si la eligiera él. Si no cabe, te dice por qué y qué cambiar para que salga: cuántos días
+        hacen falta, si volando sí, o ver viajes a otras zonas.
+      </p>
 
       <h2>El mes</h2>
       <p>
