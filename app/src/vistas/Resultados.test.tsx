@@ -233,6 +233,48 @@ describe("los tres viajes", () => {
   });
 });
 
+describe("el viaje a una zona elegida", () => {
+  const HUANCAYO = "origen=lima&destino=33&mes=7&dias=4";
+  const CUZCO = "origen=lima&destino=36&mes=7&dias=2";
+
+  it("se abre directo, porque es uno solo, y «Cambiar el viaje» vuelve al formulario", async () => {
+    const api = await abrir(`/?${HUANCAYO}`);
+    await screen.findByRole("heading", { level: 1, name: "Huancayo" });
+    await waitFor(() => expect(window.location.hash).toBe("#/ruta/1"));
+    expect(window.location.search).toBe(`?${HUANCAYO}&v=${VERSION}`);
+    expect(pedidosA(api, "/v1/viajes")).toEqual([`/v1/viajes?${HUANCAYO}`]);
+
+    const cambiar = screen.getByRole("link", { name: "Cambiar el viaje" });
+    expect(cambiar.getAttribute("href")).toBe(`?${HUANCAYO}&v=${VERSION}#/editar`);
+    await userEvent.click(cambiar);
+    await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" });
+    await waitFor(() =>
+      expect(plano(screen.getByRole("button", { name: /^A dónde/ }).textContent)).toBe("A dónde Huancayo"),
+    );
+  });
+
+  it("si no cabe, dice por qué y qué cambiar: con el destino, el viaje se abre directo", async () => {
+    await abrir(`/?${CUZCO}#/ruta/1`);
+    expect(await screen.findByRole("heading", { level: 2, name: "Así no cabe" })).toBeDefined();
+    // El nombre de la zona sale de la lista de zonas, que puede llegar después del viaje.
+    expect(await screen.findByRole("heading", { level: 1, name: "Tu viaje a Cuzco" })).toBeDefined();
+    expect(screen.getByText(/^En 2 días no da para ir de Lima a Cuzco y volver/)).toBeDefined();
+    expect(screen.getByText("Con un cambio sí sale:")).toBeDefined();
+    expect(plano(document.querySelector(".resultados__frase")?.textContent)).toBe(
+      "De Lima a Cuzco, 2 días en julio",
+    );
+    expect(plano(document.title)).toBe("De Lima a Cuzco, 2 días en julio · DreemGO");
+
+    const masDias = screen.getByRole("link", { name: /^Probar con 3.días$/ });
+    expect(masDias.getAttribute("href")).toBe(`?origen=lima&destino=36&mes=7&dias=3&v=${VERSION}#/ruta/1`);
+    expect(screen.getByText("sale el viaje, con vuelo")).toBeDefined();
+    const otras = screen.getByRole("link", { name: "Ver viajes a otras zonas" });
+    expect(otras.getAttribute("href")).toBe(`?origen=lima&mes=7&dias=2&v=${VERSION}`);
+    await userEvent.click(otras);
+    expect(await tarjetas()).toHaveLength(3);
+  });
+});
+
 describe("un viaje abierto", () => {
   it("al tocar un viaje se abre su plan, sin volver a pedir nada", async () => {
     const api = await abrir();

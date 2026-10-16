@@ -32,6 +32,11 @@ export const POR_DEFECTO: Consulta = {
   destino: null,
 };
 
+/** Una consulta nueva, lista para buscar: el mes que viene, desde Lima y seis días. */
+export function consultaNueva(cambios: Partial<Consulta> = {}): Consulta {
+  return { ...POR_DEFECTO, mes: ((new Date().getMonth() + 1) % 12) + 1, ...cambios };
+}
+
 function entero(texto: string | null): number | null {
   if (texto === null || !/^-?\d+$/.test(texto.trim())) return null;
   return Number(texto);
@@ -102,12 +107,15 @@ export function nombreDeOrigen(id: string, nombres: Nombres): string {
 
 /**
  * La consulta en una frase, como la diría una persona: «Desde Lima, 6 días en julio», o «desde
- * el 20 de julio» si ya tiene fecha. Es el título de la pestaña y el nombre de un viaje guardado.
+ * el 20 de julio» si ya tiene fecha. Con un destino y su nombre, «De Lima a Cuzco, 6 días en
+ * julio». Es el título de la pestaña y el nombre de un viaje guardado.
  */
-export function titulo(c: Consulta, nombres: Nombres): string {
+export function titulo(c: Consulta, nombres: Nombres, zona: string | null = null): string {
   const f = c.fecha_inicio ? fechaLocal(c.fecha_inicio) : null;
   const cuando = f ? `desde el ${f.getDate()} de ${mes(f.getMonth() + 1)}` : `en ${mes(c.mes)}`;
-  return `Desde ${nombreDeOrigen(c.origen, nombres)}, ${plural(c.dias, "día", "días")} ${cuando}`;
+  const origen = nombreDeOrigen(c.origen, nombres);
+  const ruta = c.destino !== null && zona ? `De ${origen} a ${zona}` : `Desde ${origen}`;
+  return `${ruta}, ${plural(c.dias, "día", "días")} ${cuando}`;
 }
 
 /**

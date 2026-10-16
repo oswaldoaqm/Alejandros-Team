@@ -107,6 +107,14 @@ describe("la consulta en palabras", () => {
     );
   });
 
+  it("con un destino y su nombre, de dónde a dónde", () => {
+    const aCuzco = { ...POR_DEFECTO, mes: 7, destino: 36 };
+    expect(titulo(aCuzco, NOMBRES, "Cuzco")).toBe(`De Lima a Cuzco, 6${nb}días en julio`);
+    // Sin el nombre de la zona, como sin destino.
+    expect(titulo(aCuzco, NOMBRES)).toBe(`Desde Lima, 6${nb}días en julio`);
+    expect(titulo({ ...aCuzco, destino: null }, NOMBRES, "Cuzco")).toBe(`Desde Lima, 6${nb}días en julio`);
+  });
+
   it("antes de que lleguen los nombres, el origen sale de su identificador", () => {
     const sinNombres = { origenes: {}, intereses: {} };
     expect(titulo({ ...POR_DEFECTO, origen: "puerto-maldonado", mes: 2 }, sinNombres)).toBe(

@@ -126,9 +126,25 @@ export function consultaDe(url: URL): Respuesta["consulta"] {
   };
 }
 
-/** Los viajes del ejemplo, con la consulta que se pidió: el motor siempre la devuelve. */
+/** Lo que el motor dice cuando el viaje a una zona del ejemplo no cabe: es de mentira, con su forma. */
+export const SIN_VIAJE_A_CUZCO: NonNullable<Respuesta["sin_resultado"]> = {
+  motivo:
+    "En 2 días no da para ir de Lima a Cuzco y volver: por carretera, solo la ida toma unas 22 horas, y en avión, ir y volver son unas 9 horas: demasiado para 2 días.",
+  sugerencias: [
+    { campo: "dias", valor: 3, efecto: "sale el viaje, con vuelo" },
+    { campo: "destino", valor: null, efecto: "aparecen 3 viajes" },
+  ],
+};
+
+/**
+ * Los viajes del ejemplo, con la consulta que se pidió: el motor siempre la devuelve. Con un
+ * destino, solo el de esa zona; si no es una del ejemplo, la explicación de mentira.
+ */
 export function viajesPara(url: URL): Respuesta {
-  return { ...RESPUESTA, consulta: consultaDe(url) };
+  const consulta = consultaDe(url);
+  if (consulta.destino == null) return { ...RESPUESTA, consulta };
+  const rutas = RESPUESTA.rutas.filter((r) => r.polo.id === consulta.destino);
+  return { ...RESPUESTA, consulta, rutas, sin_resultado: rutas.length > 0 ? null : SIN_VIAJE_A_CUZCO };
 }
 
 /** Las zonas que la app busca: algunas de verdad (public/destinos.json), con pocos lugares. */
