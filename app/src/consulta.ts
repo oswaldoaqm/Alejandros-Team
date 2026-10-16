@@ -15,6 +15,8 @@ export interface Consulta {
   sorpresa: boolean;
   /** Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote (contrato 1.3). */
   solo_por_tierra: boolean;
+  /** La zona elegida, por su número: el viaje a esa zona y no tres propuestas (contrato 1.4). */
+  destino: number | null;
 }
 
 export const POR_DEFECTO: Consulta = {
@@ -27,6 +29,7 @@ export const POR_DEFECTO: Consulta = {
   altitud_max: null,
   sorpresa: false,
   solo_por_tierra: false,
+  destino: null,
 };
 
 function entero(texto: string | null): number | null {
@@ -38,13 +41,14 @@ function entero(texto: string | null): number | null {
 export function aParametros(c: Consulta): URLSearchParams {
   const p = new URLSearchParams();
   p.set("origen", c.origen);
+  if (c.destino !== null) p.set("destino", String(c.destino));
   if (c.fecha_inicio) p.set("fecha_inicio", c.fecha_inicio);
   else if (c.mes !== null) p.set("mes", String(c.mes));
   p.set("dias", String(c.dias));
   for (const interes of c.intereses) p.append("intereses", interes);
   if (c.presupuesto !== null) p.set("presupuesto", String(c.presupuesto));
   if (c.altitud_max !== null) p.set("altitud_max", String(c.altitud_max));
-  if (c.sorpresa) p.set("sorpresa", "true");
+  if (c.sorpresa && c.destino === null) p.set("sorpresa", "true");
   if (c.solo_por_tierra) p.set("solo_por_tierra", "true");
   return p;
 }
@@ -56,6 +60,7 @@ export function deParametros(p: URLSearchParams): Consulta | null {
   if (!fecha && mesPedido === null) return null;
   const intereses = [...new Set(p.getAll("intereses").filter(Boolean))];
   const deLaFecha = fecha ? fechaLocal(fecha) : null;
+  const destino = entero(p.get("destino"));
   return {
     origen: p.get("origen")?.trim() || POR_DEFECTO.origen,
     mes: deLaFecha ? deLaFecha.getMonth() + 1 : mesPedido,
@@ -64,8 +69,11 @@ export function deParametros(p: URLSearchParams): Consulta | null {
     intereses,
     presupuesto: entero(p.get("presupuesto")),
     altitud_max: entero(p.get("altitud_max")),
-    sorpresa: p.get("sorpresa") === "true" || p.get("sorpresa") === "1",
+    // Con un destino no hay sorpresa: el API rechaza los dos juntos.
+    sorpresa:
+      (destino === null || destino < 0) && (p.get("sorpresa") === "true" || p.get("sorpresa") === "1"),
     solo_por_tierra: p.get("solo_por_tierra") === "true" || p.get("solo_por_tierra") === "1",
+    destino: destino !== null && destino >= 0 ? destino : null,
   };
 }
 

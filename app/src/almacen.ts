@@ -2,7 +2,7 @@
 // No hay cuentas ni nada que salga del dispositivo (docs/decisiones/0001). De cada uno se guarda
 // su enlace —la consulta y cuál de sus viajes—, no el plan: al abrirlo, el motor lo vuelve a armar.
 
-import { type Consulta, clave } from "./consulta";
+import { type Consulta, clave, POR_DEFECTO } from "./consulta";
 
 export interface ViajeGuardado {
   consulta: Consulta;
@@ -64,7 +64,13 @@ export function leerViajes(): ViajeGuardado[] {
   try {
     const lista: unknown = JSON.parse(texto);
     if (!Array.isArray(lista)) return [];
-    return lista.filter(esViaje).map((v) => ({ ...v, ruta: esRuta(v.ruta) ? v.ruta : null }));
+    // A lo que guardó una versión anterior le faltan los campos nuevos (los vuelos desde la 1.3,
+    // el destino desde la 1.4): valen lo de siempre.
+    return lista.filter(esViaje).map((v) => ({
+      ...v,
+      consulta: { ...POR_DEFECTO, ...v.consulta },
+      ruta: esRuta(v.ruta) ? v.ruta : null,
+    }));
   } catch {
     return [];
   }

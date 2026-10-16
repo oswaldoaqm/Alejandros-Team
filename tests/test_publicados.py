@@ -1,4 +1,5 @@
-"""Los eventos publicados: qué los identifica, en qué polos salen y cómo cambian la versión de datos."""
+"""Los eventos publicados: qué los identifica, en qué polos salen, cuál es su zona y cómo cambian
+la versión de datos."""
 
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ from dreemgo.publicados import (
     polos_cercanos,
     region_del_inventario,
     regiones,
+    zona,
 )
 
 con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
@@ -138,6 +140,7 @@ class TestRegistro:
         assert (evento.fecha_inicio, evento.fecha_fin) == (date(2026, 11, 13), date(2026, 11, 15))
         assert str(evento.url) == "https://www.munivillarica.gob.pe/festival"
         assert "descripcion" not in evento.model_dump()  # el contrato 1.2 todavía no la muestra
+        assert evento.polo is None and publicado().evento(7).polo == 7
 
 
 class TestPolos:
@@ -168,6 +171,32 @@ class TestPolos:
     def test_sin_polos_no_falla(self):
         vacio = SimpleNamespace(polos={}, recursos={})
         assert polos_cercanos([publicado()], vacio) == [frozenset()]
+
+
+class TestZona:
+    def zona(self, lat: float | None, lon: float | None, pais=PAIS) -> int | None:
+        p = publicado(lat=lat, lon=lon)
+        return zona(p, polos_cercanos([p], pais)[0], pais)
+
+    def test_de_los_polos_en_que_sale_es_el_que_duerme_mas_cerca(self):
+        assert self.zona(-10.5, -75.0) == 2  # junto al lugar «b», el único polo en que sale
+        assert self.zona(-12.0, -77.05) == 3
+        dos_pueblos = SimpleNamespace(
+            polos={
+                1: SimpleNamespace(id=1, base={"lat": -10.0, "lon": -75.0}),
+                4: SimpleNamespace(id=4, base={"lat": -10.08, "lon": -75.0}),
+            },
+            recursos={},
+        )
+        assert self.zona(-10.06, -75.0, dos_pueblos) == 4  # a 6,7 km de una base y a 2,2 de la otra
+        assert self.zona(-10.02, -75.0, dos_pueblos) == 1
+
+    def test_si_duermen_en_el_mismo_pueblo_va_el_de_numero_menor(self):
+        assert self.zona(-10.0, -75.0) == 1
+
+    def test_sin_zona_si_no_sale_en_ninguna_ruta(self):
+        assert self.zona(-10.25, -75.0) is None
+        assert self.zona(None, None) is None
 
 
 class TestInstantanea:
@@ -236,6 +265,10 @@ class TestInstantanea:
         assert instantanea.polos_de(en_la_base.id) == {1, 2}
         assert instantanea.polos_de(sin_lugar.id) == frozenset()
         assert instantanea.polos_de("p-no-existe") == frozenset()
+        # Y cada uno con su zona, que es la que la app usa para «Ir a esta fiesta».
+        zonas = {e.nombre: e.polo for e in instantanea.entre(*noviembre)}
+        assert zonas == {"Feria en el pueblo": 1, "Feria en Lima": 3, "Feria sin lugar": None}
+        assert (instantanea.zona_de(en_lima.id), instantanea.zona_de("p-no-existe")) == (3, None)
 
     def test_salen_en_el_orden_del_calendario(self):
         tarde = publicado(nombre="Segundo", fecha_inicio=date(2026, 11, 20), fecha_fin=date(2026, 11, 21))

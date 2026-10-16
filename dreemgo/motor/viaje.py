@@ -106,6 +106,10 @@ class OrigenDesconocido(ValueError):
     pass
 
 
+class DestinoDesconocido(ValueError):
+    pass
+
+
 # ─────────────────────────────── qué se puede visitar ───────────────────────────────
 
 
@@ -342,6 +346,7 @@ def eventos_del_polo(polo: PoloDatos, desde: date, hasta: date, datos: Datos) ->
                 region=e["region"],
                 fuente="mincetur",
                 url=e["url"],
+                polo=polo.id,
             )
         )
     return sorted(salida, key=lambda e: (e.fecha_inicio, e.id))
@@ -982,9 +987,13 @@ def resolver(
     origen = datos.origenes.get(consulta.origen)
     if origen is None:
         raise OrigenDesconocido(consulta.origen)
+    if consulta.destino is not None and consulta.destino not in datos.polos:
+        raise DestinoDesconocido(consulta.destino)
     lam = LAMBDA_SORPRESA if consulta.sorpresa else LAMBDA
 
-    preparados = [p for polo in datos.polos.values() if (p := preparar(polo, consulta, origen, datos)) is not None]
+    # Con un destino, el viaje es solo a esa zona; sin él, el motor elige entre todas.
+    polos = datos.polos.values() if consulta.destino is None else [datos.polos[consulta.destino]]
+    preparados = [p for polo in polos if (p := preparar(polo, consulta, origen, datos)) is not None]
     if preparados:
         tope = max(p.cota for p in preparados) or 1.0
         preparados.sort(key=lambda p: (-((1 - lam) * p.temporada * p.cota / tope + lam * p.polo.novedad), p.polo.id))
