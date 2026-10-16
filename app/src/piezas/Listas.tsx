@@ -1,11 +1,11 @@
 // Las fiestas y eventos, como los ve el viajero: el día en grande y, al lado, qué es, dónde y
 // cuándo. La misma lista va en el viaje, en la zona, en el calendario y en la vista previa de
-// quien publica un evento.
+// quien publica un evento. En la zona y en el calendario, cada uno ofrece armar el viaje para ir.
 
 import { useState } from "react";
 import type { Evento } from "../api/tipos";
 import { fechaLocal, MESES_CORTOS, plural, rangoDeFechas } from "../formato";
-import { EnlaceExterno } from "./Enlace";
+import { Enlace, EnlaceExterno } from "./Enlace";
 import { Icono } from "./Icono";
 
 const PRECISION: Record<Evento["precision_fecha"], string | null> = {
@@ -14,7 +14,7 @@ const PRECISION: Record<Evento["precision_fecha"], string | null> = {
   por_confirmar: "Fecha por confirmar",
 };
 
-function FilaDeEvento({ evento: e }: { evento: Evento }) {
+function FilaDeEvento({ evento: e, ir }: { evento: Evento; ir: string | null }) {
   const inicio = e.fecha_inicio ? fechaLocal(e.fecha_inicio) : null;
   const precision = PRECISION[e.precision_fecha];
   const lugar = [e.distrito, e.provincia !== e.distrito ? e.provincia : null, e.region]
@@ -51,6 +51,15 @@ function FilaDeEvento({ evento: e }: { evento: Evento }) {
             <span className="etiqueta etiqueta--publicado">Publicado por {e.publicado_por}</span>
           ) : null}
         </p>
+        {ir ? (
+          <Enlace
+            href={ir}
+            className="boton boton--texto evento__ir"
+            aria-label={`Ir a esta fiesta: ${e.nombre}`}
+          >
+            Ir a esta fiesta
+          </Enlace>
+        ) : null}
       </div>
     </li>
   );
@@ -62,9 +71,11 @@ interface Props {
   vacio?: string;
   /** Cuántos mostrar antes de «Ver todos». */
   limite?: number;
+  /** El enlace para armar el viaje a cada evento, o null si no se puede (no queda en ninguna zona). */
+  irA?: (evento: Evento) => string | null;
 }
 
-export function ListaEventos({ eventos, vacio, limite }: Props) {
+export function ListaEventos({ eventos, vacio, limite, irA }: Props) {
   const [todos, verTodos] = useState(false);
   if (eventos.length === 0) return vacio ? <p className="eventos-vacio">{vacio}</p> : null;
   const corta = limite !== undefined && eventos.length > limite && !todos;
@@ -73,7 +84,7 @@ export function ListaEventos({ eventos, vacio, limite }: Props) {
     <>
       <ul className="eventos">
         {visibles.map((e) => (
-          <FilaDeEvento key={e.id} evento={e} />
+          <FilaDeEvento key={e.id} evento={e} ir={irA ? irA(e) : null} />
         ))}
       </ul>
       {corta ? (
