@@ -13,6 +13,8 @@ import type {
   Recurso,
   Respuesta,
 } from "../api/tipos";
+import type { Destinos } from "../destinos";
+import { olvidarDestinos } from "../estado/destinos";
 import { olvidarPedidos } from "../estado/pedido";
 
 export const RESPUESTA = ejemplo as unknown as Respuesta;
@@ -120,6 +122,7 @@ export function consultaDe(url: URL): Respuesta["consulta"] {
     altitud_max: numero("altitud_max"),
     sorpresa: p.get("sorpresa") === "true",
     solo_por_tierra: p.get("solo_por_tierra") === "true",
+    destino: numero("destino"),
   };
 }
 
@@ -128,11 +131,117 @@ export function viajesPara(url: URL): Respuesta {
   return { ...RESPUESTA, consulta: consultaDe(url) };
 }
 
+/** Las zonas que la app busca: algunas de verdad (public/destinos.json), con pocos lugares. */
+export const DESTINOS: Destinos = {
+  version_datos: VERSION,
+  zonas: [
+    {
+      id: 36,
+      nombre: "Cuzco",
+      region: "Cusco",
+      regiones: ["Cusco", "Apurímac"],
+      peso: 126,
+      misma_ciudad: ["cusco"],
+      lugares: [
+        ["Centro Histórico del Cusco", 4],
+        ["Parque Arqueológico Nacional de Saqsaywaman", 4],
+        ["Calle Hatunrumiyoc", 3],
+      ],
+    },
+    {
+      id: 31,
+      nombre: "Miraflores",
+      region: "Lima",
+      regiones: ["Lima", "Callao"],
+      peso: 90,
+      misma_ciudad: ["lima"],
+      lugares: [
+        ["Centro Histórico de Lima", 4],
+        ["Centro Comercial Larcomar", 3],
+      ],
+    },
+    {
+      id: 139,
+      nombre: "Trujillo",
+      region: "La Libertad",
+      regiones: ["La Libertad"],
+      peso: 58,
+      misma_ciudad: ["trujillo"],
+      lugares: [
+        ["Complejo Arqueológico Chan Chan", 4],
+        ["Balneario de Huanchaco", 3],
+      ],
+    },
+    {
+      id: 27,
+      nombre: "Nasca",
+      region: "Ica",
+      regiones: ["Ica"],
+      peso: 50,
+      misma_ciudad: [],
+      lugares: [
+        ["Líneas y Geoglifos de Nasca y Palpa", 4],
+        ["Centro Ceremonial Cahuachi", 3],
+      ],
+    },
+    {
+      id: 4,
+      nombre: "Machupicchu Pueblo",
+      region: "Cusco",
+      regiones: ["Cusco"],
+      peso: 46,
+      misma_ciudad: [],
+      lugares: [
+        ["Parque Arqueológico Nacional de Machu Picchu", 4],
+        ["Cascada de Aguas Calientes", 2],
+      ],
+    },
+    {
+      id: 71,
+      nombre: "Yanque",
+      region: "Arequipa",
+      regiones: ["Arequipa"],
+      peso: 46,
+      misma_ciudad: [],
+      lugares: [
+        ["Valle del Colca", 4],
+        ["Aguas Termales de Sallihua", 2],
+      ],
+    },
+    {
+      id: 33,
+      nombre: "Huancayo",
+      region: "Junín",
+      regiones: ["Junín"],
+      peso: 32,
+      misma_ciudad: ["huancayo"],
+      lugares: [
+        ["Convento de Santa Rosa de Ocopa", 3],
+        ["Santuario Arqueológico de Wariwillka", 3],
+        ["Basílica Menor Catedral de Huancayo", 2],
+      ],
+    },
+    {
+      id: 147,
+      nombre: "Sangalle",
+      region: "Arequipa",
+      regiones: ["Arequipa"],
+      peso: 8,
+      misma_ciudad: [],
+      lugares: [
+        ["Cañon del Colca", 2],
+        ["Valle de Sangalle", 2],
+      ],
+    },
+  ],
+};
+
 const POR_DEFECTO: Record<string, Contestar> = {
   "/v1/opciones": () => ({ cuerpo: OPCIONES }),
   "/v1/viajes": (url) => ({ cuerpo: viajesPara(url) }),
   [`/v1/polos/${POLO.polo.id}`]: () => ({ cuerpo: POLO }),
   "/v1/eventos": () => ({ cuerpo: EVENTOS }),
+  "/destinos.json": () => ({ cuerpo: DESTINOS }),
 };
 
 /**
@@ -141,6 +250,7 @@ const POR_DEFECTO: Record<string, Contestar> = {
  */
 export function ponerApi(rutas: Record<string, Contestar | Contestacion> = {}) {
   olvidarPedidos(); // lo que respondió el API anterior no vale para este
+  olvidarDestinos();
   const tabla: Record<string, Contestar | Contestacion> = { ...POR_DEFECTO, ...rutas };
   const falso = vi.fn(async (entrada: RequestInfo | URL, opciones?: RequestInit): Promise<Response> => {
     const url = new URL(String(entrada));
