@@ -2,7 +2,9 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.3** · 15 de octubre de 2026. La 1.3 suma los vuelos ([decisión 0016](./decisiones/0016-vuelos.md)): la consulta acepta `solo_por_tierra`; `traslado.medios` puede empezar con `avion`, `traslado.vuelos` lista los vuelos de la ida y `traslado.fuente` vale `red_vial_y_vuelos` cuando se vuela; el costo suma `vuelos` a su desglose; y una sugerencia puede proponer volar (`solo_por_tierra: false`). No quita nada de la 1.2. Cambia, eso sí, la propiedad 7 (§3): el presupuesto ya no solo ordena las tres rutas, también entra a elegirlas.
+**Versión 1.4** · 16 de octubre de 2026. La 1.4 suma «Quiero ir a…» ([decisión 0017](./decisiones/0017-quiero-ir-a.md)): la consulta acepta `destino`, el número de una zona, y el motor arma solo el viaje a esa zona. Si no cabe, `sin_resultado` dice qué lo impide y propone los cambios con que sí sale; el último, buscar en todas las zonas (una sugerencia con `campo: "destino"` y `valor: null`). Además, cada evento dice su zona (`polo`). No quita nada de la 1.3, y la propiedad 9 (§3) dice también qué pasa con un destino.
+
+La 1.3, del 15 de octubre, sumó los vuelos ([decisión 0016](./decisiones/0016-vuelos.md)): la consulta acepta `solo_por_tierra`; `traslado.medios` puede empezar con `avion`, `traslado.vuelos` lista los vuelos de la ida y `traslado.fuente` vale `red_vial_y_vuelos` cuando se vuela; el costo suma `vuelos` a su desglose; y una sugerencia puede proponer volar (`solo_por_tierra: false`). No quitó nada de la 1.2. Cambió, eso sí, la propiedad 7 (§3): el presupuesto ya no solo ordena las tres rutas, también entra a elegirlas.
 
 La 1.2, del 1 de octubre, sumó el tren y el bote: `traslado.medios` dice con qué se hace la ida (carretera, tren o bote), `traslado.acceso` vale `sin_acceso_terrestre` cuando la ida necesita bote, y el costo cobra los pasajes. No quita nada de la 1.1, que conectó el motor y sumó el día de un viaje de ida y vuelta en el día (`ida_visita_y_vuelta`) y tres consultas de apoyo: `/v1/opciones`, `/v1/polos/{id}` y `GET /v1/eventos` (§4). Desde el 2 de octubre responde también `POST /v1/eventos`, con el que un municipio publica un evento (§4.1): la 1.2 ya lo anunciaba y ya traía su modelo, así que la versión no sube. La revisión del equipo sigue antes del 5 de octubre. Desde el 7 de octubre el motor propone entre 194 polos, uno por pueblo donde se duerme, y valora las paradas con otra escala (más abajo, «Cómo decide el motor», y [decisión 0013](./decisiones/0013-un-polo-por-pueblo.md)); ningún campo cambia, así que la versión sigue en 1.2. Ese día cambió también la propiedad 3 (§3): un día de solo viaje, sin visitas, puede llegar a 9 horas ([decisión 0014](./decisiones/0014-dia-de-solo-viaje.md)). Y desde el 8 de octubre no propone un viaje con más días de camino que de visita ([decisión 0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md)).
 
@@ -21,13 +23,16 @@ Viaja en la URL: `GET /v1/viajes?origen=lima&mes=7&dias=6&intereses=historia&int
 | `altitud_max` | entero | no | 0 a 6 000 metros | Altitud máxima tolerada |
 | `sorpresa` | booleano | no | `true` o `false` | Botón «Sorpréndeme» |
 | `solo_por_tierra` | booleano | no, `false` por defecto | `true` o `false` | Interruptor «Vuelos», apagado. Sin él, el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3) |
+| `destino` | entero | no | el número de una zona (`polo.id`). No va con `sorpresa` | Fila «A dónde», «Armar un viaje aquí» en la zona e «Ir a esta fiesta» en las fiestas (desde 1.4) |
 
-Un campo que no está en la tabla se rechaza con 422, igual que un valor fuera de rango. Cada error llega como `{"campo": "dias", "mensaje": "Debe ser menor o igual que 14.", "tipo": "less_than_equal"}`, listo para mostrarlo junto al campo del formulario.
+Un campo que no está en la tabla se rechaza con 422, igual que un valor fuera de rango, un `destino` que no es el número de ninguna zona (`campo: "destino"`) o un `destino` con `sorpresa` (`campo: "consulta"`). Cada error llega como `{"campo": "dias", "mensaje": "Debe ser menor o igual que 14.", "tipo": "less_than_equal"}`, listo para mostrarlo junto al campo del formulario.
 
 **Orígenes.** La capital o ciudad principal de cada región ([`pipeline/referencia/origenes.csv`](../pipeline/referencia/origenes.csv)):
 `lima`, `arequipa`, `trujillo`, `chiclayo`, `piura`, `cusco`, `huancayo`, `iquitos`, `pucallpa`, `tacna`, `ica`, `cajamarca`, `puno`, `ayacucho`, `huaraz`, `huanuco`, `tarapoto`, `chachapoyas`, `abancay`, `huancavelica`, `puerto-maldonado`, `moquegua`, `cerro-de-pasco`, `tumbes`.
 
 **Intereses.** Son el vocabulario del viajero y no la taxonomía de MINCETUR. Cada uno se traduce a categorías, subtipos y actividades de la ficha oficial; la tabla de equivalencias es un artefacto del pipeline y se documenta con cuántos recursos cubre cada interés.
+
+**Zonas.** La app no le pide al API la lista de zonas para elegir un destino: la busca en [`app/public/destinos.json`](../app/public/destinos.json), que escribe el pipeline ([`pipeline/destinos.py`](../pipeline/destinos.py)) con el nombre, las regiones y los lugares de cada zona, y se publica con la app. Así se busca aunque el API todavía esté despertando.
 
 ## 2 · La respuesta
 
@@ -35,7 +40,7 @@ Un campo que no está en la tabla se rechaza con 422, igual que un valor fuera d
 Respuesta
 ├── version_contrato, version_datos      la versión de datos también va en el enlace (§6)
 ├── consulta                             la consulta tal como la entendió el motor
-├── rutas[0..3]                          polos distintos, del mejor al peor
+├── rutas[0..3]                          polos distintos, del mejor al peor; con destino, solo el de esa zona
 │   ├── polo           id, nombre, región, base (donde se duerme), recursos, fuera_del_circuito
 │   ├── puntaje, motivos[]               por qué este polo, en frases cortas
 │   ├── estacionalidad veredicto del mes, lluvia, días con lluvia, horas de sol, temperaturas, mejores meses
@@ -45,10 +50,11 @@ Respuesta
 │   │   └── paradas[]  orden, recurso (con su ficha oficial), hora de llegada, traslado y visita en minutos
 │   ├── costo          banda P20-P50-P80 en soles, desglose, si entra en el presupuesto
 │   ├── eventos[]      fiestas y ferias que caen en las fechas: las del inventario, con la precisión de su fecha,
-│   │                  y las que publicó un municipio (fuente «publicado»), con quién las publicó
+│   │                  y las que publicó un municipio (fuente «publicado»), con quién las publicó; cada una con su
+│   │                  zona (polo, desde 1.4)
 │   ├── avisos[]       estacionalidad, altitud, aclimatación, presupuesto, días, datos
 │   └── indicadores    paradas, jerarquía media, paradas de jerarquía 3-4, altitud máxima, km, valor capturado
-├── sin_resultado                        solo si no hay ninguna ruta: por qué y qué relajar
+├── sin_resultado                        solo si no hay ninguna ruta: por qué y qué cambiar para que salga
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
@@ -72,6 +78,7 @@ El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en l
 - **Qué y en qué orden:** orientación por equipos con inserción voraz, 2-opt y tres arranques; se queda el de más valor.
 - **Puntaje:** (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La temporada multiplica por 1, 0,75 o 0,4 según el veredicto del mes. El presupuesto multiplica por (presupuesto / costo)² cuando el costo central lo pasa, y por 1 si no, y cuenta desde que se eligen las tres rutas: un viaje que lo pasa sale solo si es mucho mejor que los que entran (§3). «Sorpréndeme» sube λ a 0,5 y deja solo polos fuera del circuito de Lima y Cusco.
 - **Eventos publicados:** se suman a `eventos[]` de las rutas que duermen o paran cerca, y nada más. No entran al puntaje ni a los motivos: publicar un evento no mueve ningún polo de su lugar (§4.1 y [decisión 0011](./decisiones/0011-eventos-publicados.md)).
+- **Un destino:** con `destino`, el motor prepara y planifica solo esa zona, con las mismas reglas. El viaje es el mismo que arma cuando la elige él; solo cambia el puntaje, que la compara con las demás. Si no sale, `sin_resultado.motivo` dice lo primero que lo impide: la altura de la base o de los lugares, que queda en la misma ciudad, que los días no alcanzan para ir y volver o se irían más en el camino que allá, o que no hay qué visitar en una jornada. Cada sugerencia cambia un solo campo y el motor ya comprobó que con ella el viaje sale: los menos días que hacen falta, un día si es la misma ciudad, volar, quitar el límite de altitud. La última es buscar en todas las zonas, con cuántos viajes aparecen. Si ningún cambio solo alcanza, el motivo dice qué cambios juntos sí: «Volando, cabe en 4 días» ([decisión 0017](./decisiones/0017-quiero-ir-a.md)).
 - **Un viaje sale de su ciudad:** no se propone dormir en un polo cuya base queda a menos de media hora del origen, y un viaje de un día no cuenta las paradas de la misma ciudad.
 - **Tres rutas, tres pueblos:** cada polo duerme en su propio pueblo, y la respuesta no repite el nombre de una base.
 
@@ -87,8 +94,10 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 6. Un evento solo aparece si cae dentro de las fechas o del mes del viaje (RF-03).
 7. El presupuesto ordena, elige y avisa. Con presupuesto salen tantas rutas como sin él; una que entra en el presupuesto y salía sin él sigue saliendo; y una que lo pasa sale con su aviso. Hasta la 1.2 el presupuesto solo ordenaba: las tres rutas eran las mismas con o sin él. Con vuelos, eso dejaba tres viajes en avión fuera del presupuesto donde había uno en bus que entraba ([decisión 0016](./decisiones/0016-vuelos.md)).
 8. La misma consulta con la misma `version_datos` devuelve exactamente la misma respuesta. Los eventos publicados también son datos: la versión lleva su huella (§6).
-9. Las rutas son de polos distintos.
+9. Las rutas son de polos distintos. Con `destino` hay una como mucho, y es la de esa zona: la misma que el motor arma cuando la elige él, salvo el puntaje (desde 1.4).
 10. Un dato que la fuente no trae viaja como `null`, nunca como un número inventado: la jerarquía que MINCETUR no asignó, la tarifa que la ficha no publica.
+
+Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
 Con eventos publicados valen las diez, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
@@ -131,11 +140,11 @@ Content-Type: application/json
 
 Responde **201** con el evento tal como lo verá el viajero: un `Evento` con `fuente: "publicado"`, `precision_fecha: "exacta"`, su `publicado_por` y un `id` que empieza con `p-`.
 
-- **Dónde aparece.** En `GET /v1/eventos` siempre. Con coordenadas, también en `eventos[]` de las rutas y en la ficha de los polos que duermen o tienen algún lugar del inventario a 10 km o menos, en línea recta. Si varios polos duermen en el mismo pueblo, sale en todos.
+- **Dónde aparece.** En `GET /v1/eventos` siempre. Con coordenadas, también en `eventos[]` de las rutas y en la ficha de los polos que duermen o tienen algún lugar del inventario a 10 km o menos, en línea recta. Si varios polos duermen en el mismo pueblo, sale en todos. De esos polos, el que duerme más cerca es su zona (`polo`, desde 1.4): adonde lleva «Ir a esta fiesta». Sin coordenadas, o lejos de todo, `polo` es `null`.
 - **Qué no cambia.** Ni qué polos se proponen, ni su orden, ni sus motivos (§3).
 - **Corregir.** Publicar otra vez el mismo evento (mismo nombre, fechas, distrito, provincia, región y entidad, sin contar tildes ni mayúsculas) lo reemplaza: sirve para ponerle la ubicación o el enlace. Con otro nombre u otras fechas es otro evento.
 - **Cuándo se ve.** Enseguida en el servidor que lo recibió y, en los demás, a los dos segundos como mucho. Si justo entonces falla el almacén, en un minuto.
-- **Lo que todavía no hay:** retirar un evento por el API, saber por la respuesta a qué polos tocó y ver la descripción. Quedan para la 1.3.
+- **Lo que todavía no hay:** retirar un evento por el API, saber por la respuesta todos los polos a los que tocó (dice su zona desde la 1.4) y ver la descripción.
 
 | Respuesta | Cuándo |
 |---|---|
@@ -156,6 +165,7 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 | Ocho chips de intereses (wireframe 1); tres casillas: aventura, cultura, naturaleza (prototipo) | Los ocho chips del wireframe | Tres casillas no distinguen playa de arqueología, que llevan a polos distintos |
 | «Sorpréndeme» (wireframe 1) | `sorpresa` | Igual |
 | Sin equivalente | `solo_por_tierra` (desde 1.3) | Con vuelos, el Cusco o Iquitos caben en un viaje corto desde Lima; quien no quiere o no puede volar lo apaga |
+| Sin equivalente | `destino` (desde 1.4) | Quien ya sabe a dónde quiere ir no busca tres propuestas: quiere saber si su viaje cabe y, si no, qué cambiar |
 | Campo de texto libre (wireframe 1); «notas adicionales: presupuesto, duración» (prototipo) | Fuera de la versión 1 | Un intérprete de texto que convierta la frase en campos es un proyecto aparte. Presupuesto y duración ya son campos |
 | Solo mes | `mes` o `fecha_inicio` | Con fecha, los eventos se cruzan día a día (RF-03) |
 
@@ -202,7 +212,7 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 https://oswaldoaqm.github.io/Alejandros-Team/?origen=lima&mes=7&dias=6&intereses=historia&v=2026.10.3
 ```
 
-Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.2. Lo que ves está calculado con los datos 2026.10.3…») en vez de mostrar otro viaje en silencio.
+Los parámetros son los de la consulta, más `v`, la `version_datos` con que se calculó. Con un destino lo lleva también (`destino=36`), y el enlace abre directo ese viaje. Si al abrirlo la versión de datos cambió, la app lo dice («Este enlace se armó con los datos 2026.10.2. Lo que ves está calculado con los datos 2026.10.3…») en vez de mostrar otro viaje en silencio.
 
 La versión de datos tiene dos partes: la de los artefactos del motor y, cuando hay eventos publicados, la huella de ese calendario: `2026.10.3-e3f9a1c`. Sin eventos publicados es solo `2026.10.3`. Si entre el enlace y lo que se ve cambió la primera parte, las rutas pueden ser otras. Si solo cambió la huella, las rutas son las mismas y lo que puede haber cambiado son los eventos que las acompañan: la app no avisa y pone en el enlace la versión vigente.
 
