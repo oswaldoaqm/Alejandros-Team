@@ -12,6 +12,7 @@ python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red
 python -m pipeline.clima     # después de tiempos, unos segundos
 python -m pipeline.artefactos --version 2026.10.5   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
+python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
@@ -36,6 +37,7 @@ La versión `2026.10.5` suma los vuelos ([más abajo](#los-vuelos)); las demás 
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo. Ahí cada recurso y cada evento pasa del grupo de TA-01 que trae el maestro al polo que lo junta |
 | [`fotos.py`](./fotos.py) | Elige la foto de cada parada y de cada base entre lo que Wikidata tiene cerca, por nombre y por clase de lugar; descarta pueblos, regiones, batallas, mapas y fotos sin licencia libre o sin autor. Escribe [`app/public/fotos.json`](../app/public/fotos.json), que la app lee. Las correcciones de la revisión a mano van en [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) |
+| [`destinos.py`](./destinos.py) | Escribe [`app/public/destinos.json`](../app/public/destinos.json): las zonas que la app busca en «A dónde», con sus regiones y sus lugares ([más abajo](#la-lista-de-zonas)) |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
 ## Qué tan bien lee
@@ -243,6 +245,16 @@ Lo que falta:
 - **Las panorámicas.** Wikimedia sirve miniaturas de hasta 1 280 píxeles de ancho. Una foto cuatro veces más ancha que alta llega con unos 315 de alto y, en la portada, se ve blanda. Quedan cuatro: Ayaviri, Chankillo, la Plaza de Armas del Cusco y la laguna Chuchún.
 - **Lo que una miniatura no deja ver.** La revisión se hizo a 330 píxeles de ancho, con las esquinas ampliadas para buscar fechas y marcas. Una marca muy pequeña pudo pasar.
 - **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide. Pasó el 7 de octubre, al juntar los grupos que duermen en el mismo pueblo: cinco correcciones quedaron con el número de un polo que ya no existe y se quitaron. La misma corrección sigue en el polo que quedó con ese pueblo.
+
+## La lista de zonas
+
+«A dónde», en la app, busca una zona sin preguntarle al API: en [`app/public/destinos.json`](../app/public/destinos.json), que escribe `destinos.py` con los artefactos del motor y lleva su versión de datos. Con los datos `2026.10.5` son 193 zonas y 4 268 lugares, 47 KB comprimido ([decisión 0017](../docs/decisiones/0017-quiero-ir-a.md)).
+
+- **Qué zonas.** Las que tienen algún lugar que se visita en una jornada: con camino desde su base y una visita de 6 horas o menos, como las candidatas del motor. Queda fuera Queropalca, donde solo hay caminatas de más de un día: nunca daría un viaje.
+- **Qué lleva cada una.** Su nombre, su región y sus regiones, esos lugares de mayor a menor jerarquía, y los orígenes que quedan a menos de media hora de su base: desde ahí el motor no arma un viaje con noches, y la app no la propone.
+- **El orden.** Por lo que valen sus doce lugares más importantes, con la escala del motor. Sumar todos ponía a un pueblo con muchos lugares corrientes, como Kimbiri, antes que Urubamba o Machu Picchu.
+
+Hay que rehacerla cada vez que se rehacen los artefactos: [`tests/pipeline/test_destinos.py`](../tests/pipeline/test_destinos.py) falla si quedó atrás.
 
 ## Datos personales
 
