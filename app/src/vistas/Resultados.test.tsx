@@ -305,7 +305,7 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "2 imperdibles: Líneas y Geoglifos de Nasca y Palpa y Centro Ceremonial Cahuachi.",
+      "2 imperdibles: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);

@@ -49,6 +49,7 @@ class Gastos:
     km_bote: float = 0.0  # ida, vuelta y paseos
     vuelos: tuple[str, ...] = ()  # el parámetro de cada tramo aéreo de la ida («vuelo_LIM_CUZ»); la vuelta, igual
     tramos_aereos: tuple[str, ...] = ()  # los mismos tramos, para los supuestos: «Lima–Cusco»
+    bus_de_noche: bool = False  # la ida y la vuelta, de noche: a la misma tarifa por km, y sus noches no se pagan
 
 
 def _muestras(parametros: dict, nombres) -> dict[str, np.ndarray]:
@@ -103,6 +104,11 @@ def estimar(parametros: dict, g: Gastos, presupuesto: int | None) -> Costo:
     if g.km_interprovincial and g.vuelos:
         supuestos.append(
             f"Por tierra, hasta y desde los aeropuertos: {textos.miles(2 * g.km_interprovincial)} km de ida y vuelta"
+        )
+    elif g.km_interprovincial and g.bus_de_noche:
+        supuestos.append(
+            f"Bus de noche de ida y vuelta: {textos.miles(2 * g.km_interprovincial)} km, a la misma tarifa por km que "
+            "de día"
         )
     elif g.km_interprovincial:
         supuestos.append(f"Bus interprovincial de ida y vuelta: {textos.miles(2 * g.km_interprovincial)} km")

@@ -9,15 +9,19 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    días en la base. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se
    parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
-   Un viaje que pasaría más días solo viajando que días con visitas no se propone. Cada día
-   con visitas lleva una hora de almuerzo, que no cuenta en las 8 (decisión 0019).
+   Un viaje que pasaría más días solo viajando que días con visitas no se propone. Lo que
+   por tierra toma de 7 a 16 horas, sin tren ni bote, va en bus de noche si ida y vuelta no
+   se llevan el 40 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
+   días: se sale la noche antes del día 1 y se vuelve la noche del último (decisión 0019).
+   Cada día con visitas lleva una hora de almuerzo, que no cuenta en las 8.
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
-4. El puntaje: (1 − λ) · calidad · temporada · noche · presupuesto + λ · novedad, con
+4. El puntaje: (1 − λ) · calidad · temporada · noche · bus · presupuesto + λ · novedad, con
    λ = 0,3. La calidad es el valor que visita el itinerario frente al mejor de la consulta,
    por la parte de las jornadas que tienen paradas; la temporada multiplica por 1, 0,75 o 0,4
    según el veredicto del mes; la noche, con vida_nocturna, por 1 si hay cinco lugares para
-   salir cerca de la base o más, y si no por 0,6 más 0,08 por cada uno (``noche.py``); el
-   presupuesto, por (presupuesto / costo)² si el costo central lo pasa. Con «Sorpréndeme»,
+   salir cerca de la base o más, y si no por 0,6 más 0,08 por cada uno (``noche.py``); el bus
+   de noche, por D / (D + 1) en un viaje de D días, porque sus dos noches pesan como un día
+   más; el presupuesto, por (presupuesto / costo)² si el costo central lo pasa. Con «Sorpréndeme»,
    λ = 0,5 y solo entran polos fuera del circuito de Lima y Cusco.
 5. Las tres mejores rutas, cada una con una base distinta, y la noche de cada día que se duerme
    en la base, si la consulta la pide (``noche.py``): no cambia nada del día.
@@ -50,6 +54,7 @@ from dreemgo.contrato import (
     RUTAS_MAX,
     Almuerzo,
     Aviso,
+    BusDeNoche,
     Consulta,
     Costo,
     Dia,
@@ -105,6 +110,17 @@ KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la es
 LEJOS_PARA_VOLAR_MIN = 16 * 60
 AHORRO_PARA_VOLAR_MIN = 4 * 60
 CAMINO_QUE_PESA = 0.4  # la parte del viaje que, en ir y volver, ya pesa: el aviso «dias» y los vuelos
+# El bus de noche (decisión 0019): lo que por tierra toma de 7 a 16 horas, sin tren ni bote, en un viaje
+# de dos días o más. Sale a las 19:00 o más tarde, para llegar a eso de las 6:00, y después del bus hay
+# una hora para dejar las cosas y desayunar. Con menos de 7 horas llegaría de madrugada. No va si ida y
+# vuelta se llevan el 40 % de las horas del viaje, con sus noches: en dos días, hasta unas 9 horas y media
+# por tramo. Y sus dos noches pesan en el puntaje como un día más del viaje: sin eso, todo viaje corto
+# salía lejos, como dos días en Ilo desde el Cusco, a 14 horas. Es un supuesto del producto, por calibrar.
+NOCHE_MIN = 7 * 60
+SALIDA_DE_NOCHE = 19 * 60
+LLEGADA_DE_NOCHE = 30 * 60  # las 6:00 del día siguiente
+DESCANSO_AL_LLEGAR = 60
+DIAS_QUE_PESAN_LAS_NOCHES_DE_BUS = 1
 
 
 class OrigenDesconocido(ValueError):
@@ -182,6 +198,7 @@ class Plan:
     tramos: dict[int, int]  # día → minutos de carretera entre el origen y la base ese día
     llegada: int  # día en que se llega a la base
     salida: int  # día en que se deja la base
+    bus_de_noche: tuple[int, int] | None = None  # (sale, llega) en minutos del día, de ida y de vuelta
 
 
 def _partes_iguales(minutos: int) -> list[int]:
@@ -259,6 +276,66 @@ def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None, vuelo
         jornadas.append(Jornada(INICIO_DE_VISITAS, libre, dia_semana(dias - k + 1)))
         dia_de.append(dias - k + 1)
     return Plan("estrella", jornadas, dia_de, tramos, llegada=k, salida=dias - k + 1)
+
+
+def bus_de_noche(minutos_ida: float) -> tuple[int, int]:
+    """(sale, llega) del bus de noche, en minutos del día: sale a las 19:00 o más tarde, a un cuarto
+    de hora, para llegar a eso de las 6:00; la llegada, a los 5 minutos. La vuelta, a las mismas horas."""
+    viaje = int(math.ceil(minutos_ida))
+    sale = max(SALIDA_DE_NOCHE, LLEGADA_DE_NOCHE - viaje)
+    sale -= sale % 15
+    llega = sale + viaje - 24 * 60
+    return sale, llega + (-llega) % 5
+
+
+def va_de_noche(dias: int, minutos_ida: float, km_tren: float, km_bote: float, vuelo: Vuelo | None) -> bool:
+    """Si la ida y la vuelta van en bus de noche: por tierra, sin avión, tren ni bote, de 7 a 16 horas,
+    en un viaje de dos días o más, y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus
+    noches. En uno de un día no: entre dos noches de bus no hay hotel."""
+    return (
+        vuelo is None
+        and dias >= 2
+        and NOCHE_MIN <= minutos_ida <= LEJOS_PARA_VOLAR_MIN
+        and 2 * minutos_ida < CAMINO_QUE_PESA * dias * 24 * 60
+        and _numero(km_tren) < KM_CARRETERA_MIN
+        and _numero(km_bote) < KM_CARRETERA_MIN
+    )
+
+
+def por_bus_de_noche(plan: Plan, dias: int) -> float:
+    """Lo que el bus de noche multiplica en el puntaje: D / (D + 1) en un viaje de D días, porque sus
+    dos noches pesan como un día más. Sin bus de noche, 1."""
+    return 1.0 if plan.bus_de_noche is None else dias / (dias + DIAS_QUE_PESAN_LAS_NOCHES_DE_BUS)
+
+
+def plan_de_noche(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Plan:
+    """Los días de un viaje con bus de noche: todos en la base. El día 1 se visita desde una hora
+    después de llegar, y el último día termina antes de que salga el bus."""
+
+    def dia_semana(n: int) -> int | None:
+        return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
+
+    sale, llega = bus_de_noche(minutos_ida)
+    inicio = max(INICIO_DE_VISITAS, llega + DESCANSO_AL_LLEGAR)
+    inicio += (-inicio) % 5
+    tope = INICIO_DE_VISITAS + JORNADA_MIN - inicio
+    jornadas, dia_de = [], []
+    if tope >= MINIMO_PARA_VISITAR:
+        jornadas.append(Jornada(inicio, tope, dia_semana(1)))
+        dia_de.append(1)
+    for n in range(2, dias + 1):
+        jornadas.append(Jornada(INICIO_DE_VISITAS, JORNADA_MIN, dia_semana(n)))
+        dia_de.append(n)
+    return Plan("estrella", jornadas, dia_de, {}, llegada=1, salida=dias, bus_de_noche=(sale, llega))
+
+
+def plan_del_viaje(
+    dias: int, minutos_ida: float, km_tren: float, km_bote: float, fecha_inicio: date | None, vuelo: Vuelo | None
+) -> Plan | None:
+    """Los días del viaje: en bus de noche si va (``va_de_noche``) y, si no, como dice ``plan_de_dias``."""
+    if va_de_noche(dias, minutos_ida, km_tren, km_bote, vuelo):
+        return plan_de_noche(dias, minutos_ida, fecha_inicio)
+    return plan_de_dias(dias, minutos_ida, fecha_inicio, vuelo)
 
 
 def dias_de_solo_viaje(plan: Plan) -> int:
@@ -555,11 +632,23 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
             nota = f"Salida de {origen.nombre} a las {salida}; {viaje} {por} hasta {base}."
             if n > 1:
                 nota = f"Último tramo hasta {base}: {viaje} {por}."
+            if plan.bus_de_noche is not None:
+                sale, llega = (textos.hora(m) for m in plan.bus_de_noche)
+                nota = (
+                    f"El bus de noche sale de {origen.nombre} a las {sale} de la noche anterior y llega a {base} "
+                    f"a las {llega}: {textos.duracion(it.minutos_ida)} por carretera."
+                )
         elif n == plan.salida:
             tipo = "visita_y_vuelta" if paradas else "vuelta"
             nota = f"Vuelta a {origen.nombre}: {viaje} {por}."
             if n < consulta.dias:
                 nota = f"Se deja {base}: {viaje} {por} hacia {origen.nombre}; se duerme en el camino."
+            if plan.bus_de_noche is not None:
+                sale, llega = (textos.hora(m) for m in plan.bus_de_noche)
+                nota = (
+                    f"En la noche, el bus de vuelta: sale de {base} a las {sale} y llega a {origen.nombre} a las "
+                    f"{llega} del día siguiente."
+                )
         elif n > plan.salida:
             tipo = "vuelta"
             nota = f"Último tramo de vuelta a {origen.nombre}: {viaje} {por}."
@@ -735,6 +824,7 @@ def costo_del_viaje(it: Itinerario, consulta: Consulta, datos: Datos, dias: list
         km_bote=2 * bote_ida + bote_local,
         vuelos=_parametros_de_vuelo(it.vuelo),
         tramos_aereos=_tramos_aereos(it.vuelo, datos),
+        bus_de_noche=it.plan.bus_de_noche is not None,
     )
     return costos.estimar(datos.costos, gastos, consulta.presupuesto)
 
@@ -760,12 +850,13 @@ def indicadores(it: Itinerario, dias: list[Dia], datos: Datos, alcanzable: float
     jerarquias = [r["jerarquia"] for r in visitadas if r["jerarquia"] is not None]
     altitudes = [r["altitud_m"] for r in visitadas if r["altitud_m"] is not None]
     capturado = sum(c.valor for c in _visitadas(it))
+    en_bus_de_noche = 2 * it.km_ida if it.plan.bus_de_noche is not None else 0.0  # va fuera de los días
     return Indicadores(
         paradas=len(visitadas),
         jerarquia_media=round(sum(jerarquias) / len(jerarquias), 2) if jerarquias else None,
         paradas_jerarquia_alta=sum(1 for j in jerarquias if j >= 3),
         altitud_max_m=max(altitudes) if altitudes else None,
-        km_total=round(sum(d.km for d in dias), 1),
+        km_total=round(sum(d.km for d in dias) + en_bus_de_noche, 1),
         valor_capturado=round(min(1.0, capturado / alcanzable), 3) if alcanzable else 0.0,
     )
 
@@ -806,7 +897,7 @@ def motivos(
     if it.polo.fuera_del_circuito:
         salida.append("Fuera del circuito de Lima y Cusco")
     if it.plan.tipo_viaje == "estrella":
-        por = textos.por_medios(medios_del_traslado(it))
+        por = "en bus de noche" if it.plan.bus_de_noche else textos.por_medios(medios_del_traslado(it))
         salida.append(f"A {textos.duracion(it.minutos_ida)} de {origen.nombre} {por}")
     return salida[:4]
 
@@ -863,6 +954,17 @@ def avisos(
                 nivel="info",
                 mensaje="La ida y la vuelta van en avión. El pasaje cambia mucho según cuándo lo compres: "
                 "con anticipación sale más barato.",
+            )
+        )
+    if it.plan.bus_de_noche is not None:
+        sale = textos.hora(it.plan.bus_de_noche[0])
+        salida.append(
+            Aviso(
+                tipo="acceso",
+                nivel="info",
+                mensaje=f"La ida y la vuelta van en bus de noche, {textos.duracion(it.minutos_ida)} por carretera: "
+                f"sales de {datos.origenes[consulta.origen].nombre} a las {sale} la noche antes del día 1 y vuelves "
+                f"la noche del día {consulta.dias}. Esas dos noches no cuentan en tus días ni en el hospedaje.",
             )
         )
     en_tren = "tren" in medios_del_traslado(it) or any(t > 0 for r in it.recorridos for t, _ in tramos_en_capa(it, r))
@@ -942,6 +1044,7 @@ class Preparado:
     desde_en_capa: tuple[np.ndarray, np.ndarray] | None = None
     vuelo: Vuelo | None = None
     noche: float = 1.0  # lo que la vida nocturna multiplica en el puntaje (noche.factor_de_noche)
+    bus: float = 1.0  # lo que el bus de noche multiplica en el puntaje (por_bus_de_noche)
 
 
 def _cota(cands: list[Candidata], desde: np.ndarray, capacidad: float) -> float:
@@ -971,7 +1074,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         minutos_ida, km_ida, km_tren_ida, km_bote_ida, vuelo = ida(polo, consulta, origen)
         if not np.isfinite(minutos_ida):
             return None
-        plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio, vuelo)
+        plan = plan_del_viaje(consulta.dias, minutos_ida, km_tren_ida, km_bote_ida, consulta.fecha_inicio, vuelo)
         if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
     desde = _desde_para_visitar(polo, origen, excursion)
@@ -995,6 +1098,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         desde_en_capa=_en_capa_desde_deposito(polo, origen, excursion),
         vuelo=vuelo,
         noche=noche.factor_de_noche(polo, consulta) if not excursion else 1.0,
+        bus=por_bus_de_noche(plan, consulta.dias),
     )
 
 
@@ -1045,7 +1149,10 @@ def resolver(
     if preparados:
         tope = max(p.cota for p in preparados) or 1.0
         preparados.sort(
-            key=lambda p: (-((1 - lam) * p.temporada * p.noche * p.cota / tope + lam * p.polo.novedad), p.polo.id)
+            key=lambda p: (
+                -((1 - lam) * p.temporada * p.noche * p.bus * p.cota / tope + lam * p.polo.novedad),
+                p.polo.id,
+            )
         )
 
     itinerarios, bases_planificadas = [], set()
@@ -1079,7 +1186,7 @@ def resolver(
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
-        calidad = it.valor / mejor * ocupacion * p.temporada * p.noche
+        calidad = it.valor / mejor * ocupacion * p.temporada * p.noche * p.bus
         dias = costo = None
         if consulta.presupuesto is not None:
             dias = dias_del_viaje(it, consulta, origen, datos)
@@ -1147,15 +1254,19 @@ def _traslado(it: Itinerario, origen: Origen, datos: Datos) -> Traslado:
         return Traslado(
             desde=origen.nombre, horas=horas, dias_de_viaje=0, medios=medios_, acceso=acceso, fuente="red_vial"
         )
-    tramos = it.plan.tramos
+    bus = None
+    if it.plan.bus_de_noche is not None:
+        sale, llega = (textos.hora(m) for m in it.plan.bus_de_noche)
+        bus = BusDeNoche(sale=sale, llega=llega, sale_vuelta=sale, llega_vuelta=llega)  # la vuelta, a las mismas horas
     return Traslado(
         desde=origen.nombre,
         horas=round(it.minutos_ida / 60, 1),
-        dias_de_viaje=len(tramos),
+        dias_de_viaje=len(it.plan.tramos),
         medios=medios_,
         acceso=acceso,
         fuente="red_vial" if it.vuelo is None else "red_vial_y_vuelos",
         vuelos=_vuelos_de_ida(it.vuelo, datos),
+        bus_de_noche=bus,
     )
 
 
@@ -1283,7 +1394,7 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
     if not excursion:
         if en_casa:
             return f"Estás a menos de media hora de {nombre}: no hace falta dormir allá."
-        minutos, _, _, _, vuelo = ida(polo, consulta, origen)
+        minutos, _, km_tren, km_bote, vuelo = ida(polo, consulta, origen)
         if not np.isfinite(minutos):
             return f"No encontramos cómo llegar de {de} a {nombre}."
         por = "en avión" if vuelo is not None else textos.por_medios(medios_por_tierra(polo, origen))
@@ -1292,7 +1403,7 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
         otro = None if consulta.solo_por_tierra or vuelo is not None else origen.a_base_en_avion.get(polo.id)
         if otro is not None and conviene_volar(minutos, otro, DIAS_MAX):
             toma += f", y en avión, ir y volver son {_horas(2 * otro.minutos)}: demasiado para {dias}"
-        plan = plan_de_dias(consulta.dias, minutos, consulta.fecha_inicio, vuelo)
+        plan = plan_del_viaje(consulta.dias, minutos, km_tren, km_bote, consulta.fecha_inicio, vuelo)
         if plan is None or not plan.jornadas:
             return f"En {dias} no da para ir de {de} a {nombre} y volver: {toma}."
         if mas_camino_que_visita(plan):

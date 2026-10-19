@@ -109,6 +109,33 @@ def _el_almuerzo(consulta: Consulta, ruta) -> None:
             event("algún almuerzo donde no hay registrado dónde comer")
 
 
+def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
+    """13. El bus de noche (desde 1.6): solo por carretera, de 7 a 16 horas, en un viaje de dos días o
+    más y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches. Sus noches van
+    fuera de los días: sale a las 19:00 o después, ningún día lleva horas de camino y el día 1 se visita
+    desde una hora después de llegar. Y lo que cumple todo eso va en bus de noche."""
+    t = ruta.traslado
+    solo_carretera = t.medios == ["carretera"] and t.horas is not None and consulta.dias >= 2
+    if t.bus_de_noche is None:
+        # Las horas vienen redondeadas a la décima: en los bordes manda la cuenta del motor.
+        adentro = solo_carretera and 7.1 <= t.horas <= 15.9
+        assert not (adentro and 2 * t.horas < 0.4 * 24 * consulta.dias - 0.2)
+        return
+    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.4 * 24 * consulta.dias + 0.2
+    assert t.dias_de_viaje == 0
+    event("alguna ruta en bus de noche")
+    assert _hhmm(t.bus_de_noche.sale) >= 19 * 60 and _hhmm(t.bus_de_noche.llega) < 12 * 60
+    assert [d.tipo for d in ruta.dias][:: len(ruta.dias) - 1] in (
+        ["ida_y_visita", "visita_y_vuelta"],
+        ["ida", "visita_y_vuelta"],
+        ["ida_y_visita", "vuelta"],
+        ["ida", "vuelta"],
+    )
+    assert all(d.tipo == "visita" for d in ruta.dias[1:-1])
+    if ruta.dias[0].paradas:
+        assert _hhmm(ruta.dias[0].paradas[0].llegada) >= _hhmm(t.bus_de_noche.llega) + 60
+
+
 @settings(
     max_examples=CONSULTAS,
     deadline=None,
@@ -159,6 +186,7 @@ def test_las_propiedades(consulta):
         assert not any(POLO.search(frase) for frase in [ruta.estacionalidad.explicacion, *del_clima])
         _la_noche(consulta, ruta)
         _el_almuerzo(consulta, ruta)
+        _el_bus_de_noche(consulta, ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
