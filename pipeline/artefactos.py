@@ -43,7 +43,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from dreemgo.contrato import ETIQUETAS_INTERES, Interes
+from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
 from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
@@ -506,6 +506,7 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             i.value: {
                 "etiqueta": ETIQUETAS_INTERES[i],
                 "paradas": int(intereses_de.apply(lambda xs, i=i: i.value in xs).sum()),
+                **({"de_noche": True} if i in DE_NOCHE else {}),
             }
             for i in Interes
         },
@@ -513,6 +514,8 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
         "archivos": huellas,
     }
     if hay_noche:
+        lugares = sum(len(n["lugares"]) for n in noche.values())
+        manifiesto["intereses"][Interes.vida_nocturna.value]["lugares"] = lugares
         for nombre in ("noche", "cielo"):
             resumen = entrada / f"{nombre}_resumen.json"
             if resumen.exists():

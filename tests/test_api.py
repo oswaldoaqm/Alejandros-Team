@@ -102,7 +102,7 @@ def test_errores_en_espanol_con_su_campo(cliente, params, campo, mensaje):
 def test_las_opciones_de_un_valor_no_valido_se_listan_en_espanol(cliente):
     r = cliente.get("/v1/viajes", params={"mes": 7, "intereses": "museos"})
     [error] = [e for e in r.json()["detail"] if e["campo"] == "intereses"]
-    assert error["mensaje"].endswith("'arquitectura' o 'aventura'.")
+    assert error["mensaje"].endswith("'aventura' o 'vida_nocturna'.")
     assert " or " not in error["mensaje"]
 
 

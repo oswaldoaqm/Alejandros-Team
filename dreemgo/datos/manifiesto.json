@@ -285,6 +285,12 @@
     "playa": {
       "etiqueta": "Playa",
       "paradas": 214
+    },
+    "vida_nocturna": {
+      "de_noche": true,
+      "etiqueta": "Vida nocturna",
+      "lugares": 1264,
+      "paradas": 0
     }
   },
   "version_datos": "2026.10.6"

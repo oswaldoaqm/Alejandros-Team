@@ -1,5 +1,5 @@
 {
-  "version_contrato": "1.4",
+  "version_contrato": "1.5",
   "version_datos": "2026.10.6",
   "consulta": {
     "origen": "lima",
@@ -84,7 +84,8 @@
           "horas": 8.4,
           "km": 441.4,
           "paradas": [],
-          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca."
+          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -204,7 +205,8 @@
               "minutos_visita": 45
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 3,
@@ -324,7 +326,8 @@
               "minutos_visita": 75
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 4,
@@ -333,7 +336,8 @@
           "horas": 8.4,
           "km": 441.4,
           "paradas": [],
-          "nota": "Vuelta a Lima: 8 h 27 por carretera."
+          "nota": "Vuelta a Lima: 8 h 27 por carretera.",
+          "noche": null
         }
       ],
       "costo": {
@@ -487,7 +491,8 @@
               "minutos_visita": 45
             }
           ],
-          "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo."
+          "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -629,7 +634,8 @@
               "minutos_visita": 30
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 3,
@@ -771,7 +777,8 @@
               "minutos_visita": 30
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 4,
@@ -803,7 +810,8 @@
               "minutos_visita": 75
             }
           ],
-          "nota": "Vuelta a Lima: 6 h 03 por carretera."
+          "nota": "Vuelta a Lima: 6 h 03 por carretera.",
+          "noche": null
         }
       ],
       "costo": {
@@ -962,7 +970,8 @@
           "horas": 5.5,
           "km": 276.0,
           "paradas": [],
-          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino."
+          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -1016,7 +1025,8 @@
               "minutos_visita": 90
             }
           ],
-          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera."
+          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera.",
+          "noche": null
         },
         {
           "numero": 3,
@@ -1048,7 +1058,8 @@
               "minutos_visita": 90
             }
           ],
-          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino."
+          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino.",
+          "noche": null
         },
         {
           "numero": 4,
@@ -1057,7 +1068,8 @@
           "horas": 5.5,
           "km": 276.0,
           "paradas": [],
-          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera."
+          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera.",
+          "noche": null
         }
       ],
       "costo": {

@@ -38,6 +38,208 @@
         "title": "Aviso",
         "type": "object"
       },
+      "Cielo": {
+        "additionalProperties": false,
+        "description": "Cómo se ve el cielo para mirar las estrellas (desde 1.5).",
+        "properties": {
+          "aclara": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: cuando empieza el crepúsculo de la mañana.",
+            "title": "Aclara"
+          },
+          "aeropuerto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "El aeropuerto del METAR, si de ahí sale el dato.",
+            "title": "Aeropuerto"
+          },
+          "desde": {
+            "$ref": "#/components/schemas/LugarDeEstrellas"
+          },
+          "fuente_nubes": {
+            "anyOf": [
+              {
+                "enum": [
+                  "goes",
+                  "metar"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fuente Nubes"
+          },
+          "luna": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Luna"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: la luna de esa noche."
+          },
+          "lunas_nuevas": {
+            "description": "Sin fecha: los días de luna nueva del mes del viaje, los mejores.",
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Lunas Nuevas",
+            "type": "array"
+          },
+          "noches_despejadas": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La parte de las noches del mes con el cielo despejado, a las 21:00 y a la 01:00: según GOES-16 o, en la costa, según el METAR del aeropuerto más cercano. null si no hay un dato confiable.",
+            "title": "Noches Despejadas"
+          },
+          "observatorio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Un observatorio o un planetario a menos de 45 minutos, aunque su cielo tenga luz."
+          },
+          "oscurece": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: cuando termina el crepúsculo, el Sol a 18° bajo el horizonte.",
+            "title": "Oscurece"
+          },
+          "temp_min_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La mínima media del mes donde se mira.",
+            "title": "Temp Min C"
+          }
+        },
+        "required": [
+          "desde"
+        ],
+        "title": "Cielo",
+        "type": "object"
+      },
+      "CieloDeLaZona": {
+        "additionalProperties": false,
+        "description": "El cielo de una zona para mirar las estrellas, mes a mes (desde 1.5).",
+        "properties": {
+          "aeropuerto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aeropuerto"
+          },
+          "desde": {
+            "$ref": "#/components/schemas/LugarDeEstrellas",
+            "description": "La base."
+          },
+          "fuente_nubes": {
+            "anyOf": [
+              {
+                "enum": [
+                  "goes",
+                  "metar"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fuente Nubes"
+          },
+          "mas_oscuro": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si la base tiene luz: el mirador, observatorio o planetario con nombre más oscuro a menos de 45 minutos, si su cielo es oscuro. Es un dato: el motor no propone ir de noche."
+          },
+          "noches_despejadas": {
+            "description": "Enero a diciembre: la parte de las noches con el cielo despejado; null donde no hay dato.",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Noches Despejadas",
+            "type": "array"
+          },
+          "observatorio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "desde",
+          "noches_despejadas"
+        ],
+        "title": "CieloDeLaZona",
+        "type": "object"
+      },
       "Consulta": {
         "additionalProperties": false,
         "description": "Lo que el viajero pide. Es también el enlace para compartir: el motor es\ndeterminista, así que la misma consulta con la misma versión de datos\ndevuelve el mismo viaje.",
@@ -91,11 +293,11 @@
             "title": "Fecha Inicio"
           },
           "intereses": {
-            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
             "items": {
               "$ref": "#/components/schemas/Interes"
             },
-            "maxItems": 8,
+            "maxItems": 9,
             "title": "Intereses",
             "type": "array"
           },
@@ -251,6 +453,17 @@
             "minimum": 0.0,
             "title": "Km",
             "type": "number"
+          },
+          "noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Noche"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las estrellas, naturaleza o ningún interés (desde 1.5)."
           },
           "nota": {
             "anyOf": [
@@ -665,7 +878,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.4",
+            "default": "1.5",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -766,14 +979,311 @@
           "playa",
           "fiestas",
           "arquitectura",
-          "aventura"
+          "aventura",
+          "vida_nocturna"
         ],
         "title": "Interes",
         "type": "string"
       },
+      "LugarDeEstrellas": {
+        "additionalProperties": false,
+        "description": "Desde dónde se mira el cielo (desde 1.5).",
+        "properties": {
+          "brillo": {
+            "description": "La luz artificial del cielo frente a la natural (ALR), estimada con las luces nocturnas de VIIRS y el modelo de Duriscoe et al. (2018).",
+            "minimum": 0.0,
+            "title": "Brillo",
+            "type": "number"
+          },
+          "clase": {
+            "description": "Las del Servicio de Parques Nacionales de EE. UU.: brillo menor que 0,3, excelente; de 0,3 a 2, se ve lo principal; más de 2, la noche natural ya no se ve.",
+            "enum": [
+              "muy_oscuro",
+              "oscuro",
+              "con_luz"
+            ],
+            "title": "Clase",
+            "type": "string"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "minutos": {
+            "description": "Desde la base por la red, de puerta a puerta; 0 si es la base.",
+            "minimum": 0.0,
+            "title": "Minutos",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "base",
+              "mirador",
+              "observatorio",
+              "planetario"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Su página en OpenStreetMap; null si es la base.",
+            "title": "Url"
+          }
+        },
+        "required": [
+          "nombre",
+          "tipo",
+          "minutos",
+          "lat",
+          "lon",
+          "brillo",
+          "clase"
+        ],
+        "title": "LugarDeEstrellas",
+        "type": "object"
+      },
+      "LugarDeNoche": {
+        "additionalProperties": false,
+        "description": "Un lugar para salir de noche cerca de donde se duerme (desde 1.5).",
+        "properties": {
+          "fuente": {
+            "enum": [
+              "openstreetmap",
+              "overture"
+            ],
+            "title": "Fuente",
+            "type": "string"
+          },
+          "horario": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "El que publica OpenStreetMap, tal cual (opening_hours).",
+            "title": "Horario"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "minutos_a_pie": {
+            "description": "Desde la base, con un 30 % más de camino que la línea recta y a 4,5 km/h.",
+            "minimum": 1.0,
+            "title": "Minutos A Pie",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "description": "pub también es cervecería; pena, una peña, con música criolla o andina en vivo; musica, música en vivo; comedia, de pie.",
+            "enum": [
+              "bar",
+              "pub",
+              "discoteca",
+              "karaoke",
+              "pena",
+              "musica",
+              "comedia"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "url": {
+            "description": "Dónde verificarlo: su página en OpenStreetMap o, si solo está en Overture Maps, el mapa de OpenStreetMap en ese punto.",
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "tipo",
+          "lat",
+          "lon",
+          "minutos_a_pie",
+          "fuente",
+          "url"
+        ],
+        "title": "LugarDeNoche",
+        "type": "object"
+      },
+      "Luna": {
+        "additionalProperties": false,
+        "description": "La luna de una noche, en hora del Perú (desde 1.5).",
+        "properties": {
+          "creciente": {
+            "title": "Creciente",
+            "type": "boolean"
+          },
+          "horas_sin_luna": {
+            "description": "Horas de noche oscura con la luna bajo el horizonte o casi sin luz.",
+            "minimum": 0.0,
+            "title": "Horas Sin Luna",
+            "type": "number"
+          },
+          "iluminada": {
+            "description": "La parte iluminada a medianoche.",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Iluminada",
+            "type": "number"
+          },
+          "sale": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si sale con la noche ya oscura.",
+            "title": "Sale"
+          },
+          "se_pone": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si se pone con la noche ya oscura.",
+            "title": "Se Pone"
+          }
+        },
+        "required": [
+          "iluminada",
+          "creciente",
+          "horas_sin_luna"
+        ],
+        "title": "Luna",
+        "type": "object"
+      },
+      "Noche": {
+        "additionalProperties": false,
+        "description": "Qué hacer una noche que se duerme en la base (desde 1.5). No cambia nada del día.",
+        "properties": {
+          "cielo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Cielo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con estrellas."
+          },
+          "lugares": {
+            "description": "Con salir: los que se proponen esa noche.",
+            "items": {
+              "$ref": "#/components/schemas/LugarDeNoche"
+            },
+            "title": "Lugares",
+            "type": "array"
+          },
+          "nota": {
+            "title": "Nota",
+            "type": "string"
+          },
+          "tipo": {
+            "description": "salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna.",
+            "enum": [
+              "salir",
+              "estrellas",
+              "descanso"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo",
+          "titulo",
+          "nota"
+        ],
+        "title": "Noche",
+        "type": "object"
+      },
+      "NocheDeLaZona": {
+        "additionalProperties": false,
+        "description": "Lo que hay de noche en una zona (desde 1.5).",
+        "properties": {
+          "cielo": {
+            "$ref": "#/components/schemas/CieloDeLaZona"
+          },
+          "lugares": {
+            "description": "Para salir, a menos de 1,5 km de la base, del más al menos confiable.",
+            "items": {
+              "$ref": "#/components/schemas/LugarDeNoche"
+            },
+            "title": "Lugares",
+            "type": "array"
+          }
+        },
+        "required": [
+          "lugares",
+          "cielo"
+        ],
+        "title": "NocheDeLaZona",
+        "type": "object"
+      },
       "OpcionInteres": {
         "additionalProperties": false,
         "properties": {
+          "de_noche": {
+            "default": false,
+            "description": "Si es de la noche: no atiende paradas, sino lo que se hace de noche cerca de donde se duerme (desde 1.5).",
+            "title": "De Noche",
+            "type": "boolean"
+          },
           "etiqueta": {
             "title": "Etiqueta",
             "type": "string"
@@ -849,7 +1359,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.4",
+            "default": "1.5",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -994,6 +1504,17 @@
             "title": "Eventos",
             "type": "array"
           },
+          "noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NocheDeLaZona"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Para salir y para mirar las estrellas (desde 1.5)."
+          },
           "polo": {
             "$ref": "#/components/schemas/Polo"
           },
@@ -1006,7 +1527,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.4",
+            "default": "1.5",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1254,7 +1775,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.4",
+            "default": "1.5",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1354,7 +1875,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.4",
+            "default": "1.5",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1931,16 +2452,16 @@
             }
           },
           {
-            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
             "in": "query",
             "name": "intereses",
             "required": false,
             "schema": {
-              "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+              "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
               "items": {
                 "$ref": "#/components/schemas/Interes"
               },
-              "maxItems": 8,
+              "maxItems": 9,
               "title": "Intereses",
               "type": "array"
             }

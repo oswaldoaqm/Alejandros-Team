@@ -29,9 +29,9 @@ export const OPCIONES: Opciones = {
     { id: "puerto-maldonado", nombre: "Puerto Maldonado", region: "Madre de Dios" },
   ],
   intereses: [
-    { id: "naturaleza", etiqueta: "Naturaleza", paradas: 2562 },
-    { id: "historia", etiqueta: "Historia y arqueología", paradas: 956 },
-    { id: "playa", etiqueta: "Playa", paradas: 214 },
+    { id: "naturaleza", etiqueta: "Naturaleza", paradas: 2562, de_noche: false },
+    { id: "historia", etiqueta: "Historia y arqueología", paradas: 956, de_noche: false },
+    { id: "playa", etiqueta: "Playa", paradas: 214, de_noche: false },
   ],
   dias: { minimo: 1, maximo: 14, defecto: 6 },
   presupuesto: { minimo: 100, maximo: 50000, defecto: null },

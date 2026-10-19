@@ -10,11 +10,14 @@ import pytest
 from pydantic import ValidationError
 
 from dreemgo.contrato import (
+    DE_NOCHE,
     ETIQUETAS_INTERES,
     Consulta,
     Costo,
     EventoNuevo,
     Interes,
+    LugarDeNoche,
+    Luna,
     Respuesta,
     SinResultado,
 )
@@ -73,6 +76,13 @@ class TestConsulta:
     def test_cada_interes_tiene_etiqueta(self):
         assert set(ETIQUETAS_INTERES) == set(Interes)
 
+    def test_la_vida_nocturna_es_de_la_noche(self):
+        assert DE_NOCHE == {Interes.vida_nocturna} and ETIQUETAS_INTERES[Interes.vida_nocturna] == "Vida nocturna"
+        assert Consulta(mes=7, intereses=["vida_nocturna", "naturaleza"]).intereses == [
+            Interes.vida_nocturna,
+            Interes.naturaleza,
+        ]
+
 
 class TestSalida:
     def test_banda_de_costo_ordenada(self):
@@ -94,6 +104,30 @@ class TestSalida:
             assert {p.recurso.codigo for d in ruta.dias for p in d.paradas}, "cada ruta visita algo"
             for d in ruta.dias:
                 assert [p.orden for p in d.paradas] == list(range(1, len(d.paradas) + 1))
+
+
+class TestNoche:
+    def test_las_horas_son_del_reloj(self):
+        assert Luna(iluminada=0.3, creciente=True, se_pone="21:40", horas_sin_luna=7.5).sale is None
+        for hora in ("25:00", "9:05", "21:4"):
+            with pytest.raises(ValidationError):
+                Luna(iluminada=0.3, creciente=True, se_pone=hora, horas_sin_luna=7.5)
+
+    def test_un_lugar_de_noche_dice_donde_verificarlo(self):
+        lugar = LugarDeNoche(
+            nombre="Ukukus",
+            tipo="discoteca",
+            lat=-13.5,
+            lon=-71.9,
+            minutos_a_pie=4,
+            fuente="overture",
+            url="https://www.openstreetmap.org/?mlat=-13.5&mlon=-71.9",
+        )
+        assert lugar.horario is None
+        with pytest.raises(ValidationError):
+            LugarDeNoche(**{**lugar.model_dump(), "tipo": "casino"})
+        with pytest.raises(ValidationError):
+            LugarDeNoche(**{**lugar.model_dump(), "minutos_a_pie": 0})
 
 
 class TestEventoNuevo:
