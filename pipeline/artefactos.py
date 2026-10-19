@@ -5,12 +5,14 @@ Junta las tablas de data/procesados en pocos archivos compactos dentro de dreemg
 que entran a la imagen del API:
 
   manifiesto.json     versión de los datos, de dónde sale cada cosa y la huella de cada archivo
-  recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos y lo que
-                      el motor necesita para programarlos
+  recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos, lo que
+                      el motor necesita para programarlos y a cuántos metros hay dónde comer
+                      (pipeline/comida.py)
   polos.json.gz       cada polo: base, novedad, clima mes a mes, sus paradas y los tiempos
                       entre ellas y desde la base; si algún camino va en tren o en bote, cuántos
-                      de sus km van en cada uno; y su noche: dónde salir cerca de la base y su
-                      cielo para mirar las estrellas (pipeline/noche.py y pipeline/cielo.py)
+                      de sus km van en cada uno; su noche: dónde salir cerca de la base y su
+                      cielo para mirar las estrellas (pipeline/noche.py y pipeline/cielo.py); y
+                      a cuántos metros de la base hay dónde comer
   origenes.json.gz    las 24 ciudades de partida, con sus tiempos a cada base y a las paradas a
                       menos de 4 horas, que son las que caben en un viaje de un día: minutos, km,
                       km en tren y km en bote; y el viaje en avión a cada base (pipeline/vuelos.py)
@@ -26,8 +28,8 @@ Un polo es lo que se visita desde una base. El maestro y los eventos traen el gr
 de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
 recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
 
-Uso:  python -m pipeline.artefactos --version 2026.10.6
-      (después de maestro, eventos, tiempos, vuelos, clima, noche y cielo)
+Uso:  python -m pipeline.artefactos --version 2026.10.7
+      (después de maestro, eventos, tiempos, vuelos, clima, noche, cielo y comida)
 """
 
 from __future__ import annotations
@@ -49,7 +51,7 @@ from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.6"
+VERSION_DATOS = "2026.10.7"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
 MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote
@@ -60,7 +62,7 @@ ATRIBUCION = [
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
 ]
 ATRIBUCION_NOCHE = [
-    "Lugares de noche: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every"
     " Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA",
@@ -68,8 +70,8 @@ ATRIBUCION_NOCHE = [
 
 
 def _limpio(v):
-    """Un valor listo para JSON: NaN es null, los enteros de numpy son int."""
-    if v is None:
+    """Un valor listo para JSON: NaN y el NA de pandas son null, los enteros de numpy son int."""
+    if v is None or v is pd.NA:
         return None
     if isinstance(v, float | np.floating):
         return None if math.isnan(v) else float(v)
@@ -110,12 +112,26 @@ def en_su_polo(tabla: pd.DataFrame, bases: pd.DataFrame) -> pd.DataFrame:
     return tabla.assign(polo=tabla["polo"].map(lambda grupo: a_polo.get(grupo, grupo)).astype(int))
 
 
-def recursos(maestro: pd.DataFrame) -> list[dict]:
-    """Los recursos que están en un polo, ordenados por código."""
+def _comida(comida: pd.DataFrame | None, tipo: str) -> dict[str, int | None] | None:
+    """Clave → metros hasta el lugar de comida más cercano a menos de 1,5 km (pipeline/comida.py),
+    o None si no hay ninguno; None si no hay tabla."""
+    if comida is None:
+        return None
+    filas = comida[comida["tipo"] == tipo]
+    return {str(k): _entero(m) for k, m in zip(filas["clave"], filas["mas_cerca_m"], strict=True)}
+
+
+def recursos(maestro: pd.DataFrame, comida: pd.DataFrame | None = None) -> list[dict]:
+    """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
+    lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
+    menos de 1,5 km)."""
+    cerca = _comida(comida, "recurso")
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
+        con_comida = {} if cerca is None else {"comida_m": cerca.get(str(f["codigo"]))}
         filas.append(
-            {
+            con_comida
+            | {
                 "codigo": str(f["codigo"]),
                 "nombre": f["nombre"],
                 "categoria": f["categoria"],
@@ -165,8 +181,10 @@ def polos(
     eventos: pd.DataFrame,
     origenes: pd.DataFrame,
     noche: dict[int, dict] | None = None,
+    comida: pd.DataFrame | None = None,
 ) -> list[dict]:
     """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla."""
+    comida_en_base = _comida(comida, "base")
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
@@ -253,7 +271,8 @@ def polos(
                     "lugar": b.lugar,
                     "hospedajes_osm": int(b.hospedajes_osm),
                     "criterio": b.criterio,
-                },
+                }
+                | ({} if comida_en_base is None else {"comida_m": comida_en_base.get(str(int(b.polo)))}),
                 "paradas": [str(c) for c in codigos],
                 "base_minutos": [_redondo(desde_base["minutos"].get(c)) for c in codigos],
                 "base_km": [_redondo(desde_base["km"].get(c)) for c in codigos],
@@ -467,6 +486,7 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     hay_vuelos = (entrada / "vuelos_origen_base.csv").exists()
     vuelos_origen_base = leer("vuelos_origen_base.csv") if hay_vuelos else None
     vuelos_rutas = leer("vuelos_rutas.csv") if hay_vuelos else None
+    comida = leer("comida_cerca.csv", dtype={"clave": str}) if (entrada / "comida_cerca.csv").exists() else None
     hay_noche = (entrada / "noche_lugares.csv").exists() and (entrada / "cielo_polos.csv").exists()
     noche = None
     if hay_noche:
@@ -475,9 +495,11 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {
-        "recursos.json.gz": _escribir_gz(recursos(maestro), destino / "recursos.json.gz"),
+        "recursos.json.gz": _escribir_gz(recursos(maestro, comida), destino / "recursos.json.gz"),
         "polos.json.gz": _escribir_gz(
-            polos(maestro, bases, clima, tiempos_polo, tiempos_base, tiempos_origen_base, eventos, origenes, noche),
+            polos(
+                maestro, bases, clima, tiempos_polo, tiempos_base, tiempos_origen_base, eventos, origenes, noche, comida
+            ),
             destino / "polos.json.gz",
         ),
         "origenes.json.gz": _escribir_gz(
@@ -520,6 +542,8 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             resumen = entrada / f"{nombre}_resumen.json"
             if resumen.exists():
                 manifiesto["fuentes"][nombre] = json.loads(resumen.read_text(encoding="utf-8"))
+    if comida is not None and (entrada / "comida_resumen.json").exists():
+        manifiesto["fuentes"]["comida"] = json.loads((entrada / "comida_resumen.json").read_text(encoding="utf-8"))
     if vuelos_rutas is not None:
         manifiesto["aeropuertos"] = aeropuertos_(vuelos_rutas)
         manifiesto["fuentes"]["vuelos"] = {"rutas": len(vuelos_rutas), "consultadas": "2026-10-15"}

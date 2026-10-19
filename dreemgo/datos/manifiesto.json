@@ -97,14 +97,14 @@
     "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
     "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
     "origenes.json.gz": "c377e7a28578ab20244637c4c02fb3d9614cb841e8d7f08fa2588ea7eef68161",
-    "polos.json.gz": "44a9eb9957e259e1c3fa0046b6f29791a64471ee9ea43bea7d05dddd942dae52",
-    "recursos.json.gz": "dec0b82362f8d59c0229330545c2dcea51cc90b4b3949195d3dffdb8bb8cdca1"
+    "polos.json.gz": "6da505948aac84ed1a2d9d6be436351ccc47f70f79284b923bdfb4dba71dc9a3",
+    "recursos.json.gz": "c318bc17082e03ef9e4e6e8bec69ce8b51c3908c85ef25b93d1bd773f4f947df"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
-    "Lugares de noche: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
   ],
@@ -219,6 +219,21 @@
       "polos_con_clima_regional": 0,
       "polos_con_su_clima": 194
     },
+    "comida": {
+      "bases": 194,
+      "bases_con_comida": 154,
+      "osm": {
+        "lugares": 16648,
+        "md5": "faea114a828e7a306a5010f985c1320b"
+      },
+      "overture": {
+        "lugares": 27005,
+        "version": "2026-09-23.1"
+      },
+      "radio_m": 1500,
+      "recursos": 6225,
+      "recursos_con_comida": 2954
+    },
     "inventario": {
       "fecha_corte": "2026-09-29"
     },
@@ -293,5 +308,5 @@
       "paradas": 0
     }
   },
-  "version_datos": "2026.10.6"
+  "version_datos": "2026.10.7"
 }

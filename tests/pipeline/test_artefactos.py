@@ -186,3 +186,19 @@ def test_cada_recurso_lleva_el_polo_que_junta_a_su_grupo():
 def test_las_tablas_de_antes_de_juntar_no_cambian():
     maestro, bases, *_ = _tablas_de_dos_polos()
     assert artefactos.en_su_polo(maestro, bases)["polo"].tolist() == maestro["polo"].tolist()
+
+
+def test_con_la_tabla_de_comida_la_base_dice_a_cuantos_metros_hay_donde_comer():
+    tablas = _tablas_de_dos_polos()
+    comida = pd.DataFrame(
+        {
+            "tipo": ["base", "base", "recurso"],
+            "clave": ["1", "2", "10"],
+            "mas_cerca_m": pd.array([300, None, 120], dtype="Int64"),
+        }
+    )
+    puno, juli = artefactos.polos(*tablas, comida=comida)
+    assert (puno["base"]["comida_m"], juli["base"]["comida_m"]) == (300, None)
+    assert artefactos._comida(comida, "recurso") == {"10": 120}
+    # Sin la tabla, como antes de la 2026.10.7, la base no lo trae y el motor no lo sabe.
+    assert all("comida_m" not in polo["base"] for polo in artefactos.polos(*tablas))
