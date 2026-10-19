@@ -124,7 +124,9 @@ jobs:
 
   humo:
     name: App contra el API
-    runs-on: ubuntu-latest
+    # Playwright 1.56 no instala Chromium en Ubuntu 26.04, que GitHub pone como ubuntu-latest
+    # de a pocos entre el 19 de octubre y el 19 de noviembre de 2026.
+    runs-on: ubuntu-24.04
     needs: [python, app]
     steps:
       - uses: actions/checkout@v7
