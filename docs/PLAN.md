@@ -25,9 +25,18 @@ Después entran los planes de noche, con el [contrato 1.5](./CONTRATO.md) y los 
 
 La página de cada zona muestra dónde salir y cuántas noches salen despejadas cada mes. Está en la [decisión 0018](./decisiones/0018-planes-de-noche.md).
 
+Después, el plan creíble, con el [contrato 1.6](./CONTRATO.md) y los datos `2026.10.7`:
+
+- **el almuerzo**: una hora más, que no cuenta en las 8 de paseo, en un lugar con dónde comer si lo hay a la hora, o con el aviso de llevarlo;
+- **el bus de noche**: lo que por tierra toma de 7 a 16 horas va de noche, y sus noches quedan fuera de los días. Desde Lima, Huaraz y Nasca salen con dos días;
+- **una jornada que no se corre**: se vuelve a las 17:00 aunque el primer lugar abra tarde, y no se espera más de una hora en una puerta;
+- **con destino se vuela aunque el viaje sea corto**: el Cusco sale desde Lima con dos días. Así se cierra la pregunta que dejó la 0017.
+
+Para que un fin de semana no salga siempre lejos, el bus no va si se lleva el 40 % del viaje, con sus noches, y sus dos noches pesan en el puntaje como un día más. Está en la [decisión 0019](./decisiones/0019-plan-creible.md).
+
 ## Qué promete el producto
 
-El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa. Y cada noche en la zona tiene su plan: dónde salir, desde dónde ver las estrellas o, en la altura, descansar.
+El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa. Cada noche en la zona tiene su plan: dónde salir, desde dónde ver las estrellas o, en la altura, descansar. Y el plan se puede seguir: cada día almuerza, y lo que queda a una noche de bus va de noche.
 
 ## Calendario
 

@@ -10,9 +10,10 @@ python -m pipeline.vuelos      # después de tiempos: usa la misma red
 python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
 python -m pipeline.noche       # después de tiempos; necesita los lugares de Overture
 python -m pipeline.cielo       # después de noche; necesita las luces, las nubes y los METAR
+python -m pipeline.comida      # después de bases; necesita los lugares de Overture
 ```
 
-Estas tablas son las de la versión de datos `2026.10.6`, que suma la noche; la `2026.10.5` sumó los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.7`, que suma dónde comer; la `2026.10.6` sumó la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -39,6 +40,8 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `cielo_polos.csv` | El cielo de cada polo: el brillo artificial en su base; si la base tiene luz, el lugar con nombre más oscuro a menos de 45 minutos (`oscuro_*`); el observatorio o planetario más cercano (`astro_*`); los km al mar, de dónde salen las nubes (`goes` o `metar`, con el aeropuerto) y la parte de noches despejadas de cada mes (`despejadas_1` a `despejadas_12`, vacío si no hay dato) |
 | `cielo_validacion.csv` | Cada aeropuerto mes a mes: las noches despejadas según sus METAR y según GOES-16, si está en la costa, la correlación y la diferencia media |
 | `cielo_resumen.json` | Los meses de VIIRS, las imágenes de GOES-16, los aeropuertos y cuántos polos quedan en cada clase de cielo y con cada fuente de nubes |
+| `comida_cerca.csv` | Por cada lugar del inventario (`tipo` recurso, `clave` su código) y cada base (`tipo` base, `clave` el número del polo): cuántos restaurantes, cafés y locales de comida rápida registran OpenStreetMap (`comida_osm`) y Overture (`comida_overture`) a menos de 1,5 km, y a cuántos metros queda el más cercano (`mas_cerca_m`, vacío si no hay ninguno). Sin nombres ni ubicaciones de los locales |
+| `comida_resumen.json` | Cuántos locales se leyeron de cada fuente, con sus versiones, y cuántos lugares y bases tienen alguno cerca |
 
 ## `maestro_v3.csv`
 
