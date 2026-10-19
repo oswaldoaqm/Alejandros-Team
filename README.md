@@ -146,11 +146,14 @@ fuente de cada campo; el **calendario de los 758 acontecimientos**, con la regla
 medida sobre una muestra anotada a mano; los **tiempos de viaje** sobre la red vial de OpenStreetMap,
 calibrada con los recorridos de las fichas (22 % de error medio), con el tren a Machu Picchu y los botes del
 Titicaca, las Ballestas y la Amazonía; los **vuelos** de las 22 rutas que salen de Lima, de puerta a puerta;
-**dónde se duerme en cada polo**, y el **clima de cada polo mes a mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
+**dónde se duerme en cada polo**, el **clima de cada polo mes a mes** y **su noche**: dónde salir a pie de la
+base y cuántas noches salen despejadas cada mes para ver las estrellas. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
 [contrato](./docs/CONTRATO.md).
 
 Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo),
-[OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos y hospedajes) y
+[OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos, hospedajes y lugares de noche),
+[Overture Maps](https://overturemaps.org/) (más lugares de noche), las luces nocturnas de VIIRS y las nubes de
+GOES-16 y los METAR de NOAA (el cielo de cada base) y
 [Wikimedia Commons](https://commons.wikimedia.org/) (una foto de licencia libre para los lugares y los pueblos
 que la tienen, elegida con [Wikidata](https://www.wikidata.org/)). Prevista:
 [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto).
@@ -256,7 +259,14 @@ python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.vuelos      # el viaje en avión de cada origen a cada base, unos 3 minutos
 python -m pipeline.clima       # clima por polo y mes
-python -m pipeline.artefactos --version 2026.10.5   # dreemgo/datos/
+pip install -e ".[adquisicion]"                        # para las cuatro descargas de la noche
+python pipeline/adquisicion/descargar_overture.py      # lugares para salir, unos minutos
+python pipeline/adquisicion/descargar_luces.py         # luces nocturnas de VIIRS, unos minutos
+python pipeline/adquisicion/descargar_nubes.py         # nubes de GOES-16, unos 20 minutos o más
+python pipeline/adquisicion/descargar_metar.py         # METAR de los aeropuertos, un par de minutos
+python -m pipeline.noche       # dónde salir cerca de cada base
+python -m pipeline.cielo       # el cielo de cada base, unos 3 minutos
+python -m pipeline.artefactos --version 2026.10.6   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»

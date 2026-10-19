@@ -8,9 +8,11 @@ python -m pipeline.eventos
 python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
 python -m pipeline.vuelos      # después de tiempos: usa la misma red
 python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
+python -m pipeline.noche       # después de tiempos; necesita los lugares de Overture
+python -m pipeline.cielo       # después de noche; necesita las luces, las nubes y los METAR
 ```
 
-Estas tablas son las de la versión de datos `2026.10.5`, que suma los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.6`, que suma la noche; la `2026.10.5` sumó los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -32,6 +34,11 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
 | `vuelos_rutas.csv` | Cada ruta aérea desde Lima: minutos de vuelo y la banda del pasaje por tramo, en soles |
 | `vuelos_origen_base.csv` | El viaje en avión de cada ciudad de origen a la base de cada polo, de puerta a puerta |
+| `noche_lugares.csv` | Cada lugar para salir a no más de 1,5 km de la base de un polo: nombre, tipo (bar, pub, discoteca, karaoke, peña, música en vivo), coordenadas, metros y minutos a pie, si viene de OpenStreetMap o de Overture con su identificador en cada una, la confianza de Overture y el horario de OSM tal cual. Del más al menos confiable ([`pipeline/README.md`](../../pipeline/README.md#de-noche)) |
+| `noche_resumen.json` | Cuántos lugares hay, de cada fuente y de cada tipo, y las versiones de OSM y de Overture con que se hizo |
+| `cielo_polos.csv` | El cielo de cada polo: el brillo artificial en su base; si la base tiene luz, el lugar con nombre más oscuro a menos de 45 minutos (`oscuro_*`); el observatorio o planetario más cercano (`astro_*`); los km al mar, de dónde salen las nubes (`goes` o `metar`, con el aeropuerto) y la parte de noches despejadas de cada mes (`despejadas_1` a `despejadas_12`, vacío si no hay dato) |
+| `cielo_validacion.csv` | Cada aeropuerto mes a mes: las noches despejadas según sus METAR y según GOES-16, si está en la costa, la correlación y la diferencia media |
+| `cielo_resumen.json` | Los meses de VIIRS, las imágenes de GOES-16, los aeropuertos y cuántos polos quedan en cada clase de cielo y con cada fuente de nubes |
 
 ## `maestro_v3.csv`
 

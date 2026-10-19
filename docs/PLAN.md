@@ -18,9 +18,16 @@ Después de esa entrega entran los vuelos, con el [contrato 1.3](./CONTRATO.md) 
 
 Con los vuelos entra «Quiero ir a…», con el [contrato 1.4](./CONTRATO.md). Quien ya sabe a dónde quiere ir elige la zona en el formulario, desde la zona o desde una fiesta del calendario. El motor arma ese viaje o dice por qué no cabe y qué cambiar: desde Lima, el Cusco sale con tres días, Machu Picchu con cinco y Huaraz con cuatro. Está en la [decisión 0017](./decisiones/0017-quiero-ir-a.md), que deja abierta una pregunta para el equipo: si con destino se vuela también en viajes cortos.
 
+Después entran los planes de noche, con el [contrato 1.5](./CONTRATO.md) y los datos `2026.10.6`. Cada noche que se duerme en la zona trae un plan, sin cambiar el día:
+
+- con «Vida nocturna», hasta tres bares, pubs, discotecas, karaokes o peñas a pie de la base, otros cada noche, y un descanso la primera noche en la altura;
+- con «Naturaleza», o sin intereses, una noche de estrellas: desde la base si su cielo es oscuro, o en un observatorio o planetario cercano. Con fecha, la de menos luna.
+
+La página de cada zona muestra dónde salir y cuántas noches salen despejadas cada mes. Está en la [decisión 0018](./decisiones/0018-planes-de-noche.md).
+
 ## Qué promete el producto
 
-El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa.
+El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa. Y cada noche en la zona tiene su plan: dónde salir, desde dónde ver las estrellas o, en la altura, descansar.
 
 ## Calendario
 
@@ -42,7 +49,7 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 
 | Pieza | Dónde | Qué hace |
 |---|---|---|
-| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo, red vial y los datos de las fotos |
+| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo, red vial, los datos de las fotos y, para la noche, los lugares de Overture, las luces de VIIRS, las nubes de GOES-16 y los METAR |
 | Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/), y elige la foto de cada lugar |
 | Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas, y recibe los eventos que publican los municipios: [contrato](./CONTRATO.md) |
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
