@@ -1,0 +1,165 @@
+/* La noche (piezas/Noche.tsx): lo único con fondo de noche en la app, para que se distinga del
+   día de un vistazo. Un azul de medianoche con unas pocas luces en los bordes, lejos del texto.
+   La luna de esa noche se dibuja con su fase real. */
+
+:root {
+  --noche: #142440;
+  --noche-hondo: #0f1b31;
+  --sobre-noche: #eef2f8;
+  --sobre-noche-2: #b9c6d8;
+  --enlace-noche: #a8daf5;
+  --luna: #f4e9c8;
+  --luna-sombra: rgb(255 255 255 / 12%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --noche: #14223a;
+    --noche-hondo: #0e182b;
+  }
+}
+
+.noche {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 16px 16px 14px;
+  overflow: hidden;
+  color: var(--sobre-noche);
+  background: linear-gradient(170deg, var(--noche) 0%, var(--noche-hondo) 100%);
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: var(--r-control);
+}
+
+/* Unas luces: arriba a la derecha y abajo, donde no hay texto que leer. */
+.noche::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    radial-gradient(1.4px 1.4px at 92% 14%, rgb(255 255 255 / 70%), transparent 70%),
+    radial-gradient(1px 1px at 84% 30%, rgb(255 255 255 / 45%), transparent 70%),
+    radial-gradient(1.2px 1.2px at 97% 46%, rgb(255 255 255 / 55%), transparent 70%),
+    radial-gradient(1px 1px at 76% 9%, rgb(255 255 255 / 40%), transparent 70%),
+    radial-gradient(1px 1px at 6% 94%, rgb(255 255 255 / 35%), transparent 70%),
+    radial-gradient(1.3px 1.3px at 58% 97%, rgb(255 255 255 / 45%), transparent 70%);
+}
+
+.noche > * {
+  position: relative;
+}
+
+.noche__cabeza {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.noche__cabeza > .icono {
+  flex: none;
+  color: var(--luna);
+}
+
+.noche__titulo {
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.noche__luna {
+  display: inline-flex;
+  flex: none;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+  font-size: var(--t-pie);
+  color: var(--sobre-noche-2);
+}
+
+.noche__clase {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--sobre-noche-2);
+}
+
+.noche__nota {
+  max-width: 62ch;
+  font-size: var(--t-nota);
+  line-height: 1.5;
+}
+
+.noche a {
+  color: var(--enlace-noche);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.noche a:focus-visible {
+  outline: 2px solid var(--enlace-noche);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.noche__lugares {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0 2px;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+
+.noche__lugar {
+  display: grid;
+  gap: 1px;
+}
+
+.noche__lugar > a {
+  font-weight: 600;
+}
+
+.noche__meta,
+.noche__pie {
+  font-size: var(--t-pie);
+  color: var(--sobre-noche-2);
+}
+
+.luna__sombra {
+  fill: var(--luna-sombra);
+}
+
+.luna__luz {
+  fill: var(--luna);
+}
+
+.luna__borde {
+  fill: none;
+  stroke: rgb(255 255 255 / 35%);
+  stroke-width: 0.6;
+}
+
+/* En la lista de días, una línea más chica bajo los lugares. */
+.dia-fila__noche {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+@media print {
+  .noche {
+    color: #000;
+    background: none;
+    border: 1px solid #ccc;
+  }
+
+  .noche::before {
+    display: none;
+  }
+
+  .noche a,
+  .noche__meta,
+  .noche__pie,
+  .noche__clase {
+    color: #000;
+  }
+}

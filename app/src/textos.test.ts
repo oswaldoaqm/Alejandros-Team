@@ -4,6 +4,7 @@ import { POR_DEFECTO } from "./consulta";
 import { plano } from "./pruebas/texto";
 import {
   aplicarSugerencia,
+  claseDelCielo,
   climaCorto,
   conQueSeViaja,
   entrada,
@@ -13,6 +14,7 @@ import {
   resumenDeLugares,
   textoDeSugerencia,
   tipoDeDia,
+  tipoDeLugarDeNoche,
 } from "./textos";
 
 const NOMBRES = {
@@ -145,5 +147,17 @@ describe("cómo se nombra y se resume un viaje", () => {
     expect(climaCorto("viable", 7)).toBe("Buen clima en julio");
     expect(climaCorto("advertencia", 3)).toBe("Puede llover en marzo");
     expect(climaCorto("desaconsejado", 2)).toBe("Temporada de lluvias en febrero");
+  });
+});
+
+describe("la noche", () => {
+  it("dice qué es cada lugar y cómo es el cielo con palabras", () => {
+    expect(tipoDeLugarDeNoche("pena")).toBe("peña");
+    expect(tipoDeLugarDeNoche("musica")).toBe("música en vivo");
+    expect([claseDelCielo("muy_oscuro"), claseDelCielo("oscuro"), claseDelCielo("con_luz")]).toEqual([
+      "Cielo muy oscuro",
+      "Cielo oscuro",
+      "Cielo con luz",
+    ]);
   });
 });

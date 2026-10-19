@@ -1,7 +1,7 @@
 // Frases cortas que la app arma con los datos del contrato. Lo que ya viene escrito del
 // motor (motivos, avisos, notas, explicaciones) se muestra tal cual: aquí no se reescribe.
 
-import type { Dia, Medio, Recurso, Sugerencia, Traslado } from "./api/tipos";
+import type { Dia, LugarDeEstrellas, LugarDeNoche, Medio, Recurso, Sugerencia, Traslado } from "./api/tipos";
 import type { Consulta, Nombres } from "./consulta";
 import { fecha, lista, mes, metros, plural, soles, solesExactos } from "./formato";
 
@@ -38,6 +38,32 @@ export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
   const cuantos = (traslado.vuelos ?? []).length;
   if (cuantos === 0) return null;
   return cuantos === 1 ? "con vuelo" : "con dos vuelos";
+}
+
+const TIPO_DE_LUGAR_DE_NOCHE: Record<LugarDeNoche["tipo"], string> = {
+  bar: "bar",
+  pub: "pub",
+  discoteca: "discoteca",
+  karaoke: "karaoke",
+  pena: "peña",
+  musica: "música en vivo",
+  comedia: "comedia",
+};
+
+/** «bar», «peña», «música en vivo»: qué es un lugar para salir. */
+export function tipoDeLugarDeNoche(tipo: LugarDeNoche["tipo"]): string {
+  return TIPO_DE_LUGAR_DE_NOCHE[tipo];
+}
+
+const CLASE_DEL_CIELO: Record<LugarDeEstrellas["clase"], string> = {
+  muy_oscuro: "Cielo muy oscuro",
+  oscuro: "Cielo oscuro",
+  con_luz: "Cielo con luz",
+};
+
+/** «Cielo muy oscuro»: las clases del Servicio de Parques Nacionales de EE. UU. */
+export function claseDelCielo(clase: LugarDeEstrellas["clase"]): string {
+  return CLASE_DEL_CIELO[clase];
 }
 
 /** Lo que la ficha dice del ingreso. Si no publica la tarifa, se dice: no se inventa. */

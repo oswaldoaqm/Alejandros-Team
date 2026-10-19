@@ -5,6 +5,7 @@ import type { components } from "./esquema";
 type Modelo = components["schemas"];
 
 export type Aviso = Modelo["Aviso"];
+export type Cielo = Modelo["Cielo"];
 export type Costo = Modelo["Costo"];
 export type Dia = Modelo["Dia"];
 export type Estacionalidad = Modelo["Estacionalidad"];
@@ -13,6 +14,10 @@ export type EventoNuevo = Modelo["EventoNuevo"];
 export type Eventos = Modelo["Eventos"];
 export type Indicadores = Modelo["Indicadores"];
 export type Interes = Modelo["Interes"];
+export type LugarDeEstrellas = Modelo["LugarDeEstrellas"];
+export type LugarDeNoche = Modelo["LugarDeNoche"];
+export type Luna = Modelo["Luna"];
+export type Noche = Modelo["Noche"];
 export type Opciones = Modelo["Opciones"];
 export type Parada = Modelo["Parada"];
 export type Polo = Modelo["Polo"];
