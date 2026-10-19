@@ -46,15 +46,33 @@ export function Acerca() {
         </li>
         <li>
           Ordena las zonas con un puntaje que combina cuánto vale lo que se visita, si el mes conviene, si
-          entra en tu presupuesto y cuánto se aleja del circuito de Lima y Cusco. Un viaje que pasa tu
-          presupuesto sale solo si es mucho mejor que los que entran, y siempre con su aviso. «Sorpréndeme»
-          busca solo fuera de ese circuito.
+          entra en tu presupuesto, si hay dónde salir de noche cuando pediste vida nocturna y cuánto se aleja
+          del circuito de Lima y Cusco. Un viaje que pasa tu presupuesto sale solo si es mucho mejor que los
+          que entran, y siempre con su aviso. «Sorpréndeme» busca solo fuera de ese circuito.
         </li>
       </ol>
       <p>
         Si eliges a dónde ir, arma solo el viaje a esa zona, con las mismas reglas: es el mismo viaje que te
         propondría si la eligiera él. Si no cabe, te dice por qué y qué cambiar para que salga: cuántos días
         hacen falta, si volando sí, o ver viajes a otras zonas.
+      </p>
+
+      <h2>De noche</h2>
+      <p>
+        Las noches que duermes en la zona, el plan propone qué hacer. Con «Vida nocturna», dónde salir: bares,
+        pubs, discotecas, karaokes y peñas a no más de unos 25 minutos a pie de donde duermes, otros cada
+        noche. Salen de OpenStreetMap y de Overture Maps, que junta lo que publican Meta y Microsoft; un bar
+        puede haber cerrado, así que cada uno enlaza a su mapa para verificarlo. La primera noche en la
+        altura, si llegas de abajo, el plan propone descansar.
+      </p>
+      <p>
+        Con «Naturaleza», o sin ningún interés, una noche para ver estrellas donde el cielo es oscuro. Cuánta
+        luz artificial hay en el cielo se estima con las luces que ve de noche el satélite VIIRS y un modelo
+        publicado (Duriscoe y otros, 2018), con las clases del Servicio de Parques Nacionales de Estados
+        Unidos. Cuántas noches salen despejadas cada mes, con la máscara de nubes del satélite GOES-16 de 2022
+        a 2024; en la costa, donde de noche el satélite no ve las nubes bajas, con lo que reportó el
+        aeropuerto más cercano. Con fecha, la noche elegida es la de menos luna, y el plan dice a qué hora
+        oscurece y cuándo sale o se pone.
       </p>
 
       <h2>El mes</h2>
@@ -91,6 +109,7 @@ export function Acerca() {
       <ul>
         <li>Un viaje visita una sola zona. Combinar varias en un mismo viaje es lo siguiente.</li>
         <li>No conoce horarios ni disponibilidad de buses, trenes, botes u hospedajes.</li>
+        <li>No sabe si un bar o una discoteca sigue abierto ni qué noches abre.</li>
       </ul>
 
       <h2>Tus datos</h2>
@@ -118,6 +137,23 @@ export function Acerca() {
             colaboradores de OpenStreetMap
           </EnlaceExterno>
           , ODbL 1.0.
+        </li>
+        <li>
+          Lugares de noche:{" "}
+          <EnlaceExterno href="https://overturemaps.org/">Overture Maps Foundation</EnlaceExterno>, con datos
+          de Meta y Microsoft, CDLA Permissive 2.0; y OpenStreetMap.
+        </li>
+        <li>
+          Luces nocturnas: VIIRS, del{" "}
+          <EnlaceExterno href="https://eogdata.mines.edu/products/vnl/">
+            Earth Observation Group de la Colorado School of Mines
+          </EnlaceExterno>
+          , de dominio público, en la copia{" "}
+          <EnlaceExterno href="https://registry.opendata.aws/wb-light-every-night/">
+            «Light Every Night» del Banco Mundial
+          </EnlaceExterno>
+          . Nubes: GOES-16 y los METAR de los aeropuertos, de{" "}
+          <EnlaceExterno href="https://www.noaa.gov/">NOAA</EnlaceExterno>.
         </li>
         <li>
           Mapa de fondo: <EnlaceExterno href="https://openfreemap.org/">OpenFreeMap</EnlaceExterno>, con
