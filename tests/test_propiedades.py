@@ -66,6 +66,26 @@ def _hhmm(texto: str) -> int:
     return int(h) * 60 + int(m)
 
 
+def _la_noche(consulta: Consulta, ruta) -> None:
+    """La noche (desde 1.5): solo las que se duermen en la base, solo lo que la consulta pide, a lo más
+    una de estrellas, y cada lugar para salir a pie de la base."""
+    noches = [d for d in ruta.dias if d.noche is not None]
+    pide_salir = Interes.vida_nocturna in consulta.intereses
+    pide_estrellas = Interes.naturaleza in consulta.intereses or not consulta.intereses
+    for d in noches:
+        # Se duerme en la base: no es un viaje de un día ni el día en que se deja, y si es de ida,
+        # es el último tramo.
+        assert d.tipo not in ("ida_visita_y_vuelta", "vuelta", "visita_y_vuelta")
+        if d.tipo == "ida":
+            assert all(otro.tipo != "ida" for otro in ruta.dias if otro.numero > d.numero)
+        assert d.noche.tipo != "salir" or pide_salir
+        assert d.noche.tipo != "descanso" or pide_salir
+        assert d.noche.tipo != "estrellas" or pide_estrellas
+        assert len(d.noche.lugares) <= 3 and all(lugar.minutos_a_pie <= 30 for lugar in d.noche.lugares)
+        assert (d.noche.cielo is not None) == (d.noche.tipo == "estrellas")
+    assert sum(1 for d in noches if d.noche.tipo == "estrellas") <= 1
+
+
 @settings(
     max_examples=CONSULTAS,
     deadline=None,
@@ -114,6 +134,7 @@ def test_las_diez_propiedades(consulta):
         # Y lo que el viajero lee del clima habla de la zona, como la app, no del polo.
         del_clima = [a.mensaje for a in ruta.avisos if a.tipo in ("datos", "estacionalidad")]
         assert not any(POLO.search(frase) for frase in [ruta.estacionalidad.explicacion, *del_clima])
+        _la_noche(consulta, ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
@@ -135,6 +156,23 @@ def test_las_diez_propiedades(consulta):
 
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()
+
+    # Y la vida nocturna no cambia el día: en la misma zona, sin ella, las paradas, sus horas, el
+    # traslado y el costo son los mismos (desde 1.5).
+    if Interes.vida_nocturna in consulta.intereses and respuesta.rutas:
+        ruta = respuesta.rutas[0]
+        sin_noche = consulta.model_copy(
+            update={
+                "intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna],
+                "destino": ruta.polo.id,
+                "sorpresa": False,
+            }
+        )
+        [del_dia] = resolver(sin_noche, datos).rutas
+        assert [d.model_dump(exclude={"noche"}) for d in ruta.dias] == [
+            d.model_dump(exclude={"noche"}) for d in del_dia.dias
+        ]
+        assert (ruta.costo, ruta.traslado) == (del_dia.costo, del_dia.traslado)
 
     # 7. El presupuesto ordena, elige y avisa. Con él salen tantas rutas como sin él; una que
     #    entra en el presupuesto y salía sin él sigue saliendo; y la que lo pasa lleva su aviso.
