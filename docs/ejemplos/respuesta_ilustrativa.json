@@ -179,7 +179,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "14:04",
+              "llegada": "15:04",
               "minutos_traslado": 57,
               "km_desde_anterior": 26.7,
               "minutos_visita": 30
@@ -201,14 +201,20 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 10.0
               },
-              "llegada": "14:45",
+              "llegada": "15:45",
               "minutos_traslado": 11,
               "km_desde_anterior": 2.3,
               "minutos_visita": 45
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "13:07",
+            "despues_de": 3,
+            "lugar": "Centro Ceremonial Cahuachi",
+            "en_la_base": false,
+            "hay_donde_comer": false
+          },
           "noche": {
             "tipo": "estrellas",
             "titulo": "Estrellas en Planetarium María Reiche",
@@ -329,7 +335,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 15.0
               },
-              "llegada": "12:38",
+              "llegada": "13:38",
               "minutos_traslado": 8,
               "km_desde_anterior": 0.4,
               "minutos_visita": 45
@@ -351,14 +357,20 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "13:57",
+              "llegada": "14:57",
               "minutos_traslado": 34,
               "km_desde_anterior": 23.5,
               "minutos_visita": 75
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "12:30",
+            "despues_de": 3,
+            "lugar": "Complejo Arqueológico Tumbas de la Muña",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
@@ -433,7 +445,7 @@
         "recursos": 177,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.499,
+      "puntaje": 0.507,
       "motivos": [
         "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
         "Todas sus paradas son de historia y arqueología o naturaleza",
@@ -497,7 +509,7 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "13:20",
+              "llegada": "14:20",
               "minutos_traslado": 17,
               "km_desde_anterior": 8.8,
               "minutos_visita": 20
@@ -519,14 +531,20 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 4.0
               },
-              "llegada": "13:53",
+              "llegada": "14:53",
               "minutos_traslado": 13,
               "km_desde_anterior": 3.7,
               "minutos_visita": 45
             }
           ],
           "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "13:03",
+            "despues_de": 0,
+            "lugar": "Huancayo",
+            "en_la_base": true,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
@@ -641,7 +659,7 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "12:48",
+              "llegada": "13:48",
               "minutos_traslado": 16,
               "km_desde_anterior": 6.6,
               "minutos_visita": 30
@@ -663,14 +681,20 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "13:26",
+              "llegada": "14:26",
               "minutos_traslado": 8,
               "km_desde_anterior": 0.3,
               "minutos_visita": 30
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "12:48",
+            "despues_de": 4,
+            "lugar": "El Paseo de los Héroes de Concepción",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": {
             "tipo": "estrellas",
             "titulo": "Estrellas en Observatorio Discovery",
@@ -813,7 +837,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "13:16",
+              "llegada": "14:16",
               "minutos_traslado": 16,
               "km_desde_anterior": 6.4,
               "minutos_visita": 75
@@ -835,66 +859,50 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "14:43",
+              "llegada": "15:43",
               "minutos_traslado": 12,
               "km_desde_anterior": 3.4,
               "minutos_visita": 30
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "13:00",
+            "despues_de": 4,
+            "lugar": "Museo de Sitio Wariwillka",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
           "numero": 4,
           "fecha": null,
           "tipo": "visita_y_vuelta",
-          "horas": 7.8,
-          "km": 345.1,
+          "horas": 8.0,
+          "km": 323.4,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "821",
-                "nombre": "Puente Las Balsas de Concepción – Heroinas Toledo",
+                "codigo": "10944",
+                "nombre": "Museo Regional de Arqueología de Junín",
                 "categoria": "Manifestaciones culturales",
-                "tipo": "Lugares Históricos",
-                "subtipo": "Puentes",
-                "jerarquia": 1,
-                "lat": -11.93806,
-                "lon": -75.31327,
-                "altitud_m": 3298,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=821",
-                "descripcion": "El Puente Las Balsas es un viaducto que une ambas márgenes del río Mantaro en el sector denominado La Huaycha; allí sobre la margen izquierda del río Mantaro, la Municipalidad Provincial de Concepción ha construido en el año 2003 un monumento que representa la acción heroica de…",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -12.060278,
+                "lon": -75.288056,
+                "altitud_m": 3263,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=10944",
+                "descripcion": "El Museo Regional de Arqueología de Junín fue creado mediante Resolución Jefatural N° 365/INC de fecha 14/06/1993. Se encuentra en la ciudad de Chupaca, siendo el principal en su género en la región. La colección que define al museo es fundamentalmente arqueológica.",
+                "ingreso": "pagado",
+                "tarifa_soles": 2.5
               },
-              "llegada": "08:28",
-              "minutos_traslado": 28,
-              "km_desde_anterior": 19.2,
-              "minutos_visita": 15
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "713",
-                "nombre": "Cerrito de la Libertad",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Miradores",
-                "jerarquia": 1,
-                "lat": -12.062463,
-                "lon": -75.195785,
-                "altitud_m": 3340,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=713",
-                "descripcion": "El Cerrito de la Libertad es una colina, desde donde se puede dominar un amplio panorama de la ciudad de Huancayo y parte del valle de Mantaro.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "09:14",
-              "minutos_traslado": 31,
-              "km_desde_anterior": 21.4,
-              "minutos_visita": 20
+              "llegada": "09:00",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 10.6,
+              "minutos_visita": 75
             }
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
@@ -904,20 +912,20 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 602,
-        "p50": 718,
-        "p80": 828,
+        "p20": 593,
+        "p50": 707,
+        "p80": 816,
         "desglose": {
-          "transporte": 201,
+          "transporte": 187,
           "alojamiento": 251,
           "alimentacion": 239,
-          "entradas": 27
+          "entradas": 30
         },
         "dentro_del_presupuesto": false,
-        "exceso": 18,
+        "exceso": 7,
         "supuestos": [
           "Bus interprovincial de ida y vuelta: 604 km",
-          "Movilidad local en colectivo o taxi: 170 km",
+          "Movilidad local en colectivo o taxi: 148 km",
           "Hospedaje económico en Huancayo, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
@@ -979,15 +987,15 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 718) pasa tu presupuesto por S/ 18."
+          "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
         }
       ],
       "indicadores": {
-        "paradas": 16,
-        "jerarquia_media": 1.85,
+        "paradas": 15,
+        "jerarquia_media": 2.0,
         "paradas_jerarquia_alta": 2,
         "altitud_max_m": 3441,
-        "km_total": 774.4,
+        "km_total": 752.7,
         "valor_capturado": 0.567
       }
     },
@@ -1150,7 +1158,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "12:41",
+              "llegada": "13:41",
               "minutos_traslado": 32,
               "km_desde_anterior": 18.6,
               "minutos_visita": 90
@@ -1172,7 +1180,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "14:26",
+              "llegada": "15:26",
               "minutos_traslado": 15,
               "km_desde_anterior": 5.6,
               "minutos_visita": 30
@@ -1194,14 +1202,20 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "15:04",
+              "llegada": "16:04",
               "minutos_traslado": 8,
               "km_desde_anterior": 0.7,
               "minutos_visita": 30
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "12:41",
+            "despues_de": 3,
+            "lugar": "Zona Arqueológica Monumental de Kotosh",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
@@ -1294,7 +1308,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 2.5
               },
-              "llegada": "12:48",
+              "llegada": "13:48",
               "minutos_traslado": 14,
               "km_desde_anterior": 2.7,
               "minutos_visita": 20
@@ -1316,7 +1330,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 4.0
               },
-              "llegada": "13:17",
+              "llegada": "14:17",
               "minutos_traslado": 9,
               "km_desde_anterior": 0.9,
               "minutos_visita": 77
@@ -1338,14 +1352,20 @@
                 "ingreso": "desconocido",
                 "tarifa_soles": null
               },
-              "llegada": "14:43",
+              "llegada": "15:43",
               "minutos_traslado": 9,
               "km_desde_anterior": 1.1,
               "minutos_visita": 30
             }
           ],
           "nota": null,
-          "almuerzo": null,
+          "almuerzo": {
+            "hora": "12:34",
+            "despues_de": 3,
+            "lugar": "Granja Ecologica Lindero",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {

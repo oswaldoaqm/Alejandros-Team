@@ -9,7 +9,8 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    días en la base. Un día de solo viaje puede durar hasta 9 horas; una ida más larga se
    parte en partes iguales y se duerme a mitad de camino. El día de llegada y el de salida
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
-   Un viaje que pasaría más días solo viajando que días con visitas no se propone.
+   Un viaje que pasaría más días solo viajando que días con visitas no se propone. Cada día
+   con visitas lleva una hora de almuerzo, que no cuenta en las 8 (decisión 0019).
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
 4. El puntaje: (1 − λ) · calidad · temporada · noche · presupuesto + λ · novedad, con
    λ = 0,3. La calidad es el valor que visita el itinerario frente al mejor de la consulta,
@@ -47,6 +48,7 @@ from dreemgo.contrato import (
     DE_NOCHE,
     DIAS_MAX,
     RUTAS_MAX,
+    Almuerzo,
     Aviso,
     Consulta,
     Costo,
@@ -140,6 +142,7 @@ def _candidata(i: int, recurso: dict, intereses: set[str]) -> Candidata:
         abre=abre,
         cierra=cierra,
         subtipo=recurso["subtipo"],
+        comida=recurso.get("comida_m") is not None,
         dias=dias or None,
     )
 
@@ -578,9 +581,31 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
                 km=round(km_carretera + visita_km, 1),
                 paradas=paradas,
                 nota=" ".join(t for t in notas if t) or None,
+                almuerzo=_almuerzo(it, recorrido, origen, datos) if recorrido else None,
             )
         )
     return dias
+
+
+def _almuerzo(it: Itinerario, recorrido: Recorrido, origen: Origen, datos: Datos) -> Almuerzo | None:
+    """Cuándo y dónde se almuerza un día con visitas: en una parada o en el depósito, que es la base
+    o, en un viaje de un día, el origen. Si hay dónde comer cerca de una parada lo dicen los datos
+    (``comida_m``, pipeline/comida.py); si no los traen, no se sabe."""
+    a = recorrido.almuerzo
+    if a is None or not recorrido.visitas:
+        return None
+    if a.en is None:
+        excursion = it.plan.tipo_viaje == "excursion"
+        lugar = origen.nombre if excursion else it.polo.base["nombre"]
+        hay = None if excursion or it.polo.base.get("comida_m") is None else True
+        en_la_base = True
+    else:
+        r = datos.recursos[it.polo.paradas[a.en]]
+        lugar, en_la_base = r["nombre"], False
+        hay = (r["comida_m"] is not None) if "comida_m" in r else None
+    return Almuerzo(
+        hora=textos.hora(a.hora), despues_de=a.despues_de, lugar=lugar, en_la_base=en_la_base, hay_donde_comer=hay
+    )
 
 
 def _km_por_dia(it: Itinerario, dias: int) -> dict[int, float]:

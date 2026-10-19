@@ -106,16 +106,14 @@ def test_determinista_y_el_mejor_arranque_no_empeora():
 
 
 def test_la_jornada_no_se_corre_aunque_el_primer_lugar_abra_tarde():
-    # Un teatro que abre a las 18:00: un día entero termina a las 16:00.
+    # Un teatro que abre a las 18:00: un día entero termina a las 17:00, con su almuerzo.
     teatro = Candidata(0, valor=1.0, visita=60, abre=18 * 60, cierra=22 * 60)
     assert horario([teatro], Jornada(8 * 60, OCHO), _linea(1)) is None
-    # Si abre a las 15:00, se sale a las 14:50 y se volvería a las 16:10: tampoco.
+    # Si abre a las 15:00, se sale a las 14:50, después de almorzar a la hora en la base.
     museo = Candidata(0, valor=1.0, visita=60, abre=15 * 60, cierra=18 * 60)
-    assert horario([museo], Jornada(8 * 60, OCHO), _linea(1)) is None
-    # Si abre a las 14:00, sí: se sale a las 13:50 y se vuelve a las 15:10.
-    antes = Candidata(0, valor=1.0, visita=60, abre=14 * 60, cierra=18 * 60)
-    r = horario([antes], Jornada(8 * 60, OCHO), _linea(1))
-    assert (r.salida, r.vuelta) == (13 * 60 + 50, 15 * 60 + 10)
+    r = horario([museo], Jornada(8 * 60, OCHO), _linea(1))
+    assert (r.almuerzo.hora, r.almuerzo.en, r.almuerzo.dentro) == (12 * 60 + 30, None, False)
+    assert (r.salida, r.vuelta) == (14 * 60 + 50, 16 * 60 + 10)
 
 
 def test_no_se_espera_mas_de_una_hora_en_la_puerta():
