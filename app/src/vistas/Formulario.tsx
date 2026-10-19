@@ -38,9 +38,44 @@ const ICONO_DE_INTERES: Record<string, NombreDeIcono> = {
   fiestas: "fiestas",
   arquitectura: "arquitectura",
   aventura: "aventura",
+  vida_nocturna: "copa",
 };
 
 type Eleccion = "origen" | "destino" | "cuando" | "intereses" | "filtros" | null;
+
+function Gustos({
+  intereses,
+  c,
+  cambiar,
+}: {
+  intereses: Opciones["intereses"];
+  c: Consulta;
+  cambiar: (cambios: Partial<Consulta>) => void;
+}) {
+  return (
+    <div className="gustos">
+      {intereses.map((i) => (
+        <label key={i.id} className="gusto">
+          <input
+            type="checkbox"
+            checked={c.intereses.includes(i.id)}
+            onChange={() =>
+              cambiar({
+                intereses: c.intereses.includes(i.id)
+                  ? c.intereses.filter((x) => x !== i.id)
+                  : [...c.intereses, i.id],
+              })
+            }
+          />
+          <span>
+            <Icono nombre={ICONO_DE_INTERES[i.id] ?? "estrella"} tamano={26} />
+            {i.etiqueta}
+          </span>
+        </label>
+      ))}
+    </div>
+  );
+}
 
 function acotar(valor: number, minimo: number, maximo: number): number {
   return Math.min(maximo, Math.max(minimo, valor));
@@ -295,29 +330,17 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
         }
       >
         <p className="hoja__ayuda">
-          Elige uno, varios o ninguno. Los lugares que te gustan pesan más en el plan.
+          Elige uno, varios o ninguno. Los lugares que te gustan pesan más en el plan, y con «Naturaleza» o
+          sin ninguno, una noche para ver estrellas donde el cielo es oscuro.
         </p>
-        <div className="gustos">
-          {opciones.intereses.map((i) => (
-            <label key={i.id} className="gusto">
-              <input
-                type="checkbox"
-                checked={c.intereses.includes(i.id)}
-                onChange={() =>
-                  cambiar({
-                    intereses: c.intereses.includes(i.id)
-                      ? c.intereses.filter((x) => x !== i.id)
-                      : [...c.intereses, i.id],
-                  })
-                }
-              />
-              <span>
-                <Icono nombre={ICONO_DE_INTERES[i.id] ?? "estrella"} tamano={26} />
-                {i.etiqueta}
-              </span>
-            </label>
-          ))}
-        </div>
+        <Gustos intereses={opciones.intereses.filter((i) => !i.de_noche)} c={c} cambiar={cambiar} />
+        {opciones.intereses.some((i) => i.de_noche) ? (
+          <>
+            <h3 className="hoja__subtitulo">De noche</h3>
+            <p className="hoja__ayuda">Bares, pubs, discotecas, karaokes y peñas cerca de donde duermes.</p>
+            <Gustos intereses={opciones.intereses.filter((i) => i.de_noche)} c={c} cambiar={cambiar} />
+          </>
+        ) : null}
       </Hoja>
 
       <Hoja

@@ -32,6 +32,7 @@ export const OPCIONES: Opciones = {
     { id: "naturaleza", etiqueta: "Naturaleza", paradas: 2562, de_noche: false },
     { id: "historia", etiqueta: "Historia y arqueología", paradas: 956, de_noche: false },
     { id: "playa", etiqueta: "Playa", paradas: 214, de_noche: false },
+    { id: "vida_nocturna", etiqueta: "Vida nocturna", paradas: 0, de_noche: true },
   ],
   dias: { minimo: 1, maximo: 14, defecto: 6 },
   presupuesto: { minimo: 100, maximo: 50000, defecto: null },
