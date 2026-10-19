@@ -19,6 +19,7 @@ import { Cargando, ErrorVista } from "../piezas/Estados";
 import { CreditoDeFoto, Foto } from "../piezas/Foto";
 import { Icono } from "../piezas/Icono";
 import { ListaEventos } from "../piezas/Listas";
+import { NocheDeLaZonaVista } from "../piezas/Noche";
 import { claseDeRecurso, esImperdible, HojaDeRecurso, Imperdible } from "../piezas/Recurso";
 import { enlaces } from "../ruta";
 import { nombreDelViaje } from "../textos";
@@ -169,6 +170,15 @@ function Zona({ detalle, fotos, mes, irA }: PropsDeZona) {
           {resumen ? <p className="zona__bajada">{resumen}</p> : null}
           <ClimaAnual clima={clima} inicial={mes ?? new Date().getMonth() + 1} />
         </section>
+
+        {detalle.noche ? (
+          <section aria-labelledby="zona-noche">
+            <h2 id="zona-noche" className="viaje__titular">
+              De noche
+            </h2>
+            <NocheDeLaZonaVista noche={detalle.noche} base={polo.base.nombre} mesElegido={mes} />
+          </section>
+        ) : null}
 
         <section aria-labelledby="zona-fiestas">
           <h2 id="zona-fiestas" className="viaje__titular">

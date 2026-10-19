@@ -145,6 +145,82 @@
   color: var(--tinta-3);
 }
 
+/* La zona: la misma noche, con dos partes y el gráfico de noches despejadas. */
+.noche--zona {
+  gap: 12px;
+  padding: 18px 18px 16px;
+}
+
+.noche--zona .noche__cabeza + .noche__nota,
+.noche--zona .noche__cabeza + .noche__clase {
+  margin-top: -6px;
+}
+
+.noche--zona .noche__lugares + .noche__cabeza {
+  margin-top: 8px;
+}
+
+.despejadas {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 0;
+}
+
+.despejadas__titulo {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--sobre-noche-2);
+}
+
+.despejadas__meses {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 3px;
+  align-items: end;
+}
+
+.despejadas__mes {
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+}
+
+.despejadas__columna {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 72px;
+}
+
+.despejadas__barra {
+  width: 62%;
+  max-width: 18px;
+  background: color-mix(in srgb, var(--luna) 70%, transparent);
+  border-radius: 4px 4px 1px 1px;
+}
+
+.despejadas__valor {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--sobre-noche-2);
+}
+
+.despejadas__nombre {
+  font-size: 0.6875rem;
+  color: var(--sobre-noche-2);
+}
+
+.despejadas__mes--elegido .despejadas__barra {
+  background: var(--luna);
+}
+
+.despejadas__mes--elegido .despejadas__valor,
+.despejadas__mes--elegido .despejadas__nombre {
+  font-weight: 700;
+  color: var(--sobre-noche);
+}
+
 @media print {
   .noche {
     color: #000;

@@ -64,6 +64,56 @@ export const POLO: PoloDetalle = {
     };
   }),
   eventos: PRIMERA.eventos ?? [],
+  noche: {
+    lugares: [
+      {
+        nombre: "Bar de Prueba",
+        tipo: "bar",
+        lat: -14.83,
+        lon: -74.94,
+        minutos_a_pie: 4,
+        fuente: "openstreetmap",
+        url: "https://www.openstreetmap.org/node/1",
+        horario: null,
+      },
+      {
+        nombre: "Peña de Prueba",
+        tipo: "pena",
+        lat: -14.831,
+        lon: -74.941,
+        minutos_a_pie: 9,
+        fuente: "overture",
+        url: "https://www.openstreetmap.org/?mlat=-14.831&mlon=-74.941#map=19/-14.831/-74.941",
+        horario: null,
+      },
+    ],
+    cielo: {
+      desde: {
+        nombre: PRIMERA.polo.base.nombre,
+        tipo: "base",
+        minutos: 0,
+        lat: PRIMERA.polo.base.lat,
+        lon: PRIMERA.polo.base.lon,
+        url: null,
+        brillo: 0.8,
+        clase: "oscuro",
+      },
+      mas_oscuro: null,
+      observatorio: {
+        nombre: "Planetario de Prueba",
+        tipo: "planetario",
+        minutos: 8,
+        lat: -14.82,
+        lon: -74.93,
+        url: "https://www.openstreetmap.org/way/2",
+        brillo: 2.5,
+        clase: "con_luz",
+      },
+      noches_despejadas: [0.1, 0.05, 0.1, 0.4, 0.7, 0.9, 0.92, 0.85, 0.6, 0.3, 0.2, null],
+      fuente_nubes: "goes",
+      aeropuerto: null,
+    },
+  },
   atribucion: RESPUESTA.atribucion,
 };
 

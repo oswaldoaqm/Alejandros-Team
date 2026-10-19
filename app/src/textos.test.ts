@@ -7,6 +7,7 @@ import {
   claseDelCielo,
   climaCorto,
   conQueSeViaja,
+  cuantosLugaresDeNoche,
   entrada,
   imperdibles,
   nombreDelViaje,
@@ -159,5 +160,19 @@ describe("la noche", () => {
       "Cielo oscuro",
       "Cielo con luz",
     ]);
+  });
+
+  it("cuenta los lugares para salir de cada tipo, en el orden del motor", () => {
+    const lugares = [
+      { tipo: "pena" },
+      { tipo: "bar" },
+      { tipo: "discoteca" },
+      { tipo: "bar" },
+      { tipo: "musica" },
+    ] as const;
+    expect(plano(cuantosLugaresDeNoche([...lugares]))).toBe(
+      "2 bares, 1 discoteca, 1 peña y 1 local con música en vivo",
+    );
+    expect(cuantosLugaresDeNoche([])).toBe("");
   });
 });

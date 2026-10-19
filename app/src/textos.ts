@@ -55,6 +55,27 @@ export function tipoDeLugarDeNoche(tipo: LugarDeNoche["tipo"]): string {
   return TIPO_DE_LUGAR_DE_NOCHE[tipo];
 }
 
+// Como en el motor (dreemgo/motor/noche.py): el mismo orden y los mismos nombres.
+const CUANTOS_DE_NOCHE: [LugarDeNoche["tipo"], string, string][] = [
+  ["bar", "bar", "bares"],
+  ["pub", "pub", "pubs"],
+  ["discoteca", "discoteca", "discotecas"],
+  ["karaoke", "karaoke", "karaokes"],
+  ["pena", "peña", "peñas"],
+  ["musica", "local con música en vivo", "locales con música en vivo"],
+  ["comedia", "local de comedia", "locales de comedia"],
+];
+
+/** «72 bares, 17 pubs y 1 peña»: cuántos lugares para salir hay de cada tipo. */
+export function cuantosLugaresDeNoche(lugares: Pick<LugarDeNoche, "tipo">[]): string {
+  return lista(
+    CUANTOS_DE_NOCHE.map(([tipo, uno, varios]) => {
+      const n = lugares.filter((l) => l.tipo === tipo).length;
+      return n > 0 ? plural(n, uno, varios) : "";
+    }),
+  );
+}
+
 const CLASE_DEL_CIELO: Record<LugarDeEstrellas["clase"], string> = {
   muy_oscuro: "Cielo muy oscuro",
   oscuro: "Cielo oscuro",

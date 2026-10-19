@@ -1,8 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Noche } from "../api/tipos";
+import { POLO } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
-import { FaseDeLuna, NocheDelDia } from "./Noche";
+import { FaseDeLuna, NocheDeLaZonaVista, NocheDelDia } from "./Noche";
 
 const SALIR: Noche = {
   tipo: "salir",
@@ -106,5 +107,60 @@ describe("la luna", () => {
     expect(dibujo(0.2, false)).toMatch(/^M12 3A9 9 0 0 1 12 21A5\.40 9 0 0 0 12 3Z$/);
     // Gibosa: la sombra se curva al revés.
     expect(dibujo(0.8, true)).toMatch(/A5\.40 9 0 0 0 12 3Z$/);
+  });
+});
+
+describe("la noche de una zona", () => {
+  const noche = POLO.noche;
+  if (!noche) throw new Error("La zona de prueba no trae noche.");
+
+  it("dónde salir y cuántas noches salen despejadas cada mes", () => {
+    render(<NocheDeLaZonaVista noche={noche} base="Nasca" mesElegido={7} />);
+    expect(screen.getByRole("heading", { name: "Para salir" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Peña de Prueba" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Para ver estrellas" })).toBeTruthy();
+    const meses = screen.getAllByRole("listitem").filter((li) => li.classList.contains("despejadas__mes"));
+    expect(meses).toHaveLength(12);
+    expect(plano(meses[6]?.textContent)).toContain("Julio: 9 de cada 10 noches despejadas");
+    expect(meses[6]?.classList.contains("despejadas__mes--elegido")).toBe(true);
+    expect(plano(meses[11]?.textContent)).toContain("Diciembre: sin dato");
+    expect(plano(document.body.textContent)).toContain("GOES-16");
+    expect(plano(document.body.textContent)).toContain(
+      "1 bar y 1 peña, a no más de 9 minutos a pie de Nasca.",
+    );
+    expect(plano(document.body.textContent)).toContain("Planetario de Prueba es un planetario a 8 min:");
+  });
+
+  it("un mirador cuyo nombre no lo dice se presenta como mirador", () => {
+    const conMirador = {
+      ...noche,
+      cielo: {
+        ...noche.cielo,
+        mas_oscuro: {
+          nombre: "Gato Holgazán",
+          tipo: "mirador" as const,
+          minutos: 32,
+          lat: -14.71,
+          lon: -75.1,
+          url: "https://www.openstreetmap.org/node/12872545656",
+          brillo: 0.36,
+          clase: "oscuro" as const,
+        },
+      },
+    };
+    render(<NocheDeLaZonaVista noche={conMirador} base="Nasca" mesElegido={null} />);
+    expect(plano(document.body.textContent)).toContain(
+      "El cielo oscuro más cercano está en el mirador Gato Holgazán, a 32 min.",
+    );
+    expect(screen.getByRole("link", { name: "Gato Holgazán" })).toBeTruthy();
+  });
+
+  it("sin dato de nubes lo dice", () => {
+    const sinNubes = {
+      ...noche,
+      cielo: { ...noche.cielo, noches_despejadas: Array(12).fill(null), fuente_nubes: null },
+    };
+    render(<NocheDeLaZonaVista noche={sinNubes} base="Nasca" mesElegido={null} />);
+    expect(plano(document.body.textContent)).toContain("no damos cuántas noches salen despejadas");
   });
 });
