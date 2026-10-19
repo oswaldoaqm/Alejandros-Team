@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.5"
+VERSION_CONTRATO = "1.6"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -92,14 +92,16 @@ class Consulta(_Modelo):
     )
     fecha_inicio: date | None = Field(
         None,
-        description="Día en que se sale del origen. Con ella los días del itinerario llevan fecha "
-        "y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+        description="El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día "
+        "en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los "
+        "eventos se cruzan día a día; sin ella, se cruzan con el mes.",
     )
     dias: int = Field(
         DIAS_DEFECTO,
         ge=DIAS_MIN,
         le=DIAS_MAX,
-        description="Días disponibles en total, contando la ida y la vuelta desde el origen.",
+        description="Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche "
+        "(desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
     )
     intereses: list[Interes] = Field(
         default_factory=list,
@@ -189,10 +191,17 @@ class Recurso(_Modelo):
     tarifa_soles: float | None = Field(None, ge=0)
 
 
+HORA = r"^([01]\d|2[0-3]):[0-5]\d$"
+
+
 class Parada(_Modelo):
     orden: int = Field(ge=1, description="Posición dentro del día.")
     recurso: Recurso
-    llegada: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$", description="Hora estimada de llegada, HH:MM.")
+    llegada: str = Field(
+        pattern=HORA,
+        description="Hora estimada de llegada, HH:MM. Si se almuerza al llegar (desde 1.6), la de después del "
+        "almuerzo.",
+    )
     minutos_traslado: int = Field(ge=0, description="Desde la parada anterior o desde la base.")
     km_desde_anterior: float = Field(ge=0)
     minutos_visita: int = Field(ge=0)
@@ -200,7 +209,31 @@ class Parada(_Modelo):
 
 def _hora(descripcion: str):
     """Un campo con una hora HH:MM del Perú, o null."""
-    return Field(None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$", description=descripcion)
+    return Field(None, pattern=HORA, description=descripcion)
+
+
+class Almuerzo(_Modelo):
+    """La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día."""
+
+    hora: str = Field(pattern=HORA, description="Cuándo empieza, HH:MM. Dura una hora.")
+    despues_de: int = Field(ge=0, description="Cuántas paradas del día van antes: 0, antes de la primera.")
+    lugar: str = Field(description="Dónde: el nombre de la parada o de la base.")
+    en_la_base: bool = Field(description="Si es en la base o, en un viaje de un día, en la ciudad de origen.")
+    hay_donde_comer: bool | None = Field(
+        None,
+        description="Si OpenStreetMap u Overture registran restaurantes, cafés o comida rápida a menos de 1,5 km. "
+        "false: no registran ninguno, y conviene llevar el almuerzo. En la base o en el origen, null si no "
+        "registran ninguno: es un pueblo con hospedaje, y se da por hecho que hay.",
+    )
+
+
+class BusDeNoche(_Modelo):
+    """La ida y la vuelta en bus de noche: las noches del bus van fuera de los días del viaje (desde 1.6)."""
+
+    sale: str = Field(pattern=HORA, description="La salida del origen, la noche antes del día 1.")
+    llega: str = Field(pattern=HORA, description="La llegada a la base, el día 1.")
+    sale_vuelta: str = Field(pattern=HORA, description="La salida de la base, la noche del último día.")
+    llega_vuelta: str = Field(pattern=HORA, description="La llegada al origen, la mañana siguiente.")
 
 
 class LugarDeNoche(_Modelo):
@@ -298,12 +331,19 @@ class Dia(_Modelo):
     numero: int = Field(ge=1)
     fecha: date | None = None
     tipo: Literal["ida", "visita", "vuelta", "ida_y_visita", "visita_y_vuelta", "ida_visita_y_vuelta"] = Field(
-        description="ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.",
+        description="ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él. Con "
+        "bus de noche (desde 1.6), el día 1 es de ida y el último de vuelta aunque el bus vaya de noche: "
+        "ida_y_visita y visita_y_vuelta, si tienen paradas.",
     )
-    horas: float = Field(ge=0, description="Horas ocupadas entre traslados y visitas.")
+    horas: float = Field(ge=0, description="Horas ocupadas entre traslados y visitas: el almuerzo no cuenta.")
     km: float = Field(ge=0)
     paradas: list[Parada] = Field(default_factory=list)
     nota: str | None = None
+    almuerzo: Almuerzo | None = Field(
+        None,
+        description="Cuándo y dónde se almuerza, si el día tiene visitas y llega a la hora del almuerzo: null si "
+        "las visitas terminan antes de las 12:30 (desde 1.6).",
+    )
     noche: Noche | None = Field(
         None,
         description="Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las "
@@ -354,7 +394,11 @@ class Traslado(_Modelo):
         description="Horas de la ida, de puerta a puerta: por carretera, en tren o en bote y, si se vuela, "
         "con el tiempo en los aeropuertos y en el aire.",
     )
-    dias_de_viaje: int = Field(ge=0, description="Días del viaje que se van en la ida y la vuelta.")
+    dias_de_viaje: int = Field(
+        ge=0,
+        description="Días del viaje que se van en la ida y la vuelta. Con bus de noche (desde 1.6), 0: el bus va "
+        "de noche, fuera de los días.",
+    )
     medios: list[Medio] = Field(
         default_factory=lambda: ["carretera"],
         description="Con qué se hace la ida, en este orden: avión (desde 1.3), carretera, tren, bote (desde "
@@ -372,6 +416,11 @@ class Traslado(_Modelo):
         description="red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. "
         "red_vial_y_vuelos: lo mismo hasta y desde los aeropuertos, más la duración publicada de cada vuelo "
         "(desde 1.3). estimado: línea recta por un factor calibrado.",
+    )
+    bus_de_noche: BusDeNoche | None = Field(
+        None,
+        description="Si la ida y la vuelta son en bus de noche, sus horas: por tierra de 7 a 16 horas, sin tren ni "
+        "bote, en un viaje de dos días o más (desde 1.6).",
     )
 
 
@@ -443,7 +492,9 @@ class Indicadores(_Modelo):
     jerarquia_media: float | None = Field(None, ge=1, le=4)
     paradas_jerarquia_alta: int = Field(ge=0, description="Paradas de jerarquía 3 o 4.")
     altitud_max_m: int | None = None
-    km_total: float = Field(ge=0)
+    km_total: float = Field(
+        ge=0, description="Los km por tierra de todos los días; con bus de noche (desde 1.6), más los del bus."
+    )
     valor_capturado: float = Field(
         ge=0,
         le=1,

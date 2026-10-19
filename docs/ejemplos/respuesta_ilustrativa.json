@@ -1,5 +1,5 @@
 {
-  "version_contrato": "1.5",
+  "version_contrato": "1.6",
   "version_datos": "2026.10.7",
   "consulta": {
     "origen": "lima",
@@ -74,7 +74,8 @@
         ],
         "vuelos": [],
         "acceso": "terrestre",
-        "fuente": "red_vial"
+        "fuente": "red_vial",
+        "bus_de_noche": null
       },
       "dias": [
         {
@@ -85,6 +86,7 @@
           "km": 441.4,
           "paradas": [],
           "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca.",
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -206,6 +208,7 @@
             }
           ],
           "nota": null,
+          "almuerzo": null,
           "noche": {
             "tipo": "estrellas",
             "titulo": "Estrellas en Planetarium María Reiche",
@@ -355,6 +358,7 @@
             }
           ],
           "nota": null,
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -365,6 +369,7 @@
           "km": 441.4,
           "paradas": [],
           "nota": "Vuelta a Lima: 8 h 27 por carretera.",
+          "almuerzo": null,
           "noche": null
         }
       ],
@@ -464,7 +469,8 @@
         ],
         "vuelos": [],
         "acceso": "terrestre",
-        "fuente": "red_vial"
+        "fuente": "red_vial",
+        "bus_de_noche": null
       },
       "dias": [
         {
@@ -520,6 +526,7 @@
             }
           ],
           "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -663,6 +670,7 @@
             }
           ],
           "nota": null,
+          "almuerzo": null,
           "noche": {
             "tipo": "estrellas",
             "titulo": "Estrellas en Observatorio Discovery",
@@ -834,6 +842,7 @@
             }
           ],
           "nota": null,
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -867,6 +876,7 @@
             }
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
+          "almuerzo": null,
           "noche": null
         }
       ],
@@ -1016,7 +1026,8 @@
         ],
         "vuelos": [],
         "acceso": "terrestre",
-        "fuente": "red_vial"
+        "fuente": "red_vial",
+        "bus_de_noche": null
       },
       "dias": [
         {
@@ -1027,6 +1038,7 @@
           "km": 276.0,
           "paradas": [],
           "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino.",
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -1082,6 +1094,7 @@
             }
           ],
           "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera.",
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -1115,6 +1128,7 @@
             }
           ],
           "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino.",
+          "almuerzo": null,
           "noche": null
         },
         {
@@ -1125,6 +1139,7 @@
           "km": 276.0,
           "paradas": [],
           "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera.",
+          "almuerzo": null,
           "noche": null
         }
       ],
