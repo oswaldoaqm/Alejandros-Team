@@ -36,9 +36,17 @@ export function Acerca() {
           queda cerca de donde sales, el viaje puede ser de ida y vuelta en el día.
         </li>
         <li>
-          Reparte tus días entre la ida, la vuelta y los días en la zona. A lo que por tierra queda a más de
-          16 horas se va en avión, si el viaje no es corto y no pediste ir solo por tierra. Cada día es un
-          paseo que sale de donde duermes y vuelve, con jornadas de hasta 8 horas y hasta seis lugares.
+          Reparte tus días entre la ida, la vuelta y los días en la zona. Lo que por tierra queda a entre 7 y
+          16 horas se hace en bus de noche: sales la noche antes del día 1, vuelves la noche del último y tus
+          días son todos allá. En un viaje corto, solo si el bus no se lleva demasiado: en dos días, hasta
+          unas 9 horas y media por tramo. A lo que queda a más de 16 horas se va en avión, si el viaje no es
+          corto y no pediste ir solo por tierra.
+        </li>
+        <li>
+          Cada día es un paseo que sale de donde duermes y vuelve: hasta 8 horas y seis lugares, más una hora
+          para almorzar, así que un día entero va de 8:00 a 17:00. El almuerzo va donde hay dónde comer cerca,
+          según OpenStreetMap y Overture Maps; si cerca no tienen nada registrado, el plan te dice que lo
+          lleves.
         </li>
         <li>
           Elige qué visitar y en qué orden para aprovechar el tiempo: un lugar más importante vale más, y si
@@ -47,14 +55,16 @@ export function Acerca() {
         <li>
           Ordena las zonas con un puntaje que combina cuánto vale lo que se visita, si el mes conviene, si
           entra en tu presupuesto, si hay dónde salir de noche cuando pediste vida nocturna y cuánto se aleja
-          del circuito de Lima y Cusco. Un viaje que pasa tu presupuesto sale solo si es mucho mejor que los
-          que entran, y siempre con su aviso. «Sorpréndeme» busca solo fuera de ese circuito.
+          del circuito de Lima y Cusco. Las dos noches en un bus pesan como un día más de viaje, para que un
+          fin de semana no salga siempre lejos. Un viaje que pasa tu presupuesto sale solo si es mucho mejor
+          que los que entran, y siempre con su aviso. «Sorpréndeme» busca solo fuera de ese circuito.
         </li>
       </ol>
       <p>
         Si eliges a dónde ir, arma solo el viaje a esa zona, con las mismas reglas: es el mismo viaje que te
-        propondría si la eligiera él. Si no cabe, te dice por qué y qué cambiar para que salga: cuántos días
-        hacen falta, si volando sí, o ver viajes a otras zonas.
+        propondría si la eligiera él, salvo por el avión, que con la zona elegida se toma aunque el viaje sea
+        corto. Si no cabe, te dice por qué y qué cambiar para que salga: cuántos días hacen falta, si volando
+        sí, o ver viajes a otras zonas.
       </p>
 
       <h2>De noche</h2>
@@ -86,7 +96,8 @@ export function Acerca() {
       <p>
         Es una banda y no un precio: lo más probable es que el gasto por persona caiga entre sus dos extremos.
         Suma transporte, los vuelos si los hay, hospedaje económico, alimentación y las entradas que publican
-        las fichas. Los supuestos van al lado de cada costo.
+        las fichas. Las noches en un bus de noche no se pagan como hospedaje, y el bus se cobra a la misma
+        tarifa por kilómetro que de día. Los supuestos van al lado de cada costo.
       </p>
 
       <h2>Las fiestas y los eventos</h2>
@@ -108,7 +119,14 @@ export function Acerca() {
       <h2>Lo que todavía no hace</h2>
       <ul>
         <li>Un viaje visita una sola zona. Combinar varias en un mismo viaje es lo siguiente.</li>
-        <li>No conoce horarios ni disponibilidad de buses, trenes, botes u hospedajes.</li>
+        <li>
+          No conoce horarios ni disponibilidad de buses, trenes, botes u hospedajes: el bus de noche sale a la
+          hora que deja llegar a eso de las 6:00.
+        </li>
+        <li>
+          Una visita larga que empieza antes del almuerzo, como una caminata de varias horas, lo corre hasta
+          que termina.
+        </li>
         <li>No sabe si un bar o una discoteca sigue abierto ni qué noches abre.</li>
       </ul>
 
@@ -139,7 +157,7 @@ export function Acerca() {
           , ODbL 1.0.
         </li>
         <li>
-          Lugares de noche:{" "}
+          Lugares para salir y para comer:{" "}
           <EnlaceExterno href="https://overturemaps.org/">Overture Maps Foundation</EnlaceExterno>, con datos
           de Meta y Microsoft, CDLA Permissive 2.0; y OpenStreetMap.
         </li>
