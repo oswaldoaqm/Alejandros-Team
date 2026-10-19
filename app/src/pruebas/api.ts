@@ -179,10 +179,10 @@ export function consultaDe(url: URL): Respuesta["consulta"] {
 
 /** Lo que el motor dice cuando el viaje a una zona del ejemplo no cabe: es de mentira, con su forma. */
 export const SIN_VIAJE_A_CUZCO: NonNullable<Respuesta["sin_resultado"]> = {
-  motivo:
-    "En 2 días no da para ir de Lima a Cuzco y volver: por carretera, solo la ida toma unas 22 horas, y en avión, ir y volver son unas 9 horas: demasiado para 2 días.",
+  motivo: "En 4 días no da para ir de Lima a Cuzco y volver: por carretera, solo la ida toma unas 22 horas.",
   sugerencias: [
-    { campo: "dias", valor: 3, efecto: "sale el viaje, con vuelo" },
+    { campo: "dias", valor: 12, efecto: "sale el viaje, sin volar" },
+    { campo: "solo_por_tierra", valor: false, efecto: "sale el viaje, con vuelo" },
     { campo: "destino", valor: null, efecto: "aparecen 3 viajes" },
   ],
 };

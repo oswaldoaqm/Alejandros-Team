@@ -178,10 +178,12 @@ def test_con_destino_sale_solo_ese_viaje(cliente):
 @con_datos
 def test_con_destino_si_no_cabe_dice_por_que_y_que_cambiar(cliente):
     cusco = next(p.id for p in artefactos.cargar().polos.values() if p.nombre == "Cuzco")
-    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 2, "destino": cusco}).json()
-    assert r["rutas"] == [] and r["sin_resultado"]["motivo"].startswith("En 2 días no da para ir de Lima a Cuzco")
+    params = {"origen": "lima", "mes": 7, "dias": 4, "destino": cusco, "solo_por_tierra": "true"}
+    r = cliente.get("/v1/viajes", params=params).json()
+    assert r["rutas"] == [] and r["sin_resultado"]["motivo"].startswith("En 4 días no da para ir de Lima a Cuzco")
     assert r["sin_resultado"]["sugerencias"] == [
-        {"campo": "dias", "valor": 3, "efecto": "sale el viaje, con vuelo"},
+        {"campo": "dias", "valor": 12, "efecto": "sale el viaje, sin volar"},
+        {"campo": "solo_por_tierra", "valor": False, "efecto": "sale el viaje, con vuelo"},
         {"campo": "destino", "valor": None, "efecto": "aparecen 3 viajes"},
     ]
 

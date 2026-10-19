@@ -200,11 +200,16 @@ def test_las_propiedades(consulta):
     if consulta.destino is not None:
         assert polos in ([], [consulta.destino])
     # Y el viaje a una zona es el mismo cuando la elige el motor que cuando la elige el viajero:
-    # solo cambia el puntaje, que la compara con las demás.
+    # solo cambia el puntaje, que la compara con las demás. Salvo el avión: con la zona elegida, el
+    # 40 % del viaje no impide volar, así que puede volar donde el motor iba por tierra (desde 1.6).
     if consulta.destino is None and respuesta.rutas:
         ruta = respuesta.rutas[-1]
         [elegida] = resolver(consulta.model_copy(update={"destino": ruta.polo.id, "sorpresa": False}), datos).rutas
-        assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
+        if ("avion" in elegida.traslado.medios) == ("avion" in ruta.traslado.medios):
+            assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
+        else:
+            assert "avion" in elegida.traslado.medios and not consulta.solo_por_tierra
+            event("con destino, vuela donde el motor iba por tierra")
 
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()
@@ -212,13 +217,10 @@ def test_las_propiedades(consulta):
     # Y la vida nocturna no cambia el día: en la misma zona, sin ella, las paradas, sus horas, el
     # traslado y el costo son los mismos (desde 1.5).
     if Interes.vida_nocturna in consulta.intereses and respuesta.rutas:
-        ruta = respuesta.rutas[0]
+        zona = {"destino": respuesta.rutas[0].polo.id, "sorpresa": False}
+        [ruta] = resolver(consulta.model_copy(update=zona), datos).rutas
         sin_noche = consulta.model_copy(
-            update={
-                "intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna],
-                "destino": ruta.polo.id,
-                "sorpresa": False,
-            }
+            update=zona | {"intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna]}
         )
         [del_dia] = resolver(sin_noche, datos).rutas
         assert [d.model_dump(exclude={"noche"}) for d in ruta.dias] == [

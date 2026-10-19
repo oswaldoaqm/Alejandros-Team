@@ -1102,16 +1102,17 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
     )
 
 
-def conviene_volar(por_tierra: float, vuelo: Vuelo, dias: int) -> bool:
+def conviene_volar(por_tierra: float, vuelo: Vuelo, dias: int, con_destino: bool = False) -> bool:
     """Si conviene ir en avión a una base a la que por tierra se tarda ``por_tierra`` minutos
     (nan si no hay camino), en un viaje de ``dias`` días (decisión 0016):
 
     - si ida y vuelta en avión se llevan el 40 % de las horas del viaje o más, no: en un viaje
-      corto rinde más quedarse cerca, y desde el Cusco un fin de semana es Machu Picchu y no Lima;
+      corto rinde más quedarse cerca, y desde el Cusco un fin de semana es Machu Picchu y no Lima.
+      Pero si la consulta elige el destino, quedarse cerca no es la pregunta (decisión 0019);
     - si por tierra no hay camino, sí;
     - si por tierra no pasa de 16 horas, no: eso se hace en un bus de noche;
     - y si no, solo si en avión se llega al menos media jornada antes, con las noches contadas."""
-    if 2 * vuelo.minutos >= CAMINO_QUE_PESA * dias * JORNADA_MIN:
+    if not con_destino and 2 * vuelo.minutos >= CAMINO_QUE_PESA * dias * JORNADA_MIN:
         return False
     if not np.isfinite(por_tierra):
         return True
@@ -1128,7 +1129,7 @@ def ida(polo: PoloDatos, consulta: Consulta, origen: Origen) -> tuple[float, flo
     minutos, km = origen.a_base.get(polo.id, (np.nan, np.nan))
     km_tren, km_bote = origen.a_base_en_capa.get(polo.id, (0.0, 0.0))
     vuelo = None if consulta.solo_por_tierra else origen.a_base_en_avion.get(polo.id)
-    if vuelo is not None and conviene_volar(minutos, vuelo, consulta.dias):
+    if vuelo is not None and conviene_volar(minutos, vuelo, consulta.dias, consulta.destino is not None):
         return vuelo.minutos, vuelo.km, vuelo.km_tren, vuelo.km_bote, vuelo
     return minutos, km, km_tren, km_bote, None
 
@@ -1399,10 +1400,6 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
             return f"No encontramos cómo llegar de {de} a {nombre}."
         por = "en avión" if vuelo is not None else textos.por_medios(medios_por_tierra(polo, origen))
         toma = f"{por}, solo la ida toma {_horas(minutos)}"
-        # Si en un viaje más largo se volaría, también se cuenta por qué en este no.
-        otro = None if consulta.solo_por_tierra or vuelo is not None else origen.a_base_en_avion.get(polo.id)
-        if otro is not None and conviene_volar(minutos, otro, DIAS_MAX):
-            toma += f", y en avión, ir y volver son {_horas(2 * otro.minutos)}: demasiado para {dias}"
         plan = plan_del_viaje(consulta.dias, minutos, km_tren, km_bote, consulta.fecha_inicio, vuelo)
         if plan is None or not plan.jornadas:
             return f"En {dias} no da para ir de {de} a {nombre} y volver: {toma}."

@@ -133,9 +133,9 @@ test("«A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y 
   await expect(
     page.getByText(/^En 2.días no da para ir de Lima a Machupicchu Pueblo y volver/),
   ).toBeVisible();
-  await page.getByRole("link", { name: /^Probar con 5.días$/ }).click();
+  await page.getByRole("link", { name: /^Probar con 4.días$/ }).click();
   await expect(titulo(page)).toHaveText("Machupicchu Pueblo");
-  await expect(page).toHaveURL(/\?origen=lima&destino=4&mes=7&dias=5&v=[^#]+#\/ruta\/1$/);
+  await expect(page).toHaveURL(/\?origen=lima&destino=4&mes=7&dias=4&v=[^#]+#\/ruta\/1$/);
 
   await page.getByRole("link", { name: "Cambiar el viaje" }).click();
   await expect(page.getByRole("button", { name: /^A dónde/ })).toContainText("Machupicchu Pueblo");
