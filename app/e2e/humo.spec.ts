@@ -162,6 +162,54 @@ test("guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se 
   await expect(page).toHaveURL(/#\/ruta\/2$/);
 });
 
+test("con «Vida nocturna», cada noche en la zona trae dónde salir, y la primera en la altura, descanso", async ({
+  page,
+}) => {
+  await page.goto("./?origen=lima&mes=7&dias=6&intereses=vida_nocturna#/ruta/1");
+  await expect(titulo(page)).toHaveText("Cuzco");
+  const dias = page.locator(".dia-fila");
+  await expect(dias.nth(0)).toContainText("De noche: Noche tranquila");
+  await expect(dias.nth(1)).toContainText("De noche: Salir en Cuzco");
+  await expect(dias.nth(5)).not.toContainText("De noche"); // el día en que se vuelve no se duerme allá
+
+  const lugaresDe = async (dia: number) => {
+    await page.getByRole("radio", { name: `Día ${dia}` }).check({ force: true });
+    const noche = page.getByRole("region", { name: "De noche: Salir en Cuzco" });
+    const enlaces = noche.getByRole("list", { name: "Para esta noche" }).getByRole("link");
+    await expect(enlaces).toHaveCount(3);
+    await expect(enlaces.first()).toHaveAttribute("href", /^https:\/\/www\.openstreetmap\.org\//);
+    return enlaces.allInnerTexts();
+  };
+  const delDos = await lugaresDe(2);
+  const delTres = await lugaresDe(3);
+  expect(
+    delTres.filter((n) => delDos.includes(n)),
+    "otra noche, otros lugares",
+  ).toEqual([]);
+});
+
+test("una noche de estrellas, con fecha: la luna de esa noche y el cielo de la zona mes a mes", async ({
+  page,
+}) => {
+  await page.goto(
+    "./?origen=lima&fecha_inicio=2027-07-03&dias=6&intereses=naturaleza&intereses=vida_nocturna&destino=36#/ruta/1",
+  );
+  await page.getByRole("radio", { name: "Día 2" }).check({ force: true });
+  const estrellas = page.getByRole("region", { name: /^De noche: Estrellas en / });
+  await expect(estrellas).toContainText(/Luna al \d+.%/);
+  await expect(estrellas).toContainText("Cielo con luz");
+  await expect(estrellas).toContainText(/oscurece del todo a las \d\d:\d\d/);
+
+  await page.getByRole("link", { name: /^Ver todos los lugares de la zona/ }).click();
+  const zona = page.getByRole("region", { name: "De noche" });
+  await expect(zona.getByRole("heading", { name: "Para salir" })).toBeVisible();
+  await expect(zona.getByRole("heading", { name: "Para ver estrellas" })).toBeVisible();
+  await expect(zona.locator(".despejadas__mes")).toHaveCount(12);
+  await expect(zona.locator(".despejadas__mes--elegido")).toContainText(
+    /^Julio: \d+ de cada 10 noches despejadas/,
+  );
+});
+
 test("la zona de un viaje y el calendario cargan del API", async ({ page }) => {
   await page.goto("./?origen=lima&mes=7&dias=6#/ruta/1");
   await expect(page.getByRole("link", { name: "Tus viajes" })).toBeVisible();
@@ -257,6 +305,8 @@ test("sin la clave correcta no se publica, y lo dice en la casilla de la clave",
   await expect(page.getByLabel("Nombre del evento")).toHaveValue("Feria que no se publica");
 });
 
+const PAUTAS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+
 const PANTALLAS = [
   ["el formulario", "./"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
@@ -287,10 +337,27 @@ for (const [nombre, direccion] of PANTALLAS) {
     // El mapa queda fuera de esta revisión: con muchas paradas juntas sus marcas se enciman, y
     // lo que dice cada una está también en el itinerario, que es la alternativa accesible.
     const informe = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+      .withTags(PAUTAS)
       .exclude(".maplibregl-canvas-container")
       .exclude(".maplibregl-control-container")
       .analyze();
     expect(informe.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
   });
 }
+
+test("cada tipo de noche: sin fallas de accesibilidad que una máquina detecte", async ({ page }) => {
+  await page.goto(
+    "./?origen=lima&fecha_inicio=2027-07-03&dias=6&intereses=naturaleza&intereses=vida_nocturna&destino=36#/ruta/1",
+  );
+  // Descanso, estrellas y salir: el fondo de noche es lo único oscuro en el tema claro.
+  for (const [dia, tipo] of [
+    [1, "descanso"],
+    [2, "estrellas"],
+    [3, "salir"],
+  ] as const) {
+    await page.getByRole("radio", { name: `Día ${dia}` }).check({ force: true });
+    await expect(page.locator(`.noche--${tipo}`)).toBeVisible();
+    const informe = await new AxeBuilder({ page }).withTags(PAUTAS).include(".noche").analyze();
+    expect(informe.violations.map((v) => `${tipo}: ${v.id} (${v.nodes.length})`)).toEqual([]);
+  }
+});
