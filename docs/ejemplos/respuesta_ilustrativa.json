@@ -433,7 +433,7 @@
         "recursos": 177,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.507,
+      "puntaje": 0.499,
       "motivos": [
         "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
         "Todas sus paradas son de historia y arqueología o naturaleza",
@@ -849,30 +849,52 @@
           "numero": 4,
           "fecha": null,
           "tipo": "visita_y_vuelta",
-          "horas": 8.0,
-          "km": 323.4,
+          "horas": 7.8,
+          "km": 345.1,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "10944",
-                "nombre": "Museo Regional de Arqueología de Junín",
+                "codigo": "821",
+                "nombre": "Puente Las Balsas de Concepción – Heroinas Toledo",
                 "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": 2,
-                "lat": -12.060278,
-                "lon": -75.288056,
-                "altitud_m": 3263,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=10944",
-                "descripcion": "El Museo Regional de Arqueología de Junín fue creado mediante Resolución Jefatural N° 365/INC de fecha 14/06/1993. Se encuentra en la ciudad de Chupaca, siendo el principal en su género en la región. La colección que define al museo es fundamentalmente arqueológica.",
-                "ingreso": "pagado",
-                "tarifa_soles": 2.5
+                "tipo": "Lugares Históricos",
+                "subtipo": "Puentes",
+                "jerarquia": 1,
+                "lat": -11.93806,
+                "lon": -75.31327,
+                "altitud_m": 3298,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=821",
+                "descripcion": "El Puente Las Balsas es un viaducto que une ambas márgenes del río Mantaro en el sector denominado La Huaycha; allí sobre la margen izquierda del río Mantaro, la Municipalidad Provincial de Concepción ha construido en el año 2003 un monumento que representa la acción heroica de…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
               },
-              "llegada": "09:00",
-              "minutos_traslado": 20,
-              "km_desde_anterior": 10.6,
-              "minutos_visita": 75
+              "llegada": "08:28",
+              "minutos_traslado": 28,
+              "km_desde_anterior": 19.2,
+              "minutos_visita": 15
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "713",
+                "nombre": "Cerrito de la Libertad",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Miradores",
+                "jerarquia": 1,
+                "lat": -12.062463,
+                "lon": -75.195785,
+                "altitud_m": 3340,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=713",
+                "descripcion": "El Cerrito de la Libertad es una colina, desde donde se puede dominar un amplio panorama de la ciudad de Huancayo y parte del valle de Mantaro.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:14",
+              "minutos_traslado": 31,
+              "km_desde_anterior": 21.4,
+              "minutos_visita": 20
             }
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
@@ -882,20 +904,20 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 593,
-        "p50": 707,
-        "p80": 816,
+        "p20": 602,
+        "p50": 718,
+        "p80": 828,
         "desglose": {
-          "transporte": 187,
+          "transporte": 201,
           "alojamiento": 251,
           "alimentacion": 239,
-          "entradas": 30
+          "entradas": 27
         },
         "dentro_del_presupuesto": false,
-        "exceso": 7,
+        "exceso": 18,
         "supuestos": [
           "Bus interprovincial de ida y vuelta: 604 km",
-          "Movilidad local en colectivo o taxi: 148 km",
+          "Movilidad local en colectivo o taxi: 170 km",
           "Hospedaje económico en Huancayo, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
@@ -957,70 +979,67 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 707) pasa tu presupuesto por S/ 7."
+          "mensaje": "El costo central (S/ 718) pasa tu presupuesto por S/ 18."
         }
       ],
       "indicadores": {
-        "paradas": 15,
-        "jerarquia_media": 2.0,
+        "paradas": 16,
+        "jerarquia_media": 1.85,
         "paradas_jerarquia_alta": 2,
         "altitud_max_m": 3441,
-        "km_total": 752.7,
+        "km_total": 774.4,
         "valor_capturado": 0.567
       }
     },
     {
       "polo": {
-        "id": 139,
-        "nombre": "Trujillo",
-        "region": "La Libertad",
+        "id": 15,
+        "nombre": "Huánuco",
+        "region": "Huánuco",
         "regiones": [
-          "La Libertad"
+          "Huánuco"
         ],
         "base": {
-          "nombre": "Trujillo",
-          "lat": -8.111678,
-          "lon": -79.028774,
-          "altitud_m": 37
+          "nombre": "Huánuco",
+          "lat": -9.929325,
+          "lon": -76.239485,
+          "altitud_m": 1899
         },
-        "recursos": 59,
+        "recursos": 84,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.46,
+      "puntaje": 0.465,
       "motivos": [
-        "3 lugares de jerarquía 3 o 4: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo",
-        "2 de sus 3 paradas son de historia y arqueología o naturaleza",
+        "3 lugares de jerarquía 3 o 4: Museo Regional Leoncio Prado Gutierrez, Plaza de Armas de Huánuco y Zona Arqueológica Monumental de Kotosh",
+        "10 de sus 12 paradas son de historia y arqueología o naturaleza",
         "Julio es temporada seca aquí",
-        "Fuera del circuito de Lima y Cusco"
+        "Coincide con Camino de los Colonos y Arrieros (del 21 al 26 de julio)"
       ],
       "estacionalidad": {
         "mes": 7,
         "veredicto": "viable",
-        "lluvia_mm": 0.2,
-        "dias_con_lluvia": 0.0,
+        "lluvia_mm": 20.4,
+        "dias_con_lluvia": 6.6,
         "horas_sol": null,
-        "temp_min_c": 16.4,
-        "temp_max_c": 20.9,
-        "explicacion": "Julio es temporada seca: 0 mm de lluvia en el mes.",
+        "temp_min_c": 13.3,
+        "temp_max_c": 23.7,
+        "explicacion": "Julio es temporada seca: 20 mm de lluvia en el mes.",
         "mejores_meses": [
           7,
-          8,
           6,
+          8,
           9,
-          11,
           5,
           10,
-          12,
           4,
-          1,
-          2,
-          3
+          11,
+          12
         ]
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 11.1,
-        "dias_de_viaje": 4,
+        "horas": 7.2,
+        "dias_de_viaje": 2,
         "medios": [
           "carretera"
         ],
@@ -1034,100 +1053,298 @@
           "numero": 1,
           "fecha": null,
           "tipo": "ida",
-          "horas": 5.5,
-          "km": 276.0,
+          "horas": 7.2,
+          "km": 354.7,
           "paradas": [],
-          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino.",
+          "nota": "Salida de Lima a las 07:00; 7 h 14 por carretera hasta Huánuco.",
           "almuerzo": null,
           "noche": null
         },
         {
           "numero": 2,
           "fecha": null,
-          "tipo": "ida_y_visita",
-          "horas": 7.9,
-          "km": 285.5,
+          "tipo": "visita",
+          "horas": 7.7,
+          "km": 45.1,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "2585",
-                "nombre": "Centro Histórico de Trujillo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
+                "codigo": "12362",
+                "nombre": "Paseo Ribereño Malecón Calicanto",
+                "categoria": "Sitios naturales",
+                "tipo": "Zonas paisajísticas",
                 "subtipo": "Otros",
-                "jerarquia": 3,
-                "lat": -8.111799,
-                "lon": -79.028585,
-                "altitud_m": 34,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
-                "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
+                "jerarquia": 1,
+                "lat": -9.9361,
+                "lon": -76.23905,
+                "altitud_m": 1907,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12362",
+                "descripcion": "Se ubica al margen derecho del Río Huallaga, conformado por un camino paralelo entre la ribera del Río Huallaga y las instituciones públicas de la Policía Nacional del Perú, el Instituto Superior Pedagógico Marcos Durand Martel, IE Aplicación Marcos Durand Martel, Es salud, y…",
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "12:40",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.2,
-              "minutos_visita": 20
+              "llegada": "08:09",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 1.3,
+              "minutos_visita": 60
             },
             {
               "orden": 2,
               "recurso": {
-                "codigo": "96",
-                "nombre": "Complejo Arqueológico Chan Chan",
+                "codigo": "11505",
+                "nombre": "Museo Regional Leoncio Prado Gutierrez",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 3,
+                "lat": -9.924709,
+                "lon": -76.231389,
+                "altitud_m": 1912,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11505",
+                "descripcion": "Muestra colecciones de cerámicas de las diferentes culturas de nuestra región como también a nivel nacional, tejidos, esculturas, artefactos líticos, orfebrería, cuadros pictóricos, maquetas de los atractivos turísticos, fotográficas y otros.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "09:19",
+              "minutos_traslado": 10,
+              "km_desde_anterior": 1.8,
+              "minutos_visita": 95
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "2283",
+                "nombre": "Hacienda Cachigaga",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa-Hacienda",
+                "jerarquia": 2,
+                "lat": -10.054272,
+                "lon": -76.219218,
+                "altitud_m": 2000,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2283",
+                "descripcion": "La Hacienda Cachigaga se encuentra ubicada en el centro poblado de Las Pampas, distrito de Tomay Kichwa, provincia de Ambo, a 2 000 m s. n. m. Es una antigua casa hacienda que forma parte del paisaje agrícola del valle, rodeada de extensas plantaciones de caña de azúcar.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:24",
+              "minutos_traslado": 30,
+              "km_desde_anterior": 17.0,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "683",
+                "nombre": "Zona Arqueológica Monumental de Kotosh",
                 "categoria": "Manifestaciones culturales",
                 "tipo": "Sitios Arqueológicos",
                 "subtipo": "Zonas arqueológicas",
-                "jerarquia": 4,
-                "lat": -8.097624,
-                "lon": -79.069631,
-                "altitud_m": 29,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=96",
-                "descripcion": "La Zona Arqueológica Chan Chan es reconocida por la UNESCO como Patrimonio Mundial. Chan Chan fue la capital del reino chimú, la cual representa la cúspide del desarrollo de las comunidades prehispánicas de la costa norte peruana.",
+                "jerarquia": 3,
+                "lat": -9.931221,
+                "lon": -76.279562,
+                "altitud_m": 1948,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=683",
+                "descripcion": "Una de las más antiguas edificaciones del período Formativo, lugar arqueológico que guarda una especial importancia en el desarrollo de la Civilización Andina.",
                 "ingreso": "pagado",
-                "tarifa_soles": 10.0
+                "tarifa_soles": 5.0
               },
-              "llegada": "13:13",
-              "minutos_traslado": 13,
-              "km_desde_anterior": 5.1,
+              "llegada": "12:41",
+              "minutos_traslado": 32,
+              "km_desde_anterior": 18.6,
               "minutos_visita": 90
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "14504",
+                "nombre": "Centro de Exhibición de la Evangelización, Arte y Cultura Religiosa de Huánuco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Salas de Exhibición",
+                "jerarquia": 2,
+                "lat": -9.932018,
+                "lon": -76.242037,
+                "altitud_m": 1880,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14504",
+                "descripcion": "El Centro de Exhibición de Arte y Cultura Religiosa de Huánuco, ubicado en el Jr. Dos de Mayo N.° 815 de la ciudad de Huánuco, fue inaugurado como un espacio destinado a la preservación, difusión y puesta en valor del patrimonio religioso, artístico e histórico de la región.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "14:26",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 5.6,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "1729",
+                "nombre": "Plaza de Armas de Huánuco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Lugares Históricos",
+                "subtipo": "Plaza",
+                "jerarquia": 3,
+                "lat": -9.929474,
+                "lon": -76.239734,
+                "altitud_m": 1880,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1729",
+                "descripcion": "La Plaza de Armas de Huánuco está ubicada estratégicamente en el corazón de la capital regional, entre los jirones 2 de mayo, Dámaso Beraún, 28 de Julio y General Prado.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "15:04",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.7,
+              "minutos_visita": 30
             }
           ],
-          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera.",
+          "nota": null,
           "almuerzo": null,
           "noche": null
         },
         {
           "numero": 3,
           "fecha": null,
-          "tipo": "visita_y_vuelta",
+          "tipo": "visita",
           "horas": 7.7,
-          "km": 290.7,
+          "km": 53.3,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "114",
-                "nombre": "Huacas del Sol y la Luna",
+                "codigo": "677",
+                "nombre": "Iglesia San Cristobal",
                 "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Zonas arqueológicas",
-                "jerarquia": 3,
-                "lat": -8.136365,
-                "lon": -78.992009,
-                "altitud_m": 41,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=114",
-                "descripcion": "Durante los siglos I al VII d.c. la cultura Moche se desarrolló en la costa norte del Perú y ubicó su capital en el Valle Moche. En este lugar se levantaron majestuosos templos como Huaca del Sol y Huaca de la Luna.",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": 2,
+                "lat": -9.931077,
+                "lon": -76.236094,
+                "altitud_m": 1880,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=677",
+                "descripcion": "La iglesia San Cristóbal es uno de los templos más antiguos, que representa un profundo valor histórico y espiritual en la ciudad de Huánuco. Se ubica en la intersección del Jr. Dámaso Beraún con el Jr. San Cristóbal, en la margen izquierda del río Huallaga.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
               },
-              "llegada": "09:00",
-              "minutos_traslado": 19,
-              "km_desde_anterior": 7.8,
-              "minutos_visita": 90
+              "llegada": "08:08",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.5,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "2368",
+                "nombre": "Jatun Ushco",
+                "categoria": "Sitios naturales",
+                "tipo": "Cavidades naturales",
+                "subtipo": "Cuevas",
+                "jerarquia": 2,
+                "lat": -10.132597,
+                "lon": -76.202019,
+                "altitud_m": 2130,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2368",
+                "descripcion": "Jatun Ushco se encuentra a 15 minutos de la ciudad de Ambo, en la región Huánuco, a 2,130 m.s.n.m., en la vertiente oriental de los Andes. Es una formación geológica de interés arqueológico y cultural.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:03",
+              "minutos_traslado": 35,
+              "km_desde_anterior": 24.8,
+              "minutos_visita": 134
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "12072",
+                "nombre": "Granja Ecologica Lindero",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Explotaciones Agropecuarias y Pesqueras",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -10.094709,
+                "lon": -76.206794,
+                "altitud_m": 2180,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12072",
+                "descripcion": "La Granja Ecológica Lindero se ubica en el distrito de Tomay Kichwa, a aproximadamente 45 minutos de la ciudad de Huánuco, en un valle destacado por su valor paisajístico y cultural.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "11:34",
+              "minutos_traslado": 17,
+              "km_desde_anterior": 5.3,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "844",
+                "nombre": "Casa de la Perricholi",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": null,
+                "lat": -10.079117,
+                "lon": -76.210678,
+                "altitud_m": 2180,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=844",
+                "descripcion": "La Casa de la Perricholi está ubicada en el distrito de Tomaykichwa, provincia de Ambo, región Huánuco. Es uno de los lugares más conocidos y visitados de la región debido a su gran valor histórico y cultural, siendo reconocida oficialmente mediante R.D.N.",
+                "ingreso": "pagado",
+                "tarifa_soles": 2.5
+              },
+              "llegada": "12:48",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 2.7,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "14040",
+                "nombre": "Museo de la Cabuya Pedro García",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": null,
+                "lat": -10.076287,
+                "lon": -76.21376,
+                "altitud_m": 2015,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14040",
+                "descripcion": "El Museo de la Cabuya se encuentra ubicado en el distrito de Tomay kichwa, provincia de Ambo y departamento de Huánuco.",
+                "ingreso": "pagado",
+                "tarifa_soles": 4.0
+              },
+              "llegada": "13:17",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 0.9,
+              "minutos_visita": 77
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "14014",
+                "nombre": "Casa Etnográfico Allpawasi",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Salas de Exhibición",
+                "jerarquia": null,
+                "lat": -10.073544,
+                "lon": -76.215209,
+                "altitud_m": 2180,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14014",
+                "descripcion": "La Casa Etnográfico Allpawasi se encuentra ubicada en el jirón Porvenir s/n, en el distrito de Tomay kichwa, provincia de Ambo, región Huánuco.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "14:43",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 1.1,
+              "minutos_visita": 30
             }
           ],
-          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino.",
+          "nota": null,
           "almuerzo": null,
           "noche": null
         },
@@ -1135,50 +1352,81 @@
           "numero": 4,
           "fecha": null,
           "tipo": "vuelta",
-          "horas": 5.5,
-          "km": 276.0,
+          "horas": 7.2,
+          "km": 354.7,
           "paradas": [],
-          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera.",
+          "nota": "Vuelta a Lima: 7 h 14 por carretera.",
           "almuerzo": null,
           "noche": null
         }
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 555,
-        "p50": 670,
-        "p80": 779,
+        "p20": 571,
+        "p50": 683,
+        "p80": 793,
         "desglose": {
-          "transporte": 157,
+          "transporte": 165,
           "alojamiento": 251,
           "alimentacion": 238,
-          "entradas": 24
+          "entradas": 29
         },
         "dentro_del_presupuesto": true,
         "exceso": null,
         "supuestos": [
-          "Bus interprovincial de ida y vuelta: 1 102 km",
-          "Movilidad local en colectivo o taxi: 26 km",
-          "Hospedaje económico en Trujillo, 3 noches",
+          "Bus interprovincial de ida y vuelta: 709 km",
+          "Movilidad local en colectivo o taxi: 98 km",
+          "Hospedaje económico en Huánuco, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
         ]
       },
-      "eventos": [],
+      "eventos": [
+        {
+          "id": "12231",
+          "nombre": "Camino de los Colonos y Arrieros",
+          "tipo": "Otros",
+          "fecha_inicio": "2027-07-21",
+          "fecha_fin": "2027-07-26",
+          "precision_fecha": "exacta",
+          "distrito": "Chaglla",
+          "provincia": "Pachitea",
+          "region": "Huánuco",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12231",
+          "polo": 15
+        },
+        {
+          "id": "13055",
+          "nombre": "Cruces del Señor de San Cristobal",
+          "tipo": "Fiestas religiosas-patronales",
+          "fecha_inicio": "2027-07-23",
+          "fecha_fin": "2027-07-23",
+          "precision_fecha": "exacta",
+          "distrito": "Amarilis",
+          "provincia": "Huanuco",
+          "region": "Huánuco",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13055",
+          "polo": 15
+        }
+      ],
       "avisos": [
         {
           "tipo": "dias",
           "nivel": "advertencia",
-          "mensaje": "La ida y la vuelta se llevan 22 h 10 de tus 4 días: con más días, el viaje rinde más."
+          "mensaje": "La ida y la vuelta se llevan 14 h 28 de tus 4 días: con más días, el viaje rinde más."
         }
       ],
       "indicadores": {
-        "paradas": 3,
-        "jerarquia_media": 3.33,
+        "paradas": 12,
+        "jerarquia_media": 2.22,
         "paradas_jerarquia_alta": 3,
-        "altitud_max_m": 41,
-        "km_total": 1128.2,
-        "valor_capturado": 0.45
+        "altitud_max_m": 2180,
+        "km_total": 807.8,
+        "valor_capturado": 0.601
       }
     }
   ],

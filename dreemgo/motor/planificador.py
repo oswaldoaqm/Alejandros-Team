@@ -4,7 +4,12 @@ Qué visitar cada día y en qué orden: orientación por equipos (decisión 0004
 Cada jornada es un recorrido que sale de un depósito (la base del polo o, en un viaje de un
 día, la ciudad de origen) y vuelve a él, con un tope de minutos entre traslados, esperas y
 visitas. Cada parada vale algo; el objetivo es juntar el mayor valor posible en las
-jornadas disponibles, visitando cada lugar dentro de su horario.
+jornadas disponibles, visitando cada lugar dentro de su horario. Si el primer lugar abre
+tarde, se sale más tarde, pero la jornada no se corre: se vuelve, a más tardar, a su hora
+de siempre, el final de su tope (las 16:00 en un día entero, desde la decisión 0019). Antes,
+un día podía empezar a las 18:00 en un teatro y terminar de noche. Y no se espera más de una
+hora en la puerta de un lugar a que abra: antes, un día podía llegar a las 8:53 a una casa
+museo que abre a las 15:00.
 
 Heurística determinista:
 0. Semilla: cada jornada vacía arranca con la parada de más valor que cabe sola en ella,
@@ -32,6 +37,7 @@ ALFA = 2.0  # orden de inserción: valor**ALFA por minuto agregado
 # consultas al azar, el mejor de los tres junta 2,6 % más valor que el primero solo.
 ARRANQUES = ((False, 2.0), (False, 1.0), (True, 1.0))
 PARADAS_POR_DIA = 6  # más que esto en un día no se disfruta
+ESPERA_MAX = 60  # lo más que se espera a que un lugar abra
 
 
 @dataclass(frozen=True)
@@ -51,6 +57,7 @@ class Candidata:
 class Jornada:
     inicio: int  # minuto del día en que se sale del depósito
     tope: int  # minutos hasta estar de vuelta en el depósito
+    # Y se vuelve, a más tardar, en inicio + tope: la jornada no se corre.
     dia_semana: int | None = None
 
 
@@ -95,7 +102,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
     """El recorrido con sus horas, o None si no cabe en la jornada o en algún horario.
 
     Si la primera parada todavía no abre, se sale más tarde en vez de esperar en la puerta:
-    la jornada se cuenta desde que se sale."""
+    la jornada se cuenta desde que se sale, pero se vuelve a la hora de siempre."""
     if not ruta:
         return Recorrido(jornada, salida=jornada.inicio, vuelta=jornada.inicio)
     primera = ruta[0]
@@ -109,7 +116,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
             return None
         llegada = ahora + int(round(traslado))
         espera = max(0, c.abre - llegada)
-        if llegada + espera + c.visita > c.cierra:
+        if espera > ESPERA_MAX or llegada + espera + c.visita > c.cierra:
             return None
         visitas.append(Visita(c, llegada, int(round(traslado)), espera))
         ahora = llegada + espera + c.visita
@@ -118,7 +125,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
     if not np.isfinite(regreso):
         return None
     vuelta = ahora + int(round(regreso))
-    if vuelta - salida > jornada.tope:
+    if vuelta - salida > jornada.tope or vuelta > jornada.inicio + jornada.tope:
         return None
     return Recorrido(jornada, visitas, salida, vuelta, int(round(regreso)))
 

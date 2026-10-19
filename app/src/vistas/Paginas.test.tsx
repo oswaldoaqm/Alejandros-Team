@@ -83,7 +83,10 @@ describe("la zona de un viaje", () => {
 
   it("cada fiesta de la zona ofrece armar el viaje para ir", async () => {
     await abrir(`/?origen=cusco&mes=7&dias=4#/polo/${POLO.polo.id}`, {
-      [`/v1/polos/${POLO.polo.id}`]: { cuerpo: { ...POLO, eventos: EVENTOS.eventos } },
+      // Las fiestas de Huancayo, la zona 33, que el ejemplo del contrato trae en uno de sus viajes.
+      [`/v1/polos/${POLO.polo.id}`]: {
+        cuerpo: { ...POLO, eventos: EVENTOS.eventos.filter((e) => e.polo === 33) },
+      },
     });
     const fiestas = await screen.findByRole("region", { name: "Fiestas de los próximos meses" });
     const ir = within(fiestas).getAllByRole("link", { name: /^Ir a esta fiesta/ });
