@@ -528,6 +528,11 @@ describe("guardar, compartir e imprimir", () => {
     await viajeAbierto();
     const impreso = document.querySelector(".plan-impreso");
     expect(impreso?.querySelectorAll("h3")).toHaveLength(A.dias.length);
-    expect(impreso?.querySelectorAll("li")).toHaveLength(A.indicadores.paradas);
+    // Cada lugar y, entre ellos, el almuerzo de cada día que lo tiene.
+    const almuerzos = A.dias.filter((d) => d.almuerzo && (d.paradas ?? []).length > 0).length;
+    expect(almuerzos).toBeGreaterThan(0);
+    expect(impreso?.querySelectorAll("li")).toHaveLength(A.indicadores.paradas + almuerzos);
+    const lineas = [...(impreso?.querySelectorAll("li") ?? [])].map((li) => plano(li.textContent));
+    expect(lineas.filter((l) => / Almuerzo\. /.test(l))).toHaveLength(almuerzos);
   });
 });

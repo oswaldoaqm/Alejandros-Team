@@ -280,6 +280,69 @@ describe("un día", () => {
   });
 });
 
+describe("el almuerzo", () => {
+  const conAlmuerzo = (almuerzo: Dia["almuerzo"]): Dia[] =>
+    DIAS.map((d) => (d.numero === 1 ? { ...d, almuerzo } : d));
+
+  it("va en la línea del día, después de los lugares que van antes, sin número y sin abrirse", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "13:45",
+        despues_de: 1,
+        lugar: "Lugar de la Memoria",
+        en_la_base: false,
+        hay_donde_comer: true,
+      }),
+    );
+    const filas = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole("listitem");
+    expect(filas.map((f) => plano(f.textContent))).toEqual([
+      "13:11 1Capilla de la Merced Visita de 25 min",
+      "13:45 Almuerzo Cerca de Lugar de la Memoria",
+      "13:46 2Lugar de la Memoria Visita de 1 h",
+    ]);
+    expect(within(filas[1] as HTMLElement).queryByRole("button")).toBeNull();
+    // Las horas del día no cuentan el almuerzo: el resumen lo dice.
+    expect(plano(screen.getByText(/Ida y visitas/).textContent)).toBe(
+      "Ida y visitas: 7 h 54 de jornada, más el almuerzo, y 308 km de camino.",
+    );
+  });
+
+  it("si cerca no hay registrado dónde comer, dice que lo lleves", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "14:46",
+        despues_de: 2,
+        lugar: "Lugar de la Memoria",
+        en_la_base: false,
+        hay_donde_comer: false,
+      }),
+    );
+    const filas = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole("listitem");
+    expect(plano(filas[2]?.textContent)).toBe(
+      "14:46 Almuerzo En Lugar de la Memoria Lleva tu almuerzo: no tenemos registrado dónde comer cerca.",
+    );
+  });
+
+  it("en la base, antes de salir", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "12:30",
+        despues_de: 0,
+        lugar: "Huancayo",
+        en_la_base: true,
+        hay_donde_comer: null,
+      }),
+    );
+    const [primera] = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole(
+      "listitem",
+    );
+    expect(plano(primera?.textContent)).toBe("12:30 Almuerzo En Huancayo");
+  });
+});
+
 describe("el selector de días", () => {
   it("ofrece todo el viaje y cada día, y marca el elegido", async () => {
     const elegirDia = vi.fn();

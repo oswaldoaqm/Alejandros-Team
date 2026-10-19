@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { abanico, esExcursion, numerar, puntosDeMapa } from "./itinerario";
+import { abanico, esExcursion, filasDelDia, numerar, puntosDeMapa } from "./itinerario";
 import { RESPUESTA } from "./pruebas/api";
 
 const [ruta] = RESPUESTA.rutas;
@@ -35,6 +35,46 @@ describe("las paradas numeradas", () => {
   it("un viaje de un día no tiene base", () => {
     expect(esExcursion(ruta)).toBe(false);
     expect(esExcursion({ dias: [{ numero: 1, tipo: "ida_visita_y_vuelta", horas: 7, km: 90 }] })).toBe(true);
+  });
+});
+
+describe("el almuerzo entre los lugares del día", () => {
+  it("va después de los lugares que van antes, y un día sin almuerzo tiene solo sus lugares", () => {
+    const dias = RESPUESTA.rutas.flatMap((r) => numerar(r.dias));
+    expect(dias.some((d) => d.dia.almuerzo)).toBe(true);
+    for (const numerado of dias) {
+      const filas = filasDelDia(numerado);
+      const almuerzo = numerado.dia.almuerzo;
+      expect(filas.filter((f) => f.tipo === "parada")).toHaveLength(numerado.paradas.length);
+      if (!almuerzo) {
+        expect(filas.some((f) => f.tipo === "almuerzo")).toBe(false);
+        continue;
+      }
+      expect(filas.findIndex((f) => f.tipo === "almuerzo")).toBe(almuerzo.despues_de);
+    }
+  });
+
+  it("si el número no cabe, va al final; y sin lugares no hay almuerzo que mostrar", () => {
+    const almuerzo = {
+      hora: "13:00",
+      despues_de: 9,
+      lugar: "Huaraz",
+      en_la_base: true,
+      hay_donde_comer: null,
+    };
+    const [conUno] = numerar([
+      {
+        numero: 1,
+        tipo: "visita",
+        horas: 1,
+        km: 1,
+        almuerzo,
+        paradas: ruta.dias.flatMap((d) => d.paradas ?? []).slice(0, 1),
+      },
+    ]);
+    if (!conUno) throw new Error("Falta el día.");
+    expect(filasDelDia(conUno).map((f) => f.tipo)).toEqual(["parada", "almuerzo"]);
+    expect(filasDelDia({ ...conUno, paradas: [] })).toEqual([]);
   });
 });
 
