@@ -370,6 +370,24 @@ describe("un viaje abierto", () => {
     ).toEqual(["TransporteS/ 227", "VuelosS/ 527"]);
   });
 
+  it("un viaje en bus de noche lo dice en su tarjeta, en sus datos y antes de ir", async () => {
+    // En el ejemplo del contrato, Trujillo: 11 horas desde Lima, en bus de noche.
+    const conBus = RESPUESTA.rutas.findIndex((r) => r.traslado.bus_de_noche);
+    const ruta = RESPUESTA.rutas[conBus];
+    if (!ruta?.traslado.bus_de_noche)
+      throw new Error("El ejemplo del contrato no trae un viaje en bus de noche.");
+    await abrir(`/?${CONSULTA}`);
+    const tarjeta = (await tarjetas())[conBus];
+    expect(plano(tarjeta?.textContent)).toContain("desde Lima, en bus de noche");
+    await userEvent.click(tarjeta as HTMLElement);
+    await viajeAbierto();
+    expect(screen.getByText("desde Lima, en bus de noche")).toBeDefined();
+    const antes = screen.getByRole("region", { name: "Antes de ir" });
+    expect(plano(antes.textContent)).toContain(
+      `sales de Lima a las ${ruta.traslado.bus_de_noche.sale} la noche antes del día 1`,
+    );
+  });
+
   it("el plan va de a un día, y el mapa sigue al día elegido", async () => {
     await abrir(`/?${CONSULTA}#/ruta/1`);
     await viajeAbierto();

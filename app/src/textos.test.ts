@@ -6,6 +6,7 @@ import {
   aplicarSugerencia,
   claseDelCielo,
   climaCorto,
+  comoSeVa,
   conQueSeViaja,
   cuantosLugaresDeNoche,
   dondeSeAlmuerza,
@@ -41,6 +42,19 @@ describe("con qué se viaja", () => {
     expect(conQueSeViaja(["carretera", "tren", "bote"])).toBe("por carretera, en tren y en bote");
     expect(conQueSeViaja(["avion", "carretera"])).toBe("en avión y por carretera");
     expect(conQueSeViaja(undefined)).toBe("por carretera");
+  });
+});
+
+describe("cómo se va, si no es lo de siempre", () => {
+  const BUS = { sale: "21:45", llega: "05:55", sale_vuelta: "21:45", llega_vuelta: "05:55" };
+  it("con vuelo, en bus de noche o nada", () => {
+    expect(comoSeVa({ vuelos: [], bus_de_noche: BUS })).toBe("en bus de noche");
+    expect(comoSeVa({ vuelos: [], bus_de_noche: null })).toBeNull();
+    expect(
+      comoSeVa({
+        vuelos: [{ desde: "Lima", hasta: "Cusco", codigo_desde: "LIM", codigo_hasta: "CUZ", horas: 1.3 }],
+      }),
+    ).toBe("con vuelo");
   });
 });
 

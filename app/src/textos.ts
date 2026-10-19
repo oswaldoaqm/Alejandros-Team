@@ -49,6 +49,11 @@ export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
   return cuantos === 1 ? "con vuelo" : "con dos vuelos";
 }
 
+/** Cómo se va, si no es lo de siempre: «con vuelo», «en bus de noche»; null si es de día por tierra. */
+export function comoSeVa(traslado: Pick<Traslado, "vuelos" | "bus_de_noche">): string | null {
+  return conVuelos(traslado) ?? (traslado.bus_de_noche ? "en bus de noche" : null);
+}
+
 /**
  * Dónde se almuerza: «En Huaraz», en la base; «Cerca de Mirador de Rataquenua», si hay dónde
  * comer a menos de 1,5 km; y «En Parque Nacional Huascarán», si no lo hay y toca llevarlo.

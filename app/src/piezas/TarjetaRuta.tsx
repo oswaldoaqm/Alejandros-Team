@@ -1,6 +1,6 @@
 // Uno de los tres viajes, para elegir de un vistazo: su foto (o su flor, si no tiene), su
 // nombre, sus imperdibles y los datos que deciden: cuánto cuesta, cuánto se tarda en llegar (y
-// si se vuela), cómo está el clima ese mes y, si se siente, la altura.
+// si se vuela o se va en bus de noche), cómo está el clima ese mes y, si se siente, la altura.
 
 import { useMemo, useState } from "react";
 import type { Ruta } from "../api/tipos";
@@ -10,7 +10,7 @@ import { numerar, puntosDeMapa } from "../itinerario";
 import {
   ALTURA_QUE_SE_SIENTE,
   climaCorto,
-  conVuelos,
+  comoSeVa,
   imperdibles,
   lugaresDelViaje,
   nombreDelViaje,
@@ -50,7 +50,7 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
       ? `${principal} y ${total - 1} ${total - 1 === 1 ? "lugar" : "lugares"} más`
       : principal
     : `${total} ${total === 1 ? "lugar" : "lugares"} para visitar`;
-  const vuelo = conVuelos(traslado);
+  const como = comoSeVa(traslado);
 
   return (
     <Enlace href={enlace} className="viaje-tarjeta">
@@ -97,7 +97,7 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
             <li>
               <Icono nombre={iconoDeLaIda(traslado.medios)} />
               {horas(traslado.horas)} desde {traslado.desde}
-              {vuelo ? `, ${vuelo}` : null}
+              {como ? `, ${como}` : null}
             </li>
           ) : null}
           <li>

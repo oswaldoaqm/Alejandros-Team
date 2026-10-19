@@ -14,7 +14,7 @@ import { enlaces } from "../ruta";
 import {
   ALTURA_QUE_SE_SIENTE,
   CLIMA_EN_POCAS_PALABRAS,
-  conVuelos,
+  comoSeVa,
   imperdibles,
   lugaresDelViaje,
   nombreDelViaje,
@@ -60,7 +60,7 @@ interface Props {
 
 function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
   const { costo, traslado, estacionalidad, indicadores } = ruta;
-  const vuelo = conVuelos(traslado);
+  const como = comoSeVa(traslado);
   const datos: Dato[] = [
     {
       etiqueta: "Costo",
@@ -75,7 +75,7 @@ function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
       etiqueta: excursion ? "Hasta el primer lugar" : "Viaje de ida",
       icono: iconoDeLaIda(traslado.medios),
       valor: horas(traslado.horas),
-      nota: vuelo ? `desde ${traslado.desde}, ${vuelo}` : `desde ${traslado.desde}`,
+      nota: como ? `desde ${traslado.desde}, ${como}` : `desde ${traslado.desde}`,
     });
   }
   datos.push({
@@ -150,12 +150,14 @@ const ICONO_DEL_AVISO: Record<Aviso["tipo"], NombreDeIcono> = {
 };
 
 /**
- * Los avisos de acceso hablan del avión, del tren o de una caminata larga (dreemgo/motor/viaje.py,
- * `avisos`): cada uno con su ícono. Si una frase cambia, lo peor que pasa es que vaya el pin.
+ * Los avisos de acceso hablan del avión, del bus de noche, del tren o de una caminata larga
+ * (dreemgo/motor/viaje.py, `avisos`): cada uno con su ícono. Si una frase cambia, lo peor que pasa
+ * es que vaya el pin.
  */
 function iconoDelAviso(a: Aviso): NombreDeIcono {
   if (a.tipo !== "acceso") return ICONO_DEL_AVISO[a.tipo];
   if (/avi[oó]n/i.test(a.mensaje)) return "avion";
+  if (/bus de noche/i.test(a.mensaje)) return "bus";
   if (/\btren\b/i.test(a.mensaje)) return "tren";
   if (/caminar/i.test(a.mensaje)) return "caminatas";
   return ICONO_DEL_AVISO.acceso;
