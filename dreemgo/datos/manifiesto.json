@@ -97,21 +97,152 @@
     "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
     "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
     "origenes.json.gz": "c377e7a28578ab20244637c4c02fb3d9614cb841e8d7f08fa2588ea7eef68161",
-    "polos.json.gz": "aa960e453c94e2b8fa8848da4633bf4b96943f567f8225c2eb9dae1b6b5aa5f3",
+    "polos.json.gz": "44a9eb9957e259e1c3fa0046b6f29791a64471ee9ea43bea7d05dddd942dae52",
     "recursos.json.gz": "dec0b82362f8d59c0229330545c2dcea51cc90b4b3949195d3dffdb8bb8cdca1"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
+    "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Lugares de noche: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
+    "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
   ],
   "fuentes": {
+    "cielo": {
+      "goes16": {
+        "anios": [
+          2022,
+          2023,
+          2024
+        ],
+        "horas_utc": [
+          2,
+          6
+        ],
+        "imagenes": 2188
+      },
+      "goes_contra_metar": {
+        "en_la_costa": {
+          "Chiclayo": {
+            "diferencia_media": 25.1,
+            "r": 0.1
+          },
+          "Lima": {
+            "diferencia_media": 36.8,
+            "r": -0.81
+          },
+          "Pisco": {
+            "diferencia_media": 32.3,
+            "r": -0.52
+          },
+          "Piura": {
+            "diferencia_media": 36.6,
+            "r": 0.15
+          },
+          "Tacna": {
+            "diferencia_media": 44.9,
+            "r": -0.67
+          },
+          "Talara": {
+            "diferencia_media": 20.1,
+            "r": 0.71
+          },
+          "Trujillo": {
+            "diferencia_media": 18.6,
+            "r": -0.13
+          },
+          "Tumbes": {
+            "diferencia_media": 18.6,
+            "r": 0.71
+          }
+        },
+        "fuera_de_la_costa": {
+          "Arequipa": {
+            "diferencia_media": 14.9,
+            "r": 0.96
+          },
+          "Cusco": {
+            "diferencia_media": 7.9,
+            "r": 0.98
+          },
+          "Iquitos": {
+            "diferencia_media": 11.9,
+            "r": 0.53
+          },
+          "Pucallpa": {
+            "diferencia_media": 16.9,
+            "r": 0.94
+          },
+          "Tarapoto": {
+            "diferencia_media": 24.0,
+            "r": 0.92
+          }
+        }
+      },
+      "metar": {
+        "aeropuertos": 13,
+        "en_la_costa": 8
+      },
+      "polos": {
+        "con_luz": 57,
+        "con_observatorio": 12,
+        "muy_oscuro": 48,
+        "nubes_de_goes": 151,
+        "nubes_de_metar": 32,
+        "oscuro": 89,
+        "sin_nubes": 11
+      },
+      "viirs": {
+        "meses": [
+          "2024-01",
+          "2024-02",
+          "2024-03",
+          "2024-04",
+          "2024-05",
+          "2024-06",
+          "2024-07",
+          "2024-08",
+          "2024-09",
+          "2024-11",
+          "2024-12",
+          "2025-01",
+          "2025-02",
+          "2025-03",
+          "2025-04",
+          "2025-05",
+          "2025-06"
+        ]
+      }
+    },
     "clima": {
       "polos_con_clima_regional": 0,
       "polos_con_su_clima": 194
     },
     "inventario": {
       "fecha_corte": "2026-09-29"
+    },
+    "noche": {
+      "confianza_minima": 0.7,
+      "de_osm": 443,
+      "de_overture": 821,
+      "lugares": 1264,
+      "osm": {
+        "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+        "md5": "faea114a828e7a306a5010f985c1320b"
+      },
+      "overture": "2026-09-23.1",
+      "polos_con_5_o_mas": 50,
+      "polos_con_lugares": 92,
+      "por_tipo": {
+        "bar": 783,
+        "discoteca": 203,
+        "karaoke": 54,
+        "musica": 2,
+        "pena": 13,
+        "pub": 209
+      },
+      "radio_m": 1500
     },
     "osm": {
       "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
@@ -156,5 +287,5 @@
       "paradas": 214
     }
   },
-  "version_datos": "2026.10.5"
+  "version_datos": "2026.10.6"
 }
