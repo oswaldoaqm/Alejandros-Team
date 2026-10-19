@@ -19,7 +19,7 @@ Por tierra, el Cusco desde Lima solo cabía con doce días o más ([0015](./0015
 - **Se vuela solo a lo lejano** (`conviene_volar`, en [`dreemgo/motor/viaje.py`](../../dreemgo/motor/viaje.py)). Se cumplen tres cosas:
   - por tierra, la ida pasa de 16 horas: lo que tarda menos se hace en un bus de noche;
   - en avión se llega al menos media jornada antes, con las noches del camino contadas;
-  - la ida y la vuelta en avión no se llevan el 40 % de las horas del viaje, el umbral del aviso «dias».
+  - la ida y la vuelta en avión no se llevan el 40 % de las horas del viaje, el umbral del aviso «dias». Con destino, esto ya no: ver la actualización.
 
   Nunca se vuela con `solo_por_tierra`.
 - **Ningún día de viaje pasa de 9 horas, tampoco con vuelo.** Si no cabe en uno, se duerme junto al aeropuerto de llegada. Si llegar al de salida ya se lleva el día, también se duerme junto a ese.
@@ -64,3 +64,7 @@ Con 1 152 consultas con presupuesto (S/ 800, 1 000 y 1 500; 4 y 6 días; cuatro 
   - el traslado al aeropuerto, que se cobra como bus;
   - las tarifas, que no están calibradas;
   - los buses de noche. Cuando entren, las 16 horas pueden cambiarse por comparar el vuelo con el bus de noche.
+
+## Actualización · 19 de octubre de 2026
+
+Con un destino elegido, el 40 % ya no impide volar: sirve para preferir algo más cerca, y la zona ya está elegida. Lo que por tierra no pasa de 16 horas va ahora en bus de noche, como esta decisión suponía ([decisión 0019](./0019-plan-creible.md)).
