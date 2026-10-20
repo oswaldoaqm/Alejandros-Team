@@ -1,5 +1,5 @@
-"""La altura del terreno alrededor de cada base (decisión 0020): cómo se nombra y se lee una tesela, y la
-ventana que se guarda alrededor de cada base."""
+"""La altura de las bases según el modelo de elevación (decisión 0020): cómo se lee una tesela, la
+ventana alrededor de cada base, su altura y cuál manda en los artefactos."""
 
 import gzip
 import importlib.util
@@ -7,7 +7,10 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import pytest
+
+from pipeline import elevacion
 
 ADQUISICION = Path(__file__).resolve().parents[2] / "pipeline" / "adquisicion"
 
@@ -50,3 +53,56 @@ def test_lo_que_cae_fuera_de_la_tesela_va_sin_dato(descarga):
     assert v.shape == (5, 5)
     assert (v[:2, :] == descarga.SIN_DATO).all() and (v[:, :2] == descarga.SIN_DATO).all()
     assert (v[2:, 2:] == 100).all()
+
+
+def test_la_altura_es_la_mediana_de_los_puntos_con_dato_cerca_de_la_base():
+    v = np.full((21, 21), 9999, dtype=np.int16)  # lo lejano no cuenta
+    v[8:13, 8:13] = 3000
+    v[10, 10] = 3500  # un techo o una torre en el centro no la mueve
+    v[8, 8] = elevacion.SIN_DATO
+    assert elevacion.altura(v) == 3000
+    assert elevacion.altura(np.full((21, 21), elevacion.SIN_DATO, dtype=np.int16)) is None
+
+
+def _bases():
+    return pd.DataFrame(
+        {
+            "polo": [1, 2, 3, 4],
+            "base": ["Puno", "Picoy", "Imata", "Sin modelo"],
+            "lat": [-15.84, -10.92, -15.838, -12.0],
+            "lon": [-70.02, -76.73, -71.091, -75.0],
+            "altitud_m": [3830.0, 2856.0, np.nan, np.nan],
+            "altitud_fuente": ["osm", "recursos_a_2_km", np.nan, np.nan],
+            "grupos": ["1", "2", "3", "4"],
+        }
+    )
+
+
+def _dem():
+    b = _bases()
+    return pd.DataFrame(
+        {"polo": b["polo"], "lat_dem": b["lat"], "lon_dem": b["lon"], "altitud_dem_m": [3849.0, 2993.0, 4449.0, None]}
+    )
+
+
+def test_la_tabla_dice_cuanto_difiere_cada_base_del_modelo():
+    t = elevacion.tabla(_bases(), _dem())
+    assert list(t["diferencia_m"].iloc[:2]) == [-19.0, -137.0]
+    r = elevacion.resumen(t)
+    assert (r["completadas"], r["reemplazadas"], r["sin_altura"]) == (1, 1, 1)
+    assert r["diferencia_m"]["osm"]["max"] == 19.0
+
+
+def test_se_niega_si_una_base_se_movio_desde_la_descarga():
+    dem = _dem()
+    dem.loc[0, "lat_dem"] -= 0.01
+    with pytest.raises(ValueError, match=r"\[1\]"):
+        elevacion.tabla(_bases(), dem)
+
+
+def test_en_los_artefactos_la_de_osm_se_queda_y_en_las_demas_manda_el_modelo():
+    b = elevacion.completar(_bases(), elevacion.tabla(_bases(), _dem()))
+    assert list(b["altitud_m"].iloc[:3]) == [3830.0, 2993.0, 4449.0]
+    assert list(b["altitud_fuente"].iloc[:3]) == ["osm", "terrain_tiles", "terrain_tiles"]
+    assert pd.isna(b["altitud_m"].iloc[3])  # sin modelo, queda como estaba
+    assert list(b["grupos"]) == ["1", "2", "3", "4"]  # lo demás de la tabla no cambia
