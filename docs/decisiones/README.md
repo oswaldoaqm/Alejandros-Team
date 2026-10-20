@@ -24,5 +24,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0018](./0018-planes-de-noche.md) | De noche: dónde salir, una noche de estrellas y descansar en la altura | Vigente; la regla de la altura la comparte el primer día tranquilo (0020) |
 | [0019](./0019-plan-creible.md) | Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre | Vigente |
 | [0020](./0020-primer-dia-tranquilo.md) | Un primer día tranquilo en la altura | Vigente |
+| [0021](./0021-evaluacion-semana-12.md) | Cómo se evalúa lo que propone el motor: 40 consultas, una guía como línea de base y una variante | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
