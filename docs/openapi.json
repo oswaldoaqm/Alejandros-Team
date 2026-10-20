@@ -1,6 +1,54 @@
 {
   "components": {
     "schemas": {
+      "Almuerzo": {
+        "additionalProperties": false,
+        "description": "La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.",
+        "properties": {
+          "despues_de": {
+            "description": "Cuántas paradas del día van antes: 0, antes de la primera.",
+            "minimum": 0.0,
+            "title": "Despues De",
+            "type": "integer"
+          },
+          "en_la_base": {
+            "description": "Si es en la base o, en un viaje de un día, en la ciudad de origen.",
+            "title": "En La Base",
+            "type": "boolean"
+          },
+          "hay_donde_comer": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si OpenStreetMap u Overture registran restaurantes, cafés o comida rápida a menos de 1,5 km. false: no registran ninguno, y conviene llevar el almuerzo. En la base o en el origen, null si no registran ninguno: es un pueblo con hospedaje, y se da por hecho que hay.",
+            "title": "Hay Donde Comer"
+          },
+          "hora": {
+            "description": "Cuándo empieza, HH:MM. Dura una hora.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Hora",
+            "type": "string"
+          },
+          "lugar": {
+            "description": "Dónde: el nombre de la parada o de la base.",
+            "title": "Lugar",
+            "type": "string"
+          }
+        },
+        "required": [
+          "hora",
+          "despues_de",
+          "lugar",
+          "en_la_base"
+        ],
+        "title": "Almuerzo",
+        "type": "object"
+      },
       "Aviso": {
         "additionalProperties": false,
         "properties": {
@@ -36,6 +84,44 @@
           "mensaje"
         ],
         "title": "Aviso",
+        "type": "object"
+      },
+      "BusDeNoche": {
+        "additionalProperties": false,
+        "description": "La ida y la vuelta en bus de noche: las noches del bus van fuera de los días del viaje (desde 1.6).",
+        "properties": {
+          "llega": {
+            "description": "La llegada a la base, el día 1.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Llega",
+            "type": "string"
+          },
+          "llega_vuelta": {
+            "description": "La llegada al origen, la mañana siguiente.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Llega Vuelta",
+            "type": "string"
+          },
+          "sale": {
+            "description": "La salida del origen, la noche antes del día 1.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Sale",
+            "type": "string"
+          },
+          "sale_vuelta": {
+            "description": "La salida de la base, la noche del último día.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Sale Vuelta",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sale",
+          "llega",
+          "sale_vuelta",
+          "llega_vuelta"
+        ],
+        "title": "BusDeNoche",
         "type": "object"
       },
       "Cielo": {
@@ -273,7 +359,7 @@
           },
           "dias": {
             "default": 6,
-            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
             "maximum": 14.0,
             "minimum": 1.0,
             "title": "Dias",
@@ -289,7 +375,7 @@
                 "type": "null"
               }
             ],
-            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
             "title": "Fecha Inicio"
           },
           "intereses": {
@@ -431,6 +517,17 @@
       "Dia": {
         "additionalProperties": false,
         "properties": {
+          "almuerzo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Almuerzo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cuándo y dónde se almuerza, si el día tiene visitas y llega a la hora del almuerzo: null si las visitas terminan antes de las 12:30 (desde 1.6)."
+          },
           "fecha": {
             "anyOf": [
               {
@@ -444,7 +541,7 @@
             "title": "Fecha"
           },
           "horas": {
-            "description": "Horas ocupadas entre traslados y visitas.",
+            "description": "Horas ocupadas entre traslados y visitas: el almuerzo no cuenta.",
             "minimum": 0.0,
             "title": "Horas",
             "type": "number"
@@ -489,7 +586,7 @@
             "type": "array"
           },
           "tipo": {
-            "description": "ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.",
+            "description": "ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él. Con bus de noche (desde 1.6), el día 1 es de ida y el último de vuelta aunque el bus vaya de noche: ida_y_visita y visita_y_vuelta, si tienen paradas.",
             "enum": [
               "ida",
               "visita",
@@ -878,7 +975,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.5",
+            "default": "1.6",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -937,6 +1034,7 @@
             "title": "Jerarquia Media"
           },
           "km_total": {
+            "description": "Los km por tierra de todos los días; con bus de noche (desde 1.6), más los del bus.",
             "minimum": 0.0,
             "title": "Km Total",
             "type": "number"
@@ -1359,7 +1457,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.5",
+            "default": "1.6",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1388,7 +1486,7 @@
             "type": "number"
           },
           "llegada": {
-            "description": "Hora estimada de llegada, HH:MM.",
+            "description": "Hora estimada de llegada, HH:MM. Si se almuerza al llegar (desde 1.6), la de después del almuerzo.",
             "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
             "title": "Llegada",
             "type": "string"
@@ -1527,7 +1625,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.5",
+            "default": "1.6",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1775,7 +1873,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.5",
+            "default": "1.6",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1875,7 +1973,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.5",
+            "default": "1.6",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2038,13 +2136,24 @@
             "title": "Acceso",
             "type": "string"
           },
+          "bus_de_noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BusDeNoche"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si la ida y la vuelta son en bus de noche, sus horas: por tierra de 7 a 16 horas, sin tren ni bote, en un viaje de dos días o más (desde 1.6)."
+          },
           "desde": {
             "description": "Nombre de la ciudad de origen.",
             "title": "Desde",
             "type": "string"
           },
           "dias_de_viaje": {
-            "description": "Días del viaje que se van en la ida y la vuelta.",
+            "description": "Días del viaje que se van en la ida y la vuelta. Con bus de noche (desde 1.6), 0: el bus va de noche, fuera de los días.",
             "minimum": 0.0,
             "title": "Dias De Viaje",
             "type": "integer"
@@ -2419,7 +2528,7 @@
             }
           },
           {
-            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
             "in": "query",
             "name": "fecha_inicio",
             "required": false,
@@ -2433,18 +2542,18 @@
                   "type": "null"
                 }
               ],
-              "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+              "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
               "title": "Fecha Inicio"
             }
           },
           {
-            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
             "in": "query",
             "name": "dias",
             "required": false,
             "schema": {
               "default": 6,
-              "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+              "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
               "maximum": 14,
               "minimum": 1,
               "title": "Dias",

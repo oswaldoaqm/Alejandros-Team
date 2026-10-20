@@ -43,17 +43,22 @@ def test_un_destino_que_no_existe():
         viaje.resolver(Consulta(origen="lima", mes=7, destino=9_999), artefactos.cargar())
 
 
+@con_datos
+def test_con_destino_se_vuela_aunque_el_viaje_sea_corto():
+    """Decisión 0019: con la zona elegida, quedarse cerca ya no es la pregunta, y el 40 % de la 0016
+    no impide volar. Avisa, eso sí, que con más días el viaje rinde más."""
+    datos = artefactos.cargar()
+    consulta = Consulta(origen="lima", mes=7, dias=2, destino=_zona("Cuzco"))
+    [ruta] = viaje.resolver(consulta, datos).rutas
+    assert ruta.traslado.medios[0] == "avion"
+    assert [d.tipo for d in ruta.dias] == ["ida_y_visita", "visita_y_vuelta"]
+    assert any(a.tipo == "dias" for a in ruta.avisos)
+    # Sin destino, en dos días no se vuela: el motor elige algo más cerca.
+    rutas = viaje.resolver(consulta.model_copy(update={"destino": None}), datos).rutas
+    assert rutas and all("avion" not in r.traslado.medios for r in rutas)
+
+
 SIN_VIAJE = [
-    pytest.param(
-        "lima",
-        2,
-        "Cuzco",
-        {},
-        "En 2 días no da para ir de Lima a Cuzco y volver: por carretera, solo la ida toma unas 22 horas, "
-        "y en avión, ir y volver son unas 9 horas: demasiado para 2 días.",
-        [("dias", 3, "sale el viaje, con vuelo")],
-        id="pocos dias para volar",
-    ),
     pytest.param(
         "lima",
         4,
@@ -97,7 +102,7 @@ SIN_VIAJE = [
         "Iquitos",
         {},
         "En un día no da para ir de Lima a Iquitos, visitar algo y volver.",
-        [("dias", 4, "sale el viaje, con vuelo")],
+        [("dias", 2, "sale el viaje, con vuelo")],
         id="un dia",
     ),
     pytest.param(
@@ -132,18 +137,27 @@ SIN_VIAJE = [
         2,
         "Iquitos",
         {"solo_por_tierra": True},
-        "En 2 días no da para ir de Lima a Iquitos y volver: por carretera y en bote, solo la ida toma unas 53 horas. "
+        "En 2 días no da para ir de Lima a Iquitos y volver: por carretera y en bote, solo la ida toma unas 53 horas.",
+        [("solo_por_tierra", False, "sale el viaje, con vuelo")],
+        id="con destino se vuela en dos dias",
+    ),
+    pytest.param(
+        "lima",
+        2,
+        "Macusani",
+        {"solo_por_tierra": True},
+        "En 2 días no da para ir de Lima a Macusani y volver: por carretera, solo la ida toma unas 28 horas. "
         "Volando, cabe en 4 días.",
         [],
         id="volar y mas dias, juntos",
     ),
     pytest.param(
         "lima",
-        4,
+        3,
         "Machupicchu Pueblo",
         {"altitud_max": 1500},
         "Machupicchu Pueblo está a 2 047 m, más arriba de tu límite de 1 500 m. Sin el límite de altitud, "
-        "cabe en 5 días.",
+        "cabe en 4 días.",
         [],
         id="sin limite y mas dias, juntos",
     ),
@@ -182,9 +196,9 @@ def test_si_no_cabe_dice_por_que_y_que_cambiar(origen, dias, zona, extra, motivo
 
 @con_datos
 def test_sin_sugerir_solo_dice_por_que():
-    consulta = Consulta(origen="lima", mes=7, dias=2, destino=_zona("Cuzco"))
+    consulta = Consulta(origen="lima", mes=7, dias=4, destino=_zona("Cuzco"), solo_por_tierra=True)
     sin = viaje.resolver(consulta, artefactos.cargar(), sugerir=False).sin_resultado
-    assert sin.motivo.startswith("En 2 días no da para ir de Lima a Cuzco") and sin.sugerencias == []
+    assert sin.motivo.startswith("En 4 días no da para ir de Lima a Cuzco") and sin.sugerencias == []
 
 
 @con_datos

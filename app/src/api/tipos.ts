@@ -4,7 +4,9 @@ import type { components } from "./esquema";
 
 type Modelo = components["schemas"];
 
+export type Almuerzo = Modelo["Almuerzo"];
 export type Aviso = Modelo["Aviso"];
+export type BusDeNoche = Modelo["BusDeNoche"];
 export type Cielo = Modelo["Cielo"];
 export type CieloDeLaZona = Modelo["CieloDeLaZona"];
 export type Costo = Modelo["Costo"];

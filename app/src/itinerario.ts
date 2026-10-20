@@ -1,7 +1,7 @@
 // El itinerario con sus paradas en orden y numeradas desde 1 en cada día: se ve un día a la
 // vez, y el mismo número aparece en la lista del día y en el mapa.
 
-import type { Dia, Parada, Ruta } from "./api/tipos";
+import type { Almuerzo, Dia, Parada, Ruta } from "./api/tipos";
 
 export interface ParadaNumerada {
   numero: number;
@@ -11,6 +11,23 @@ export interface ParadaNumerada {
 export interface DiaNumerado {
   dia: Dia;
   paradas: ParadaNumerada[];
+}
+
+/** Una fila del día, en orden: un lugar o el almuerzo. */
+export type FilaDelDia = ({ tipo: "parada" } & ParadaNumerada) | { tipo: "almuerzo"; almuerzo: Almuerzo };
+
+/**
+ * Los lugares del día con el almuerzo en su lugar: después de las paradas que van antes
+ * (`despues_de`, desde el contrato 1.6). Sin almuerzo, solo los lugares.
+ */
+export function filasDelDia({ dia, paradas }: DiaNumerado): FilaDelDia[] {
+  const filas: FilaDelDia[] = paradas.map((p) => ({ tipo: "parada", ...p }));
+  const almuerzo = dia.almuerzo;
+  if (almuerzo && paradas.length > 0) {
+    const donde = Math.min(Math.max(almuerzo.despues_de, 0), filas.length);
+    filas.splice(donde, 0, { tipo: "almuerzo", almuerzo });
+  }
+  return filas;
 }
 
 export interface PuntoDeMapa {

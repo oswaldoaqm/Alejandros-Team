@@ -37,3 +37,7 @@ Los grupos de TA-01 que dormían en el mismo pueblo son ahora un solo polo, y un
 ## Actualización · 8 de octubre de 2026
 
 Con el valor nuevo, un lugar lleno de imperdibles ganaba aunque el viaje se fuera casi entero en el bus. Ahora no se propone un viaje que pasaría más días solo viajando que días en que se puede visitar ([decisión 0015](./0015-mas-dias-alla-que-en-el-camino.md)).
+
+## Actualización · 19 de octubre de 2026
+
+Cada día con visitas tiene una hora de almuerzo, que no cuenta en las 8, y no se corre aunque el primer lugar abra tarde. Lo que por tierra toma de 7 a 16 horas va en bus de noche, con sus noches fuera de los días ([decisión 0019](./0019-plan-creible.md)). Con eso, un fin de semana desde el Cusco sin intereses propone Puno en bus de noche, Urubamba y Yanque; Machu Picchu sale con «Historia».

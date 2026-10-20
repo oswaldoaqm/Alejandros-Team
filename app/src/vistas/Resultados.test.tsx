@@ -235,7 +235,7 @@ describe("los tres viajes", () => {
 
 describe("el viaje a una zona elegida", () => {
   const HUANCAYO = "origen=lima&destino=33&mes=7&dias=4";
-  const CUZCO = "origen=lima&destino=36&mes=7&dias=2";
+  const CUZCO = "origen=lima&destino=36&mes=7&dias=4&solo_por_tierra=true";
 
   it("se abre directo, porque es uno solo, y «Cambiar el viaje» vuelve al formulario", async () => {
     const api = await abrir(`/?${HUANCAYO}`);
@@ -258,18 +258,23 @@ describe("el viaje a una zona elegida", () => {
     expect(await screen.findByRole("heading", { level: 2, name: "Así no cabe" })).toBeDefined();
     // El nombre de la zona sale de la lista de zonas, que puede llegar después del viaje.
     expect(await screen.findByRole("heading", { level: 1, name: "Tu viaje a Cuzco" })).toBeDefined();
-    expect(screen.getByText(/^En 2 días no da para ir de Lima a Cuzco y volver/)).toBeDefined();
+    expect(screen.getByText(/^En 4 días no da para ir de Lima a Cuzco y volver/)).toBeDefined();
     expect(screen.getByText("Con un cambio sí sale:")).toBeDefined();
     expect(plano(document.querySelector(".resultados__frase")?.textContent)).toBe(
-      "De Lima a Cuzco, 2 días en julio",
+      "De Lima a Cuzco, 4 días en julio",
     );
-    expect(plano(document.title)).toBe("De Lima a Cuzco, 2 días en julio · DreemGO");
+    expect(plano(document.title)).toBe("De Lima a Cuzco, 4 días en julio · DreemGO");
 
-    const masDias = screen.getByRole("link", { name: /^Probar con 3.días$/ });
-    expect(masDias.getAttribute("href")).toBe(`?origen=lima&destino=36&mes=7&dias=3&v=${VERSION}#/ruta/1`);
+    const masDias = screen.getByRole("link", { name: /^Probar con 12.días$/ });
+    expect(masDias.getAttribute("href")).toBe(
+      `?origen=lima&destino=36&mes=7&dias=12&solo_por_tierra=true&v=${VERSION}#/ruta/1`,
+    );
+    expect(screen.getByText("sale el viaje, sin volar")).toBeDefined();
+    const volando = screen.getByRole("link", { name: "Buscar también con vuelos" });
+    expect(volando.getAttribute("href")).toBe(`?origen=lima&destino=36&mes=7&dias=4&v=${VERSION}#/ruta/1`);
     expect(screen.getByText("sale el viaje, con vuelo")).toBeDefined();
     const otras = screen.getByRole("link", { name: "Ver viajes a otras zonas" });
-    expect(otras.getAttribute("href")).toBe(`?origen=lima&mes=7&dias=2&v=${VERSION}`);
+    expect(otras.getAttribute("href")).toBe(`?origen=lima&mes=7&dias=4&solo_por_tierra=true&v=${VERSION}`);
     await userEvent.click(otras);
     expect(await tarjetas()).toHaveLength(3);
   });
@@ -305,7 +310,7 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "2 imperdibles: Líneas y Geoglifos de Nasca y Palpa y Centro Ceremonial Cahuachi.",
+      "2 imperdibles: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);
@@ -363,6 +368,24 @@ describe("un viaje abierto", () => {
         .slice(0, 2)
         .map((li) => plano(li.textContent)),
     ).toEqual(["TransporteS/ 227", "VuelosS/ 527"]);
+  });
+
+  it("un viaje en bus de noche lo dice en su tarjeta, en sus datos y antes de ir", async () => {
+    // En el ejemplo del contrato, Trujillo: 11 horas desde Lima, en bus de noche.
+    const conBus = RESPUESTA.rutas.findIndex((r) => r.traslado.bus_de_noche);
+    const ruta = RESPUESTA.rutas[conBus];
+    if (!ruta?.traslado.bus_de_noche)
+      throw new Error("El ejemplo del contrato no trae un viaje en bus de noche.");
+    await abrir(`/?${CONSULTA}`);
+    const tarjeta = (await tarjetas())[conBus];
+    expect(plano(tarjeta?.textContent)).toContain("desde Lima, en bus de noche");
+    await userEvent.click(tarjeta as HTMLElement);
+    await viajeAbierto();
+    expect(screen.getByText("desde Lima, en bus de noche")).toBeDefined();
+    const antes = screen.getByRole("region", { name: "Antes de ir" });
+    expect(plano(antes.textContent)).toContain(
+      `sales de Lima a las ${ruta.traslado.bus_de_noche.sale} la noche antes del día 1`,
+    );
   });
 
   it("el plan va de a un día, y el mapa sigue al día elegido", async () => {
@@ -523,6 +546,11 @@ describe("guardar, compartir e imprimir", () => {
     await viajeAbierto();
     const impreso = document.querySelector(".plan-impreso");
     expect(impreso?.querySelectorAll("h3")).toHaveLength(A.dias.length);
-    expect(impreso?.querySelectorAll("li")).toHaveLength(A.indicadores.paradas);
+    // Cada lugar y, entre ellos, el almuerzo de cada día que lo tiene.
+    const almuerzos = A.dias.filter((d) => d.almuerzo && (d.paradas ?? []).length > 0).length;
+    expect(almuerzos).toBeGreaterThan(0);
+    expect(impreso?.querySelectorAll("li")).toHaveLength(A.indicadores.paradas + almuerzos);
+    const lineas = [...(impreso?.querySelectorAll("li") ?? [])].map((li) => plano(li.textContent));
+    expect(lineas.filter((l) => / Almuerzo\. /.test(l))).toHaveLength(almuerzos);
   });
 });

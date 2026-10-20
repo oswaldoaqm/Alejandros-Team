@@ -6,8 +6,10 @@ import {
   aplicarSugerencia,
   claseDelCielo,
   climaCorto,
+  comoSeVa,
   conQueSeViaja,
   cuantosLugaresDeNoche,
+  dondeSeAlmuerza,
   entrada,
   imperdibles,
   nombreDelViaje,
@@ -40,6 +42,35 @@ describe("con qué se viaja", () => {
     expect(conQueSeViaja(["carretera", "tren", "bote"])).toBe("por carretera, en tren y en bote");
     expect(conQueSeViaja(["avion", "carretera"])).toBe("en avión y por carretera");
     expect(conQueSeViaja(undefined)).toBe("por carretera");
+  });
+});
+
+describe("cómo se va, si no es lo de siempre", () => {
+  const BUS = { sale: "21:45", llega: "05:55", sale_vuelta: "21:45", llega_vuelta: "05:55" };
+  it("con vuelo, en bus de noche o nada", () => {
+    expect(comoSeVa({ vuelos: [], bus_de_noche: BUS })).toBe("en bus de noche");
+    expect(comoSeVa({ vuelos: [], bus_de_noche: null })).toBeNull();
+    expect(
+      comoSeVa({
+        vuelos: [{ desde: "Lima", hasta: "Cusco", codigo_desde: "LIM", codigo_hasta: "CUZ", horas: 1.3 }],
+      }),
+    ).toBe("con vuelo");
+  });
+});
+
+describe("dónde se almuerza", () => {
+  it("en la base; cerca de un lugar con dónde comer; en el lugar, si toca llevarlo", () => {
+    expect(dondeSeAlmuerza({ lugar: "Huaraz", en_la_base: true, hay_donde_comer: null })).toBe("En Huaraz");
+    expect(
+      dondeSeAlmuerza({ lugar: "Mirador de Rataquenua", en_la_base: false, hay_donde_comer: true }),
+    ).toBe("Cerca de Mirador de Rataquenua");
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: false })).toBe(
+      "En Laguna Churup",
+    );
+    // Con datos de antes de la 2026.10.7 no se sabe: como si hubiera.
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: null })).toBe(
+      "Cerca de Laguna Churup",
+    );
   });
 });
 

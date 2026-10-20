@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.5",
-  "version_datos": "2026.10.6",
+  "version_contrato": "1.6",
+  "version_datos": "2026.10.7",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -17,400 +17,6 @@
     "destino": null
   },
   "rutas": [
-    {
-      "polo": {
-        "id": 27,
-        "nombre": "Nasca",
-        "region": "Ica",
-        "regiones": [
-          "Ica"
-        ],
-        "base": {
-          "nombre": "Nasca",
-          "lat": -14.82772,
-          "lon": -74.937062,
-          "altitud_m": 593
-        },
-        "recursos": 29,
-        "fuera_del_circuito": true
-      },
-      "puntaje": 0.52,
-      "motivos": [
-        "2 lugares de jerarquía 3 o 4: Líneas y Geoglifos de Nasca y Palpa y Centro Ceremonial Cahuachi",
-        "Todas sus paradas son de historia y arqueología o naturaleza",
-        "Julio es temporada seca aquí",
-        "Fuera del circuito de Lima y Cusco"
-      ],
-      "estacionalidad": {
-        "mes": 7,
-        "veredicto": "viable",
-        "lluvia_mm": 0.0,
-        "dias_con_lluvia": 0.0,
-        "horas_sol": null,
-        "temp_min_c": 12.0,
-        "temp_max_c": 24.4,
-        "explicacion": "Julio es temporada seca: 0 mm de lluvia en el mes.",
-        "mejores_meses": [
-          7,
-          8,
-          9,
-          11,
-          5,
-          6,
-          10,
-          4,
-          12,
-          3,
-          1,
-          2
-        ]
-      },
-      "traslado": {
-        "desde": "Lima",
-        "horas": 8.4,
-        "dias_de_viaje": 2,
-        "medios": [
-          "carretera"
-        ],
-        "vuelos": [],
-        "acceso": "terrestre",
-        "fuente": "red_vial"
-      },
-      "dias": [
-        {
-          "numero": 1,
-          "fecha": null,
-          "tipo": "ida",
-          "horas": 8.4,
-          "km": 441.4,
-          "paradas": [],
-          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca.",
-          "noche": null
-        },
-        {
-          "numero": 2,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.7,
-          "km": 76.0,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "9020",
-                "nombre": "Acueducto de Achaco",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Otros",
-                "jerarquia": 2,
-                "lat": -14.822309,
-                "lon": -74.971004,
-                "altitud_m": 600,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=9020",
-                "descripcion": "Se encuentra ubicado al noroeste de la ciudad de Nasca.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "08:14",
-              "minutos_traslado": 14,
-              "km_desde_anterior": 4.8,
-              "minutos_visita": 45
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "254",
-                "nombre": "Líneas y Geoglifos de Nasca y Palpa",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Geoglifos (Grabado en tierra)",
-                "jerarquia": 4,
-                "lat": -14.739006,
-                "lon": -75.130016,
-                "altitud_m": 520,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=254",
-                "descripcion": "Ubicado entre las provincias de Nasca y Palpa. Son un conjunto de figuras de forma zoomorfas, antropomorfas, fitomorfas, geométricos y líneas comprendido en un área de 450 km². Entre los km 419 y 443 de la carretera Panamericana Sur.",
-                "ingreso": "pagado",
-                "tarifa_soles": 30.0
-              },
-              "llegada": "10:03",
-              "minutos_traslado": 64,
-              "km_desde_anterior": 26.1,
-              "minutos_visita": 30
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "251",
-                "nombre": "Centro Ceremonial Cahuachi",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Ciudadelas",
-                "jerarquia": 3,
-                "lat": -14.819147,
-                "lon": -75.115087,
-                "altitud_m": 380,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=251",
-                "descripcion": "Complejo arqueológico que pertenece a la cultura Nazca (Intermedio Temprano, 200 a.C.-700 d.C.). Su sector central está compuesto por varias pirámides truncas construidas en adobe, muchas de las cuales fueron abandonadas durante los siglos IV d.C.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "11:07",
-              "minutos_traslado": 34,
-              "km_desde_anterior": 12.7,
-              "minutos_visita": 120
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "8091",
-                "nombre": "Geoglifos Las Agujas de Cantayoq",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Geoglifos (Grabado en tierra)",
-                "jerarquia": null,
-                "lat": -14.83395,
-                "lon": -74.903213,
-                "altitud_m": 580,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8091",
-                "descripcion": "Las agujas de Cantayoq representan un extenso y enigmático conjunto de geoglifos prehispánicos que abarca aproximadamente 400 metros de longitud, localizado en el kilómetro 4 de la carretera a Puquio, en la provincia de Nasca, Ica.",
-                "ingreso": "pagado",
-                "tarifa_soles": 5.0
-              },
-              "llegada": "14:04",
-              "minutos_traslado": 57,
-              "km_desde_anterior": 26.7,
-              "minutos_visita": 30
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "250",
-                "nombre": "Acueducto de Cantayo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Otros",
-                "jerarquia": 2,
-                "lat": -14.826513,
-                "lon": -74.911519,
-                "altitud_m": 638,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=250",
-                "descripcion": "Ubicado al este de la ciudad de Nasca. Es una obra de ingeniería hidráulica de la cultura Nasca (200 a.c. a 700 d.c.), que consistía en extraer las aguas subterráneas (del acuífero del subsuelo) hacia la superficie por gravedad, usando la inclinación propia del valle.",
-                "ingreso": "pagado",
-                "tarifa_soles": 10.0
-              },
-              "llegada": "14:45",
-              "minutos_traslado": 11,
-              "km_desde_anterior": 2.3,
-              "minutos_visita": 45
-            }
-          ],
-          "nota": null,
-          "noche": {
-            "tipo": "estrellas",
-            "titulo": "Estrellas en Planetarium María Reiche",
-            "nota": "El cielo de Nasca tiene la luz del pueblo. Planetarium María Reiche es un planetario a 8 min: confirma sus horarios antes de ir. Las noches sin luna son las mejores: en julio de 2027, la luna nueva es el 3.",
-            "lugares": [],
-            "cielo": {
-              "desde": {
-                "nombre": "Planetarium María Reiche",
-                "tipo": "planetario",
-                "minutos": 8,
-                "lat": -14.828018,
-                "lon": -74.940633,
-                "url": "https://www.openstreetmap.org/node/4208420722",
-                "brillo": 2.78,
-                "clase": "con_luz"
-              },
-              "observatorio": null,
-              "noches_despejadas": null,
-              "fuente_nubes": null,
-              "aeropuerto": null,
-              "oscurece": null,
-              "aclara": null,
-              "luna": null,
-              "lunas_nuevas": [
-                "2027-07-03"
-              ],
-              "temp_min_c": 12.0
-            }
-          }
-        },
-        {
-          "numero": 3,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.8,
-          "km": 117.9,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "11862",
-                "nombre": "Líneas y Geoglifos de Palpa",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Geoglifos (Grabado en tierra)",
-                "jerarquia": 2,
-                "lat": -14.594583,
-                "lon": -75.201431,
-                "altitud_m": 302,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11862",
-                "descripcion": "Se ubican en la provincia de Palpa, se les puede apreciar realizando sobrevuelos desde el aeródromo María Reiche Newman en Nasca, existe el circuito “Líneas de Palpa” con la orden secuencial: Geoglifo El Colibrí de Palpa, Geoglifo La Estrella, Geoglifo El Viajero, Geoglifos La…",
-                "ingreso": "pagado",
-                "tarifa_soles": 2.0
-              },
-              "llegada": "08:52",
-              "minutos_traslado": 52,
-              "km_desde_anterior": 41.4,
-              "minutos_visita": 30
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "8451",
-                "nombre": "Cara del Inca.",
-                "categoria": "Sitios naturales",
-                "tipo": "Montañas",
-                "subtipo": "Cerros",
-                "jerarquia": 2,
-                "lat": -14.488279,
-                "lon": -75.216751,
-                "altitud_m": 479,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8451",
-                "descripcion": "Se encuentra ubicada al lado norte de la ciudad de Palpa, a la altura del km. 391 de la carretera Panamericana Sur.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "09:50",
-              "minutos_traslado": 28,
-              "km_desde_anterior": 16.6,
-              "minutos_visita": 90
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "8413",
-                "nombre": "Complejo Arqueológico Tumbas de la Muña",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Cementerios",
-                "jerarquia": 2,
-                "lat": -14.523535,
-                "lon": -75.18557,
-                "altitud_m": 357,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8413",
-                "descripcion": "Ubicado al margen izquierdo del río Grande, en el Sector La Muña, distrito Río Grande, provincia Palpa, departamento Ica. En el año 1997 los arqueólogos Dr. Markus Reindel y Lic.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
-              },
-              "llegada": "11:40",
-              "minutos_traslado": 20,
-              "km_desde_anterior": 7.9,
-              "minutos_visita": 50
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "5161",
-                "nombre": "El Manantial de la Maquina",
-                "categoria": "Sitios naturales",
-                "tipo": "Manantiales",
-                "subtipo": "Manantiales",
-                "jerarquia": 2,
-                "lat": -14.523663,
-                "lon": -75.185549,
-                "altitud_m": 406,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=5161",
-                "descripcion": "Ubicado a 1 km al Norte de la ciudad de Palpa, al pie de los cerros menores que preceden al imponente cerro Pichango, en el fundo de Santo Domingo de La Máquina. A 406 m.s.n.m con una temperatura máxima de 32°C y mínima de 10°C, clima cálido y seco.",
-                "ingreso": "pagado",
-                "tarifa_soles": 15.0
-              },
-              "llegada": "12:38",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.4,
-              "minutos_visita": 45
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "2718",
-                "nombre": "Museo Maria Reiche",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": 2,
-                "lat": -14.681596,
-                "lon": -75.136771,
-                "altitud_m": 362,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2718",
-                "descripcion": "Está ubicado a 28 kilómetros al norte de la ciudad de Nasca. Este museo alberga los restos de la Dra. María Reiche y de su hermana Renata, quienes estudiaron la Pampa de Nasca por más de 40 años.",
-                "ingreso": "pagado",
-                "tarifa_soles": 5.0
-              },
-              "llegada": "13:57",
-              "minutos_traslado": 34,
-              "km_desde_anterior": 23.5,
-              "minutos_visita": 75
-            }
-          ],
-          "nota": null,
-          "noche": null
-        },
-        {
-          "numero": 4,
-          "fecha": null,
-          "tipo": "vuelta",
-          "horas": 8.4,
-          "km": 441.4,
-          "paradas": [],
-          "nota": "Vuelta a Lima: 8 h 27 por carretera.",
-          "noche": null
-        }
-      ],
-      "costo": {
-        "moneda": "PEN",
-        "p20": 686,
-        "p50": 801,
-        "p80": 914,
-        "desglose": {
-          "transporte": 241,
-          "alojamiento": 246,
-          "alimentacion": 235,
-          "entradas": 79
-        },
-        "dentro_del_presupuesto": false,
-        "exceso": 101,
-        "supuestos": [
-          "Bus interprovincial de ida y vuelta: 882 km",
-          "Movilidad local en colectivo o taxi: 194 km",
-          "Hospedaje económico en Nasca, 3 noches",
-          "Entradas de adulto peruano según la ficha oficial de cada lugar",
-          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
-        ]
-      },
-      "eventos": [],
-      "avisos": [
-        {
-          "tipo": "presupuesto",
-          "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 801) pasa tu presupuesto por S/ 101."
-        },
-        {
-          "tipo": "dias",
-          "nivel": "advertencia",
-          "mensaje": "La ida y la vuelta se llevan 16 h 54 de tus 4 días: con más días, el viaje rinde más."
-        }
-      ],
-      "indicadores": {
-        "paradas": 10,
-        "jerarquia_media": 2.33,
-        "paradas_jerarquia_alta": 2,
-        "altitud_max_m": 638,
-        "km_total": 1076.7,
-        "valor_capturado": 0.702
-      }
-    },
     {
       "polo": {
         "id": 33,
@@ -464,7 +70,8 @@
         ],
         "vuelos": [],
         "acceso": "terrestre",
-        "fuente": "red_vial"
+        "fuente": "red_vial",
+        "bus_de_noche": null
       },
       "dias": [
         {
@@ -491,7 +98,7 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "13:20",
+              "llegada": "14:20",
               "minutos_traslado": 17,
               "km_desde_anterior": 8.8,
               "minutos_visita": 20
@@ -513,13 +120,20 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 4.0
               },
-              "llegada": "13:53",
+              "llegada": "14:53",
               "minutos_traslado": 13,
               "km_desde_anterior": 3.7,
               "minutos_visita": 45
             }
           ],
           "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+          "almuerzo": {
+            "hora": "13:03",
+            "despues_de": 0,
+            "lugar": "Huancayo",
+            "en_la_base": true,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
@@ -634,7 +248,7 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "12:48",
+              "llegada": "13:48",
               "minutos_traslado": 16,
               "km_desde_anterior": 6.6,
               "minutos_visita": 30
@@ -656,13 +270,20 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "13:26",
+              "llegada": "14:26",
               "minutos_traslado": 8,
               "km_desde_anterior": 0.3,
               "minutos_visita": 30
             }
           ],
           "nota": null,
+          "almuerzo": {
+            "hora": "12:48",
+            "despues_de": 4,
+            "lugar": "El Paseo de los Héroes de Concepción",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": {
             "tipo": "estrellas",
             "titulo": "Estrellas en Observatorio Discovery",
@@ -805,7 +426,7 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 5.0
               },
-              "llegada": "13:16",
+              "llegada": "14:16",
               "minutos_traslado": 16,
               "km_desde_anterior": 6.4,
               "minutos_visita": 75
@@ -827,13 +448,20 @@
                 "ingreso": "libre",
                 "tarifa_soles": 0.0
               },
-              "llegada": "14:43",
+              "llegada": "15:43",
               "minutos_traslado": 12,
               "km_desde_anterior": 3.4,
               "minutos_visita": 30
             }
           ],
           "nota": null,
+          "almuerzo": {
+            "hora": "13:00",
+            "despues_de": 4,
+            "lugar": "Museo de Sitio Wariwillka",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
@@ -867,6 +495,7 @@
             }
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
+          "almuerzo": null,
           "noche": null
         }
       ],
@@ -976,10 +605,10 @@
         "recursos": 59,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.46,
+      "puntaje": 0.483,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo",
-        "2 de sus 3 paradas son de historia y arqueología o naturaleza",
+        "14 de sus 23 paradas son de historia y arqueología o naturaleza",
         "Julio es temporada seca aquí",
         "Fuera del circuito de Lima y Cusco"
       ],
@@ -1010,53 +639,49 @@
       "traslado": {
         "desde": "Lima",
         "horas": 11.1,
-        "dias_de_viaje": 4,
+        "dias_de_viaje": 0,
         "medios": [
           "carretera"
         ],
         "vuelos": [],
         "acceso": "terrestre",
-        "fuente": "red_vial"
+        "fuente": "red_vial",
+        "bus_de_noche": {
+          "sale": "19:00",
+          "llega": "06:05",
+          "sale_vuelta": "19:00",
+          "llega_vuelta": "06:05"
+        }
       },
       "dias": [
         {
           "numero": 1,
           "fecha": null,
-          "tipo": "ida",
-          "horas": 5.5,
-          "km": 276.0,
-          "paradas": [],
-          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino.",
-          "noche": null
-        },
-        {
-          "numero": 2,
-          "fecha": null,
           "tipo": "ida_y_visita",
-          "horas": 7.9,
-          "km": 285.5,
+          "horas": 6.5,
+          "km": 23.7,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "2585",
-                "nombre": "Centro Histórico de Trujillo",
+                "codigo": "122",
+                "nombre": "Museo de Sitio Chan Chan",
                 "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Otros",
-                "jerarquia": 3,
-                "lat": -8.111799,
-                "lon": -79.028585,
-                "altitud_m": 34,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
-                "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tipo": "Museos y otros",
+                "subtipo": "Museos de sitio",
+                "jerarquia": 2,
+                "lat": -8.100117,
+                "lon": -79.065642,
+                "altitud_m": 29,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=122",
+                "descripcion": "El Museo de Sitio de Chan Chan, inaugurado el 20 de marzo de 1990 gracias a la donación de la Fundación Emilio Odebrecht (Brasil), forma parte del Sistema Nacional de Museos del Estado, administrado por el Ministerio de Cultura.",
+                "ingreso": "pagado",
+                "tarifa_soles": 60.0
               },
-              "llegada": "12:40",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 0.2,
-              "minutos_visita": 20
+              "llegada": "09:00",
+              "minutos_traslado": 13,
+              "km_desde_anterior": 4.7,
+              "minutos_visita": 45
             },
             {
               "orden": 2,
@@ -1075,24 +700,185 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 10.0
               },
-              "llegada": "13:13",
-              "minutos_traslado": 13,
-              "km_desde_anterior": 5.1,
+              "llegada": "09:53",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.7,
               "minutos_visita": 90
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "13095",
+                "nombre": "Los Totorales de Huanchaco",
+                "categoria": "Sitios naturales",
+                "tipo": "Cuerpo de Agua",
+                "subtipo": "Humedales",
+                "jerarquia": 2,
+                "lat": -8.118274,
+                "lon": -79.086538,
+                "altitud_m": 4,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13095",
+                "descripcion": "Los Totorales también conocidos como Humedales, Pantanos o Balsares de Huanchaco es una reserva Chimú de pesca artesanal que se ubican en la costa norte del Perú, cerca al balneario de Huanchaco y a 50 m de la línea costera del Océano Pacífico, en el Distrito de Huanchaco,…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:38",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 7.2,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "13734",
+                "nombre": "Iglesia Nuestra Señora de Monserrat",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": 2,
+                "lat": -8.122801,
+                "lon": -79.032677,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13734",
+                "descripcion": "El Arzobispo Don Manuel Prado erigió como parroquia de Monserrat a través de un Decreto con fecha 6 de septiembre de 1994, siendo su primer administrador parroquial el Padre Robert Prevost, además de ser el párroco fundador (1992-1999).",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "13:54",
+              "minutos_traslado": 16,
+              "km_desde_anterior": 7.7,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "120",
+                "nombre": "Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco)",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": null,
+                "lat": -8.110885,
+                "lon": -79.024264,
+                "altitud_m": 90,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=120",
+                "descripcion": "El Museo de Arqueología, Antropología e Historia de la Universidad Nacional de Trujillo constituye uno de los principales espacios de conservación, investigación y difusión del patrimonio arqueológico e histórico de la costa norte del Perú.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "14:24",
+              "minutos_traslado": 10,
+              "km_desde_anterior": 2.4,
+              "minutos_visita": 75
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "118",
+                "nombre": "Plaza Mayor de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 2,
+                "lat": -8.111469,
+                "lon": -79.028624,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=118",
+                "descripcion": "La Plaza Mayor de Trujillo constituye un escenario histórico de gran importancia, pues desde este lugar Martín de Estete inició el trazado de la ciudad por encargo del fundador Diego de Almagro, en diciembre de 1534.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "15:48",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 0.9,
+              "minutos_visita": 20
             }
           ],
-          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera.",
+          "nota": "El bus de noche sale de Lima a las 19:00 de la noche anterior y llega a Trujillo a las 06:05: 11 h 05 por carretera.",
+          "almuerzo": {
+            "hora": "12:54",
+            "despues_de": 3,
+            "lugar": "Iglesia Nuestra Señora de Monserrat",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
-          "numero": 3,
+          "numero": 2,
           "fecha": null,
-          "tipo": "visita_y_vuelta",
-          "horas": 7.7,
-          "km": 290.7,
+          "tipo": "visita",
+          "horas": 6.6,
+          "km": 19.0,
           "paradas": [
             {
               "orden": 1,
+              "recurso": {
+                "codigo": "14624",
+                "nombre": "Casa Natal de Victor Raúl Haya de la Torre – Centro Cultural del Banco de la Nación",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Casas Museo",
+                "jerarquia": 2,
+                "lat": -8.112958,
+                "lon": -79.026747,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14624",
+                "descripcion": "La Casa Natal de Víctor Raúl Haya de la Torre, ubicada en el Centro Histórico de Trujillo a solo una cuadra y media del Centro Histórico, constituye un inmueble de alto valor histórico, arquitectónico y cultural.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:00",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.5,
+              "minutos_visita": 53
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "2585",
+                "nombre": "Centro Histórico de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Otros",
+                "jerarquia": 3,
+                "lat": -8.111799,
+                "lon": -79.028585,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
+                "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "10:01",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.5,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "14620",
+                "nombre": "Museo Santiago Uceda Castillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos de sitio",
+                "jerarquia": 2,
+                "lat": -8.141729,
+                "lon": -78.992086,
+                "altitud_m": 26,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14620",
+                "descripcion": "El Museo Santiago Uceda Castillo se ubica en el distrito de Moche, provincia de Trujillo, departamento de La Libertad, junto al Complejo Arqueológico Huacas de Moche, conformado por la Huaca del Sol y la Huaca de la Luna.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "10:41",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 7.9,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 4,
               "recurso": {
                 "codigo": "114",
                 "nombre": "Huacas del Sol y la Luna",
@@ -1108,42 +894,361 @@
                 "ingreso": "pagado",
                 "tarifa_soles": 10.0
               },
-              "llegada": "09:00",
-              "minutos_traslado": 19,
-              "km_desde_anterior": 7.8,
+              "llegada": "11:35",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 1.0,
               "minutos_visita": 90
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "14627",
+                "nombre": "Campiña de Moche",
+                "categoria": "Sitios naturales",
+                "tipo": "Zonas paisajísticas",
+                "subtipo": "Lugares pintorescos de flora y fauna",
+                "jerarquia": 2,
+                "lat": -8.144654,
+                "lon": -78.999449,
+                "altitud_m": 27,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14627",
+                "descripcion": "La Campiña de Moche se ubica en el distrito de Moche, provincia de Trujillo, región La Libertad, aproximadamente a 8 km al sur de la ciudad de Trujillo.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "14:16",
+              "minutos_traslado": 11,
+              "km_desde_anterior": 1.9,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "13708",
+                "nombre": "Convento Santo Tomás de Villanueva de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Convento",
+                "jerarquia": 2,
+                "lat": -8.126759,
+                "lon": -79.02078,
+                "altitud_m": 67,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13708",
+                "descripcion": "El año de 1986 se creó el Vicariato San Juan de Sahagún (Agustinos del Norte), nombrando como primer Superior Mayor al Padre Daniel Turley que después se convertiría en el segundo obispo de la diócesis de Chulucanas.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "15:30",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 4.7,
+              "minutos_visita": 45
             }
           ],
-          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino.",
+          "nota": null,
+          "almuerzo": {
+            "hora": "13:05",
+            "despues_de": 4,
+            "lugar": "Huacas del Sol y la Luna",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 4.2,
+          "km": 19.4,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "13723",
+                "nombre": "Arzobispado de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": 2,
+                "lat": -8.111289,
+                "lon": -79.028197,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13723",
+                "descripcion": "El Arzobispado Metropolitano de Trujillo tiene sus raíces en la Diócesis de Trujillo, erigida el 15 de abril de 1577 por el Papa Gregorio XIII, en el corazón del virreinato del Perú.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:00",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 22
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "101",
+                "nombre": "Basílica Menor Catedral de Santa María - Catedral de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Basílica",
+                "jerarquia": 2,
+                "lat": -8.110904,
+                "lon": -79.028346,
+                "altitud_m": 38,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=101",
+                "descripcion": "La Basílica Menor Catedral de Santa María, conocida como Catedral de Trujillo, es el principal templo católico de la ciudad y sede de la Arquidiócesis Metropolitana de Trujillo. A lo largo de su historia ha contado con tres edificaciones sucesivas.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:30",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.3,
+              "minutos_visita": 34
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "13709",
+                "nombre": "Iglesia Santa Rita de Cascia - Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": 2,
+                "lat": -8.126304,
+                "lon": -79.018063,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13709",
+                "descripcion": "Durante los primeros años del siglo XXI, en un contexto de expansión urbana en Trujillo, surgió la necesidad de una presencia pastoral en la zona de Santa María, un nuevo asentamiento habitacional sin infraestructura eclesial establecida.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "10:16",
+              "minutos_traslado": 12,
+              "km_desde_anterior": 2.5,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "13736",
+                "nombre": "Seminario de San Carlos y San Marcelo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Escuela o Colegio",
+                "jerarquia": 2,
+                "lat": -8.161423,
+                "lon": -79.01104,
+                "altitud_m": 4,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13736",
+                "descripcion": "El Seminario Mayor San Carlos y San Marcelo de Trujillo es una de las instituciones formativas más antiguas del norte peruano, creado en el siglo XVII como parte de la misión evangelizadora y educativa impulsada por la Iglesia Católica en el virreinato del Perú.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "10:49",
+              "minutos_traslado": 13,
+              "km_desde_anterior": 4.5,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "14622",
+                "nombre": "Paseo Temático “Fertilidad Moche”",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Paseos peatonales",
+                "jerarquia": 2,
+                "lat": -8.121868,
+                "lon": -79.000454,
+                "altitud_m": 43,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14622",
+                "descripcion": "El Paseo Temático \"Fertilidad Moche\" es un espacio público abierto ubicado en la Carretera Panamericana Norte, sector Santa Rosa, en el ingreso a la Campiña de Moche, distrito de Moche, Trujillo.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:24",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 6.7,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "113",
+                "nombre": "Casa Urquiaga o Calonge",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Casas Museo",
+                "jerarquia": 2,
+                "lat": -8.112335,
+                "lon": -79.028141,
+                "altitud_m": 39,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=113",
+                "descripcion": "La Casa Urquiaga es una casona de gran valor arquitectónico e histórico ubicada en la Plaza Mayor de Trujillo. Su construcción original data del siglo XVI, poco después de la fundación de la ciudad en 1534, por lo que pertenece a la época colonial.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "12:07",
+              "minutos_traslado": 13,
+              "km_desde_anterior": 4.6,
+              "minutos_visita": 47
+            }
+          ],
+          "nota": null,
+          "almuerzo": {
+            "hora": "12:54",
+            "despues_de": 6,
+            "lugar": "Casa Urquiaga o Calonge",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         },
         {
           "numero": 4,
           "fecha": null,
-          "tipo": "vuelta",
-          "horas": 5.5,
-          "km": 276.0,
-          "paradas": [],
-          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera.",
+          "tipo": "visita_y_vuelta",
+          "horas": 7.6,
+          "km": 45.3,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "2186",
+                "nombre": "Museo de Zoología “Juan Ormea Rodríguez” de la Universidad Nacional de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -8.11138,
+                "lon": -79.030597,
+                "altitud_m": 31,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2186",
+                "descripcion": "El Museo de Zoología \"Juan Ormea Rodríguez\" fue fundado el 25 de julio de 1939 por iniciativa del entonces rector de la Universidad Nacional de Trujillo, el Dr.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "08:08",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.3,
+              "minutos_visita": 81
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "13197",
+                "nombre": "Muelle de Huanchaco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Muelles",
+                "jerarquia": 2,
+                "lat": -8.078347,
+                "lon": -79.121645,
+                "altitud_m": 2,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13197",
+                "descripcion": "El muelle fue construido por don José Saa & Cía. en el año 1886. En 1891, don Víctor Larco Herrera lo adquirió y lo modernizó, agregando 30 metros más.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:51",
+              "minutos_traslado": 22,
+              "km_desde_anterior": 13.3,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "14233",
+                "nombre": "Cerro Cabras - Sector La Esperanza",
+                "categoria": "Sitios naturales",
+                "tipo": "Montañas",
+                "subtipo": "Cerros",
+                "jerarquia": null,
+                "lat": -8.054216,
+                "lon": -79.035626,
+                "altitud_m": 663,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14233",
+                "descripcion": "El Cerro Cabras se ubica en el distrito de La Esperanza, provincia de Trujillo, departamento de La Libertad, con una altitud aproximada de 663 m.s.n.m.; el acceso principal se realiza desde el centro poblado Nueva Jerusalén (Sector Nueva Jerusalén), donde se inicia el ascenso…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "10:38",
+              "minutos_traslado": 27,
+              "km_desde_anterior": 14.7,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "99",
+                "nombre": "Huaca Arco Iris",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Zonas arqueológicas",
+                "jerarquia": 2,
+                "lat": -8.076912,
+                "lon": -79.048942,
+                "altitud_m": 77,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=99",
+                "descripcion": "Durante los siglos XI al XV d.C., la cultura Chimú se consolidó en la costa norte del Perú y tuvo como núcleo urbano la gran metrópoli de barro de Chan Chan.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0
+              },
+              "llegada": "12:22",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 4.1,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "2528",
+                "nombre": "Museo de Arte Moderno Gerardo Chávez",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -8.110057,
+                "lon": -78.995079,
+                "altitud_m": 95,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2528",
+                "descripcion": "El Museo de Arte Moderno de Trujillo (MAM) es uno de los espacios culturales más importantes del norte del Perú.",
+                "ingreso": "pagado",
+                "tarifa_soles": 20.0
+              },
+              "llegada": "15:09",
+              "minutos_traslado": 17,
+              "km_desde_anterior": 7.8,
+              "minutos_visita": 75
+            }
+          ],
+          "nota": "En la noche, el bus de vuelta: sale de Trujillo a las 19:00 y llega a Lima a las 06:05 del día siguiente.",
+          "almuerzo": {
+            "hora": "13:52",
+            "despues_de": 4,
+            "lugar": "Huaca Arco Iris",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
           "noche": null
         }
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 555,
-        "p50": 670,
-        "p80": 779,
+        "p20": 703,
+        "p50": 818,
+        "p80": 928,
         "desglose": {
-          "transporte": 157,
-          "alojamiento": 251,
-          "alimentacion": 238,
-          "entradas": 24
+          "transporte": 205,
+          "alojamiento": 244,
+          "alimentacion": 232,
+          "entradas": 137
         },
-        "dentro_del_presupuesto": true,
-        "exceso": null,
+        "dentro_del_presupuesto": false,
+        "exceso": 118,
         "supuestos": [
-          "Bus interprovincial de ida y vuelta: 1 102 km",
-          "Movilidad local en colectivo o taxi: 26 km",
+          "Bus de noche de ida y vuelta: 1 102 km, a la misma tarifa por km que de día",
+          "Movilidad local en colectivo o taxi: 107 km",
           "Hospedaje económico en Trujillo, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
@@ -1152,18 +1257,717 @@
       "eventos": [],
       "avisos": [
         {
-          "tipo": "dias",
+          "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "La ida y la vuelta se llevan 22 h 10 de tus 4 días: con más días, el viaje rinde más."
+          "mensaje": "El costo central (S/ 818) pasa tu presupuesto por S/ 118."
+        },
+        {
+          "tipo": "acceso",
+          "nivel": "info",
+          "mensaje": "La ida y la vuelta van en bus de noche, 11 h 05 por carretera: sales de Lima a las 19:00 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
         }
       ],
       "indicadores": {
-        "paradas": 3,
-        "jerarquia_media": 3.33,
+        "paradas": 23,
+        "jerarquia_media": 2.19,
         "paradas_jerarquia_alta": 3,
-        "altitud_max_m": 41,
-        "km_total": 1128.2,
-        "valor_capturado": 0.45
+        "altitud_max_m": 663,
+        "km_total": 1209.4,
+        "valor_capturado": 0.85
+      }
+    },
+    {
+      "polo": {
+        "id": 96,
+        "nombre": "Oxapampa",
+        "region": "Pasco",
+        "regiones": [
+          "Pasco"
+        ],
+        "base": {
+          "nombre": "Oxapampa",
+          "lat": -10.574414,
+          "lon": -75.404429,
+          "altitud_m": 1814
+        },
+        "recursos": 53,
+        "fuera_del_circuito": true
+      },
+      "puntaje": 0.428,
+      "motivos": [
+        "Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto, de jerarquía 3",
+        "17 de sus 21 paradas son de historia y arqueología o naturaleza",
+        "Coincide con Fiestas Patronales en Honor a San Pedro y San Pablo (del 19 de junio al 1 de julio)",
+        "Fuera del circuito de Lima y Cusco"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 114.0,
+        "dias_con_lluvia": 20.3,
+        "horas_sol": null,
+        "temp_min_c": 11.6,
+        "temp_max_c": 21.7,
+        "explicacion": "Julio trae algo de lluvia (114 mm), sin ser de los meses más lluviosos de la zona.",
+        "mejores_meses": [
+          7,
+          6,
+          8
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 8.0,
+        "dias_de_viaje": 0,
+        "medios": [
+          "carretera"
+        ],
+        "vuelos": [],
+        "acceso": "terrestre",
+        "fuente": "red_vial",
+        "bus_de_noche": {
+          "sale": "21:45",
+          "llega": "05:50",
+          "sale_vuelta": "21:45",
+          "llega_vuelta": "05:50"
+        }
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida_y_visita",
+          "horas": 7.8,
+          "km": 41.5,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "200",
+                "nombre": "Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto",
+                "categoria": "Sitios naturales",
+                "tipo": "Áreas Protegidas",
+                "subtipo": "Parques Nacionales",
+                "jerarquia": 3,
+                "lat": -10.539399,
+                "lon": -75.36107,
+                "altitud_m": 2445,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=200",
+                "descripcion": "El Parque Nacional Yanachaga Chemillén (PNYCh), ubicado en la provincia de Oxapampa, región Pasco, es un Área Natural Protegida (ANP) que abarca 122,000 hectáreas de bosques nublados, ríos cristalinos y una biodiversidad asombrosa.",
+                "ingreso": "pagado",
+                "tarifa_soles": 15.0
+              },
+              "llegada": "08:29",
+              "minutos_traslado": 29,
+              "km_desde_anterior": 8.4,
+              "minutos_visita": 180
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "12928",
+                "nombre": "Casa Museo Schlaefli",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Casas Museo",
+                "jerarquia": 2,
+                "lat": -10.615372,
+                "lon": -75.378892,
+                "altitud_m": 1832,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12928",
+                "descripcion": "La Casa Museo Schlaefli, ubicada en Oxapampa, es un testimonio vivo de la historia de los colonos europeos que llegaron a esta región del Perú en el siglo XIX.",
+                "ingreso": "pagado",
+                "tarifa_soles": 10.0
+              },
+              "llegada": "12:02",
+              "minutos_traslado": 33,
+              "km_desde_anterior": 12.3,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "4337",
+                "nombre": "Manantial de la Virgen",
+                "categoria": "Sitios naturales",
+                "tipo": "Manantiales",
+                "subtipo": "Manantiales",
+                "jerarquia": 2,
+                "lat": -10.654594,
+                "lon": -75.388241,
+                "altitud_m": 1748,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4337",
+                "descripcion": "El Manantial de la Virgen se encuentra en el sector Cantarizú, en el distrito y provincia de Oxapampa, ubicado dentro de la región natural Yunga según la clasificación de Javier Pulgar Vidal, El origen del Manantial de la Virgen nacen de las aguas que emanan del subsuelo,…",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "14:01",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 5.2,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "13039",
+                "nombre": "Parque de Miraflores - Oxapampa",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Parques",
+                "jerarquia": 2,
+                "lat": -10.596634,
+                "lon": -75.383833,
+                "altitud_m": 1825,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13039",
+                "descripcion": "El Parque de Miraflores en Oxapampa destaca como parte integral del barrio típico de Miraflores. Con una superficie de 5,100.26 m² y calles perimétricas que abarcan 2,670.66 m², este parque tiene una forma cuadrangular.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "15:03",
+              "minutos_traslado": 17,
+              "km_desde_anterior": 7.7,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "12929",
+                "nombre": "Maripoxa Parque Ecobiologico de Oxapampa",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Centros Científicos y Técnicos",
+                "subtipo": "Mariposarios",
+                "jerarquia": 2,
+                "lat": -10.583653,
+                "lon": -75.378443,
+                "altitud_m": 1933,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12929",
+                "descripcion": "El Mariposario MARIPOXA Parque Ecobiológico de Oxapampa, es una atracción ecológica privada en la región de Pasco, dedicada a la crianza, estudio y conservación.",
+                "ingreso": "pagado",
+                "tarifa_soles": 20.0
+              },
+              "llegada": "15:47",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 3.3,
+              "minutos_visita": 45
+            }
+          ],
+          "nota": "El bus de noche sale de Lima a las 21:45 de la noche anterior y llega a Oxapampa a las 05:50: 8 h 02 por carretera.",
+          "almuerzo": {
+            "hora": "12:47",
+            "despues_de": 2,
+            "lugar": "Casa Museo Schlaefli",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.3,
+          "km": 32.0,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "12287",
+                "nombre": "Parque Temático Yanesha El Wakon",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Otros",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -10.542584,
+                "lon": -75.441442,
+                "altitud_m": 1565,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12287",
+                "descripcion": "Ubicada en el cerro Porrayepen la Comunidad Nativa de Tsachopen del distrito de Chontabamba, en la región natural Yunga, sobre los 1550 m.s.n.m., tiene una extensión de 1250 m², de clima cálido.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "09:00",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 7.2,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "13969",
+                "nombre": "Taller de Artesanías La Collpa - Porre",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Explotaciones Industriales",
+                "subtipo": "Centros Productivos",
+                "jerarquia": 2,
+                "lat": -10.537213,
+                "lon": -75.446056,
+                "altitud_m": 1797,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13969",
+                "descripcion": "El Taller de Artesanías “La Collpa - Porre” es un espacio cultural y productivo administrado por la Sra.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:54",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 0.9,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "7103",
+                "nombre": "Parque Temático de la Miel La Abeja Reina",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Otros",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -10.604823,
+                "lon": -75.443449,
+                "altitud_m": 1808,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7103",
+                "descripcion": "El Parque Temático de la Miel “La Abeja Reina” se encuentra ubicado en el sector San José del distrito de Chontabamba, a 9 minutos de la Plaza Principal de Oxapampa, dentro de la región natural Yunga, según la clasificación de Javier Pulgar Vidal, a una altitud de 1,805 m s. n.…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:25",
+              "minutos_traslado": 31,
+              "km_desde_anterior": 12.7,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "6993",
+                "nombre": "Fundo Margarita",
+                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
+                "tipo": "Centros Científicos y Técnicos",
+                "subtipo": "Centros de rescate o conservación",
+                "jerarquia": 2,
+                "lat": -10.601516,
+                "lon": -75.410671,
+                "altitud_m": 1826,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=6993",
+                "descripcion": "El Fundo Margarita se ubica en el distrito de Chontabamba, tiene una extensión de 23 hectáreas, se encuentra en funcionamiento desde el año 1996.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "12:25",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 4.6,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "12930",
+                "nombre": "Mirador Centro Histórico Cultural Asháninka - Yánesha",
+                "categoria": "Sitios naturales",
+                "tipo": "Zonas paisajísticas",
+                "subtipo": "Miradores naturales",
+                "jerarquia": 2,
+                "lat": -10.57487,
+                "lon": -75.395053,
+                "altitud_m": 1908,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12930",
+                "descripcion": "El Mirador Centro Histórico Cultural Asháninka - Yánesha se encuentra sobre una colina a unos 1908 m.s.n.m. Este sitio ofrece una vista panorámica excepcional de la ciudad de Oxapampa y sus alrededores.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "14:39",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 4.9,
+              "minutos_visita": 102
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "202",
+                "nombre": "Casa Tradicional Hassinger Baumann Haus",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": 1,
+                "lat": -10.573133,
+                "lon": -75.403928,
+                "altitud_m": 1812,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=202",
+                "descripcion": "La Casa Tradicional Hassinger Baumann Haus es una residencia histórica, construida en el año 1947, situada en el distrito y provincia de Oxapampa, departamento de Pasco, se ubica a un minuto de la Plaza Principal de Oxapampa, a una altitud de 1812 m.s.n.m. dentro de la región…",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "16:30",
+              "minutos_traslado": 9,
+              "km_desde_anterior": 1.4,
+              "minutos_visita": 22
+            }
+          ],
+          "nota": null,
+          "almuerzo": {
+            "hora": "13:25",
+            "despues_de": 4,
+            "lugar": "Fundo Margarita",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": {
+            "tipo": "estrellas",
+            "titulo": "Noche de estrellas",
+            "nota": "Desde Oxapampa el cielo es oscuro: se ve la Vía Láctea, con algo de luz en el horizonte. En julio salen despejadas unas 6 de cada 10 noches. Las noches sin luna son las mejores: en julio de 2027, la luna nueva es el 3.",
+            "lugares": [],
+            "cielo": {
+              "desde": {
+                "nombre": "Oxapampa",
+                "tipo": "base",
+                "minutos": 0,
+                "lat": -10.574414,
+                "lon": -75.404429,
+                "url": null,
+                "brillo": 0.966,
+                "clase": "oscuro"
+              },
+              "observatorio": null,
+              "noches_despejadas": 0.556,
+              "fuente_nubes": "goes",
+              "aeropuerto": null,
+              "oscurece": null,
+              "aclara": null,
+              "luna": null,
+              "lunas_nuevas": [
+                "2027-07-03"
+              ],
+              "temp_min_c": 11.6
+            }
+          }
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.9,
+          "km": 95.7,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "13797",
+                "nombre": "Malecón Turístico del Río Chorobamba",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Malecones",
+                "jerarquia": 1,
+                "lat": -10.575294,
+                "lon": -75.407085,
+                "altitud_m": 1840,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13797",
+                "descripcion": "El Malecón turístico del río Chorobamba se encuentra ubicado en la ciudad de Oxapampa y se extiende a lo largo del río Chorobamba margen derecha, consta de unas murallas de piedras con mallas y muros de concreto, cubierto por áreas verdes.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "08:08",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.5,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "7111",
+                "nombre": "Cementerio Los Colonos - Huancabamba",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Lugares Históricos",
+                "subtipo": "Campos santos",
+                "jerarquia": 1,
+                "lat": -10.425832,
+                "lon": -75.525455,
+                "altitud_m": 1782,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7111",
+                "descripcion": "El Cementerio de los Colonos de Huancabamba, fundado en el siglo XIX, presenta una serie de características que lo convierten en un espacio único tanto por su valor histórico como por su estética.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "09:26",
+              "minutos_traslado": 48,
+              "km_desde_anterior": 24.6,
+              "minutos_visita": 34
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "7109",
+                "nombre": "Centro Yanachaga",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa-Hacienda",
+                "jerarquia": 2,
+                "lat": -10.418703,
+                "lon": -75.51872,
+                "altitud_m": 1794,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7109",
+                "descripcion": "El Centro Yanachaga, se encuentra ubicado en el distrito de Huancabamba, Provincia de Oxapampa, departamento de Pasco, a una altitud de 1794 m.s.n.m. está considerada dentro de la región natural Yunga, según la clasificación de Javier Pulgar Vidal.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "10:11",
+              "minutos_traslado": 11,
+              "km_desde_anterior": 1.7,
+              "minutos_visita": 45
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "3513",
+                "nombre": "Parque Ecológico Ex Campo de Aterrizaje",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Parques",
+                "jerarquia": 1,
+                "lat": -10.580937,
+                "lon": -75.40165,
+                "altitud_m": 1815,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3513",
+                "descripcion": "El parque ecológico ex campo de aterrizaje es un espacio imperdible para los amantes del turismo, la naturaleza, la historia y la aventura.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "11:46",
+              "minutos_traslado": 50,
+              "km_desde_anterior": 25.9,
+              "minutos_visita": 42
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "12286",
+                "nombre": "Museo Vintage Años Dorados",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -10.602141,
+                "lon": -75.41349,
+                "altitud_m": 1820,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12286",
+                "descripcion": "Museo Vintage Años Dorados, es una Casa Museo de madera de estilo típico tirolés, ubicado en el distrito Chontabamba, cuenta con salas de exhibición y colección de los años 1960, 1970 y 1980.",
+                "ingreso": "pagado",
+                "tarifa_soles": 7.5
+              },
+              "llegada": "12:40",
+              "minutos_traslado": 12,
+              "km_desde_anterior": 3.3,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "7062",
+                "nombre": "Catarata Río Tigre",
+                "categoria": "Sitios naturales",
+                "tipo": "Caídas de agua",
+                "subtipo": "Cataratas",
+                "jerarquia": 2,
+                "lat": -10.682477,
+                "lon": -75.355805,
+                "altitud_m": 1937,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7062",
+                "descripcion": "La Catarata Río Tigre es un hermoso escenario natural que se ubica en el distrito y provincia de Oxapampa, en la región de Pasco. Específicamente, el recurso forma parte del caserío de La Cañera, a solo 18 km de la ciudad de Oxapampa.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0
+              },
+              "llegada": "15:19",
+              "minutos_traslado": 39,
+              "km_desde_anterior": 20.9,
+              "minutos_visita": 60
+            }
+          ],
+          "nota": null,
+          "almuerzo": {
+            "hora": "13:40",
+            "despues_de": 5,
+            "lugar": "Museo Vintage Años Dorados",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "visita_y_vuelta",
+          "horas": 7.7,
+          "km": 12.7,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "201",
+                "nombre": "Iglesia Matriz Santa Rosa de Oxapampa",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": 2,
+                "lat": -10.574714,
+                "lon": -75.404135,
+                "altitud_m": 1812,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=201",
+                "descripcion": "La Iglesia Matriz Santa Rosa de Oxapampa se encuentra en el Jr. Grau S/N, frente a la Plaza Principal, a 1814 m.s.n.m.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "08:08",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.1,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "7066",
+                "nombre": "Plaza Principal de Oxapampa",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 2,
+                "lat": -10.574152,
+                "lon": -75.404683,
+                "altitud_m": 1812,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7066",
+                "descripcion": "La Plaza Principal de Oxapampa tiene forma cuadrangular y una superficie neta de 8,979.94 m2, con una superficie de sus calles perimétricas de 3,979.07 m2, posee 7 caminos que se reúnen en el centro de la plaza que se caracteriza por tener como monumento tipo obelisco de 4…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "08:36",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "13927",
+                "nombre": "Área de Conservación Privada Bosque de Churumazú",
+                "categoria": "Sitios naturales",
+                "tipo": "Áreas Protegidas",
+                "subtipo": "Áreas de conservación privada",
+                "jerarquia": 2,
+                "lat": -10.595336,
+                "lon": -75.440304,
+                "altitud_m": 1877,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13927",
+                "descripcion": "El Área de Conservación Privada Bosque de Churumazú se encuentra ubicado en el distrito de Chontabamba, provincia de Oxapampa del departamento de Pasco, a una altitud de 1870 a 2250 m.s.n.m. dentro de la región natural Yunga según la clasificación de Javier Pulgar Vidal.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null
+              },
+              "llegada": "09:14",
+              "minutos_traslado": 18,
+              "km_desde_anterior": 5.9,
+              "minutos_visita": 180
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "8880",
+                "nombre": "Reserva de Biosfera Oxapampa-Asháninka-Yánesha",
+                "categoria": "Sitios naturales",
+                "tipo": "Áreas Protegidas",
+                "subtipo": "Zonas Reservadas",
+                "jerarquia": 2,
+                "lat": -10.574105,
+                "lon": -75.404671,
+                "altitud_m": 1812,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8880",
+                "descripcion": "La Reserva de Biosfera Oxapampa-Asháninka-Yánesha es una joya de conservación natural y cultural ubicada en el departamento de Pasco, en la provincia de Oxapampa.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0
+              },
+              "llegada": "13:32",
+              "minutos_traslado": 18,
+              "km_desde_anterior": 6.0,
+              "minutos_visita": 180
+            }
+          ],
+          "nota": "En la noche, el bus de vuelta: sale de Oxapampa a las 21:45 y llega a Lima a las 05:50 del día siguiente.",
+          "almuerzo": {
+            "hora": "12:32",
+            "despues_de": 3,
+            "lugar": "Reserva de Biosfera Oxapampa-Asháninka-Yánesha",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 665,
+        "p50": 781,
+        "p80": 892,
+        "desglose": {
+          "transporte": 222,
+          "alojamiento": 247,
+          "alimentacion": 236,
+          "entradas": 76
+        },
+        "dentro_del_presupuesto": false,
+        "exceso": 81,
+        "supuestos": [
+          "Bus de noche de ida y vuelta: 759 km, a la misma tarifa por km que de día",
+          "Movilidad local en colectivo o taxi: 182 km",
+          "Hospedaje económico en Oxapampa, 3 noches",
+          "Entradas de adulto peruano según la ficha oficial de cada lugar",
+          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
+        ]
+      },
+      "eventos": [
+        {
+          "id": "12614",
+          "nombre": "Fiestas Patronales en Honor a San Pedro y San Pablo",
+          "tipo": "Fiestas religiosas-patronales",
+          "fecha_inicio": "2027-06-19",
+          "fecha_fin": "2027-07-01",
+          "precision_fecha": "exacta",
+          "distrito": "Chontabamba",
+          "provincia": "Oxapampa",
+          "region": "Pasco",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12614",
+          "polo": 96
+        },
+        {
+          "id": "7117",
+          "nombre": "Fiesta Patronal en Honor a la Virgen del Carmen de Huancabamba",
+          "tipo": "Fiestas religiosas-patronales",
+          "fecha_inicio": "2027-06-29",
+          "fecha_fin": "2027-07-17",
+          "precision_fecha": "exacta",
+          "distrito": "Huancabamba",
+          "provincia": "Oxapampa",
+          "region": "Pasco",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7117",
+          "polo": 96
+        }
+      ],
+      "avisos": [
+        {
+          "tipo": "presupuesto",
+          "nivel": "advertencia",
+          "mensaje": "El costo central (S/ 781) pasa tu presupuesto por S/ 81."
+        },
+        {
+          "tipo": "acceso",
+          "nivel": "info",
+          "mensaje": "La ida y la vuelta van en bus de noche, 8 h 02 por carretera: sales de Lima a las 21:45 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
+        }
+      ],
+      "indicadores": {
+        "paradas": 21,
+        "jerarquia_media": 1.86,
+        "paradas_jerarquia_alta": 1,
+        "altitud_max_m": 2445,
+        "km_total": 940.7,
+        "valor_capturado": 0.7
       }
     }
   ],
@@ -1172,7 +1976,7 @@
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
-    "Lugares de noche: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
   ]

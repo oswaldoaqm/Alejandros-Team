@@ -12,14 +12,15 @@ python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red
 python -m pipeline.clima     # después de tiempos, unos segundos
 python -m pipeline.noche     # después de tiempos y de descargar_overture.py, unos 10 segundos
 python -m pipeline.cielo     # después de noche y de las descargas del cielo, unos 3 minutos
-python -m pipeline.artefactos --version 2026.10.6   # al final: lo que carga el motor
+python -m pipeline.comida    # después de bases y de descargar_overture.py, unos 2 minutos
+python -m pipeline.artefactos --version 2026.10.7   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.6` suma la noche ([más abajo](#de-noche)). La `2026.10.5` sumó los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.10.7` suma dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)). La `2026.10.6` sumó la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -37,6 +38,7 @@ La versión `2026.10.6` suma la noche ([más abajo](#de-noche)). La `2026.10.5` 
 | [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación. Compara por parada y por grupo, así que sirve aunque los polos de las dos corridas no sean los mismos |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
 | [`noche.py`](./noche.py) | Los bares, pubs, discotecas, karaokes y peñas a no más de 1,5 km de la base de cada polo, de OpenStreetMap y de Overture Maps, sin lo que su nombre dice que no es de noche ([más abajo](#de-noche)) |
+| [`comida.py`](./comida.py) | Cuántos restaurantes, cafés y locales de comida rápida hay a menos de 1,5 km de cada lugar del inventario y de cada base, de OpenStreetMap y de Overture Maps, y a cuántos metros queda el más cercano ([más abajo](#dónde-comer)) |
 | [`cielo.py`](./cielo.py) | Cuánta luz artificial tiene el cielo de cada base, con las luces de VIIRS y el modelo de Duriscoe et al. (2018); el observatorio o planetario más cercano; y cuántas noches salen despejadas cada mes, con GOES-16 o, en la costa, con los METAR del aeropuerto |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo. Ahí cada recurso y cada evento pasa del grupo de TA-01 que trae el maestro al polo que lo junta |
@@ -226,6 +228,15 @@ Lo que queda fuera:
 - **Nombres de sitio que se escapan.** «Huaytapallana» es un nevado y no hay palabra que lo delate. Va al final del orden: se nombra solo si no hay otro.
 - **La altura en el modelo del cielo.** En el altiplano, con menos aire, el cielo suele ser más oscuro de lo que dice.
 - **La luna** no va en estas tablas: la calcula el motor para la fecha del viaje ([`dreemgo/astronomia.py`](../dreemgo/astronomia.py)).
+
+## Dónde comer
+
+`comida.py` escribe [`data/procesados/comida_cerca.csv`](../data/procesados/): por cada lugar del inventario y cada base, cuántos restaurantes, cafés y locales de comida rápida registra cada fuente a menos de 1,5 km en línea recta, y a cuántos metros queda el más cercano. El motor lo usa para elegir dónde se almuerza ([decisión 0019](../docs/decisiones/0019-plan-creible.md)).
+
+- **De OpenStreetMap**, los `amenity` restaurant, fast_food, cafe y food_court, con nombre o sin él: 16 648 en el Perú. Se leen del mismo extracto que la red y se guardan junto a él, con su MD5.
+- **De Overture Maps**, las categorías restaurant, fast_food_restaurant, cafe, food_court y food_truck_stand, con una confianza de al menos 0,7 y solo de fuentes CDLA, como en `noche.py`: 27 005. Sus nombres no se usan, solo dónde están.
+
+Hay dónde comer registrado cerca de 2 954 de los 6 225 lugares (47 %) y de 154 de las 194 bases. Que no haya ninguno no prueba que no haya dónde comer: OSM y Overture no registran todo lo que hay en un pueblo. Por eso el plan lo dice así: «no tenemos registrado dónde comer cerca». En la base se da por hecho que hay, porque es un pueblo con hospedaje.
 
 ## Dónde duerme cada polo
 

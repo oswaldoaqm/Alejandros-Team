@@ -1,6 +1,6 @@
 """
-Las diez propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar, y lo que
-esas propiedades piden cuando además hay eventos publicados por los municipios.
+Las propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar, y lo que esas
+propiedades piden cuando además hay eventos publicados por los municipios.
 
 Corren contra los artefactos de dreemgo/datos. Por defecto, 100 consultas (las mismas en
 cada corrida: hypothesis va en modo determinista). Las mil del plan:
@@ -86,6 +86,56 @@ def _la_noche(consulta: Consulta, ruta) -> None:
     assert sum(1 for d in noches if d.noche.tipo == "estrellas") <= 1
 
 
+def _el_almuerzo(consulta: Consulta, ruta) -> None:
+    """12. El almuerzo (desde 1.6): solo en un día con paradas, desde las 11:30, en su lugar entre las
+    paradas; y si un día con paradas no lo trae, es porque sus visitas terminan antes de las 12:30."""
+    deposito = ruta.traslado.desde if consulta.dias == 1 else ruta.polo.base.nombre
+    for d in ruta.dias:
+        a = d.almuerzo
+        if a is None:
+            if d.paradas:
+                ultima = d.paradas[-1]
+                assert _hhmm(ultima.llegada) + ultima.minutos_visita < 12 * 60 + 30
+            continue
+        assert d.paradas and _hhmm(a.hora) >= 11 * 60 + 30
+        assert 0 <= a.despues_de <= len(d.paradas)
+        if a.despues_de:
+            assert _hhmm(a.hora) >= _hhmm(d.paradas[a.despues_de - 1].llegada)
+        if a.despues_de < len(d.paradas):
+            assert _hhmm(a.hora) + 60 <= _hhmm(d.paradas[a.despues_de].llegada)
+        assert a.en_la_base == (a.lugar == deposito)
+        assert a.hay_donde_comer is not False or not a.en_la_base
+        if a.hay_donde_comer is False:
+            event("algún almuerzo donde no hay registrado dónde comer")
+
+
+def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
+    """13. El bus de noche (desde 1.6): solo por carretera, de 7 a 16 horas, en un viaje de dos días o
+    más y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches. Sus noches van
+    fuera de los días: sale a las 19:00 o después, ningún día lleva horas de camino y el día 1 se visita
+    desde una hora después de llegar. Y lo que cumple todo eso va en bus de noche."""
+    t = ruta.traslado
+    solo_carretera = t.medios == ["carretera"] and t.horas is not None and consulta.dias >= 2
+    if t.bus_de_noche is None:
+        # Las horas vienen redondeadas a la décima: en los bordes manda la cuenta del motor.
+        adentro = solo_carretera and 7.1 <= t.horas <= 15.9
+        assert not (adentro and 2 * t.horas < 0.4 * 24 * consulta.dias - 0.2)
+        return
+    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.4 * 24 * consulta.dias + 0.2
+    assert t.dias_de_viaje == 0
+    event("alguna ruta en bus de noche")
+    assert _hhmm(t.bus_de_noche.sale) >= 19 * 60 and _hhmm(t.bus_de_noche.llega) < 12 * 60
+    assert [d.tipo for d in ruta.dias][:: len(ruta.dias) - 1] in (
+        ["ida_y_visita", "visita_y_vuelta"],
+        ["ida", "visita_y_vuelta"],
+        ["ida_y_visita", "vuelta"],
+        ["ida", "vuelta"],
+    )
+    assert all(d.tipo == "visita" for d in ruta.dias[1:-1])
+    if ruta.dias[0].paradas:
+        assert _hhmm(ruta.dias[0].paradas[0].llegada) >= _hhmm(t.bus_de_noche.llega) + 60
+
+
 @settings(
     max_examples=CONSULTAS,
     deadline=None,
@@ -93,7 +143,7 @@ def _la_noche(consulta: Consulta, ruta) -> None:
     suppress_health_check=[HealthCheck.too_slow, HealthCheck.data_too_large],
 )
 @given(consultas())
-def test_las_diez_propiedades(consulta):
+def test_las_propiedades(consulta):
     datos = artefactos.cargar()
     respuesta = resolver(consulta, datos)
     desde, hasta = ventana(consulta, datos.version)
@@ -106,7 +156,7 @@ def test_las_diez_propiedades(consulta):
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
-        # 3. Ninguna jornada con visitas pasa de 8 horas, ni un día de solo viaje de 9.
+        # 3. Ninguna jornada con visitas pasa de 8 horas, sin el almuerzo, ni un día de solo viaje de 9.
         assert all(d.horas <= (8.0 if d.paradas else 9.0) for d in ruta.dias)
         # 4. Toda parada enlaza a su ficha oficial.
         assert all(FICHA.match(str(p.recurso.url_ficha)) for p in paradas)
@@ -135,6 +185,8 @@ def test_las_diez_propiedades(consulta):
         del_clima = [a.mensaje for a in ruta.avisos if a.tipo in ("datos", "estacionalidad")]
         assert not any(POLO.search(frase) for frase in [ruta.estacionalidad.explicacion, *del_clima])
         _la_noche(consulta, ruta)
+        _el_almuerzo(consulta, ruta)
+        _el_bus_de_noche(consulta, ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
@@ -148,11 +200,16 @@ def test_las_diez_propiedades(consulta):
     if consulta.destino is not None:
         assert polos in ([], [consulta.destino])
     # Y el viaje a una zona es el mismo cuando la elige el motor que cuando la elige el viajero:
-    # solo cambia el puntaje, que la compara con las demás.
+    # solo cambia el puntaje, que la compara con las demás. Salvo el avión: con la zona elegida, el
+    # 40 % del viaje no impide volar, así que puede volar donde el motor iba por tierra (desde 1.6).
     if consulta.destino is None and respuesta.rutas:
         ruta = respuesta.rutas[-1]
         [elegida] = resolver(consulta.model_copy(update={"destino": ruta.polo.id, "sorpresa": False}), datos).rutas
-        assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
+        if ("avion" in elegida.traslado.medios) == ("avion" in ruta.traslado.medios):
+            assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
+        else:
+            assert "avion" in elegida.traslado.medios and not consulta.solo_por_tierra
+            event("con destino, vuela donde el motor iba por tierra")
 
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()
@@ -160,13 +217,10 @@ def test_las_diez_propiedades(consulta):
     # Y la vida nocturna no cambia el día: en la misma zona, sin ella, las paradas, sus horas, el
     # traslado y el costo son los mismos (desde 1.5).
     if Interes.vida_nocturna in consulta.intereses and respuesta.rutas:
-        ruta = respuesta.rutas[0]
+        zona = {"destino": respuesta.rutas[0].polo.id, "sorpresa": False}
+        [ruta] = resolver(consulta.model_copy(update=zona), datos).rutas
         sin_noche = consulta.model_copy(
-            update={
-                "intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna],
-                "destino": ruta.polo.id,
-                "sorpresa": False,
-            }
+            update=zona | {"intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna]}
         )
         [del_dia] = resolver(sin_noche, datos).rutas
         assert [d.model_dump(exclude={"noche"}) for d in ruta.dias] == [

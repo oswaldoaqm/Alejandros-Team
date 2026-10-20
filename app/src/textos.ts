@@ -1,7 +1,16 @@
 // Frases cortas que la app arma con los datos del contrato. Lo que ya viene escrito del
 // motor (motivos, avisos, notas, explicaciones) se muestra tal cual: aquí no se reescribe.
 
-import type { Dia, LugarDeEstrellas, LugarDeNoche, Medio, Recurso, Sugerencia, Traslado } from "./api/tipos";
+import type {
+  Almuerzo,
+  Dia,
+  LugarDeEstrellas,
+  LugarDeNoche,
+  Medio,
+  Recurso,
+  Sugerencia,
+  Traslado,
+} from "./api/tipos";
 import type { Consulta, Nombres } from "./consulta";
 import { fecha, lista, mes, metros, plural, soles, solesExactos } from "./formato";
 
@@ -39,6 +48,25 @@ export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
   if (cuantos === 0) return null;
   return cuantos === 1 ? "con vuelo" : "con dos vuelos";
 }
+
+/** Cómo se va, si no es lo de siempre: «con vuelo», «en bus de noche»; null si es de día por tierra. */
+export function comoSeVa(traslado: Pick<Traslado, "vuelos" | "bus_de_noche">): string | null {
+  return conVuelos(traslado) ?? (traslado.bus_de_noche ? "en bus de noche" : null);
+}
+
+/**
+ * Dónde se almuerza: «En Huaraz», en la base; «Cerca de Mirador de Rataquenua», si hay dónde
+ * comer a menos de 1,5 km; y «En Parque Nacional Huascarán», si no lo hay y toca llevarlo.
+ */
+export function dondeSeAlmuerza(
+  almuerzo: Pick<Almuerzo, "lugar" | "en_la_base" | "hay_donde_comer">,
+): string {
+  const en = almuerzo.en_la_base || almuerzo.hay_donde_comer === false ? "En" : "Cerca de";
+  return `${en} ${almuerzo.lugar}`;
+}
+
+/** Lo que se dice cuando cerca del almuerzo no hay registrado dónde comer. */
+export const LLEVA_TU_ALMUERZO = "Lleva tu almuerzo: no tenemos registrado dónde comer cerca.";
 
 const TIPO_DE_LUGAR_DE_NOCHE: Record<LugarDeNoche["tipo"], string> = {
   bar: "bar",

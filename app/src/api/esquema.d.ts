@@ -109,6 +109,37 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Almuerzo
+         * @description La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.
+         */
+        Almuerzo: {
+            /**
+             * Despues De
+             * @description Cuántas paradas del día van antes: 0, antes de la primera.
+             */
+            despues_de: number;
+            /**
+             * En La Base
+             * @description Si es en la base o, en un viaje de un día, en la ciudad de origen.
+             */
+            en_la_base: boolean;
+            /**
+             * Hay Donde Comer
+             * @description Si OpenStreetMap u Overture registran restaurantes, cafés o comida rápida a menos de 1,5 km. false: no registran ninguno, y conviene llevar el almuerzo. En la base o en el origen, null si no registran ninguno: es un pueblo con hospedaje, y se da por hecho que hay.
+             */
+            hay_donde_comer?: boolean | null;
+            /**
+             * Hora
+             * @description Cuándo empieza, HH:MM. Dura una hora.
+             */
+            hora: string;
+            /**
+             * Lugar
+             * @description Dónde: el nombre de la parada o de la base.
+             */
+            lugar: string;
+        };
         /** Aviso */
         Aviso: {
             /** Mensaje */
@@ -123,6 +154,32 @@ export interface components {
              * @enum {string}
              */
             tipo: "estacionalidad" | "altitud" | "aclimatacion" | "presupuesto" | "acceso" | "dias" | "datos";
+        };
+        /**
+         * BusDeNoche
+         * @description La ida y la vuelta en bus de noche: las noches del bus van fuera de los días del viaje (desde 1.6).
+         */
+        BusDeNoche: {
+            /**
+             * Llega
+             * @description La llegada a la base, el día 1.
+             */
+            llega: string;
+            /**
+             * Llega Vuelta
+             * @description La llegada al origen, la mañana siguiente.
+             */
+            llega_vuelta: string;
+            /**
+             * Sale
+             * @description La salida del origen, la noche antes del día 1.
+             */
+            sale: string;
+            /**
+             * Sale Vuelta
+             * @description La salida de la base, la noche del último día.
+             */
+            sale_vuelta: string;
         };
         /**
          * Cielo
@@ -206,13 +263,13 @@ export interface components {
             destino?: number | null;
             /**
              * Dias
-             * @description Días disponibles en total, contando la ida y la vuelta desde el origen.
+             * @description Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.
              * @default 6
              */
             dias: number;
             /**
              * Fecha Inicio
-             * @description Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.
+             * @description El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.
              */
             fecha_inicio?: string | null;
             /**
@@ -288,11 +345,13 @@ export interface components {
         };
         /** Dia */
         Dia: {
+            /** @description Cuándo y dónde se almuerza, si el día tiene visitas y llega a la hora del almuerzo: null si las visitas terminan antes de las 12:30 (desde 1.6). */
+            almuerzo?: components["schemas"]["Almuerzo"] | null;
             /** Fecha */
             fecha?: string | null;
             /**
              * Horas
-             * @description Horas ocupadas entre traslados y visitas.
+             * @description Horas ocupadas entre traslados y visitas: el almuerzo no cuenta.
              */
             horas: number;
             /** Km */
@@ -307,7 +366,7 @@ export interface components {
             paradas?: components["schemas"]["Parada"][];
             /**
              * Tipo
-             * @description ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.
+             * @description ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él. Con bus de noche (desde 1.6), el día 1 es de ida y el último de vuelta aunque el bus vaya de noche: ida_y_visita y visita_y_vuelta, si tienen paradas.
              * @enum {string}
              */
             tipo: "ida" | "visita" | "vuelta" | "ida_y_visita" | "visita_y_vuelta" | "ida_visita_y_vuelta";
@@ -447,7 +506,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.5
+             * @default 1.6
              */
             version_contrato: string;
             /** Version Datos */
@@ -464,7 +523,10 @@ export interface components {
             altitud_max_m?: number | null;
             /** Jerarquia Media */
             jerarquia_media?: number | null;
-            /** Km Total */
+            /**
+             * Km Total
+             * @description Los km por tierra de todos los días; con bus de noche (desde 1.6), más los del bus.
+             */
             km_total: number;
             /** Paradas */
             paradas: number;
@@ -670,7 +732,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.5
+             * @default 1.6
              */
             version_contrato: string;
             /** Version Datos */
@@ -682,7 +744,7 @@ export interface components {
             km_desde_anterior: number;
             /**
              * Llegada
-             * @description Hora estimada de llegada, HH:MM.
+             * @description Hora estimada de llegada, HH:MM. Si se almuerza al llegar (desde 1.6), la de después del almuerzo.
              */
             llegada: string;
             /**
@@ -755,7 +817,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.5
+             * @default 1.6
              */
             version_contrato: string;
             /** Version Datos */
@@ -845,7 +907,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.5
+             * @default 1.6
              */
             version_contrato: string;
             /**
@@ -887,7 +949,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.5
+             * @default 1.6
              */
             version_contrato: string;
             /**
@@ -957,6 +1019,8 @@ export interface components {
              * @enum {string}
              */
             acceso: "terrestre" | "sin_acceso_terrestre" | "desconocido";
+            /** @description Si la ida y la vuelta son en bus de noche, sus horas: por tierra de 7 a 16 horas, sin tren ni bote, en un viaje de dos días o más (desde 1.6). */
+            bus_de_noche?: components["schemas"]["BusDeNoche"] | null;
             /**
              * Desde
              * @description Nombre de la ciudad de origen.
@@ -964,7 +1028,7 @@ export interface components {
             desde: string;
             /**
              * Dias De Viaje
-             * @description Días del viaje que se van en la ida y la vuelta.
+             * @description Días del viaje que se van en la ida y la vuelta. Con bus de noche (desde 1.6), 0: el bus va de noche, fuera de los días.
              */
             dias_de_viaje: number;
             /**
@@ -1210,9 +1274,9 @@ export interface operations {
                 origen?: string;
                 /** @description Mes del viaje, 1 a 12. Obligatorio salvo que se dé fecha_inicio. */
                 mes?: number | null;
-                /** @description Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes. */
+                /** @description El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes. */
                 fecha_inicio?: string | null;
-                /** @description Días disponibles en total, contando la ida y la vuelta desde el origen. */
+                /** @description Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último. */
                 dias?: number;
                 /** @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas. */
                 intereses?: components["schemas"]["Interes"][];

@@ -73,6 +73,7 @@ def test_como_se_escriben_los_medios():
     assert textos.por_medios(["carretera", "tren"]) == "por carretera y en tren"
     assert textos.por_medios(["carretera", "tren", "bote"]) == "por carretera, en tren y en bote"
     assert textos.por_medios(["bote"]) == "en bote"
+    assert textos.por_medios(["avion", "carretera"]) == "en avión y por carretera"
 
 
 PARAMETROS = {

@@ -1,7 +1,8 @@
 """Lo que cualquiera espera del motor: que proponga Machu Picchu y la Cordillera Blanca desde
-donde y cuando se puede ir, que desde Lima se vuele al Cusco, y que no mande a nadie más días
-en el bus que de visita. Corre contra los artefactos de dreemgo/datos: si un cambio en los
-datos o en el puntaje los saca de las tres rutas, aquí se nota (decisiones 0013 a 0016)."""
+donde y cuando se puede ir, que desde Lima se vuele al Cusco, que a Huaraz se vaya en bus de
+noche, y que no mande a nadie más días en el bus que de visita. Corre contra los artefactos de
+dreemgo/datos: si un cambio en los datos o en el puntaje los saca de las tres rutas, aquí se nota
+(decisiones 0013 a 0016 y 0019)."""
 
 import re
 
@@ -18,8 +19,15 @@ def _duermen_en(**consulta) -> list[str]:
     return [r.polo.base.nombre for r in viaje.resolver(Consulta(**consulta), artefactos.cargar()).rutas]
 
 
-def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_lleva_a_machu_picchu():
-    assert "Machupicchu Pueblo" in _duermen_en(origen="cusco", mes=6, dias=2)
+def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_lleva_al_valle_sagrado_y_a_puno():
+    """Con el bus de noche, Puno queda a una noche del Cusco: los dos días son allá (decisión 0019)."""
+    rutas = viaje.resolver(Consulta(origen="cusco", mes=6, dias=2), artefactos.cargar()).rutas
+    duermen = {r.polo.base.nombre: r for r in rutas}
+    assert "Urubamba" in duermen and duermen["Puno"].traslado.bus_de_noche is not None
+
+
+def test_desde_el_cusco_un_fin_de_semana_de_historia_lleva_a_machu_picchu():
+    assert "Machupicchu Pueblo" in _duermen_en(origen="cusco", mes=6, dias=2, intereses=["historia"])
 
 
 def test_desde_lima_seis_dias_de_julio_se_vuela_al_cusco():
@@ -33,11 +41,20 @@ def test_por_tierra_desde_lima_seis_dias_de_julio_llevan_a_huaraz():
 
 
 def test_por_tierra_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
-    """Son 8 horas y 8 minutos de viaje: un día de ida, dos allá y un día de vuelta."""
+    """Son 8 horas de viaje, en bus de noche: los cuatro días son allá (decisión 0019)."""
     rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=4, solo_por_tierra=True), artefactos.cargar()).rutas
     [huaraz] = [r for r in rutas if r.polo.base.nombre == "Huaraz"]
-    assert [d.tipo for d in huaraz.dias] == ["ida", "visita", "visita", "vuelta"]
-    assert huaraz.traslado.dias_de_viaje == 2 and 8.0 < huaraz.dias[0].horas <= 9.0
+    assert [d.tipo for d in huaraz.dias] == ["ida_y_visita", "visita", "visita", "visita_y_vuelta"]
+    assert huaraz.traslado.dias_de_viaje == 0 and huaraz.traslado.bus_de_noche is not None
+    assert all(d.paradas and d.horas <= 8.0 for d in huaraz.dias)
+
+
+def test_desde_lima_un_fin_de_semana_lleva_a_huaraz_en_bus_de_noche_y_tambien_a_algo_cerca():
+    """Dos noches en el bus pesan como un día más: un fin de semana no sale solo lejos (decisión 0019)."""
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=2), artefactos.cargar()).rutas
+    duermen = {r.polo.base.nombre: r for r in rutas}
+    assert duermen["Huaraz"].traslado.bus_de_noche is not None
+    assert any(r.traslado.bus_de_noche is None for r in rutas)
 
 
 # El ejemplo de la guía del avance del 9 de octubre: desde Lima, cuatro días, para alguien a quien le

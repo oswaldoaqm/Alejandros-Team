@@ -31,7 +31,14 @@ Hasta la 1.3 el motor solo proponía tres zonas. Quien ya sabía a dónde querí
   - 3 días, en avión: el Cusco, Arequipa, Chachapoyas, Puerto Maldonado, Tarapoto y Cajamarca;
   - 4, en avión: Puno, Iquitos y Máncora;
   - 5, en avión: Machu Picchu y el Colca;
-  - 4, en bus: Huaraz, Trujillo, Nasca y Ayacucho, porque todavía no hay buses de noche (el plan creíble).
+  - 4, en bus: Huaraz, Trujillo, Nasca y Ayacucho, porque todavía no hay buses de noche (el plan creíble). Ya los hay: ver la actualización.
 - Con destino, una consulta que sale tarda 10 ms en la mediana. Una que no sale, con sus sugerencias, tarda 190 ms, como una de tres viajes.
 - Las propiedades sortean un destino en una de cada tres consultas. Verifican que el viaje es el mismo que el motor arma solo y que cada sugerencia hace salir algún viaje.
-- **Queda abierto si con destino se vuela en viajes cortos.** La [0016](./0016-vuelos.md) no vuela si ir y volver se lleva el 40 % del viaje, porque en un viaje corto rinde más quedarse cerca, y eso no aplica si la zona ya está elegida. Sin esa regla, el Cusco, Arequipa, Puno e Iquitos saldrían desde Lima en 2 días, con entre tres y seis horas de visita en todo el viaje y el aviso «dias». A cambio, el viaje dejaría de ser el que arma el motor cuando elige él. Lo decide el equipo.
+- ~~**Queda abierto si con destino se vuela en viajes cortos.** La [0016](./0016-vuelos.md) no vuela si ir y volver se lleva el 40 % del viaje, porque en un viaje corto rinde más quedarse cerca, y eso no aplica si la zona ya está elegida. Sin esa regla, el Cusco, Arequipa, Puno e Iquitos saldrían desde Lima en 2 días, con entre tres y seis horas de visita en todo el viaje y el aviso «dias». A cambio, el viaje dejaría de ser el que arma el motor cuando elige él. Lo decide el equipo.~~ Se vuela: ver la actualización.
+
+## Actualización · 19 de octubre de 2026
+
+Con destino se vuela también en un viaje corto: el 40 % de la 0016 sirve para elegir algo más cerca, y con la zona elegida no aplica. El viaje sigue siendo el que arma el motor cuando elige él, salvo que puede volar donde él iría por tierra. Y lo que por tierra toma de 7 a 16 horas va en bus de noche ([decisión 0019](./0019-plan-creible.md)). Desde Lima, en julio, los que pedían de tres a cinco días salen así:
+
+- en avión, el Cusco, Arequipa, Chachapoyas, Puerto Maldonado, Tarapoto, Cajamarca, Puno e Iquitos, en dos días; Máncora, en tres; Machu Picchu y el Colca, en cuatro;
+- en bus de noche, Huaraz y Nasca, en dos días; Trujillo y Ayacucho, en tres.
