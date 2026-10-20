@@ -141,7 +141,9 @@ test("«A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y 
   await expect(page.getByRole("button", { name: /^A dónde/ })).toContainText("Machupicchu Pueblo");
 });
 
-test("a Huaraz en bus de noche: los tres días son allá, y cada uno con su almuerzo", async ({ page }) => {
+test("a Huaraz en bus de noche: los tres días son allá, cada uno con su almuerzo, y el primero, tranquilo", async ({
+  page,
+}) => {
   await page.goto("./?origen=lima&destino=14&mes=7&dias=3#/ruta/1");
   await expect(titulo(page)).toHaveText("Huaraz");
   await expect(page.getByText("desde Lima, en bus de noche")).toBeVisible();
@@ -152,6 +154,12 @@ test("a Huaraz en bus de noche: los tres días son allá, y cada uno con su almu
   await expect(dias).toHaveCount(3);
   await expect(dias.nth(0)).toContainText("Ida y visitas");
   await expect(dias.nth(2)).toContainText("Visitas y vuelta");
+  // Se duerme a 3 061 m: el día 1 es tranquilo (decisión 0020), y el aviso dice cómo.
+  await expect(dias.nth(0)).toContainText("Día tranquilo para acostumbrarte a la altura");
+  await expect(dias.nth(1)).not.toContainText("Día tranquilo");
+  await expect(page.getByRole("region", { name: "Antes de ir" })).toContainText(
+    "El día 1 es tranquilo: medio día de visitas como mucho",
+  );
 
   await page.getByRole("radio", { name: "Día 1" }).check({ force: true });
   // En la página va también el plan para imprimir, que no se ve: se busca en el día.
@@ -159,11 +167,14 @@ test("a Huaraz en bus de noche: los tres días son allá, y cada uno con su almu
   await expect(
     elDia.getByText(/^El bus de noche sale de Lima a las \d\d:\d\d de la noche anterior/),
   ).toBeVisible();
+  await expect(elDia.getByText("Día tranquilo para acostumbrarte a la altura.")).toBeVisible();
   const almuerzo = page.locator(".lugares__almuerzo");
   await expect(almuerzo).toHaveCount(1);
   await expect(almuerzo).toContainText(/^\d\d:\d\d Almuerzo/);
   // La hora del almuerzo no es un lugar: no se abre.
   await expect(almuerzo.getByRole("button")).toHaveCount(0);
+  const delUno = await new AxeBuilder({ page }).withTags(PAUTAS).include(".un-dia").analyze();
+  expect(delUno.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
 
   await page.getByRole("radio", { name: "Día 3" }).check({ force: true });
   await expect(elDia.getByText(/^En la noche, el bus de vuelta: sale de Huaraz a las/)).toBeVisible();
