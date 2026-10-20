@@ -182,8 +182,8 @@ def test_desde_lima_al_cusco_se_vuela_y_la_respuesta_lo_dice():
     assert any(s.startswith("Vuelo Lima–Cusco, de ida y de vuelta: entre S/") for s in cusco.costo.supuestos)
     avisos = [a.mensaje for a in cusco.avisos]
     assert any(m.startswith("La ida y la vuelta van en avión.") for m in avisos)
-    assert any("acostumbrarse, y en avión se nota más: conviene" in m for m in avisos)
     # En avión se sube de golpe al Cusco: el día de llegada es el tranquilo (decisión 0020).
+    assert any("Cuzco, y en avión se sube de golpe. El día 1 es tranquilo" in m for m in avisos)
     assert cusco.dias[0].tranquilo and not any(d.tranquilo for d in cusco.dias[1:])
 
 

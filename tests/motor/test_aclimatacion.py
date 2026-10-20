@@ -114,6 +114,11 @@ def test_de_lima_a_huaraz_el_dia_1_es_tranquilo():
         assert r["altitud_m"] <= huaraz.base["altitud_m"] + 500 and not aclimatacion.exigente(r)
     # El Huascarán, a 4 453 m y con tres horas de visita, va otro día.
     assert "Parque Nacional Huascarán" in {p.recurso.nombre for d in demas for p in d.paradas}
+    [aviso] = [a.mensaje for a in ruta.avisos if a.tipo == "aclimatacion"]
+    assert aviso == (
+        "Se duerme a 3 061 m en Huaraz. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más "
+        "de 500 m sobre Huaraz ni caminatas largas, para que el cuerpo se acostumbre."
+    )
     # Y la primera noche, con vida nocturna, es de descanso: la misma regla.
     assert uno.noche is not None and uno.noche.tipo == "descanso"
 

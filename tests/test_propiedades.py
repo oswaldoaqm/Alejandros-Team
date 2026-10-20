@@ -160,6 +160,7 @@ def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
     event("algún viaje con día tranquilo")
     [d] = tranquilos
     assert all(not antes.paradas for antes in ruta.dias[: d.numero - 1])
+    assert any(a.tipo == "aclimatacion" and f"El día {d.numero} es tranquilo" in a.mensaje for a in ruta.avisos)
     if not d.paradas:
         return
     primera, ultima = d.paradas[0], d.paradas[-1]

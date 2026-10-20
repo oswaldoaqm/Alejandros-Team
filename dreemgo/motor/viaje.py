@@ -971,16 +971,22 @@ def avisos(
         )
     altura_base = polo.base["altitud_m"]
     if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= aclimatacion.ALTURA_QUE_PESA_M:
-        en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
-        salida.append(
-            Aviso(
-                tipo="aclimatacion",
-                nivel="advertencia",
-                mensaje=f"Se duerme a {textos.miles(altura_base)} m en {polo.base['nombre']}. Si llegas desde "
-                f"la costa, el cuerpo tarda uno o dos días en acostumbrarse{en_avion}: conviene un primer día "
-                "tranquilo.",
+        base = polo.base["nombre"]
+        if it.plan.tranquilo is not None:  # el plan lo hace: se dice qué día y cómo es
+            de_golpe = ", y en avión se sube de golpe" if it.vuelo is not None else ""
+            mensaje = (
+                f"Se duerme a {textos.miles(altura_base)} m en {base}{de_golpe}. El día {it.plan.tranquilo} es "
+                f"tranquilo: medio día de visitas como mucho, sin subir más de "
+                f"{textos.miles(aclimatacion.SUBIDA_TRANQUILA_M)} m sobre {base} ni caminatas largas, para que el "
+                "cuerpo se acostumbre."
             )
-        )
+        else:  # se llega desde la altura: quien viene de la costa por su cuenta, que lo sepa
+            en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
+            mensaje = (
+                f"Se duerme a {textos.miles(altura_base)} m en {base}. Si llegas desde la costa, el cuerpo tarda "
+                f"uno o dos días en acostumbrarse{en_avion}: conviene un primer día tranquilo."
+            )
+        salida.append(Aviso(tipo="aclimatacion", nivel="advertencia", mensaje=mensaje))
     if costo.exceso:
         salida.append(
             Aviso(
@@ -1035,7 +1041,7 @@ def avisos(
                 "con más días, el viaje rinde más.",
             )
         )
-    libres = [d.numero for d in dias if d.tipo == "visita" and not d.paradas]
+    libres = [d.numero for d in dias if d.tipo == "visita" and not d.paradas and not d.tranquilo]
     if libres:
         salida.append(
             Aviso(
