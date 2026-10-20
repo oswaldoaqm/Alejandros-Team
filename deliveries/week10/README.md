@@ -4,19 +4,20 @@
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
 Entrega: 21 de octubre de 2026
 
-El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
+El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, al 20 de octubre (contrato 1.7, datos `2026.10.8`), para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
 
 ## Qué pide el enunciado y dónde está
 
 | Entregable | Dónde |
 |---|---|
-| Código completo del prototipo | [`code/`](./code/): el motor y el API (`dreemgo/`), la app web (`app/`), el pipeline de datos (`pipeline/`), la imagen y el despliegue (`infra/`), las pruebas (`tests/`) y el contrato del API (`docs/`). Es la copia de lo que está en la raíz del repositorio |
+| Código completo del prototipo | [`code/`](./code/): el motor y el API (`dreemgo/`), la app web (`app/`), el pipeline de datos (`pipeline/`), la evaluación de la semana 12 (`evaluacion/`), la imagen y el despliegue (`infra/`), las pruebas (`tests/`) y el contrato del API (`docs/`). Es la copia de lo que está en la raíz del repositorio |
 | Datos procesados, en CSV y JSON | [`data/processed/`](./data/processed/), con su diccionario (`README.md`). Es la copia de [`data/procesados/`](../../data/procesados/) |
 | Artefactos analíticos | [`artifacts/`](./artifacts/): lo que el motor carga al arrancar, con su manifiesto y la huella de cada archivo. Es la copia de [`dreemgo/datos/`](../../dreemgo/datos/) |
-| El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales y mide las cifras del informe con el mismo código del API |
+| El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales (con vuelos, bus de noche y «Quiero ir a…») y mide las cifras del informe con el mismo código del API |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
 | Presentación | [`PresentationWeek10.pptx`](./PresentationWeek10.pptx) y su versión en [PDF](./PresentationWeek10.pdf). Usa Lexend y Quattrocento Sans, de Google Fonts, como la de la semana 7; el PDF las lleva dentro |
-| Capturas de la demostración | [`capturas/`](./capturas/): 17 pantallas en celular y en escritorio, con lo que muestra cada una |
+| Capturas de la demostración | [`capturas/`](./capturas/): 23 pantallas en celular y en escritorio, con lo que muestra cada una |
+| La revisión del profesor del 20 de octubre | [`revision_profesor/`](./revision_profesor/): la comparación de P50 y P80 con S/ 800 y la hoja de verificación de Huacho, con dos filas revisadas |
 | URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |
 
@@ -28,7 +29,7 @@ Lo que se entrega queda congelado en la etiqueta `entrega/semana-10`, que se pon
 |---|---|
 | El API y el motor | Python 3.11 o más nuevo. Instala `numpy`, `pydantic`, `fastapi` y `uvicorn` |
 | La app | Node 22.12 o más nuevo. Instala React, Vite, TypeScript y MapLibre GL |
-| Rehacer los datos | Además, `pandas`, `scipy`, `scikit-learn`, `osmium`, `requests` y `lxml`, y las descargas de las fuentes |
+| Rehacer los datos | Además, `pandas`, `scipy`, `scikit-learn`, `osmium`, `pyarrow`, `requests` y `lxml`, y las descargas de las fuentes. Las de la noche y la altura piden también `rasterio`, `h5py`, `fsspec` y `aiohttp` |
 | Desplegar en AWS | Una cuenta, AWS CLI, SAM CLI y Docker |
 
 Las versiones mínimas de cada paquete están en [`pyproject.toml`](../../pyproject.toml) y en [`app/package.json`](../../app/package.json). No hay base de datos que instalar: el motor responde desde los archivos de `dreemgo/datos/`, que ya vienen en el repositorio.
@@ -75,7 +76,7 @@ Las pantallas de la app y cómo verla en un celular antes de desplegar están en
 
 ```bash
 pip install -e ".[api,dev,pipeline]"
-pytest                      # el motor, el API y el pipeline
+pytest                      # el motor, el API, el pipeline y la evaluación
 
 cd app
 npm test                    # la app, con un API de mentira
@@ -93,4 +94,4 @@ Lo mismo corre en cada pull request, junto con la construcción de las imágenes
 
 ## Rehacer los datos
 
-Los datos del motor salen del pipeline, que parte de las descargas de las fuentes (inventario y fichas de MINCETUR, OpenStreetMap y Open-Meteo). La lista de fotos que muestra la app sale del mismo pipeline, con Wikidata y Wikimedia Commons. El orden y lo que tarda cada paso están en [`pipeline/README.md`](../../pipeline/README.md); las licencias de cada fuente, en [`DATA_LICENSES.md`](../../DATA_LICENSES.md).
+Los datos del motor salen del pipeline, que parte de las descargas de las fuentes: el inventario y las fichas de MINCETUR, OpenStreetMap, Overture Maps, Open-Meteo, las nubes de GOES-16 y los METAR de NOAA, las luces de VIIRS, la altura del terreno de Terrain Tiles y las rutas aéreas que salen de Lima. La lista de fotos que muestra la app sale del mismo pipeline, con Wikidata y Wikimedia Commons. El orden y lo que tarda cada paso están en [`pipeline/README.md`](../../pipeline/README.md); las licencias de cada fuente, en [`DATA_LICENSES.md`](../../DATA_LICENSES.md).
