@@ -2,6 +2,8 @@
 mismo que arma cuando la elige él; y si no cabe, dice por qué y qué cambiar. Corre contra los
 artefactos de dreemgo/datos."""
 
+from dataclasses import replace
+
 import pytest
 
 from dreemgo.contrato import Consulta
@@ -207,3 +209,19 @@ def test_los_eventos_dicen_su_zona():
     rutas = viaje.resolver(Consulta(origen="lima", mes=6, dias=6), datos).rutas
     eventos = [(r.polo.id, e.polo) for r in rutas for e in r.eventos]
     assert eventos and all(zona == polo for polo, zona in eventos)
+
+
+@con_datos
+def test_con_altitud_maxima_una_base_sin_altura_no_entra():
+    """Como una parada: con altitud máxima, una base de la que no se sabe la altura no se propone, y si es el
+    destino, el motivo lo dice (desde 1.7). Desde los datos 2026.10.8 todas la tienen: aquí se le quita a una."""
+    datos = artefactos.cargar()
+    huaraz = datos.polos[_zona("Huaraz")]
+    sin_altura = replace(huaraz, base={**huaraz.base, "altitud_m": None})
+    lima = datos.origenes["lima"]
+    con_limite = Consulta(origen="lima", mes=7, dias=4, altitud_max=4800)
+    assert viaje.preparar(sin_altura, con_limite, lima, datos) is None
+    assert viaje.preparar(sin_altura, con_limite.model_copy(update={"altitud_max": None}), lima, datos) is not None
+    assert viaje._por_que_no(sin_altura, con_limite, lima, datos) == (
+        "No sabemos a qué altura está Huaraz, y pediste no pasar de 4 800 m."
+    )

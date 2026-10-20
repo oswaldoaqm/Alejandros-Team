@@ -1059,7 +1059,8 @@ def _cota(cands: list[Candidata], desde: np.ndarray, capacidad: float) -> float:
 def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) -> Preparado | None:
     """Lo que hace falta para planificar el polo, o None si no se puede ir."""
     base_altitud = polo.base["altitud_m"]
-    if consulta.altitud_max is not None and base_altitud is not None and base_altitud > consulta.altitud_max:
+    # Como una parada: con altitud máxima, una base de la que no se sabe la altura no entra.
+    if consulta.altitud_max is not None and (base_altitud is None or base_altitud > consulta.altitud_max):
         return None
     if consulta.sorpresa and not polo.fuera_del_circuito:
         return None
@@ -1387,7 +1388,9 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
     nombre, de = polo.nombre, origen.nombre
     dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
     limite, altura = consulta.altitud_max, polo.base["altitud_m"]
-    if limite is not None and altura is not None and altura > limite:
+    if limite is not None and altura is None:
+        return f"No sabemos a qué altura está {nombre}, y pediste no pasar de {textos.miles(limite)} m."
+    if limite is not None and altura > limite:
         return f"{nombre} está a {textos.miles(altura)} m, más arriba de tu límite de {textos.miles(limite)} m."
     excursion = consulta.dias == 1
     en_casa = origen.a_base.get(polo.id, (np.inf,))[0] < CASA_MIN

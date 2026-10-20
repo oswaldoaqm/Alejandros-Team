@@ -151,9 +151,11 @@ def test_las_propiedades(consulta):
 
     for ruta in respuesta.rutas:
         paradas = [p for d in ruta.dias for p in d.paradas]
-        # 1. Ninguna parada supera la altitud máxima.
+        # 1. Ninguna parada supera la altitud máxima, ni la base donde se duerme (desde 1.7).
         if consulta.altitud_max is not None:
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
+            altura = ruta.polo.base.altitud_m
+            assert consulta.dias == 1 or (altura is not None and altura <= consulta.altitud_max)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
         # 3. Ninguna jornada con visitas pasa de 8 horas, sin el almuerzo, ni un día de solo viaje de 9.
