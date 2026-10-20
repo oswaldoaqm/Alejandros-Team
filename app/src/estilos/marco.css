@@ -47,7 +47,7 @@
 .cabecera__nav a {
   padding: 8px 12px;
   font-size: var(--t-nota);
-  font-weight: 550;
+  font-weight: 700;
   color: var(--tinta-2);
   text-decoration: none;
   border-radius: 999px;
@@ -86,7 +86,7 @@
   justify-content: center;
   min-height: 48px;
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 700;
   /* La barra es de vidrio: deja pasar lo que tiene detrás. Con tinta-2 la letra se lee (5:1 o
      más) aunque detrás pase un botón azul o una foto oscura; con tinta-3 bajaba a 3,9:1. */
   color: var(--tinta-2);
@@ -127,10 +127,11 @@ main:focus {
 
 .pie {
   max-width: var(--ancho);
-  margin: 0 auto;
+  margin: 48px auto 0;
   padding: 24px var(--margen) calc(var(--barra-inferior) + 32px + env(safe-area-inset-bottom));
   font-size: var(--t-pie);
   color: var(--tinta-3);
+  border-top: 1px solid var(--linea);
 }
 
 .pie p + p {
@@ -138,7 +139,12 @@ main:focus {
 }
 
 .pie a {
+  font-weight: 700;
   color: var(--tinta-2);
+}
+
+.pie a:hover {
+  color: var(--lago);
 }
 
 @media (min-width: 960px) {

@@ -820,7 +820,7 @@
 
 .letra-chica {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   padding-top: 20px;
   font-size: var(--t-pie);
   line-height: 1.5;
@@ -829,15 +829,33 @@
 }
 
 .letra-chica__titulo {
-  font-family: var(--fuente);
+  font-family: var(--fuente-titular);
   font-size: var(--t-nota);
-  font-weight: 650;
+  font-weight: 700;
   color: var(--tinta-2);
+}
+
+.letra-chica p,
+.letra-chica__fuentes li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.letra-chica p::before,
+.letra-chica__fuentes li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--tinta-3);
 }
 
 .letra-chica__fuentes {
   display: grid;
-  gap: 2px;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 .solo-impresion {
@@ -920,6 +938,7 @@
   .portada__barra .boton--flotante {
     width: auto;
     padding: 0 16px;
+    font-weight: 700;
     color: var(--tinta);
     background: var(--superficie);
     box-shadow: var(--sombra-baja);
@@ -939,6 +958,7 @@
 
   .portada__barra .portada__volver {
     padding-left: 12px;
+    font-weight: 700;
     color: var(--lago);
   }
 

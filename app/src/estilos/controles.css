@@ -12,7 +12,7 @@
   min-height: 44px;
   padding: 10px 18px;
   font-size: var(--t-nota);
-  font-weight: 650;
+  font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
@@ -65,6 +65,7 @@
   min-height: 54px;
   padding: 14px 24px;
   font-size: var(--t-cuerpo);
+  font-weight: 700;
   border-radius: var(--r-control);
 }
 

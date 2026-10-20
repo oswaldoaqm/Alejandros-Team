@@ -124,7 +124,7 @@ export function App() {
       </main>
       <footer className="pie">
         <p>
-          Lugares del inventario oficial de MINCETUR, clima de Open-Meteo y caminos de OpenStreetMap.{" "}
+          Rutas y atractivos por el Perú, clima de Open-Meteo y caminos de OpenStreetMap.{" "}
           <Enlace href={enlaces.acerca()}>Cómo funciona</Enlace>
         </p>
         <p>
