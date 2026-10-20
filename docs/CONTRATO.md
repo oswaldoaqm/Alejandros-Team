@@ -2,13 +2,20 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.6** · 19 de octubre de 2026. La 1.6 hace creíble el plan ([decisión 0019](./decisiones/0019-plan-creible.md)):
+**Versión 1.7** · 20 de octubre de 2026. La 1.7 hace tranquilo el primer día en la altura ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)), como ya lo prometía el aviso de aclimatación:
+
+- **`Dia.tranquilo`.** Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente; después de un bus de noche, empieza a las 9:00. Es la misma regla de la noche de descanso de la 1.5.
+- **La base, con altitud máxima.** La propiedad 1 (§3) dice ahora también la base: con `altitud_max`, no se duerme más arriba, y una base de la que no se sabe la altura no se propone. Desde los datos `2026.10.8`, todas la tienen.
+
+No quita nada de la 1.6. Suma una propiedad, la 14.
+
+La 1.6, del 19 de octubre, hizo creíble el plan ([decisión 0019](./decisiones/0019-plan-creible.md)):
 
 - **El almuerzo.** Cada día con visitas trae `almuerzo`: a qué hora, después de cuántas paradas, dónde y si cerca hay dónde comer. Es una hora que no cuenta en las 8 de la jornada, así que un día entero va de 8:00 a 17:00. Si se almuerza al llegar a una parada, su `llegada` es la hora de después del almuerzo.
 - **El bus de noche.** Lo que por tierra toma de 7 a 16 horas, sin tren ni bote, va en bus de noche, y `traslado.bus_de_noche` dice a qué hora sale y llega. Sus noches van fuera de los días: **con bus de noche cambia el sentido de `dias` y de `fecha_inicio`**. `dias` cuenta los días allá, y `fecha_inicio` es el día 1, en que se llega, porque el bus sale la noche anterior. `traslado.dias_de_viaje` vale 0, ningún día lleva las horas del bus y `indicadores.km_total` suma sus km.
 - **Con destino, se vuela aunque el viaje sea corto**: la propiedad 9 (§3) tiene ahora esa excepción.
 
-No quita nada de la 1.5. Suma dos propiedades: la 12, del almuerzo, y la 13, del bus de noche.
+No quitó nada de la 1.5. Sumó dos propiedades: la 12, del almuerzo, y la 13, del bus de noche.
 
 La 1.5, del 18 de octubre, sumó la noche ([decisión 0018](./decisiones/0018-planes-de-noche.md)). Hay un interés nuevo, `vida_nocturna`, que no elige paradas: elige dónde salir. Cada día que se duerme en la zona puede traer `noche`, de uno de tres tipos:
 
@@ -66,8 +73,9 @@ Respuesta
 │   ├── dias[]         número, fecha, tipo (ida, visita, vuelta… o ida_visita_y_vuelta en un viaje de un día), horas, km
 │   │   ├── paradas[]  orden, recurso (con su ficha oficial), hora de llegada, traslado y visita en minutos
 │   │   ├── almuerzo   a qué hora, después de cuántas paradas, dónde y si cerca hay dónde comer (desde 1.6)
-│   │   └── noche      si se duerme en la zona y la consulta la pide: salir (lugares[], a pie de la base), estrellas
-│   │                  (cielo: desde dónde, noches despejadas del mes, la luna si hay fecha) o descanso (desde 1.5)
+│   │   ├── noche      si se duerme en la zona y la consulta la pide: salir (lugares[], a pie de la base), estrellas
+│   │   │              (cielo: desde dónde, noches despejadas del mes, la luna si hay fecha) o descanso (desde 1.5)
+│   │   └── tranquilo  si es el primer día en la altura: medio día, sin subir más de 500 m ni caminatas largas (desde 1.7)
 │   ├── costo          banda P20-P50-P80 en soles, desglose, si entra en el presupuesto
 │   ├── eventos[]      fiestas y ferias que caen en las fechas: las del inventario, con la precisión de su fecha,
 │   │                  y las que publicó un municipio (fuente «publicado»), con quién las publicó; cada una con su
@@ -78,7 +86,7 @@ Respuesta
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
 ```
 
-[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.7`. Con `naturaleza`, trae su noche de estrellas; además, el almuerzo de cada día y dos viajes en bus de noche, a Trujillo y a Oxapampa. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
+[`docs/ejemplos/respuesta_ilustrativa.json`](./ejemplos/respuesta_ilustrativa.json) es una respuesta del motor, tal cual, para `origen=lima&mes=7&dias=4&intereses=historia&intereses=naturaleza&presupuesto=700&altitud_max=3500` con los datos `2026.10.8`. Con `naturaleza`, trae su noche de estrellas; además, el almuerzo de cada día, dos viajes en bus de noche, a Trujillo y a Oxapampa, y en Huancayo, a 3 256 m, un primer día tranquilo. La genera [`generar_respuesta_ilustrativa.py`](./ejemplos/generar_respuesta_ilustrativa.py). Las pruebas lo validan contra el contrato, así que si el contrato cambia y el ejemplo no, CI falla.
 
 Dos cosas del contrato no aparecen por ahora, y no por descuido: `estacionalidad.horas_sol` viaja en `null` porque el reanálisis no ve la neblina de la costa (da más de 9 horas de sol al día en la costa de Lima en julio) y publicarlo sería engañar; y `traslado.fuente = "estimado"` no aparece, porque el motor solo propone polos a los que se llega por su red (carretera, tren o bote) o en avión.
 
@@ -95,6 +103,7 @@ El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en l
 - **Bus de noche:** lo que por tierra toma de 7 a 16 horas, sin tren ni bote, en un viaje de dos días o más. Sale a las 19:00 o después, para llegar a eso de las 6:00; la vuelta, a la misma hora. Sus noches van fuera de los días, y el día 1 se visita desde una hora después de llegar, nunca antes de las 8:00. No va si ida y vuelta se llevan el 40 % de las horas del viaje, con sus noches: en dos días, hasta unas 9 horas y media por tramo. Se cobra a la misma tarifa por km que el bus de día, y sus noches no pagan hospedaje ([decisión 0019](./decisiones/0019-plan-creible.md)).
 - **El almuerzo:** una hora que no cuenta en las 8 de la jornada. Va al terminar la primera visita después de las 12:30, en un lugar con dónde comer si lo hay a la hora; antes, desde las 11:30, si lo que sigue llega tarde; al llegar, si se llega después de las 14:00; o en la base. Dónde comer sale de OpenStreetMap y de Overture: restaurantes, cafés y comida rápida a menos de 1,5 km. Si no registran nada, `hay_donde_comer` es `false` y la app dice que lo lleves.
 - **La jornada no se corre:** si el primer lugar abre tarde, se sale más tarde, pero se vuelve a la hora de siempre: el final del tope más la hora del almuerzo. Y no se espera más de una hora en la puerta de un lugar, sin contar el almuerzo.
+- **El primer día en la altura:** si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, sea en bus, en bus de noche o en avión, el primer día en la base es tranquilo: 4 horas de jornada como mucho, más el almuerzo; ninguna parada a más de 500 m sobre la base; nada exigente, ni una caminata de acceso de más de 30 minutos ni una visita de más de 2 horas; y después de un bus de noche, desde las 9:00. Es el de llegada, si queda tiempo para visitar, o el siguiente, y `tranquilo` lo marca. La altura del origen es la de la base de la zona de su misma ciudad. Es la misma regla de la noche de descanso, y sale del Yellow Book del CDC: solo ejercicio suave en las primeras 48 horas ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)).
 - **Más días allá que en el camino:** no se propone un viaje que pasaría más días solo viajando que días en que se puede visitar. Un empate sí: a Huaraz con cuatro días, dos de viaje y dos allá. Sin vuelos, el Cusco desde Lima solo cabe con doce días o más ([decisión 0015](./decisiones/0015-mas-dias-alla-que-en-el-camino.md)).
 - **Vuelos:** las 22 rutas regulares que salen de Lima; entre otros dos aeropuertos se vuela con escala en Lima. De puerta a puerta se suman el camino por tierra hasta el aeropuerto, dos horas antes del vuelo, el vuelo, media hora para salir y el camino hasta la base. Se vuela solo a lo lejano: si por tierra la ida pasa de 16 horas, que ya no se hacen en un bus de noche; si en avión se llega al menos media jornada antes, contando las noches del camino; y si ida y vuelta en avión no se llevan el 40 % de las horas del viaje, salvo con `destino` (desde 1.6). Nunca con `solo_por_tierra`. Así, desde Lima se vuela al Cusco, a Arequipa o a Iquitos, y a Huaraz o a Trujillo se va en bus de noche; y un fin de semana no se vuela, salvo a una zona elegida. `traslado.acceso` sigue hablando del camino por tierra: Iquitos sigue `sin_acceso_terrestre` aunque se vuele. El costo cobra cada tramo, de ida y de vuelta, en una banda que va de la tarifa más baja publicada a 2,2 veces esa ([decisión 0016](./decisiones/0016-vuelos.md)).
 - **Tren y bote:** un camino puede ir en tren (a Machu Picchu) o en bote (a las islas del Titicaca, las Ballestas o por los ríos de la Amazonía). Subir o bajar cuesta 15 minutos, y a una parada se llega en bote solo si su ficha lo dice. La nota del día lo cuenta («En bote hasta Isla Taquile.») y el costo cobra cada tramo en tren y cada km en bote, con su fuente y su rango ([decisión 0010](./decisiones/0010-tren-y-botes.md)).
@@ -113,7 +122,7 @@ El detalle está en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py) y en l
 
 Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las verifican sobre miles de consultas generadas al azar.
 
-1. Ninguna parada supera `altitud_max`.
+1. Ninguna parada supera `altitud_max`, ni la base donde se duerme (desde 1.7).
 2. Los días del itinerario suman exactamente `dias`, con la ida y la vuelta incluidas. Con bus de noche, sus noches van aparte (desde 1.6).
 3. Ninguna jornada con visitas pasa de 8 horas entre traslados y visitas, sin contar el almuerzo (desde 1.6). Un día de solo viaje, sin visitas, puede llegar a 9, con vuelo o sin él.
 4. Toda parada enlaza a su ficha oficial de MINCETUR (RNF-01).
@@ -126,10 +135,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 11. La noche no cambia el día. Con `vida_nocturna` o sin ella, en la misma zona, las paradas, sus horas, el traslado y el costo son los mismos. Y la noche sigue a la consulta: salir y descansar solo con `vida_nocturna`, estrellas solo con `naturaleza` o sin intereses y en una noche como mucho, cada lugar para salir a pie de la base, y ninguna noche en un día en que no se duerme en ella (desde 1.5).
 12. Cada almuerzo va en su lugar: solo en un día con paradas, desde las 11:30, después de la parada que va antes y una hora antes de la que va después. Si no hay dónde comer registrado, es en una parada, nunca en la base. Y un día con paradas que no lo trae termina sus visitas antes de las 12:30 (desde 1.6).
 13. El bus de noche va cuando debe: solo por carretera, de 7 a 16 horas, en un viaje de dos días o más, y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches; y lo que cumple todo eso va en él. Sale a las 19:00 o después, ningún día lleva horas de camino, el día 1 es de ida y el último de vuelta, y el día 1 se visita desde una hora después de llegar (desde 1.6).
+14. El primer día en la altura es tranquilo. Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, un día y solo uno trae `tranquilo`, y es el primero en la base: sus visitas y traslados no pasan de 4 horas, ninguna parada sube más de 500 m sobre la base, ninguna tiene una caminata de acceso de más de 30 minutos ni una visita de más de 2 horas, y después de un bus de noche se sale desde las 9:00; el aviso de aclimatación dice qué día es. Si no, ningún día lo trae. Y no hay noche de descanso donde la altura no pesa (desde 1.7).
 
 Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
-Con eventos publicados valen las trece, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
+Con eventos publicados valen las catorce, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 
@@ -216,6 +226,7 @@ Hasta la Delivery 1 había cuatro piezas hechas por separado: el formulario y la
 | Sin equivalente | `dias[].noche` (desde 1.5): qué hacer esa noche, debajo de los lugares del día |
 | Sin equivalente | `dias[].almuerzo` (desde 1.6): la hora del almuerzo, entre los lugares del día, y si conviene llevarlo |
 | Sin equivalente | `traslado.bus_de_noche` (desde 1.6): a qué hora sale y llega el bus, en los datos del viaje y en la nota del día 1 y del último |
+| Sin equivalente | `dias[].tranquilo` (desde 1.7): «Día tranquilo para acostumbrarte a la altura», en la lista de días, en el día y en el plan impreso |
 | Enlace a la ficha oficial en cada parada | `recurso.url_ficha` |
 | Guardar, exportar PDF | Guardar es el enlace. Exportar es trabajo de la app, no del API |
 
