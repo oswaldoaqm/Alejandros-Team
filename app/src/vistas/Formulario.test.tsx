@@ -47,6 +47,19 @@ describe("el formulario", () => {
     );
   });
 
+  it("la vida nocturna va aparte, de noche, y viaja en la consulta como cualquier interés", async () => {
+    const api = await abrir();
+    await abrirFila(/^Qué te gusta/);
+    const hoja = screen.getByRole("dialog", { name: "¿Qué te gusta?" });
+    expect(within(hoja).getByRole("heading", { name: "De noche" })).toBeTruthy();
+    await userEvent.click(within(hoja).getByRole("checkbox", { name: "Vida nocturna" }));
+    await listo();
+    expect(fila(/^Qué te gusta/)).toBe("Qué te gusta Vida nocturna");
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toContain("intereses=vida_nocturna");
+  });
+
   it("propone el mes que viene, también en diciembre", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 9, 1));

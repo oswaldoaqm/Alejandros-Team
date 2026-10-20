@@ -40,6 +40,9 @@ class Polo:
     base_km_bote: np.ndarray
     entre_km_tren: np.ndarray
     entre_km_bote: np.ndarray
+    # Su noche (desde 2026.10.6): los lugares para salir cerca de la base, de pipeline/noche.py,
+    # y su cielo para ver estrellas, de pipeline/cielo.py. Vacía si los datos no la traen.
+    noche: dict = field(default_factory=dict)
 
     def indice(self) -> dict[str, int]:
         return {c: i for i, c in enumerate(self.paradas)}
@@ -134,6 +137,7 @@ def _polo(p: dict) -> Polo:
         base_km_bote=_en_capa(p, "base_km_bote", (n,)),
         entre_km_tren=_en_capa(p, "entre_km_tren", (n, n)),
         entre_km_bote=_en_capa(p, "entre_km_bote", (n, n)),
+        noche=p.get("noche", {}),
     )
 
 

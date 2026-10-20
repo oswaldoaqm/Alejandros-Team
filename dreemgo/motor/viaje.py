@@ -11,13 +11,15 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
    Un viaje que pasaría más días solo viajando que días con visitas no se propone.
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
-4. El puntaje: (1 − λ) · calidad · temporada · presupuesto + λ · novedad, con λ = 0,3. La
-   calidad es el valor que visita el itinerario frente al mejor de la consulta, por la
-   parte de las jornadas que tienen paradas; la temporada multiplica por 1, 0,75 o 0,4
-   según el veredicto del mes; el presupuesto, por (presupuesto / costo)² si el costo
-   central lo pasa. Con «Sorpréndeme», λ = 0,5 y solo entran polos fuera del circuito de
-   Lima y Cusco.
-5. Las tres mejores rutas, cada una con una base distinta.
+4. El puntaje: (1 − λ) · calidad · temporada · noche · presupuesto + λ · novedad, con
+   λ = 0,3. La calidad es el valor que visita el itinerario frente al mejor de la consulta,
+   por la parte de las jornadas que tienen paradas; la temporada multiplica por 1, 0,75 o 0,4
+   según el veredicto del mes; la noche, con vida_nocturna, por 1 si hay cinco lugares para
+   salir cerca de la base o más, y si no por 0,6 más 0,08 por cada uno (``noche.py``); el
+   presupuesto, por (presupuesto / costo)² si el costo central lo pasa. Con «Sorpréndeme»,
+   λ = 0,5 y solo entran polos fuera del circuito de Lima y Cusco.
+5. Las tres mejores rutas, cada una con una base distinta, y la noche de cada día que se duerme
+   en la base, si la consulta la pide (``noche.py``): no cambia nada del día.
 
 Un viaje sale de su ciudad: un polo cuya base queda a menos de media hora del origen no se
 propone para dormir (desde Lima, Lima no es un destino), y en un viaje de un día no entran
@@ -42,6 +44,7 @@ import numpy as np
 from dreemgo.calendario import DIAS as DIAS_SEMANA
 from dreemgo.calendario import Regla
 from dreemgo.contrato import (
+    DE_NOCHE,
     DIAS_MAX,
     RUTAS_MAX,
     Aviso,
@@ -63,7 +66,7 @@ from dreemgo.contrato import (
     Traslado,
 )
 from dreemgo.motor import costo as costos
-from dreemgo.motor import textos
+from dreemgo.motor import noche, textos
 from dreemgo.motor.datos import Datos, Origen, Vuelo
 from dreemgo.motor.datos import Polo as PoloDatos
 from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, mejor_plan, valor_visitado
@@ -143,8 +146,9 @@ def _candidata(i: int, recurso: dict, intereses: set[str]) -> Candidata:
 
 def candidatas(polo: PoloDatos, consulta: Consulta, datos: Datos, desde: np.ndarray) -> list[Candidata]:
     """Las paradas del polo que se pueden programar, en el orden de sus códigos.
-    ``desde``: minutos del depósito a cada parada (nan si no hay carretera)."""
-    intereses = {i.value for i in consulta.intereses}
+    ``desde``: minutos del depósito a cada parada (nan si no hay carretera). Los intereses de la
+    noche no cambian lo que vale una parada."""
+    intereses = {i.value for i in consulta.intereses if i not in DE_NOCHE}
     salida = []
     for i, codigo in enumerate(polo.paradas):
         r = datos.recursos[codigo]
@@ -757,14 +761,18 @@ def motivos(
         nombres = textos.lista([r["nombre"] for r in altas[:3]])
         enlace = ", entre ellos" if len(altas) > 3 else ":"
         salida.append(f"{len(altas)} lugares de jerarquía 3 o 4{enlace} {nombres}")
-    if consulta.intereses:
-        pedidos = {i.value for i in consulta.intereses}
+    del_dia = [i for i in consulta.intereses if i not in DE_NOCHE]
+    if del_dia:
+        pedidos = {i.value for i in del_dia}
         atienden = sum(1 for r in visitadas if pedidos & set(r["intereses"]))
-        etiquetas = textos.lista([datos.intereses[i.value]["etiqueta"].lower() for i in consulta.intereses], "o")
+        etiquetas = textos.lista([datos.intereses[i.value]["etiqueta"].lower() for i in del_dia], "o")
         if atienden == len(visitadas):
             salida.append(f"Todas sus paradas son de {etiquetas}")
         elif atienden:
             salida.append(f"{atienden} de sus {len(visitadas)} paradas son de {etiquetas}")
+    lugares = it.polo.noche.get("lugares", [])
+    if noche.pide_salir(consulta) and lugares and noche.noches_en_la_base(it.plan):
+        salida.append(f"De noche, {noche.cuantos(lugares, tipos_max=3)} a pie de donde duermes")
     if est.veredicto == "viable" and est.lluvia_mm < 50:
         salida.append(f"{textos.mes(est.mes).capitalize()} es temporada seca aquí")
     if eventos:
@@ -880,6 +888,14 @@ def avisos(
         salida.append(
             Aviso(tipo="datos", nivel="info", mensaje=f"No se sabe a qué altitud está {polo.base['nombre']}.")
         )
+    if noche.pide_salir(consulta) and noche.noches_en_la_base(it.plan) and not polo.noche.get("lugares"):
+        salida.append(
+            Aviso(
+                tipo="datos",
+                nivel="info",
+                mensaje=f"No tenemos registrados bares, discotecas ni peñas cerca de {polo.base['nombre']}.",
+            )
+        )
     return salida
 
 
@@ -900,6 +916,7 @@ class Preparado:
     km_bote_ida: float = 0.0
     desde_en_capa: tuple[np.ndarray, np.ndarray] | None = None
     vuelo: Vuelo | None = None
+    noche: float = 1.0  # lo que la vida nocturna multiplica en el puntaje (noche.factor_de_noche)
 
 
 def _cota(cands: list[Candidata], desde: np.ndarray, capacidad: float) -> float:
@@ -952,6 +969,7 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         km_bote_ida=km_bote_ida,
         desde_en_capa=_en_capa_desde_deposito(polo, origen, excursion),
         vuelo=vuelo,
+        noche=noche.factor_de_noche(polo, consulta) if not excursion else 1.0,
     )
 
 
@@ -1001,7 +1019,9 @@ def resolver(
     preparados = [p for polo in polos if (p := preparar(polo, consulta, origen, datos)) is not None]
     if preparados:
         tope = max(p.cota for p in preparados) or 1.0
-        preparados.sort(key=lambda p: (-((1 - lam) * p.temporada * p.cota / tope + lam * p.polo.novedad), p.polo.id))
+        preparados.sort(
+            key=lambda p: (-((1 - lam) * p.temporada * p.noche * p.cota / tope + lam * p.polo.novedad), p.polo.id)
+        )
 
     itinerarios, bases_planificadas = [], set()
     for n, p in enumerate(preparados[:POLOS_A_PLANIFICAR_MAX]):
@@ -1034,7 +1054,7 @@ def resolver(
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
-        calidad = it.valor / mejor * ocupacion * p.temporada
+        calidad = it.valor / mejor * ocupacion * p.temporada * p.noche
         dias = costo = None
         if consulta.presupuesto is not None:
             dias = dias_del_viaje(it, consulta, origen, datos)
@@ -1051,6 +1071,8 @@ def resolver(
         if dias is None or costo is None:
             dias = dias_del_viaje(it, consulta, origen, datos)
             costo = costo_del_viaje(it, consulta, datos, dias)
+        noches = noche.plan_de_noches(it, consulta, origen, datos, anio_de_referencia(datos.version, consulta.mes))
+        dias = [d.model_copy(update={"noche": noches.get(d.numero)}) for d in dias]
         est = estacionalidad(it.polo, consulta.mes)
         eventos = eventos_del_polo(it.polo, desde, hasta, datos)
         # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.

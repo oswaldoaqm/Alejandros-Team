@@ -102,7 +102,7 @@ def test_errores_en_espanol_con_su_campo(cliente, params, campo, mensaje):
 def test_las_opciones_de_un_valor_no_valido_se_listan_en_espanol(cliente):
     r = cliente.get("/v1/viajes", params={"mes": 7, "intereses": "museos"})
     [error] = [e for e in r.json()["detail"] if e["campo"] == "intereses"]
-    assert error["mensaje"].endswith("'arquitectura' o 'aventura'.")
+    assert error["mensaje"].endswith("'aventura' o 'vida_nocturna'.")
     assert " or " not in error["mensaje"]
 
 
@@ -210,6 +210,28 @@ def test_opciones(cliente):
     assert len(r["origenes"]) == 24 and r["origenes"][0]["id"] == "lima"
     assert [i["id"] for i in r["intereses"]][:2] == ["naturaleza", "historia"]
     assert r["dias"] == {"minimo": 1, "maximo": 14, "defecto": 6}
+    # La vida nocturna es de la noche: no atiende paradas (desde 1.5).
+    de_noche = [i for i in r["intereses"] if i["de_noche"]]
+    assert de_noche == [{"id": "vida_nocturna", "etiqueta": "Vida nocturna", "paradas": 0, "de_noche": True}]
+
+
+@con_datos
+def test_la_noche_de_una_zona(cliente):
+    cusco = next(p.id for p in artefactos.cargar().polos.values() if p.nombre == "Cuzco")
+    noche = PoloDetalle.model_validate(cliente.get(f"/v1/polos/{cusco}").json()).noche
+    assert len(noche.lugares) > 50 and noche.lugares[0].nombre == "Paddy's Irish Pub"
+    assert noche.cielo.desde.tipo == "base" and noche.cielo.desde.clase == "con_luz"
+    assert noche.cielo.observatorio.nombre == "Planetarium Cusco"
+    assert len(noche.cielo.noches_despejadas) == 12 and noche.cielo.fuente_nubes == "goes"
+
+
+@con_datos
+def test_un_viaje_con_vida_nocturna_trae_sus_noches(cliente):
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 6, "intereses": "vida_nocturna"})
+    respuesta = Respuesta.model_validate(r.json())
+    noches = [d.noche for ruta in respuesta.rutas for d in ruta.dias if d.noche]
+    assert noches and {n.tipo for n in noches} <= {"salir", "descanso"}
+    assert any(n.lugares for n in noches)
 
 
 @con_datos

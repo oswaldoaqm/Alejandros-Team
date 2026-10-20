@@ -124,6 +124,14 @@ export const TRAZOS = {
   fiestas: ["M9 18V6l11-2v12", "M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z", "M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"],
   arquitectura: ["M4 21h16", "M6 21V10l6-6 6 6v11", "M10 21v-5h4v5", "M12 7.5v2.5"],
   aventura: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m15.5 8.5-2 5-5 2 2-5 5-2Z"],
+  // La noche: una copa para salir, una luna para descansar y tres destellos para las estrellas.
+  copa: ["M5 4h14l-7 8-7-8Z", "M12 12v8", "M8 20h8", "M7.5 7h9"],
+  luna: ["M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z"],
+  estrellas: [
+    "M10 3.5 11.3 7 14.8 8.3 11.3 9.6 10 13.1 8.7 9.6 5.2 8.3 8.7 7 10 3.5Z",
+    "M17.5 12.5 18.3 14.7 20.5 15.5 18.3 16.3 17.5 18.5 16.7 16.3 14.5 15.5 16.7 14.7 17.5 12.5Z",
+    "M6.5 15.5 7 17 8.5 17.5 7 18 6.5 19.5 6 18 4.5 17.5 6 17 6.5 15.5Z",
+  ],
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;

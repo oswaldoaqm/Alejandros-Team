@@ -10,6 +10,7 @@ import type { DiaNumerado } from "../itinerario";
 import { entrada, resumenDeLugares, tipoDeDia } from "../textos";
 import { EnlaceExterno } from "./Enlace";
 import { Icono } from "./Icono";
+import { NocheDelDia } from "./Noche";
 import { esImperdible, HojaDeRecurso, Imperdible } from "./Recurso";
 import { type Segmento, Segmentos } from "./Segmentos";
 
@@ -64,6 +65,12 @@ function TodosLosDias({ dias, elegirDia }: Pick<Props, "dias" | "elegirDia">) {
                   ? resumenDeLugares(paradas.map((p) => p.parada.recurso.nombre))
                   : (dia.nota ?? "Sin visitas")}
               </span>
+              {dia.noche ? (
+                <>
+                  {" "}
+                  <span className="dia-fila__noche">De noche: {dia.noche.titulo}</span>
+                </>
+              ) : null}
             </span>
             <Icono nombre="flecha" tamano={18} />
           </button>
@@ -140,6 +147,8 @@ function UnDia({
         <p className="un-dia__libre">Un día libre, sin visitas en el plan.</p>
       )}
 
+      {dia.noche ? <NocheDelDia noche={dia.noche} /> : null}
+
       {fiestas.map((e) => (
         <p key={e.id} className="un-dia__fiesta">
           <Icono nombre="fiestas" />
@@ -203,6 +212,14 @@ export function PlanParaImprimir({ dias }: { dias: DiaNumerado[] }) {
                 </li>
               ))}
             </ol>
+          ) : null}
+          {dia.noche ? (
+            <p>
+              <strong>De noche: {dia.noche.titulo}.</strong> {dia.noche.nota}
+              {(dia.noche.lugares ?? []).length > 0
+                ? ` Esta noche: ${(dia.noche.lugares ?? []).map((l) => l.nombre).join(", ")}.`
+                : ""}
+            </p>
           ) : null}
         </section>
       ))}

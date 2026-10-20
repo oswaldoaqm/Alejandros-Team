@@ -124,12 +124,12 @@ const EVENTOS: Evento[] = [
   },
 ];
 
-function pintar(dia: number | null) {
+function pintar(dia: number | null, dias: Dia[] = DIAS) {
   const elegirDia = vi.fn();
   const abrirLugar = vi.fn();
   render(
     <Itinerario
-      dias={numerar(DIAS)}
+      dias={numerar(dias)}
       eventos={EVENTOS}
       dia={dia}
       elegirDia={elegirDia}
@@ -154,6 +154,47 @@ describe("todo el viaje", () => {
     const { elegirDia } = pintar(null);
     await userEvent.click(screen.getByRole("button", { name: /Día 3/ }));
     expect(elegirDia).toHaveBeenCalledWith(3);
+  });
+});
+
+describe("la noche", () => {
+  const CON_NOCHE: Dia[] = DIAS.map((d) =>
+    d.numero === 2
+      ? {
+          ...d,
+          noche: {
+            tipo: "salir",
+            titulo: "Salir en Huancayo",
+            nota: "A no más de 20 minutos a pie de donde duermes hay 12 bares.",
+            lugares: [
+              {
+                nombre: "Bar del Valle",
+                tipo: "bar",
+                lat: -12.06,
+                lon: -75.2,
+                minutos_a_pie: 5,
+                fuente: "openstreetmap",
+                url: "https://www.openstreetmap.org/node/7",
+                horario: null,
+              },
+            ],
+            cielo: null,
+          },
+        }
+      : d,
+  );
+
+  it("en la lista, una línea bajo lo del día", () => {
+    pintar(null, CON_NOCHE);
+    expect(plano(screen.getByRole("button", { name: /Día 2/ }).textContent)).toBe(
+      "Día 2 mié 21 jul Día libre Día libre en Huancayo. De noche: Salir en Huancayo",
+    );
+  });
+
+  it("en el día, después de sus lugares, con dónde salir", () => {
+    pintar(2, CON_NOCHE);
+    const noche = screen.getByRole("region", { name: "De noche: Salir en Huancayo" });
+    expect(within(noche).getByRole("link", { name: "Bar del Valle" })).toBeTruthy();
   });
 });
 

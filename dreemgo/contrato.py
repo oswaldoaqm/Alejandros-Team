@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.4"
+VERSION_CONTRATO = "1.5"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -52,7 +52,12 @@ class Interes(StrEnum):
     fiestas = "fiestas"
     arquitectura = "arquitectura"
     aventura = "aventura"
+    vida_nocturna = "vida_nocturna"
 
+
+DE_NOCHE: frozenset[Interes] = frozenset({Interes.vida_nocturna})
+"""Los intereses de la noche (desde 1.5): no atienden paradas del día, sino lo que se hace de
+noche cerca de donde se duerme. Los demás son del día."""
 
 ETIQUETAS_INTERES: dict[Interes, str] = {
     Interes.naturaleza: "Naturaleza",
@@ -63,6 +68,7 @@ ETIQUETAS_INTERES: dict[Interes, str] = {
     Interes.fiestas: "Fiestas y cultura viva",
     Interes.arquitectura: "Arquitectura urbana",
     Interes.aventura: "Aventura",
+    Interes.vida_nocturna: "Vida nocturna",
 }
 
 
@@ -98,7 +104,9 @@ class Consulta(_Modelo):
     intereses: list[Interes] = Field(
         default_factory=list,
         max_length=len(Interes),
-        description="Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+        description="Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. "
+        "vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas "
+        "cerca de donde se duerme, y pesa al elegir las zonas.",
     )
     presupuesto: int | None = Field(
         None,
@@ -190,6 +198,102 @@ class Parada(_Modelo):
     minutos_visita: int = Field(ge=0)
 
 
+def _hora(descripcion: str):
+    """Un campo con una hora HH:MM del Perú, o null."""
+    return Field(None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$", description=descripcion)
+
+
+class LugarDeNoche(_Modelo):
+    """Un lugar para salir de noche cerca de donde se duerme (desde 1.5)."""
+
+    nombre: str
+    tipo: Literal["bar", "pub", "discoteca", "karaoke", "pena", "musica", "comedia"] = Field(
+        description="pub también es cervecería; pena, una peña, con música criolla o andina en vivo; musica, "
+        "música en vivo; comedia, de pie."
+    )
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    minutos_a_pie: int = Field(
+        ge=1, description="Desde la base, con un 30 % más de camino que la línea recta y a 4,5 km/h."
+    )
+    fuente: Literal["openstreetmap", "overture"]
+    url: HttpUrl = Field(
+        description="Dónde verificarlo: su página en OpenStreetMap o, si solo está en Overture Maps, el mapa de "
+        "OpenStreetMap en ese punto."
+    )
+    horario: str | None = Field(None, description="El que publica OpenStreetMap, tal cual (opening_hours).")
+
+
+class LugarDeEstrellas(_Modelo):
+    """Desde dónde se mira el cielo (desde 1.5)."""
+
+    nombre: str
+    tipo: Literal["base", "mirador", "observatorio", "planetario"]
+    minutos: int = Field(ge=0, description="Desde la base por la red, de puerta a puerta; 0 si es la base.")
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    url: HttpUrl | None = Field(None, description="Su página en OpenStreetMap; null si es la base.")
+    brillo: float = Field(
+        ge=0,
+        description="La luz artificial del cielo frente a la natural (ALR), estimada con las luces nocturnas de "
+        "VIIRS y el modelo de Duriscoe et al. (2018).",
+    )
+    clase: Literal["muy_oscuro", "oscuro", "con_luz"] = Field(
+        description="Las del Servicio de Parques Nacionales de EE. UU.: brillo menor que 0,3, excelente; de 0,3 a "
+        "2, se ve lo principal; más de 2, la noche natural ya no se ve."
+    )
+
+
+class Luna(_Modelo):
+    """La luna de una noche, en hora del Perú (desde 1.5)."""
+
+    iluminada: float = Field(ge=0, le=1, description="La parte iluminada a medianoche.")
+    creciente: bool
+    sale: str | None = _hora("Si sale con la noche ya oscura.")
+    se_pone: str | None = _hora("Si se pone con la noche ya oscura.")
+    horas_sin_luna: float = Field(
+        ge=0, description="Horas de noche oscura con la luna bajo el horizonte o casi sin luz."
+    )
+
+
+class Cielo(_Modelo):
+    """Cómo se ve el cielo para mirar las estrellas (desde 1.5)."""
+
+    desde: LugarDeEstrellas
+    observatorio: LugarDeEstrellas | None = Field(
+        None, description="Un observatorio o un planetario a menos de 45 minutos, aunque su cielo tenga luz."
+    )
+    noches_despejadas: float | None = Field(
+        None,
+        ge=0,
+        le=1,
+        description="La parte de las noches del mes con el cielo despejado, a las 21:00 y a la 01:00: según GOES-16 "
+        "o, en la costa, según el METAR del aeropuerto más cercano. null si no hay un dato confiable.",
+    )
+    fuente_nubes: Literal["goes", "metar"] | None = None
+    aeropuerto: str | None = Field(None, description="El aeropuerto del METAR, si de ahí sale el dato.")
+    oscurece: str | None = _hora("Con fecha: cuando termina el crepúsculo, el Sol a 18° bajo el horizonte.")
+    aclara: str | None = _hora("Con fecha: cuando empieza el crepúsculo de la mañana.")
+    luna: Luna | None = Field(None, description="Con fecha: la luna de esa noche.")
+    lunas_nuevas: list[date] = Field(
+        default_factory=list, description="Sin fecha: los días de luna nueva del mes del viaje, los mejores."
+    )
+    temp_min_c: float | None = Field(None, description="La mínima media del mes donde se mira.")
+
+
+class Noche(_Modelo):
+    """Qué hacer una noche que se duerme en la base (desde 1.5). No cambia nada del día."""
+
+    tipo: Literal["salir", "estrellas", "descanso"] = Field(
+        description="salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o "
+        "sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna."
+    )
+    titulo: str
+    nota: str
+    lugares: list[LugarDeNoche] = Field(default_factory=list, description="Con salir: los que se proponen esa noche.")
+    cielo: Cielo | None = Field(None, description="Con estrellas.")
+
+
 class Dia(_Modelo):
     numero: int = Field(ge=1)
     fecha: date | None = None
@@ -200,6 +304,11 @@ class Dia(_Modelo):
     km: float = Field(ge=0)
     paradas: list[Parada] = Field(default_factory=list)
     nota: str | None = None
+    noche: Noche | None = Field(
+        None,
+        description="Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las "
+        "estrellas, naturaleza o ningún interés (desde 1.5).",
+    )
 
 
 class Estacionalidad(_Modelo):
@@ -472,6 +581,11 @@ class OpcionInteres(_Modelo):
     id: Interes
     etiqueta: str
     paradas: int = Field(ge=0, description="Paradas posibles que atiende el interés en todo el inventario.")
+    de_noche: bool = Field(
+        False,
+        description="Si es de la noche: no atiende paradas, sino lo que se hace de noche cerca de donde se duerme "
+        "(desde 1.5).",
+    )
 
 
 class Opciones(_Modelo):
@@ -486,6 +600,32 @@ class Opciones(_Modelo):
     altitud_max: Rango
 
 
+class CieloDeLaZona(_Modelo):
+    """El cielo de una zona para mirar las estrellas, mes a mes (desde 1.5)."""
+
+    desde: LugarDeEstrellas = Field(description="La base.")
+    mas_oscuro: LugarDeEstrellas | None = Field(
+        None,
+        description="Si la base tiene luz: el mirador, observatorio o planetario con nombre más oscuro a menos de "
+        "45 minutos, si su cielo es oscuro. Es un dato: el motor no propone ir de noche.",
+    )
+    observatorio: LugarDeEstrellas | None = None
+    noches_despejadas: list[float | None] = Field(
+        description="Enero a diciembre: la parte de las noches con el cielo despejado; null donde no hay dato."
+    )
+    fuente_nubes: Literal["goes", "metar"] | None = None
+    aeropuerto: str | None = None
+
+
+class NocheDeLaZona(_Modelo):
+    """Lo que hay de noche en una zona (desde 1.5)."""
+
+    lugares: list[LugarDeNoche] = Field(
+        description="Para salir, a menos de 1,5 km de la base, del más al menos confiable."
+    )
+    cielo: CieloDeLaZona
+
+
 class PoloDetalle(_Modelo):
     """Ficha de un polo: sus recursos, su clima mes a mes y sus eventos del año."""
 
@@ -495,6 +635,7 @@ class PoloDetalle(_Modelo):
     recursos: list[Recurso] = Field(description="Las paradas posibles del polo, de mayor a menor jerarquía.")
     clima: list[Estacionalidad] = Field(description="Los doce meses, de enero a diciembre.")
     eventos: list[Evento] = Field(description="Los acontecimientos del polo en los próximos doce meses.")
+    noche: NocheDeLaZona | None = Field(None, description="Para salir y para mirar las estrellas (desde 1.5).")
     atribucion: list[str]
 
 

@@ -1,6 +1,6 @@
 # La app de DreemGO
 
-La web que usa el viajero: pregunta qué viaje quiere, propone hasta tres para comparar y abre el que elija en su propia pantalla, con su plan día por día, su mapa, su costo, su mes y sus fiestas. Tiene además una página para que una municipalidad publique un evento. Está pensada primero para celular, en español, con tema claro y oscuro, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
+La web que usa el viajero: pregunta qué viaje quiere, propone hasta tres para comparar y abre el que elija en su propia pantalla, con su plan día por día, lo que hay para cada noche, su mapa, su costo, su mes y sus fiestas. Tiene además una página para que una municipalidad publique un evento. Está pensada primero para celular, en español, con tema claro y oscuro, y consume el API tal como lo define el [contrato](../docs/CONTRATO.md).
 
 React 19, Vite, TypeScript y MapLibre GL. Sin librería de rutas ni de estado: la consulta vive en la URL, que es también el enlace para compartir ([decisión 0001](../docs/decisiones/0001-sin-login-y-enlace-compartible.md)).
 
@@ -61,11 +61,11 @@ Así, sin `https`, el navegador no deja copiar ni usar el menú de compartir: «
 
 | Dirección | Pantalla | De dónde salen sus datos |
 |---|---|---|
-| `./` | El formulario: siete filas. Las que piden elegir abren su hoja; la de los vuelos es un interruptor, encendido por defecto, que apagado pide `solo_por_tierra`. «A dónde» busca una zona por su nombre, por uno de sus lugares o por su región, y pide `destino` | `GET /v1/opciones` y `public/destinos.json` |
+| `./` | El formulario: siete filas. Las que piden elegir abren su hoja; la de los vuelos es un interruptor, encendido por defecto, que apagado pide `solo_por_tierra`. «Qué te gusta» trae aparte, bajo «De noche», lo que no elige lugares sino la noche («Vida nocturna»). «A dónde» busca una zona por su nombre, por uno de sus lugares o por su región, y pide `destino` | `GET /v1/opciones` y `public/destinos.json` |
 | `./?origen=lima&mes=7&dias=6&…&v=2026.10.3` | Los tres viajes, en tarjetas para comparar. Con `destino`, el viaje a esa zona se abre directo, y si no cabe, se dice por qué y qué cambiar | `GET /v1/viajes` |
-| `…#/ruta/2` | El segundo viaje, en su pantalla: por qué conviene, qué saber antes de ir, el plan día por día con su mapa, el costo, el clima y las fiestas. Cada lugar abre su hoja | |
+| `…#/ruta/2` | El segundo viaje, en su pantalla: por qué conviene, qué saber antes de ir, el plan día por día con su mapa y su noche, el costo, el clima y las fiestas. Cada lugar abre su hoja | |
 | `…#/editar` | El formulario con esa consulta | |
-| `…#/polo/33` | La zona de un viaje: sus lugares, su clima de los doce meses y sus fiestas, con «Armar un viaje aquí» e «Ir a esta fiesta» | `GET /v1/polos/{id}` |
+| `…#/polo/33` | La zona de un viaje: sus lugares, su clima de los doce meses, su noche (dónde salir, cuánta luz tiene su cielo y cuántas noches salen despejadas cada mes) y sus fiestas, con «Armar un viaje aquí» e «Ir a esta fiesta» | `GET /v1/polos/{id}` |
 | `…#/calendario` | Fiestas: los eventos de un mes, por región, y desde cada una «Ir a esta fiesta»; `#/calendario/11` lo abre en noviembre | `GET /v1/eventos` |
 | `./#/mis-viajes` | Guardados: los viajes guardados en este navegador | `localStorage` |
 | `./#/acerca` | Cómo funciona y de dónde salen los datos | |
@@ -94,7 +94,7 @@ src/
 ├── api/                   cliente del API y tipos generados del contrato
 ├── estado/                navegación, pedidos al API, las listas de fotos y de zonas y título de la pestaña
 ├── estilos/               un archivo por pantalla; base.css tiene los colores y las medidas de los dos temas
-├── piezas/                tarjeta de viaje, plan del día, hojas, los dos mapas, banda de costo, clima…
+├── piezas/                tarjeta de viaje, plan del día y su noche, hojas, los dos mapas, banda de costo, clima…
 ├── vistas/                una por pantalla
 └── pruebas/               el API de mentira y la preparación de las pruebas
 public/fotos.json          la lista de fotos: la escribe el pipeline, no se edita a mano
@@ -107,19 +107,20 @@ public/destinos.json       las zonas que busca «A dónde»: también la escribe
 - **El mapa se descarga aparte.** MapLibre pesa más que todo el resto: va en su propio archivo y llega después de que la página ya se puede leer. El fondo es de [OpenFreeMap](https://openfreemap.org/), gratis y sin clave. Si el fondo no carga, queda un lienzo liso con los pétalos y los lugares en su sitio; si el mapa entero falla, el plan dice lo mismo con palabras; y al publicar un evento, el lugar se puede escribir en coordenadas.
 - **Las fotos son de Wikimedia Commons y no se guardan aquí.** `public/fotos.json` dice qué foto va con cada lugar y con cada pueblo donde se duerme: lo escribe el pipeline, que las elige con Wikidata o, para una base o un imperdible que no tienen ahí, por las coordenadas de cada foto en Commons, y deja fuera las que se quitaron al revisarlas ([`pipeline/README.md`](../pipeline/README.md#fotos)). La app le pide a Wikimedia la miniatura del ancho que necesita cada pantalla y muestra el autor y la licencia junto a cada foto. Lo que no tiene foto, o cuya foto no carga, muestra la flor del viaje o un ícono.
 - **Las zonas se buscan sin el API.** `public/destinos.json` trae el nombre, las regiones y los lugares de cada zona, y `src/destinos.ts` busca ahí: sin tildes, con las grafías del quechua y del castellano juntas («cusco» encuentra Cuzco), desde el comienzo de una palabra y, entre las que coinciden igual, primero la que más tiene para ver. Se pide cuando se abre «A dónde» o hay que nombrar la zona elegida ([decisión 0017](../docs/decisiones/0017-quiero-ir-a.md)).
+- **La noche se ve distinta del día.** `piezas/Noche.tsx` es lo único con fondo de noche, también en el tema claro: un azul de medianoche con unas pocas luces lejos del texto. La luna se dibuja con la fase de esa noche, como se ve desde el Perú: en el sur, la creciente se ilumina por la izquierda. El gráfico de noches despejadas tiene, mes a mes, su frase para quien usa un lector de pantalla («Julio: 9 de cada 10 noches despejadas»). Cada lugar para salir enlaza a su mapa en OpenStreetMap ([decisión 0018](../docs/decisiones/0018-planes-de-noche.md)).
 - **Claro y oscuro.** La app sigue el tema del sistema. Los colores y las medidas de los dos temas están en `src/estilos/base.css`; el mapa es claro en los dos.
 - **La clave de publicador no se guarda.** Vive en la página mientras está abierta y viaja solo en la cabecera del pedido que publica.
 - **El estado no va solo en el color.** El veredicto del mes y los avisos llevan siempre su ícono y su palabra.
 
 ### Cuánto pesa
 
-Con gzip, lo que se baja al abrir la app son unos 113 kB (101 de JavaScript y 11 de estilos). La lista de fotos suma 25 kB la primera vez que se ven unos viajes, y cada foto llega del tamaño de su recuadro. El mapa suma unos 440 kB la primera vez que se abre un viaje (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
+Con gzip, lo que se baja al abrir la app son unos 120 kB (107 de JavaScript y 12 de estilos). La lista de fotos suma 25 kB la primera vez que se ven unos viajes, y cada foto llega del tamaño de su recuadro. El mapa suma unos 440 kB la primera vez que se abre un viaje (MapLibre, su proceso de dibujo y sus estilos), y después queda en la caché del navegador.
 
 ## Pruebas
 
 `npm test` corre las pruebas de la lógica y de cada pantalla en jsdom, con un API de mentira que responde con [`docs/ejemplos/respuesta_ilustrativa.json`](../docs/ejemplos/respuesta_ilustrativa.json), una respuesta real del motor: si el contrato cambia y el ejemplo se regenera, las pruebas corren contra la forma nueva.
 
-`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar los viajes, abrir uno con su mapa, compartir el enlace, guardarlo y volver a él, y pedir un viaje a Machu Picchu que no cabe y probar lo que propone. Y lo que hace una municipalidad: publicar un evento marcando su lugar en el mapa y verlo en el calendario. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario). Levanta el API y la app por su cuenta, o usa los que ya estén corriendo; si el API ya estaba corriendo sin la clave de la prueba, la de publicar se salta y lo dice. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
+`npm run e2e` abre un navegador (Playwright), en tamaño de celular y de escritorio, y recorre lo que hace un viajero contra el API de verdad: llenar el formulario, comparar los viajes, abrir uno con su mapa, compartir el enlace, guardarlo y volver a él, pedir un viaje a Machu Picchu que no cabe y probar lo que propone, y ver qué trae cada noche: dónde salir, otros lugares cada noche, y una noche de estrellas con la luna de esa fecha y el cielo de la zona mes a mes. Y lo que hace una municipalidad: publicar un evento marcando su lugar en el mapa y verlo en el calendario. También revisa que ninguna pantalla se desborde a lo ancho y pasa [axe](https://github.com/dequelabs/axe-core) por cada una (sin contar el mapa, cuya alternativa accesible es el itinerario) y por cada tipo de noche. Levanta el API y la app por su cuenta, o usa los que ya estén corriendo; si el API ya estaba corriendo sin la clave de la prueba, la de publicar se salta y lo dice. Playwright va con versión fija en `package.json`, porque el navegador que se baja tiene que ser el de esa versión. La primera vez hay que bajarlo:
 
 ```bash
 (cd .. && pip install -e ".[api]")   # el API que van a usar las pruebas
@@ -140,5 +141,6 @@ El build usa rutas relativas (`base: "./"`), así que la misma carpeta `dist/` s
 - Tienen foto 494 de las 4 465 paradas y 92 de los 161 imperdibles. Lo demás muestra la flor del viaje o un ícono.
 - Las fotos y el fondo del mapa se piden a Wikimedia y a OpenFreeMap desde el navegador del viajero. Sin ellos la app sigue: sin fotos y con el mapa liso.
 - El mapa es claro también con el tema oscuro.
+- No dice a qué hora abre un bar: OpenStreetMap trae el horario de algunos en su propio formato («Mo-Su 15:00-23:00»), el contrato lo pasa tal cual y la app todavía no lo muestra.
 - Un viaje guardado o compartido se recuerda por su puesto entre los tres. Si los datos cambian, en ese puesto puede salir otro viaje: la app lo avisa.
 - El motor todavía dice «polo» y «rutas» en algunos de sus textos (el aviso del clima, el veredicto del mes, cuando no hay viajes), donde la app dice «zona» y «viajes».

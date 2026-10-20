@@ -10,14 +10,16 @@ python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red y la misma calibración
 python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.5   # al final: lo que carga el motor
+python -m pipeline.noche     # después de tiempos y de descargar_overture.py, unos 10 segundos
+python -m pipeline.cielo     # después de noche y de las descargas del cielo, unos 3 minutos
+python -m pipeline.artefactos --version 2026.10.6   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.5` suma los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.10.6` suma la noche ([más abajo](#de-noche)). La `2026.10.5` sumó los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -34,6 +36,8 @@ La versión `2026.10.5` suma los vuelos ([más abajo](#los-vuelos)); las demás 
 | [`vuelos.py`](./vuelos.py) | El viaje en avión de cada ciudad de origen a cada base, de puerta a puerta: por tierra hasta un aeropuerto sobre la misma red, los vuelos desde Lima (con escala en Lima entre otros dos aeropuertos) y por tierra hasta la base, con el aeropuerto más rápido en cada punta. También la banda del pasaje de cada ruta, en soles |
 | [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación. Compara por parada y por grupo, así que sirve aunque los polos de las dos corridas no sean los mismos |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
+| [`noche.py`](./noche.py) | Los bares, pubs, discotecas, karaokes y peñas a no más de 1,5 km de la base de cada polo, de OpenStreetMap y de Overture Maps, sin lo que su nombre dice que no es de noche ([más abajo](#de-noche)) |
+| [`cielo.py`](./cielo.py) | Cuánta luz artificial tiene el cielo de cada base, con las luces de VIIRS y el modelo de Duriscoe et al. (2018); el observatorio o planetario más cercano; y cuántas noches salen despejadas cada mes, con GOES-16 o, en la costa, con los METAR del aeropuerto |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo. Ahí cada recurso y cada evento pasa del grupo de TA-01 que trae el maestro al polo que lo junta |
 | [`fotos.py`](./fotos.py) | Elige la foto de cada parada y de cada base entre lo que Wikidata tiene cerca, por nombre y por clase de lugar; descarta pueblos, regiones, batallas, mapas y fotos sin licencia libre o sin autor. Escribe [`app/public/fotos.json`](../app/public/fotos.json), que la app lee. Las correcciones de la revisión a mano van en [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) |
@@ -165,6 +169,64 @@ Lo que queda fuera:
 
 Los caminos por tierra salen de la misma red que los tiempos de la `2026.10.4`: rehecha para los vuelos, reproduce sus 4 656 tiempos de origen a base al décimo de minuto.
 
+## De noche
+
+Dos tablas para los planes de noche ([decisión 0018](../docs/decisiones/0018-planes-de-noche.md)), en [`data/procesados/`](../data/procesados/): `noche_lugares.csv`, dónde salir cerca de cada base, y `cielo_polos.csv`, su cielo.
+
+**Dónde salir.** `noche.py` junta dos fuentes. De OpenStreetMap toma los bares, pubs, discotecas, karaokes, biergartens y salones de baile con nombre, y las peñas, que OSM marca como bar o como restaurante. De [Overture Maps](https://overturemaps.org/), los lugares de las mismas categorías con una confianza de al menos 0,7, solo de fuentes con licencia CDLA, que son las de Meta y Microsoft. Lo de Foursquare (Apache 2.0) queda fuera. `descargar_overture.py` baja del Perú solo las columnas que hacen falta: nunca teléfonos, correos, páginas ni redes. Un lugar de Overture que es uno de OSM, por nombre y a menos de 150 m, queda como el de OSM, con la confianza de Overture.
+
+La primera vuelta dio 1 367 lugares, y se revisaron todos a mano. En Overture, la categoría la pone quien abre la página: había un colegio, un instituto, una sauna, canchas, una catarata, un puente, el obelisco de Mollendo, direcciones («Jr Los Rosales 311») y pollerías, todos como bar. De esa revisión salen tres listas de palabras:
+
+- `NO_ES_DE_NOCHE` saca un lugar de las dos fuentes.
+- `DUDOSO_EN_OVERTURE` (un restaurante, una playa, un barrio, una dirección) saca un lugar de Overture si su nombre no tiene una palabra de `DE_NOCHE`. Lo de OSM queda, porque una persona lo marcó como bar: «Cafe Soprano's» es un bar de Huaraz.
+- `DE_NOCHE` también ordena: un lugar de Overture cuyo nombre no dice nada de la noche va al final.
+
+Los nombres se leen en la forma compatible de Unicode, así que las letras de adorno («𝙋𝙤𝙡𝙡𝙤𝙨») no esconden nada.
+
+| | Lugares | Zonas con alguno | Con cinco o más |
+|---|---:|---:|---:|
+| Solo OpenStreetMap | 455 | 62 | — |
+| OpenStreetMap y Overture, antes de revisar | 1 367 | 99 | 51 |
+| Después de revisar | 1 264 | 92 | 50 |
+
+Son 783 bares, 209 pubs, 203 discotecas, 54 karaokes, 13 peñas y 2 locales de música en vivo; 443 de OSM y 821 de Overture.
+
+**El cielo.** `cielo.py` estima la luz artificial del cielo entero en cada base (ALR, la luz artificial frente a la natural). Toma la mediana de 17 meses de luces de VIIRS, de 2024 a junio de 2025 sin octubre de 2024, y les aplica el modelo publicado. Las clases son las del Servicio de Parques Nacionales de Estados Unidos:
+
+- muy oscuro, debajo de 0,3;
+- oscuro, hasta 2;
+- con luz, sobre 2.
+
+Si la base tiene luz, la noche de estrellas es en el observatorio o el planetario con nombre más cercano a menos de 45 minutos. OpenStreetMap tiene 22 con nombre. Uno no mira el cielo y se descarta: el Observatorio Vulcanológico del Sur. Quedan 12 bases con uno a menos de 45 minutos. El lugar con nombre más oscuro a menos de 45 minutos se guarda solo como dato: un mirador de noche no se propone.
+
+| Desde la base | Polos |
+|---|---:|
+| Cielo muy oscuro | 48 |
+| Oscuro | 89 |
+| Con luz | 57 |
+
+**Las noches despejadas** salen de la máscara de nubes de GOES-16 a las 21:00 y a la 01:00, de 2022 a 2024. Son 2 188 imágenes; faltan 4. `cielo_validacion.csv` compara, mes a mes, el satélite con los METAR de cada aeropuerto:
+
+| Aeropuerto | Correlación | Diferencia media |
+|---|---:|---:|
+| Cusco | 0,98 | 8 puntos |
+| Arequipa | 0,96 | 15 |
+| Pucallpa | 0,94 | 17 |
+| Tarapoto | 0,92 | 24 |
+| Iquitos | 0,53 | 12 |
+| Lima (costa) | −0,81 | 37 |
+| Tacna (costa) | −0,67 | 45 |
+| Pisco (costa) | −0,52 | 32 |
+
+En la sierra y la selva el satélite sirve. En la costa, de noche, no ve la neblina baja del invierno. Por eso ahí, a menos de 100 km del mar y por debajo de 1 500 m, se usan los METAR del aeropuerto costero más cercano, si queda a menos de 150 km, contando como despejado sin nubes o con pocas (FEW). Así quedan 151 polos con GOES y 32 con METAR. Los 11 que quedan sin dato, como Nasca, están en la costa y lejos de un aeropuerto, y la app lo dice.
+
+Lo que queda fuera:
+
+- **Si un bar sigue abierto y qué noches abre.** Cada lugar enlaza a su mapa para verificarlo. El horario de OSM, cuando lo hay, viaja tal cual.
+- **Nombres de sitio que se escapan.** «Huaytapallana» es un nevado y no hay palabra que lo delate. Va al final del orden: se nombra solo si no hay otro.
+- **La altura en el modelo del cielo.** En el altiplano, con menos aire, el cielo suele ser más oscuro de lo que dice.
+- **La luna** no va en estas tablas: la calcula el motor para la fecha del viaje ([`dreemgo/astronomia.py`](../dreemgo/astronomia.py)).
+
 ## Dónde duerme cada polo
 
 `bases.py` elige entre 9 412 lugares poblados de OpenStreetMap. Los barrios y caseríos a menos de 8 km de una ciudad, o de 4 km de un pueblo, cuentan como parte de ella, para que la base se llame Cusco y no Wanchaq. El costo de cada candidato es el tiempo por carretera a las paradas del polo, en promedio pesado por su jerarquía, con 5 minutos a favor por cada vez que se duplica el hospedaje que OSM registra a menos de 3 km (hasta 25) y un recargo si no registra ninguno. Los 7 978 hoteles, hostales, casas de huéspedes y alojamientos que tiene el extracto se leen con `red_vial.leer_hospedajes`.
@@ -261,6 +323,7 @@ Hay que rehacerla cada vez que se rehacen los artefactos: [`tests/pipeline/test_
 Las fichas publican el nombre, el correo y el teléfono de quien las llenó y, en el texto libre, los de quien abre la puerta: «coordinar con el Sr. … al cel. …». El producto no los necesita: cada parada enlaza a su ficha oficial, donde el viajero encuentra el contacto. Nada de eso llega a los artefactos ni al repositorio.
 
 - El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal".
+- De Overture Maps se bajan solo el nombre, la categoría, la confianza, la ubicación y las fuentes de cada lugar: nunca sus teléfonos, correos, páginas web ni redes. Ningún nombre de `noche_lugares.csv` trae un teléfono ni un correo, y una prueba lo verifica.
 - En el resto del texto, `texto.sin_contactos` reemplaza correos, celulares, teléfonos fijos y DNI por `[contacto en la ficha oficial]`, y el nombre de quien atiende, por `[encargado]`. A una persona la reconoce por sus mayúsculas junto a un contacto, o por su tratamiento o su cargo: «el señor …», «el propietario …».
 - Las observaciones de ingreso y de época son avisos de cómo se visita. Ahí un número de siete cifras o más se toma por un teléfono, y el nombre se quita aunque no traiga teléfono: el que sigue a un tratamiento o a un cargo, y el nombre completo, de tres palabras o más, de un aviso que pide permiso o coordinación.
 - Ante la duda, se quita. A veces se pierde el nombre de un caserío o de una asociación que estaba junto al teléfono.

@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.4",
-  "version_datos": "2026.10.5",
+  "version_contrato": "1.5",
+  "version_datos": "2026.10.6",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -84,7 +84,8 @@
           "horas": 8.4,
           "km": 441.4,
           "paradas": [],
-          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca."
+          "nota": "Salida de Lima a las 07:00; 8 h 27 por carretera hasta Nasca.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -204,7 +205,36 @@
               "minutos_visita": 45
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": {
+            "tipo": "estrellas",
+            "titulo": "Estrellas en Planetarium María Reiche",
+            "nota": "El cielo de Nasca tiene la luz del pueblo. Planetarium María Reiche es un planetario a 8 min: confirma sus horarios antes de ir. Las noches sin luna son las mejores: en julio de 2027, la luna nueva es el 3.",
+            "lugares": [],
+            "cielo": {
+              "desde": {
+                "nombre": "Planetarium María Reiche",
+                "tipo": "planetario",
+                "minutos": 8,
+                "lat": -14.828018,
+                "lon": -74.940633,
+                "url": "https://www.openstreetmap.org/node/4208420722",
+                "brillo": 2.78,
+                "clase": "con_luz"
+              },
+              "observatorio": null,
+              "noches_despejadas": null,
+              "fuente_nubes": null,
+              "aeropuerto": null,
+              "oscurece": null,
+              "aclara": null,
+              "luna": null,
+              "lunas_nuevas": [
+                "2027-07-03"
+              ],
+              "temp_min_c": 12.0
+            }
+          }
         },
         {
           "numero": 3,
@@ -324,7 +354,8 @@
               "minutos_visita": 75
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 4,
@@ -333,7 +364,8 @@
           "horas": 8.4,
           "km": 441.4,
           "paradas": [],
-          "nota": "Vuelta a Lima: 8 h 27 por carretera."
+          "nota": "Vuelta a Lima: 8 h 27 por carretera.",
+          "noche": null
         }
       ],
       "costo": {
@@ -487,7 +519,8 @@
               "minutos_visita": 45
             }
           ],
-          "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo."
+          "nota": "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -629,7 +662,36 @@
               "minutos_visita": 30
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": {
+            "tipo": "estrellas",
+            "titulo": "Estrellas en Observatorio Discovery",
+            "nota": "El cielo de Huancayo tiene la luz de la ciudad. Observatorio Discovery es un observatorio a 10 min: confirma sus horarios antes de ir. En julio salen despejadas unas 8 de cada 10 noches. Las noches sin luna son las mejores: en julio de 2027, la luna nueva es el 3. De noche baja a unos 4 °C: lleva abrigo.",
+            "lugares": [],
+            "cielo": {
+              "desde": {
+                "nombre": "Observatorio Discovery",
+                "tipo": "observatorio",
+                "minutos": 10,
+                "lat": -12.075053,
+                "lon": -75.225772,
+                "url": "https://www.openstreetmap.org/node/11517966521",
+                "brillo": 12.224,
+                "clase": "con_luz"
+              },
+              "observatorio": null,
+              "noches_despejadas": 0.795,
+              "fuente_nubes": "goes",
+              "aeropuerto": null,
+              "oscurece": null,
+              "aclara": null,
+              "luna": null,
+              "lunas_nuevas": [
+                "2027-07-03"
+              ],
+              "temp_min_c": 4.5
+            }
+          }
         },
         {
           "numero": 3,
@@ -771,7 +833,8 @@
               "minutos_visita": 30
             }
           ],
-          "nota": null
+          "nota": null,
+          "noche": null
         },
         {
           "numero": 4,
@@ -803,7 +866,8 @@
               "minutos_visita": 75
             }
           ],
-          "nota": "Vuelta a Lima: 6 h 03 por carretera."
+          "nota": "Vuelta a Lima: 6 h 03 por carretera.",
+          "noche": null
         }
       ],
       "costo": {
@@ -962,7 +1026,8 @@
           "horas": 5.5,
           "km": 276.0,
           "paradas": [],
-          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino."
+          "nota": "Salida de Lima a las 07:00: 5 h 33 por carretera hacia Trujillo; se duerme en el camino.",
+          "noche": null
         },
         {
           "numero": 2,
@@ -1016,7 +1081,8 @@
               "minutos_visita": 90
             }
           ],
-          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera."
+          "nota": "Último tramo hasta Trujillo: 5 h 32 por carretera.",
+          "noche": null
         },
         {
           "numero": 3,
@@ -1048,7 +1114,8 @@
               "minutos_visita": 90
             }
           ],
-          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino."
+          "nota": "Se deja Trujillo: 5 h 32 por carretera hacia Lima; se duerme en el camino.",
+          "noche": null
         },
         {
           "numero": 4,
@@ -1057,7 +1124,8 @@
           "horas": 5.5,
           "km": 276.0,
           "paradas": [],
-          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera."
+          "nota": "Último tramo de vuelta a Lima: 5 h 33 por carretera.",
+          "noche": null
         }
       ],
       "costo": {
@@ -1103,6 +1171,9 @@
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0"
+    "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Lugares de noche: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
+    "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
   ]
 }
