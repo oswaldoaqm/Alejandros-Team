@@ -432,6 +432,14 @@
   color: var(--tinta-3);
 }
 
+/* El primer día en la altura: una línea chica bajo los lugares, como la de la noche. */
+.dia-fila__tranquilo {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-pie);
+  color: var(--bien-tinta);
+}
+
 /* Un día: su cabeza, su nota y sus lugares en una línea de tiempo. */
 .un-dia {
   display: grid;
@@ -486,6 +494,23 @@
 
 .un-dia__fiesta {
   background: var(--lago-claro);
+}
+
+.un-dia__tranquilo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  font-size: var(--t-nota);
+  line-height: 1.45;
+  color: var(--bien-tinta);
+  background: var(--bien-fondo);
+  border-radius: var(--r-control);
+}
+
+.un-dia__tranquilo .icono {
+  margin-top: 2px;
 }
 
 .un-dia__fiesta .icono {

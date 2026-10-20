@@ -8,21 +8,18 @@ horas y el costo son los mismos con plan de noche o sin él.
   minutos a pie de la base (pipeline/noche.py). Cada noche propone hasta tres, de tipos
   distintos si los hay, del más al menos confiable; la noche siguiente, otros tres, mientras
   alcancen.
-- **Descanso**, con vida_nocturna: la primera noche en una base de 2 500 m o más, si se llega de
-  al menos 1 000 m más abajo. El alcohol empeora el mal de altura.
+- **Descanso**, con vida_nocturna: la primera noche en la altura, con la misma regla que el primer
+  día tranquilo (``aclimatacion.py``): en una base de 2 500 m o más, si se llega de al menos 1 000 m
+  más abajo. El alcohol empeora el mal de altura.
 - **Estrellas**, con naturaleza o sin ningún interés: una noche por viaje, desde la base si su
   cielo es oscuro (brillo menor que 2) o, si no, en un observatorio o un planetario a menos de
   45 minutos. Con fecha, la noche con más horas sin luna; sin fecha, la segunda en la base si
   la hay. No se propone en un mes en que no sale despejada ni una de cada cinco noches. Si
   también toca salir, esa noche son las estrellas y las otras, salir.
-
-La altura del origen es la de la base de su misma ciudad: cada ciudad de origen tiene una zona
-a menos de media hora.
 """
 
 from __future__ import annotations
 
-import math
 from datetime import time, timedelta
 
 from dreemgo import astronomia
@@ -37,16 +34,13 @@ from dreemgo.contrato import (
     Noche,
     NocheDeLaZona,
 )
-from dreemgo.motor import textos
+from dreemgo.motor import aclimatacion, textos
 from dreemgo.motor.datos import Datos, Origen
 from dreemgo.motor.datos import Polo as PoloDatos
 
 OSCURO, MUY_OSCURO = 2.0, 0.3  # las clases del Servicio de Parques Nacionales de EE. UU.
 LUGARES_POR_NOCHE = 3
 DESPEJADAS_MINIMO = 0.2
-ALTURA_QUE_PESA_M = 2_500
-SUBIDA_QUE_PESA_M = 1_000
-CASA_MIN = 30  # como en viaje.py: una base más cerca que esto del origen es la misma ciudad
 SALIR_PARA_EL_PUNTAJE = 5  # con 5 lugares para salir o más, la zona no pierde puntaje
 FRIO_C = 10
 
@@ -80,15 +74,6 @@ def factor_de_noche(polo: PoloDatos, consulta: Consulta) -> float:
         return 1.0
     n = len(polo.noche.get("lugares", []))
     return 1.0 if n >= SALIR_PARA_EL_PUNTAJE else 0.6 + 0.08 * n
-
-
-def altura_del_origen(origen: Origen, datos: Datos) -> int | None:
-    """La altura de la base de la zona de la misma ciudad del origen: la más cercana, si queda a
-    menos de media hora."""
-    cerca = sorted((m, p) for p, (m, _) in origen.a_base.items() if math.isfinite(m) and m < CASA_MIN)
-    if not cerca:
-        return None
-    return datos.polos[cerca[0][1]].base["altitud_m"]
 
 
 # ─────────────────────────────── los lugares ───────────────────────────────
@@ -306,14 +291,7 @@ def plan_de_noches(it, consulta: Consulta, origen: Origen, datos: Datos, anio: i
     lugares = polo.noche.get("lugares", [])
     salir = pide_salir(consulta) and bool(lugares)
     altura = polo.base["altitud_m"]
-    de_origen = altura_del_origen(origen, datos)
-    if (
-        salir
-        and altura is not None
-        and de_origen is not None
-        and altura >= ALTURA_QUE_PESA_M
-        and altura - de_origen >= SUBIDA_QUE_PESA_M
-    ):
+    if salir and aclimatacion.pesa(altura, aclimatacion.del_origen(origen, datos)):
         salida[noches[0]] = Noche(
             tipo="descanso",
             titulo="Noche tranquila",

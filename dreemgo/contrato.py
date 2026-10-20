@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.6"
+VERSION_CONTRATO = "1.7"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -348,6 +348,13 @@ class Dia(_Modelo):
         None,
         description="Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las "
         "estrellas, naturaleza o ningún interés (desde 1.5).",
+    )
+    tranquilo: bool = Field(
+        False,
+        description="El primer día en la base cuando se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, "
+        "para que el cuerpo se acostumbre a la altura: medio día de visitas como mucho, ninguna parada a más de 500 m "
+        "sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente "
+        "(desde 1.7).",
     )
 
 

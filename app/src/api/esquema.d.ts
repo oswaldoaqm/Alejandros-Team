@@ -370,6 +370,12 @@ export interface components {
              * @enum {string}
              */
             tipo: "ida" | "visita" | "vuelta" | "ida_y_visita" | "visita_y_vuelta" | "ida_visita_y_vuelta";
+            /**
+             * Tranquilo
+             * @description El primer día en la base cuando se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, para que el cuerpo se acostumbre a la altura: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente (desde 1.7).
+             * @default false
+             */
+            tranquilo: boolean;
         };
         /** Estacionalidad */
         Estacionalidad: {
@@ -506,7 +512,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.6
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -732,7 +738,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.6
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -817,7 +823,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.6
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -907,7 +913,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.6
+             * @default 1.7
              */
             version_contrato: string;
             /**
@@ -949,7 +955,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.6
+             * @default 1.7
              */
             version_contrato: string;
             /**

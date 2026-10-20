@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.6",
-  "version_datos": "2026.10.7",
+  "version_contrato": "1.7",
+  "version_datos": "2026.10.8",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -134,7 +134,8 @@
             "en_la_base": true,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": true
         },
         {
           "numero": 2,
@@ -312,7 +313,8 @@
               ],
               "temp_min_c": 4.5
             }
-          }
+          },
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -462,7 +464,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -496,7 +499,8 @@
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
           "almuerzo": null,
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
@@ -571,7 +575,7 @@
         {
           "tipo": "aclimatacion",
           "nivel": "advertencia",
-          "mensaje": "Se duerme a 3 256 m en Huancayo. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo."
+          "mensaje": "Se duerme a 3 256 m en Huancayo. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Huancayo ni caminatas largas, para que el cuerpo se acostumbre."
         },
         {
           "tipo": "presupuesto",
@@ -802,7 +806,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 2,
@@ -952,7 +957,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -1102,7 +1108,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -1230,7 +1237,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
@@ -1459,7 +1467,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 2,
@@ -1637,7 +1646,8 @@
               ],
               "temp_min_c": 11.6
             }
-          }
+          },
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -1787,7 +1797,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -1893,7 +1904,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
@@ -1976,6 +1988,7 @@
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del U.S. Geological Survey",
     "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"

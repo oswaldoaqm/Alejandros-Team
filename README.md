@@ -147,14 +147,15 @@ medida sobre una muestra anotada a mano; los **tiempos de viaje** sobre la red v
 calibrada con los recorridos de las fichas (22 % de error medio), con el tren a Machu Picchu y los botes del
 Titicaca, las Ballestas y la Amazonía; los **vuelos** de las 22 rutas que salen de Lima, de puerta a puerta;
 **dónde se duerme en cada polo**, el **clima de cada polo mes a mes**, **su noche** (dónde salir a pie de la
-base y cuántas noches salen despejadas cada mes para ver las estrellas) y **dónde comer** cerca de cada lugar,
-para el almuerzo. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
+base y cuántas noches salen despejadas cada mes para ver las estrellas), **dónde comer** cerca de cada lugar,
+para el almuerzo, y **la altura de cada base**, para el primer día en la altura. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
 [contrato](./docs/CONTRATO.md).
 
 Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo),
 [OpenStreetMap](https://www.openstreetmap.org/) (vías, trenes, botes, pueblos, hospedajes, lugares de noche y
 dónde comer), [Overture Maps](https://overturemaps.org/) (más lugares de noche y para comer), las luces nocturnas de VIIRS y las nubes de
-GOES-16 y los METAR de NOAA (el cielo de cada base) y
+GOES-16 y los METAR de NOAA (el cielo de cada base), [Terrain Tiles](https://registry.opendata.aws/terrain-tiles/)
+(la altura del terreno donde OpenStreetMap no la trae) y
 [Wikimedia Commons](https://commons.wikimedia.org/) (una foto de licencia libre para los lugares y los pueblos
 que la tienen, elegida con [Wikidata](https://www.wikidata.org/)). Prevista:
 [datosTurismo](https://datosturismo.mincetur.gob.pe/) (flujos y gasto).
@@ -259,6 +260,8 @@ python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.vuelos      # el viaje en avión de cada origen a cada base, unos 3 minutos
+python pipeline/adquisicion/descargar_elevacion.py    # la altura del terreno alrededor de cada base, unos minutos
+python -m pipeline.elevacion   # la altura de cada base según el modelo de elevación
 python -m pipeline.clima       # clima por polo y mes
 pip install -e ".[adquisicion]"                        # para las cuatro descargas de la noche
 python pipeline/adquisicion/descargar_overture.py      # lugares para salir, unos minutos
@@ -268,7 +271,7 @@ python pipeline/adquisicion/descargar_metar.py         # METAR de los aeropuerto
 python -m pipeline.noche       # dónde salir cerca de cada base
 python -m pipeline.cielo       # el cielo de cada base, unos 3 minutos
 python -m pipeline.comida      # dónde comer cerca de cada lugar y de cada base, unos 2 minutos
-python -m pipeline.artefactos --version 2026.10.7   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.10.8   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»

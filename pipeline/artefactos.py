@@ -8,11 +8,12 @@ que entran a la imagen del API:
   recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos, lo que
                       el motor necesita para programarlos y a cuántos metros hay dónde comer
                       (pipeline/comida.py)
-  polos.json.gz       cada polo: base, novedad, clima mes a mes, sus paradas y los tiempos
-                      entre ellas y desde la base; si algún camino va en tren o en bote, cuántos
-                      de sus km van en cada uno; su noche: dónde salir cerca de la base y su
-                      cielo para mirar las estrellas (pipeline/noche.py y pipeline/cielo.py); y
-                      a cuántos metros de la base hay dónde comer
+  polos.json.gz       cada polo: base, con su altura (la de OpenStreetMap o, si no la tiene, la
+                      del modelo de elevación: pipeline/elevacion.py), novedad, clima mes a mes,
+                      sus paradas y los tiempos entre ellas y desde la base; si algún camino va en
+                      tren o en bote, cuántos de sus km van en cada uno; su noche: dónde salir
+                      cerca de la base y su cielo para mirar las estrellas (pipeline/noche.py y
+                      pipeline/cielo.py); y a cuántos metros de la base hay dónde comer
   origenes.json.gz    las 24 ciudades de partida, con sus tiempos a cada base y a las paradas a
                       menos de 4 horas, que son las que caben en un viaje de un día: minutos, km,
                       km en tren y km en bote; y el viaje en avión a cada base (pipeline/vuelos.py)
@@ -28,8 +29,8 @@ Un polo es lo que se visita desde una base. El maestro y los eventos traen el gr
 de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
 recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
 
-Uso:  python -m pipeline.artefactos --version 2026.10.7
-      (después de maestro, eventos, tiempos, vuelos, clima, noche, cielo y comida)
+Uso:  python -m pipeline.artefactos --version 2026.10.8
+      (después de maestro, eventos, tiempos, vuelos, clima, noche, cielo, comida y elevacion)
 """
 
 from __future__ import annotations
@@ -46,12 +47,13 @@ import numpy as np
 import pandas as pd
 
 from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
+from pipeline import elevacion
 from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.7"
+VERSION_DATOS = "2026.10.8"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
 MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote
@@ -60,6 +62,10 @@ ATRIBUCION = [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+]
+ATRIBUCION_ALTURA = [
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del"
+    " U.S. Geological Survey",
 ]
 ATRIBUCION_NOCHE = [
     "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
@@ -474,6 +480,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
         return pd.read_csv(entrada / nombre, sep=";", encoding="utf-8-sig", **kw)
 
     bases = leer("polos_bases.csv")
+    hay_altura = (entrada / "altitud_bases.csv").exists()
+    if hay_altura:
+        bases = elevacion.completar(bases, leer("altitud_bases.csv"))
     maestro = en_su_polo(leer("maestro_v3.csv", dtype={"dias": str}), bases)
     eventos = en_su_polo(leer("eventos_v3.csv"), bases)
     clima = leer("clima_polo_mes.csv")
@@ -532,7 +541,7 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             }
             for i in Interes
         },
-        "atribucion": ATRIBUCION + (ATRIBUCION_NOCHE if hay_noche else []),
+        "atribucion": ATRIBUCION + (ATRIBUCION_ALTURA if hay_altura else []) + (ATRIBUCION_NOCHE if hay_noche else []),
         "archivos": huellas,
     }
     if hay_noche:
@@ -542,6 +551,8 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             resumen = entrada / f"{nombre}_resumen.json"
             if resumen.exists():
                 manifiesto["fuentes"][nombre] = json.loads(resumen.read_text(encoding="utf-8"))
+    if hay_altura and (entrada / "altitud_resumen.json").exists():
+        manifiesto["fuentes"]["altura"] = json.loads((entrada / "altitud_resumen.json").read_text(encoding="utf-8"))
     if comida is not None and (entrada / "comida_resumen.json").exists():
         manifiesto["fuentes"]["comida"] = json.loads((entrada / "comida_resumen.json").read_text(encoding="utf-8"))
     if vuelos_rutas is not None:

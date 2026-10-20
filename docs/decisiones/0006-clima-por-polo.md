@@ -23,3 +23,7 @@ Un punto por polo, en su centro: clima diario 2016-2025 de Open-Meteo (reanális
 ## Actualización · 1 de octubre de 2026
 
 Con los primeros 36 polos descargados, el reanálisis da más de 9 horas de sol al día en la costa de Lima en julio, cuando el cielo pasa cubierto casi todo el mes: ERA5 no ve la neblina baja que entra del mar. Por eso las horas de sol no se publican (`horas_sol` viaja en `null`) y el invierno de la costa sigue contando como temporada seca. Los días con lluvia sí se publican, con la definición de la OMM (1 mm o más); conviene leerlos como «días en que llovió algo»: en enero el reanálisis da 26 en Puno y 30 alrededor de Machu Picchu. Mientras la descarga no termina, un polo sin su archivo usa la capa regional de la semana 6 y la respuesta lo avisa ([`pipeline/clima.py`](../../pipeline/clima.py)).
+
+## Actualización · 20 de octubre de 2026
+
+La temperatura se llevaba a la altitud de la base cuando la base la tenía. A 13 bases no les llegaba ninguna, y en ellas el clima quedaba a la altura de su punto de clima. Ahora la altura de la base sale de un modelo de elevación donde OpenStreetMap no la trae ([decisión 0020](./0020-primer-dia-tranquilo.md)), y las temperaturas de 23 polos cambian. La que más, Villa Pampilla: su punto de clima está a 3 799 m y su base a 1 665 m, y sus temperaturas suben 13,9 °C. Los veredictos no cambian, porque salen de la lluvia.

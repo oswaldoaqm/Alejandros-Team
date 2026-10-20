@@ -136,6 +136,45 @@ def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
         assert _hhmm(ruta.dias[0].paradas[0].llegada) >= _hhmm(t.bus_de_noche.llega) + 60
 
 
+def _la_altura_del_origen(origen: str, datos) -> int | None:
+    """La de la base de la zona de su misma ciudad, a menos de media hora: otra cuenta que la del motor."""
+    cerca = sorted((m, p) for p, (m, _) in datos.origenes[origen].a_base.items() if m < 30)
+    return datos.polos[cerca[0][1]].base["altitud_m"] if cerca else None
+
+
+def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
+    """14. El primer día en la altura (desde 1.7). Si se duerme a 2 500 m o más y se llega desde 1 000 m o
+    más abajo, un día es tranquilo, y es el primero en la base: medio día de visitas como mucho, ninguna
+    parada a más de 500 m sobre la base, ninguna exigente y, después de un bus de noche, desde las 9:00. Si
+    no, ningún día lo es. Y la noche de descanso sigue la misma regla."""
+    base, de_origen = ruta.polo.base.altitud_m, _la_altura_del_origen(consulta.origen, datos)
+    pesa = (
+        consulta.dias > 1 and base is not None and de_origen is not None and base >= 2500 and base - de_origen >= 1000
+    )
+    tranquilos = [d for d in ruta.dias if d.tranquilo]
+    descanso = any(d.noche is not None and d.noche.tipo == "descanso" for d in ruta.dias)
+    assert not descanso or pesa
+    if not pesa:
+        assert tranquilos == []
+        return
+    event("algún viaje con día tranquilo")
+    [d] = tranquilos
+    assert all(not antes.paradas for antes in ruta.dias[: d.numero - 1])
+    assert any(a.tipo == "aclimatacion" and f"El día {d.numero} es tranquilo" in a.mensaje for a in ruta.avisos)
+    if not d.paradas:
+        return
+    primera, ultima = d.paradas[0], d.paradas[-1]
+    assert sum(p.minutos_traslado + p.minutos_visita for p in d.paradas) <= 4 * 60
+    sale = _hhmm(primera.llegada) - primera.minutos_traslado
+    assert _hhmm(ultima.llegada) + ultima.minutos_visita - sale <= 4 * 60 + 60  # y el almuerzo, si va adentro
+    for p in d.paradas:
+        r = datos.recursos[p.recurso.codigo]
+        assert r["altitud_m"] is not None and r["altitud_m"] <= base + 500
+        assert (r["caminata_min"] or 0) <= 30 and (r["visita_min"] or 0) <= 120
+    if ruta.traslado.bus_de_noche is not None:
+        assert d.numero == 1 and sale >= 9 * 60
+
+
 @settings(
     max_examples=CONSULTAS,
     deadline=None,
@@ -151,9 +190,11 @@ def test_las_propiedades(consulta):
 
     for ruta in respuesta.rutas:
         paradas = [p for d in ruta.dias for p in d.paradas]
-        # 1. Ninguna parada supera la altitud máxima.
+        # 1. Ninguna parada supera la altitud máxima, ni la base donde se duerme (desde 1.7).
         if consulta.altitud_max is not None:
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
+            altura = ruta.polo.base.altitud_m
+            assert consulta.dias == 1 or (altura is not None and altura <= consulta.altitud_max)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
         # 3. Ninguna jornada con visitas pasa de 8 horas, sin el almuerzo, ni un día de solo viaje de 9.
@@ -187,6 +228,7 @@ def test_las_propiedades(consulta):
         _la_noche(consulta, ruta)
         _el_almuerzo(consulta, ruta)
         _el_bus_de_noche(consulta, ruta)
+        _el_dia_tranquilo(consulta, ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

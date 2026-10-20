@@ -3,10 +3,13 @@
 
 import { useApp } from "../estado/contexto";
 import { useTitulo } from "../estado/titulo";
+import { metros } from "../formato";
 import { Enlace, EnlaceExterno } from "../piezas/Enlace";
 import { enlaces } from "../ruta";
 
 const REPOSITORIO = "https://github.com/oswaldoaqm/Alejandros-Team";
+const CDC_ALTURA =
+  "https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html";
 
 export function Acerca() {
   const { opciones } = useApp();
@@ -47,6 +50,13 @@ export function Acerca() {
           para almorzar, así que un día entero va de 8:00 a 17:00. El almuerzo va donde hay dónde comer cerca,
           según OpenStreetMap y Overture Maps; si cerca no tienen nada registrado, el plan te dice que lo
           lleves.
+        </li>
+        <li>
+          En la altura, el primer día va con calma. Si duermes a {metros(2500)} o más y llegas desde{" "}
+          {metros(1000)} o más abajo, ese día tiene medio día de visitas como mucho, ningún lugar a más de{" "}
+          {metros(500)} sobre donde duermes y ninguna caminata larga; después de un bus de noche, empieza a
+          las 9:00. El <EnlaceExterno href={CDC_ALTURA}>Yellow Book del CDC</EnlaceExterno> de Estados Unidos
+          aconseja solo ejercicio suave en las primeras {"48\u00a0horas"} en la altura.
         </li>
         <li>
           Elige qué visitar y en qué orden para aprovechar el tiempo: un lugar más importante vale más, y si
@@ -128,6 +138,9 @@ export function Acerca() {
           que termina.
         </li>
         <li>No sabe si un bar o una discoteca sigue abierto ni qué noches abre.</li>
+        <li>
+          Solo el primer día en la altura va con calma, aunque el CDC habla de las primeras {"48\u00a0horas"}.
+        </li>
       </ul>
 
       <h2>Tus datos</h2>
@@ -172,6 +185,12 @@ export function Acerca() {
           </EnlaceExterno>
           . Nubes: GOES-16 y los METAR de los aeropuertos, de{" "}
           <EnlaceExterno href="https://www.noaa.gov/">NOAA</EnlaceExterno>.
+        </li>
+        <li>
+          Altura del terreno, donde OpenStreetMap no la trae:{" "}
+          <EnlaceExterno href="https://registry.opendata.aws/terrain-tiles/">Terrain Tiles</EnlaceExterno>, en
+          el registro de datos abiertos de AWS, con SRTM y GMTED2010 del U.S. Geological Survey, de dominio
+          público.
         </li>
         <li>
           Mapa de fondo: <EnlaceExterno href="https://openfreemap.org/">OpenFreeMap</EnlaceExterno>, con

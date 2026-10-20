@@ -7,13 +7,14 @@ python -m pipeline.maestro
 python -m pipeline.eventos
 python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
 python -m pipeline.vuelos      # después de tiempos: usa la misma red
-python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
+python -m pipeline.elevacion   # después de tiempos; necesita la altura del terreno (pipeline/adquisicion)
+python -m pipeline.clima       # después de elevacion; necesita el clima descargado (pipeline/adquisicion)
 python -m pipeline.noche       # después de tiempos; necesita los lugares de Overture
 python -m pipeline.cielo       # después de noche; necesita las luces, las nubes y los METAR
 python -m pipeline.comida      # después de bases; necesita los lugares de Overture
 ```
 
-Estas tablas son las de la versión de datos `2026.10.7`, que suma dónde comer; la `2026.10.6` sumó la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.8`, que suma la altura de las bases según el modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base; la `2026.10.7` sumó dónde comer, la `2026.10.6`, la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -30,9 +31,11 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `red_calibracion.json` | Velocidades calibradas de la red y su error, medido por validación cruzada |
 | `red_calibracion_recorridos.csv` | Cada recorrido de ficha usado para calibrar, con su tiempo en la ficha y en la red |
 | `polos_bases.csv` | Dónde se duerme en cada polo, por qué y a qué altitud, y qué grupos de TA-01 junta |
+| `altitud_bases.csv` | La altura de cada base según el modelo de elevación (`altitud_dem_m`, de Terrain Tiles), junto a la de `polos_bases.csv` y su fuente, y cuánto difieren (`diferencia_m`). En los artefactos se queda la de OpenStreetMap, y en las demás manda la del modelo ([`pipeline/README.md`](../../pipeline/README.md#la-altura-de-las-bases)) |
+| `altitud_resumen.json` | Cuántas bases toman la altura del modelo y cuánto difiere de la que tenían, por fuente |
 | `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
 | `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo |
-| `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
+| `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada. Las temperaturas van llevadas a la altura de la base que usan los artefactos |
 | `vuelos_rutas.csv` | Cada ruta aérea desde Lima: minutos de vuelo y la banda del pasaje por tramo, en soles |
 | `vuelos_origen_base.csv` | El viaje en avión de cada ciudad de origen a la base de cada polo, de puerta a puerta |
 | `noche_lugares.csv` | Cada lugar para salir a no más de 1,5 km de la base de un polo: nombre, tipo (bar, pub, discoteca, karaoke, peña, música en vivo), coordenadas, metros y minutos a pie, si viene de OpenStreetMap o de Overture con su identificador en cada una, la confianza de Overture y el horario de OSM tal cual. Del más al menos confiable ([`pipeline/README.md`](../../pipeline/README.md#de-noche)) |

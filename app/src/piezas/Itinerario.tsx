@@ -1,5 +1,6 @@
 // El plan, de a un día. Con «Todo» se ven los días en una lista (qué se hace en cada uno); al
 // elegir un día, sus lugares en orden con la hora de llegada, y entre ellos la hora del almuerzo.
+// El primer día en la altura dice que es tranquilo, en la lista, en el día y en el plan impreso.
 // Lo demás de cada lugar (cuánto dura la visita, si se paga, su ficha oficial) se abre al tocarlo,
 // en una hoja.
 
@@ -8,7 +9,14 @@ import { eventosDelDia } from "../eventos";
 import { duracion, fechaCorta, horas, km } from "../formato";
 import type { Foto as DatosDeFoto } from "../fotos";
 import { type DiaNumerado, filasDelDia } from "../itinerario";
-import { dondeSeAlmuerza, entrada, LLEVA_TU_ALMUERZO, resumenDeLugares, tipoDeDia } from "../textos";
+import {
+  DIA_TRANQUILO,
+  dondeSeAlmuerza,
+  entrada,
+  LLEVA_TU_ALMUERZO,
+  resumenDeLugares,
+  tipoDeDia,
+} from "../textos";
 import { EnlaceExterno } from "./Enlace";
 import { Icono } from "./Icono";
 import { NocheDelDia } from "./Noche";
@@ -66,6 +74,12 @@ function TodosLosDias({ dias, elegirDia }: Pick<Props, "dias" | "elegirDia">) {
                   ? resumenDeLugares(paradas.map((p) => p.parada.recurso.nombre))
                   : (dia.nota ?? "Sin visitas")}
               </span>
+              {dia.tranquilo ? (
+                <>
+                  {" "}
+                  <span className="dia-fila__tranquilo">{DIA_TRANQUILO}</span>
+                </>
+              ) : null}
               {dia.noche ? (
                 <>
                   {" "}
@@ -141,6 +155,13 @@ function UnDia({
         <p className="un-dia__nota">
           <Icono nombre="bus" />
           <span>{dia.nota}</span>
+        </p>
+      ) : null}
+
+      {dia.tranquilo ? (
+        <p className="un-dia__tranquilo">
+          <Icono nombre="montana" />
+          <span>{DIA_TRANQUILO}.</span>
         </p>
       ) : null}
 
@@ -237,6 +258,7 @@ export function PlanParaImprimir({ dias }: { dias: DiaNumerado[] }) {
               {dia.fecha ? `, ${fechaCorta(dia.fecha)}` : ""}: {tipoDeDia(dia)}
             </h3>
             {dia.nota ? <p>{dia.nota}</p> : null}
+            {dia.tranquilo ? <p>{DIA_TRANQUILO}.</p> : null}
             {paradas.length > 0 ? (
               <ol>
                 {filasDelDia(numerado).map((fila) =>

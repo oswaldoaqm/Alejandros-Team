@@ -30,6 +30,10 @@ horarios de los lugares se miran con la hora real. Se almuerza en el primer mome
 - y si se vuelve al depósito sin almorzar después de las 12:30, en el depósito, fuera de la
   jornada.
 
+Una jornada tranquila, el primer día en la altura (decisión 0020), no admite paradas exigentes ni
+más altas que su altura máxima: se filtran al elegir en qué jornada puede ir cada una, antes de
+armar un horario, que se arma unas 3 700 veces por consulta.
+
 Heurística determinista:
 0. Semilla: cada jornada vacía arranca con la parada de más valor que cabe sola en ella,
    para que un lugar de jerarquía 4 a una hora no pierda frente a cinco plazas cercanas.
@@ -75,6 +79,8 @@ class Candidata:
     subtipo: str | None = None
     dias: frozenset[int] | None = None  # días de la semana en que atiende (0 = lunes)
     comida: bool = False  # si hay dónde comer cerca (pipeline/comida.py)
+    altura: int | None = None  # metros sobre el mar
+    exigente: bool = False  # una caminata de acceso larga o una visita larga (aclimatacion.exigente)
 
 
 @dataclass(frozen=True)
@@ -84,6 +90,21 @@ class Jornada:
     # Y se vuelve, a más tardar, en inicio + tope + la hora del almuerzo: la jornada no se corre.
     dia_semana: int | None = None
     comida_en_deposito: bool = True  # la base es un pueblo con hospedaje: se da por hecho que hay dónde comer
+    # El primer día en la altura (decisión 0020): ninguna parada más alta que esto ni, si es tranquila, exigente.
+    altura_max: int | None = None
+    tranquila: bool = False
+
+
+def admite(jornada: Jornada, c: Candidata) -> bool:
+    """Si la parada puede ir en la jornada: en una tranquila, ninguna exigente; con altura máxima, ninguna
+    más alta, ni una de la que no se sabe la altura."""
+    if jornada.tranquila and c.exigente:
+        return False
+    return jornada.altura_max is None or (c.altura is not None and c.altura <= jornada.altura_max)
+
+
+def _con_reglas(jornada: Jornada) -> bool:
+    return jornada.tranquila or jornada.altura_max is not None
 
 
 @dataclass(frozen=True)
@@ -230,7 +251,7 @@ def _insertar(
         vistas_vacias = set()
         for k, (ruta, jornada) in enumerate(zip(rutas, jornadas, strict=True)):
             if not ruta:  # jornadas vacías iguales son intercambiables: basta probar la primera
-                firma = (jornada.inicio, jornada.tope, jornada.dia_semana)
+                firma = (jornada.inicio, jornada.tope, jornada.dia_semana, jornada.altura_max, jornada.tranquila)
                 if firma in vistas_vacias:
                     continue
                 vistas_vacias.add(firma)
@@ -238,10 +259,13 @@ def _insertar(
                 continue
             usado = actuales[k].minutos
             nodos = [-1, *(c.i for c in ruta), -1]
+            posibles = list(enumerate(pendientes))
+            if _con_reglas(jornada):
+                posibles = [(orden, c) for orden, c in posibles if admite(jornada, c)]
             for pos in range(len(ruta) + 1):
                 a, b = nodos[pos], nodos[pos + 1]
                 quitar = t(a, b) if ruta else 0.0
-                for orden, c in enumerate(pendientes):
+                for orden, c in posibles:
                     extra = t(a, c.i) + t(c.i, b) - quitar + c.visita
                     if not np.isfinite(extra) or usado + extra > jornada.tope:
                         continue
@@ -282,7 +306,7 @@ def _sembrar(rutas: list[list[Candidata]], jornadas: list[Jornada], pendientes: 
     for k, jornada in enumerate(jornadas):
         orden = sorted(range(len(pendientes)), key=lambda o: (-pendientes[o].valor, t(-1, pendientes[o].i), o))
         for o in orden:
-            if horario([pendientes[o]], jornada, t) is not None:
+            if admite(jornada, pendientes[o]) and horario([pendientes[o]], jornada, t) is not None:
                 rutas[k] = [pendientes.pop(o)]
                 break
 

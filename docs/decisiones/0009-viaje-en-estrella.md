@@ -41,3 +41,7 @@ Con el valor nuevo, un lugar lleno de imperdibles ganaba aunque el viaje se fuer
 ## Actualización · 19 de octubre de 2026
 
 Cada día con visitas tiene una hora de almuerzo, que no cuenta en las 8, y no se corre aunque el primer lugar abra tarde. Lo que por tierra toma de 7 a 16 horas va en bus de noche, con sus noches fuera de los días ([decisión 0019](./0019-plan-creible.md)). Con eso, un fin de semana desde el Cusco sin intereses propone Puno en bus de noche, Urubamba y Yanque; Machu Picchu sale con «Historia».
+
+## Actualización · 20 de octubre de 2026
+
+Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y nada exigente ([decisión 0020](./0020-primer-dia-tranquilo.md)). De Lima a Huaraz, el día 1 ya no empieza en el Huascarán, a 4 453 m: va otro día.

@@ -9,10 +9,10 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0003](./0003-artefactos-precalculados.md) | El motor carga artefactos precalculados; no hay base relacional | Vigente; lo que publican los municipios lo versiona la 0011 |
 | [0004](./0004-sin-modelos-supervisados.md) | Sin modelos supervisados: agrupamiento, reglas de clima y optimización | Vigente |
 | [0005](./0005-historial-y-erratas.md) | Las entregas se etiquetan y se corrigen en su sitio con erratas | Vigente |
-| [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente; sin horas de sol (actualización del 1 de octubre) |
+| [0006](./0006-clima-por-polo.md) | Clima diario en el centro de cada polo, no en la capital regional | Vigente; sin horas de sol (actualización del 1 de octubre), y la temperatura, a la altura de la base que da el modelo de elevación (0020) |
 | [0007](./0007-red-vial-propia.md) | Tiempos de viaje sobre un extracto propio de OpenStreetMap | Vigente; su calibración la precisa la 0008 y la 0010 le suma el tren y los botes |
 | [0008](./0008-calibrar-con-las-fichas.md) | Calibrar la red vial con los recorridos de las fichas | Vigente |
-| [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010), cada pueblo es la base de un solo polo, con otro valor por parada (0013), un día de solo viaje llega a 9 horas (0014), ningún viaje pasa más días en el camino que allá (0015), a lo lejano se vuela (0016), se puede pedir una zona (0017), las noches en la base tienen plan (0018) y el plan almuerza, va en bus de noche y no se corre (0019) |
+| [0009](./0009-viaje-en-estrella.md) | El viaje es una estrella desde la base de un polo | Vigente; el tren y los botes ya entran (0010), cada pueblo es la base de un solo polo, con otro valor por parada (0013), un día de solo viaje llega a 9 horas (0014), ningún viaje pasa más días en el camino que allá (0015), a lo lejano se vuela (0016), se puede pedir una zona (0017), las noches en la base tienen plan (0018), el plan almuerza, va en bus de noche y no se corre (0019) y el primer día en la altura es tranquilo (0020) |
 | [0010](./0010-tren-y-botes.md) | El tren y los botes entran a la red; cada parada se ubica según su ficha | Vigente |
 | [0011](./0011-eventos-publicados.md) | Los municipios publican eventos; lo publicado se suma sin mover las rutas | Vigente; lo publicado se ve en dos segundos en todos los servidores (actualización del 2 de octubre) |
 | [0012](./0012-host-gratuito-render.md) | El host gratuito pasa de un Space de Hugging Face a Render | Vigente |
@@ -21,7 +21,8 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0015](./0015-mas-dias-alla-que-en-el-camino.md) | Un viaje no pasa más días en el camino que allá | Vigente |
 | [0016](./0016-vuelos.md) | Se vuela solo a lo lejano, y el presupuesto entra a elegir | Vigente; con destino, el 40 % ya no impide volar (0019) |
 | [0017](./0017-quiero-ir-a.md) | «Quiero ir a…»: el viaje a la zona elegida, y si no cabe, qué cambiar | Vigente; con destino se vuela también en viajes cortos (0019) |
-| [0018](./0018-planes-de-noche.md) | De noche: dónde salir, una noche de estrellas y descansar en la altura | Vigente |
+| [0018](./0018-planes-de-noche.md) | De noche: dónde salir, una noche de estrellas y descansar en la altura | Vigente; la regla de la altura la comparte el primer día tranquilo (0020) |
 | [0019](./0019-plan-creible.md) | Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre | Vigente |
+| [0020](./0020-primer-dia-tranquilo.md) | Un primer día tranquilo en la altura | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.

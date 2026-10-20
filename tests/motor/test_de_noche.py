@@ -7,8 +7,8 @@ from datetime import date
 import pytest
 
 from dreemgo.contrato import Consulta
+from dreemgo.motor import aclimatacion, noche, viaje
 from dreemgo.motor import datos as artefactos
-from dreemgo.motor import noche, viaje
 
 con_datos = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 
@@ -137,8 +137,8 @@ def test_la_vida_nocturna_pesa_al_elegir_las_zonas():
 @con_datos
 def test_la_altura_del_origen_es_la_de_su_ciudad():
     datos = artefactos.cargar()
-    assert noche.altura_del_origen(datos.origenes["lima"], datos) < 300
-    assert noche.altura_del_origen(datos.origenes["cusco"], datos) == datos.polos[_zona("Cuzco")].base["altitud_m"]
+    assert aclimatacion.del_origen(datos.origenes["lima"], datos) < 300
+    assert aclimatacion.del_origen(datos.origenes["cusco"], datos) == datos.polos[_zona("Cuzco")].base["altitud_m"]
     # Del Cusco a Puno no se sube 1 000 m: la primera noche no es de descanso.
     ruta = _viaje(origen="cusco", mes=7, dias=4, intereses=["vida_nocturna"], destino=_zona("Puno"))
     assert all(n.tipo == "salir" for n in _noches(ruta).values())

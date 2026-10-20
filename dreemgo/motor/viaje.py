@@ -13,7 +13,10 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    por tierra toma de 7 a 16 horas, sin tren ni bote, va en bus de noche si ida y vuelta no
    se llevan el 40 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
    días: se sale la noche antes del día 1 y se vuelve la noche del último (decisión 0019).
-   Cada día con visitas lleva una hora de almuerzo, que no cuenta en las 8.
+   Cada día con visitas lleva una hora de almuerzo, que no cuenta en las 8. Si se duerme a
+   2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo:
+   medio día como mucho, sin subir más de 500 m sobre la base ni nada exigente
+   (``aclimatacion.py``, decisión 0020).
 3. Un itinerario por polo para los más prometedores (``planificador.py``).
 4. El puntaje: (1 − λ) · calidad · temporada · noche · bus · presupuesto + λ · novedad, con
    λ = 0,3. La calidad es el valor que visita el itinerario frente al mejor de la consulta,
@@ -41,7 +44,7 @@ from __future__ import annotations
 
 import calendar
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, timedelta
 
 import numpy as np
@@ -72,8 +75,8 @@ from dreemgo.contrato import (
     TramoAereo,
     Traslado,
 )
+from dreemgo.motor import aclimatacion, noche, textos
 from dreemgo.motor import costo as costos
-from dreemgo.motor import noche, textos
 from dreemgo.motor.datos import Datos, Origen, Vuelo
 from dreemgo.motor.datos import Polo as PoloDatos
 from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, mejor_plan, valor_visitado
@@ -102,7 +105,6 @@ POLOS_A_PLANIFICAR = 12  # como mínimo; se sigue hasta tener tres bases distint
 POLOS_A_PLANIFICAR_MAX = 30
 CANDIDATAS_MAX = 40
 ALTITUD_AVISO_M = 3_500
-ACLIMATACION_M = 2_500
 KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la estación o al muelle
 # Cuándo se vuela (decisión 0016). Solo a lo lejano: lo que por tierra no pasa de 16 horas se
 # hace en un bus de noche, como Trujillo o Huaraz desde Lima. Y solo si en avión se llega al
@@ -160,6 +162,8 @@ def _candidata(i: int, recurso: dict, intereses: set[str]) -> Candidata:
         subtipo=recurso["subtipo"],
         comida=recurso.get("comida_m") is not None,
         dias=dias or None,
+        altura=recurso["altitud_m"],
+        exigente=aclimatacion.exigente(recurso),
     )
 
 
@@ -199,6 +203,21 @@ class Plan:
     llegada: int  # día en que se llega a la base
     salida: int  # día en que se deja la base
     bus_de_noche: tuple[int, int] | None = None  # (sale, llega) en minutos del día, de ida y de vuelta
+    tranquilo: int | None = None  # el día tranquilo, el primer día en la altura (decisión 0020)
+
+
+def _tranquila(jornada: Jornada, altura_max: int) -> Jornada:
+    """La jornada del primer día en la altura: medio día como mucho, sin paradas más altas que ``altura_max``
+    ni exigentes (``aclimatacion.py``)."""
+    return replace(jornada, tope=min(jornada.tope, aclimatacion.TRANQUILO_MIN), altura_max=altura_max, tranquila=True)
+
+
+def _con_dia_tranquilo(jornadas: list[Jornada], dia_de: list[int], altura_max: int | None) -> int | None:
+    """Hace tranquila la primera jornada en la base, si pesa la altura (``altura_max``), y dice qué día es."""
+    if altura_max is None or not jornadas:
+        return None
+    jornadas[0] = _tranquila(jornadas[0], altura_max)
+    return dia_de[0]
 
 
 def _partes_iguales(minutos: int) -> list[int]:
@@ -248,11 +267,18 @@ def llegada(tramos: list[int]) -> int:
     return 24 * 60 * (len(tramos) - 1) + tramos[-1]
 
 
-def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None, vuelo: Vuelo | None = None) -> Plan | None:
+def plan_de_dias(
+    dias: int,
+    minutos_ida: float,
+    fecha_inicio: date | None,
+    vuelo: Vuelo | None = None,
+    altura_max_del_primer_dia: int | None = None,
+) -> Plan | None:
     """La ida y la vuelta, partidas en días como dice ``tramos_de_la_ida``, y los días en la
     base; None si no caben. La vuelta hace los mismos tramos al revés. El día de llegada y el
     de salida tienen visitas solo si el viaje y las visitas caben juntos en una jornada de 8
-    horas."""
+    horas. Si pesa la altura (``altura_max_del_primer_dia``), la primera jornada en la base es
+    tranquila: la del día de llegada, si la tiene, o la del siguiente."""
 
     def dia_semana(n: int) -> int | None:
         return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
@@ -275,7 +301,8 @@ def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None, vuelo
     if libre >= MINIMO_PARA_VISITAR:
         jornadas.append(Jornada(INICIO_DE_VISITAS, libre, dia_semana(dias - k + 1)))
         dia_de.append(dias - k + 1)
-    return Plan("estrella", jornadas, dia_de, tramos, llegada=k, salida=dias - k + 1)
+    tranquilo = _con_dia_tranquilo(jornadas, dia_de, altura_max_del_primer_dia)
+    return Plan("estrella", jornadas, dia_de, tramos, llegada=k, salida=dias - k + 1, tranquilo=tranquilo)
 
 
 def bus_de_noche(minutos_ida: float) -> tuple[int, int]:
@@ -308,15 +335,20 @@ def por_bus_de_noche(plan: Plan, dias: int) -> float:
     return 1.0 if plan.bus_de_noche is None else dias / (dias + DIAS_QUE_PESAN_LAS_NOCHES_DE_BUS)
 
 
-def plan_de_noche(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Plan:
+def plan_de_noche(
+    dias: int, minutos_ida: float, fecha_inicio: date | None, altura_max_del_primer_dia: int | None = None
+) -> Plan:
     """Los días de un viaje con bus de noche: todos en la base. El día 1 se visita desde una hora
-    después de llegar, y el último día termina antes de que salga el bus."""
+    después de llegar, y el último día termina antes de que salga el bus. Si pesa la altura
+    (``altura_max_del_primer_dia``), el día 1 es tranquilo y empieza a las 9:00."""
 
     def dia_semana(n: int) -> int | None:
         return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
 
     sale, llega = bus_de_noche(minutos_ida)
     inicio = max(INICIO_DE_VISITAS, llega + DESCANSO_AL_LLEGAR)
+    if altura_max_del_primer_dia is not None:
+        inicio = max(inicio, aclimatacion.INICIO_TRAS_BUS_DE_NOCHE)
     inicio += (-inicio) % 5
     tope = INICIO_DE_VISITAS + JORNADA_MIN - inicio
     jornadas, dia_de = [], []
@@ -326,16 +358,26 @@ def plan_de_noche(dias: int, minutos_ida: float, fecha_inicio: date | None) -> P
     for n in range(2, dias + 1):
         jornadas.append(Jornada(INICIO_DE_VISITAS, JORNADA_MIN, dia_semana(n)))
         dia_de.append(n)
-    return Plan("estrella", jornadas, dia_de, {}, llegada=1, salida=dias, bus_de_noche=(sale, llega))
+    tranquilo = _con_dia_tranquilo(jornadas, dia_de, altura_max_del_primer_dia)
+    return Plan(
+        "estrella", jornadas, dia_de, {}, llegada=1, salida=dias, bus_de_noche=(sale, llega), tranquilo=tranquilo
+    )
 
 
 def plan_del_viaje(
-    dias: int, minutos_ida: float, km_tren: float, km_bote: float, fecha_inicio: date | None, vuelo: Vuelo | None
+    dias: int,
+    minutos_ida: float,
+    km_tren: float,
+    km_bote: float,
+    fecha_inicio: date | None,
+    vuelo: Vuelo | None,
+    altura_max_del_primer_dia: int | None = None,
 ) -> Plan | None:
-    """Los días del viaje: en bus de noche si va (``va_de_noche``) y, si no, como dice ``plan_de_dias``."""
+    """Los días del viaje: en bus de noche si va (``va_de_noche``) y, si no, como dice ``plan_de_dias``.
+    Con ``altura_max_del_primer_dia``, el primer día en la base es tranquilo."""
     if va_de_noche(dias, minutos_ida, km_tren, km_bote, vuelo):
-        return plan_de_noche(dias, minutos_ida, fecha_inicio)
-    return plan_de_dias(dias, minutos_ida, fecha_inicio, vuelo)
+        return plan_de_noche(dias, minutos_ida, fecha_inicio, altura_max_del_primer_dia)
+    return plan_de_dias(dias, minutos_ida, fecha_inicio, vuelo, altura_max_del_primer_dia)
 
 
 def dias_de_solo_viaje(plan: Plan) -> int:
@@ -671,6 +713,7 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
                 paradas=paradas,
                 nota=" ".join(t for t in notas if t) or None,
                 almuerzo=_almuerzo(it, recorrido, origen, datos) if recorrido else None,
+                tranquilo=n == plan.tranquilo,
             )
         )
     return dias
@@ -927,17 +970,23 @@ def avisos(
             )
         )
     altura_base = polo.base["altitud_m"]
-    if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= ACLIMATACION_M:
-        en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
-        salida.append(
-            Aviso(
-                tipo="aclimatacion",
-                nivel="advertencia",
-                mensaje=f"Se duerme a {textos.miles(altura_base)} m en {polo.base['nombre']}. Si llegas desde "
-                f"la costa, el cuerpo tarda uno o dos días en acostumbrarse{en_avion}: conviene un primer día "
-                "tranquilo.",
+    if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= aclimatacion.ALTURA_QUE_PESA_M:
+        base = polo.base["nombre"]
+        if it.plan.tranquilo is not None:  # el plan lo hace: se dice qué día y cómo es
+            de_golpe = ", y en avión se sube de golpe" if it.vuelo is not None else ""
+            mensaje = (
+                f"Se duerme a {textos.miles(altura_base)} m en {base}{de_golpe}. El día {it.plan.tranquilo} es "
+                f"tranquilo: medio día de visitas como mucho, sin subir más de "
+                f"{textos.miles(aclimatacion.SUBIDA_TRANQUILA_M)} m sobre {base} ni caminatas largas, para que el "
+                "cuerpo se acostumbre."
             )
-        )
+        else:  # se llega desde la altura: quien viene de la costa por su cuenta, que lo sepa
+            en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
+            mensaje = (
+                f"Se duerme a {textos.miles(altura_base)} m en {base}. Si llegas desde la costa, el cuerpo tarda "
+                f"uno o dos días en acostumbrarse{en_avion}: conviene un primer día tranquilo."
+            )
+        salida.append(Aviso(tipo="aclimatacion", nivel="advertencia", mensaje=mensaje))
     if costo.exceso:
         salida.append(
             Aviso(
@@ -992,7 +1041,7 @@ def avisos(
                 "con más días, el viaje rinde más.",
             )
         )
-    libres = [d.numero for d in dias if d.tipo == "visita" and not d.paradas]
+    libres = [d.numero for d in dias if d.tipo == "visita" and not d.paradas and not d.tranquilo]
     if libres:
         salida.append(
             Aviso(
@@ -1056,10 +1105,14 @@ def _cota(cands: list[Candidata], desde: np.ndarray, capacidad: float) -> float:
     return total
 
 
-def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) -> Preparado | None:
-    """Lo que hace falta para planificar el polo, o None si no se puede ir."""
+def preparar(
+    polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos, de_origen: int | None = None
+) -> Preparado | None:
+    """Lo que hace falta para planificar el polo, o None si no se puede ir. ``de_origen`` es la altura del
+    origen (``aclimatacion.del_origen``): la consulta la calcula una vez para todos los polos."""
     base_altitud = polo.base["altitud_m"]
-    if consulta.altitud_max is not None and base_altitud is not None and base_altitud > consulta.altitud_max:
+    # Como una parada: con altitud máxima, una base de la que no se sabe la altura no entra.
+    if consulta.altitud_max is not None and (base_altitud is None or base_altitud > consulta.altitud_max):
         return None
     if consulta.sorpresa and not polo.fuera_del_circuito:
         return None
@@ -1074,7 +1127,10 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         minutos_ida, km_ida, km_tren_ida, km_bote_ida, vuelo = ida(polo, consulta, origen)
         if not np.isfinite(minutos_ida):
             return None
-        plan = plan_del_viaje(consulta.dias, minutos_ida, km_tren_ida, km_bote_ida, consulta.fecha_inicio, vuelo)
+        if de_origen is None:
+            de_origen = aclimatacion.del_origen(origen, datos)
+        alto = aclimatacion.altura_max_del_primer_dia(base_altitud, de_origen)
+        plan = plan_del_viaje(consulta.dias, minutos_ida, km_tren_ida, km_bote_ida, consulta.fecha_inicio, vuelo, alto)
         if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
     desde = _desde_para_visitar(polo, origen, excursion)
@@ -1146,7 +1202,8 @@ def resolver(
 
     # Con un destino, el viaje es solo a esa zona; sin él, el motor elige entre todas.
     polos = datos.polos.values() if consulta.destino is None else [datos.polos[consulta.destino]]
-    preparados = [p for polo in polos if (p := preparar(polo, consulta, origen, datos)) is not None]
+    de_origen = aclimatacion.del_origen(origen, datos)
+    preparados = [p for polo in polos if (p := preparar(polo, consulta, origen, datos, de_origen)) is not None]
     if preparados:
         tope = max(p.cota for p in preparados) or 1.0
         preparados.sort(
@@ -1387,7 +1444,9 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
     nombre, de = polo.nombre, origen.nombre
     dias = f"{consulta.dias} {'día' if consulta.dias == 1 else 'días'}"
     limite, altura = consulta.altitud_max, polo.base["altitud_m"]
-    if limite is not None and altura is not None and altura > limite:
+    if limite is not None and altura is None:
+        return f"No sabemos a qué altura está {nombre}, y pediste no pasar de {textos.miles(limite)} m."
+    if limite is not None and altura > limite:
         return f"{nombre} está a {textos.miles(altura)} m, más arriba de tu límite de {textos.miles(limite)} m."
     excursion = consulta.dias == 1
     en_casa = origen.a_base.get(polo.id, (np.inf,))[0] < CASA_MIN
@@ -1400,7 +1459,8 @@ def _por_que_no(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Dato
             return f"No encontramos cómo llegar de {de} a {nombre}."
         por = "en avión" if vuelo is not None else textos.por_medios(medios_por_tierra(polo, origen))
         toma = f"{por}, solo la ida toma {_horas(minutos)}"
-        plan = plan_del_viaje(consulta.dias, minutos, km_tren, km_bote, consulta.fecha_inicio, vuelo)
+        alto = aclimatacion.altura_max_del_primer_dia(altura, aclimatacion.del_origen(origen, datos))
+        plan = plan_del_viaje(consulta.dias, minutos, km_tren, km_bote, consulta.fecha_inicio, vuelo, alto)
         if plan is None or not plan.jornadas:
             return f"En {dias} no da para ir de {de} a {nombre} y volver: {toma}."
         if mas_camino_que_visita(plan):

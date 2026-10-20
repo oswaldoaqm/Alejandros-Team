@@ -41,3 +41,7 @@ El plan terminaba al volver a la base. Quien todavía tiene energía de noche no
   - VIIRS del Earth Observation Group, de dominio público, con la cita que pide la copia del Banco Mundial;
   - GOES-16, de NOAA, de dominio público;
   - los METAR de NOAA. Los de estaciones fuera de Estados Unidos no se redistribuyen (Resolución 40 de la OMM): el repositorio guarda solo la parte de noches despejadas de cada mes, calculada aquí.
+
+## Actualización · 20 de octubre de 2026
+
+La regla de la noche de descanso es también la del primer día tranquilo, y vive en un solo lugar ([`dreemgo/motor/aclimatacion.py`](../../dreemgo/motor/aclimatacion.py), [decisión 0020](./0020-primer-dia-tranquilo.md)): la noche y el día nunca se contradicen. Y como las 13 bases que no tenían altura la toman ahora de un modelo de elevación, la regla también aplica en ellas.
