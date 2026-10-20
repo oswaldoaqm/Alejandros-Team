@@ -97,18 +97,82 @@
     "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
     "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
     "origenes.json.gz": "c377e7a28578ab20244637c4c02fb3d9614cb841e8d7f08fa2588ea7eef68161",
-    "polos.json.gz": "6da505948aac84ed1a2d9d6be436351ccc47f70f79284b923bdfb4dba71dc9a3",
+    "polos.json.gz": "27504b0c4daeb160c4978129224f9d8438a370ce3c56817c0085bd458f784cdc",
     "recursos.json.gz": "c318bc17082e03ef9e4e6e8bec69ce8b51c3908c85ef25b93d1bd773f4f947df"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del U.S. Geological Survey",
     "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
   ],
   "fuentes": {
+    "altura": {
+      "bases": 194,
+      "completadas": 13,
+      "diferencia_m": {
+        "osm": {
+          "bases": 170,
+          "mas_de_100": 0,
+          "mas_de_300": 0,
+          "max": 26.0,
+          "mediana": 1.0,
+          "p90": 4.0
+        },
+        "recursos_a_2_km": {
+          "bases": 11,
+          "mas_de_100": 1,
+          "mas_de_300": 0,
+          "max": 137.0,
+          "mediana": 28.0,
+          "p90": 92.0
+        }
+      },
+      "fuente": "Terrain Tiles (registro de datos abiertos de AWS), formato skadi: SRTM a un segundo de arco",
+      "las_que_mas_difieren": [
+        {
+          "altitud_dem_m": 2993,
+          "altitud_m": 2856,
+          "base": "Picoy",
+          "fuente": "recursos_a_2_km",
+          "polo": 5
+        },
+        {
+          "altitud_dem_m": 3616,
+          "altitud_m": 3524,
+          "base": "San Miguel de Coroise",
+          "fuente": "recursos_a_2_km",
+          "polo": 26
+        },
+        {
+          "altitud_dem_m": 3774,
+          "altitud_m": 3865,
+          "base": "Tinki",
+          "fuente": "recursos_a_2_km",
+          "polo": 137
+        },
+        {
+          "altitud_dem_m": 3739,
+          "altitud_m": 3676,
+          "base": "Imperial",
+          "fuente": "recursos_a_2_km",
+          "polo": 226
+        },
+        {
+          "altitud_dem_m": 3169,
+          "altitud_m": 3200,
+          "base": "Sausacocha",
+          "fuente": "recursos_a_2_km",
+          "polo": 193
+        }
+      ],
+      "radio_puntos": 2,
+      "reemplazadas": 11,
+      "sin_altura": 0
+    },
     "cielo": {
       "goes16": {
         "anios": [
@@ -308,5 +372,5 @@
       "paradas": 0
     }
   },
-  "version_datos": "2026.10.7"
+  "version_datos": "2026.10.8"
 }

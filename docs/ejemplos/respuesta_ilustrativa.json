@@ -1,6 +1,6 @@
 {
   "version_contrato": "1.6",
-  "version_datos": "2026.10.7",
+  "version_datos": "2026.10.8",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -1976,6 +1976,7 @@
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
     "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del U.S. Geological Survey",
     "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
     "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
     "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
