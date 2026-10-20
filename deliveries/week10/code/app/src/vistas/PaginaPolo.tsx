@@ -1,13 +1,15 @@
 // La zona de un viaje: todo lo que hay para ver alrededor de donde se duerme, cómo es su clima
 // mes a mes y qué fiestas vienen. Se llega desde un viaje («Ver todos los lugares de la zona») y su
-// enlace se puede compartir. Sale de GET /v1/polos/{id}.
+// enlace se puede compartir. Desde aquí se arma un viaje a la zona o a una de sus fiestas. Sale de
+// GET /v1/polos/{id}.
 
 import { useMemo, useState } from "react";
-import type { PoloDetalle, Recurso } from "../api/tipos";
-import type { Consulta } from "../consulta";
+import type { Evento, PoloDetalle, Recurso } from "../api/tipos";
+import { type Consulta, consultaNueva } from "../consulta";
 import { useFotos } from "../estado/fotos";
 import { usePedido } from "../estado/pedido";
 import { useTitulo } from "../estado/titulo";
+import { viajeAlEvento } from "../eventos";
 import { lista, metros, plural, rangosDeMeses } from "../formato";
 import { type FotoDe, type Fotos, fotoDeLaZona, urlDeFoto } from "../fotos";
 import { ClimaAnual } from "../piezas/ClimaAnual";
@@ -17,6 +19,7 @@ import { Cargando, ErrorVista } from "../piezas/Estados";
 import { CreditoDeFoto, Foto } from "../piezas/Foto";
 import { Icono } from "../piezas/Icono";
 import { ListaEventos } from "../piezas/Listas";
+import { NocheDeLaZonaVista } from "../piezas/Noche";
 import { claseDeRecurso, esImperdible, HojaDeRecurso, Imperdible } from "../piezas/Recurso";
 import { enlaces } from "../ruta";
 import { nombreDelViaje } from "../textos";
@@ -121,9 +124,11 @@ interface PropsDeZona {
   fotos: Fotos | null;
   /** El mes del viaje, si se llegó desde uno: el clima se abre en él. */
   mes: number | null;
+  /** El enlace para armar el viaje a una de sus fiestas. */
+  irA: (evento: Evento) => string | null;
 }
 
-function Zona({ detalle, fotos, mes }: PropsDeZona) {
+function Zona({ detalle, fotos, mes, irA }: PropsDeZona) {
   const { polo, recursos, clima, eventos } = detalle;
   const [todos, verTodos] = useState(false);
   const [abierto, abrir] = useState<string | null>(null);
@@ -166,6 +171,15 @@ function Zona({ detalle, fotos, mes }: PropsDeZona) {
           <ClimaAnual clima={clima} inicial={mes ?? new Date().getMonth() + 1} />
         </section>
 
+        {detalle.noche ? (
+          <section aria-labelledby="zona-noche">
+            <h2 id="zona-noche" className="viaje__titular">
+              De noche
+            </h2>
+            <NocheDeLaZonaVista noche={detalle.noche} base={polo.base.nombre} mesElegido={mes} />
+          </section>
+        ) : null}
+
         <section aria-labelledby="zona-fiestas">
           <h2 id="zona-fiestas" className="viaje__titular">
             Fiestas de los próximos meses
@@ -174,6 +188,7 @@ function Zona({ detalle, fotos, mes }: PropsDeZona) {
             eventos={eventos}
             limite={5}
             vacio="No hay fiestas registradas en esta zona para los próximos doce meses."
+            irA={irA}
           />
         </section>
       </div>
@@ -246,6 +261,13 @@ export function PaginaPolo({ id, consulta }: { id: number; consulta: Consulta | 
     () => (detalle && fotos && !sinFoto ? fotoDeLaZona(detalle.polo, detalle.recursos, fotos) : null),
     [detalle, fotos, sinFoto],
   );
+  // El viaje que se arma desde aquí sale de la consulta con que se llegó o, si no hay, de una nueva.
+  const base = consulta ?? consultaNueva();
+  const aqui = enlaces.editar({ ...base, destino: id, sorpresa: false });
+  const irA = (evento: Evento) => {
+    const ir = viajeAlEvento(evento, base);
+    return ir ? enlaces.editar(ir) : null;
+  };
 
   return (
     <article className="viaje zona">
@@ -287,13 +309,17 @@ export function PaginaPolo({ id, consulta }: { id: number; consulta: Consulta | 
                   ) : null}
                 </ul>
                 <DatosClave datos={datosDeLaZona(detalle)} />
+                <Enlace href={aqui} className="boton boton--primario zona__armar">
+                  <Icono nombre="destino" tamano={18} />
+                  Armar un viaje aquí
+                </Enlace>
               </>
             ) : null}
           </div>
         </header>
 
         {detalle ? (
-          <Zona detalle={detalle} fotos={fotos} mes={consulta?.mes ?? null} />
+          <Zona detalle={detalle} fotos={fotos} mes={consulta?.mes ?? null} irA={irA} />
         ) : pedido.error ? (
           <ErrorVista error={pedido.error} reintentar={pedido.reintentar} />
         ) : (

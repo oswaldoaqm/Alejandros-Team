@@ -4,8 +4,12 @@ import { POR_DEFECTO } from "./consulta";
 import { plano } from "./pruebas/texto";
 import {
   aplicarSugerencia,
+  claseDelCielo,
   climaCorto,
+  comoSeVa,
   conQueSeViaja,
+  cuantosLugaresDeNoche,
+  dondeSeAlmuerza,
   entrada,
   imperdibles,
   nombreDelViaje,
@@ -13,6 +17,7 @@ import {
   resumenDeLugares,
   textoDeSugerencia,
   tipoDeDia,
+  tipoDeLugarDeNoche,
 } from "./textos";
 
 const NOMBRES = {
@@ -35,7 +40,37 @@ describe("con qué se viaja", () => {
     expect(conQueSeViaja(["carretera"])).toBe("por carretera");
     expect(conQueSeViaja(["carretera", "bote"])).toBe("por carretera y en bote");
     expect(conQueSeViaja(["carretera", "tren", "bote"])).toBe("por carretera, en tren y en bote");
+    expect(conQueSeViaja(["avion", "carretera"])).toBe("en avión y por carretera");
     expect(conQueSeViaja(undefined)).toBe("por carretera");
+  });
+});
+
+describe("cómo se va, si no es lo de siempre", () => {
+  const BUS = { sale: "21:45", llega: "05:55", sale_vuelta: "21:45", llega_vuelta: "05:55" };
+  it("con vuelo, en bus de noche o nada", () => {
+    expect(comoSeVa({ vuelos: [], bus_de_noche: BUS })).toBe("en bus de noche");
+    expect(comoSeVa({ vuelos: [], bus_de_noche: null })).toBeNull();
+    expect(
+      comoSeVa({
+        vuelos: [{ desde: "Lima", hasta: "Cusco", codigo_desde: "LIM", codigo_hasta: "CUZ", horas: 1.3 }],
+      }),
+    ).toBe("con vuelo");
+  });
+});
+
+describe("dónde se almuerza", () => {
+  it("en la base; cerca de un lugar con dónde comer; en el lugar, si toca llevarlo", () => {
+    expect(dondeSeAlmuerza({ lugar: "Huaraz", en_la_base: true, hay_donde_comer: null })).toBe("En Huaraz");
+    expect(
+      dondeSeAlmuerza({ lugar: "Mirador de Rataquenua", en_la_base: false, hay_donde_comer: true }),
+    ).toBe("Cerca de Mirador de Rataquenua");
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: false })).toBe(
+      "En Laguna Churup",
+    );
+    // Con datos de antes de la 2026.10.7 no se sabe: como si hubiera.
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: null })).toBe(
+      "Cerca de Laguna Churup",
+    );
   });
 });
 
@@ -63,17 +98,32 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(
       aplicarSugerencia({ ...JULIO, fecha_inicio: "2027-07-20" }, { campo: "mes", valor: 8, efecto: "" }),
     ).toMatchObject({ mes: 8, fecha_inicio: null });
+    expect(
+      aplicarSugerencia(
+        { ...JULIO, solo_por_tierra: true },
+        { campo: "solo_por_tierra", valor: false, efecto: "" },
+      )?.solo_por_tierra,
+    ).toBe(false);
+    // Buscar en todas las zonas quita el destino; ir a otra lo cambia, y sin sorpresa.
+    expect(
+      aplicarSugerencia({ ...JULIO, destino: 36 }, { campo: "destino", valor: null, efecto: "" })?.destino,
+    ).toBeNull();
+    expect(
+      aplicarSugerencia({ ...JULIO, sorpresa: true }, { campo: "destino", valor: 4, efecto: "" }),
+    ).toMatchObject({ destino: 4, sorpresa: false });
   });
 
   it("una sugerencia que no se entiende no se ofrece", () => {
     expect(aplicarSugerencia(JULIO, { campo: "dias", valor: "muchos", efecto: "" })).toBeNull();
     expect(aplicarSugerencia(JULIO, { campo: "origen", valor: 3, efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "solo_por_tierra", valor: "no", efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "destino", valor: "cusco", efecto: "" })).toBeNull();
   });
 
   it("se escriben como una acción", () => {
     const texto = (
       campo: Parameters<typeof textoDeSugerencia>[0]["campo"],
-      valor: number | string | string[] | null,
+      valor: number | string | string[] | boolean | null,
     ) => plano(textoDeSugerencia({ campo, valor, efecto: "" }, NOMBRES));
     expect(texto("dias", 8)).toBe("Probar con 8 días");
     expect(texto("altitud_max", null)).toBe("Quitar el límite de altitud");
@@ -83,6 +133,8 @@ describe("las sugerencias del motor cuando no hay rutas", () => {
     expect(texto("presupuesto", null)).toBe("Quitar el tope de presupuesto");
     expect(texto("mes", 8)).toBe("Probar en agosto");
     expect(texto("origen", "cusco")).toBe("Salir desde Cusco");
+    expect(texto("solo_por_tierra", false)).toBe("Buscar también con vuelos");
+    expect(texto("destino", null)).toBe("Ver viajes a otras zonas");
   });
 });
 
@@ -127,5 +179,31 @@ describe("cómo se nombra y se resume un viaje", () => {
     expect(climaCorto("viable", 7)).toBe("Buen clima en julio");
     expect(climaCorto("advertencia", 3)).toBe("Puede llover en marzo");
     expect(climaCorto("desaconsejado", 2)).toBe("Temporada de lluvias en febrero");
+  });
+});
+
+describe("la noche", () => {
+  it("dice qué es cada lugar y cómo es el cielo con palabras", () => {
+    expect(tipoDeLugarDeNoche("pena")).toBe("peña");
+    expect(tipoDeLugarDeNoche("musica")).toBe("música en vivo");
+    expect([claseDelCielo("muy_oscuro"), claseDelCielo("oscuro"), claseDelCielo("con_luz")]).toEqual([
+      "Cielo muy oscuro",
+      "Cielo oscuro",
+      "Cielo con luz",
+    ]);
+  });
+
+  it("cuenta los lugares para salir de cada tipo, en el orden del motor", () => {
+    const lugares = [
+      { tipo: "pena" },
+      { tipo: "bar" },
+      { tipo: "discoteca" },
+      { tipo: "bar" },
+      { tipo: "musica" },
+    ] as const;
+    expect(plano(cuantosLugaresDeNoche([...lugares]))).toBe(
+      "2 bares, 1 discoteca, 1 peña y 1 local con música en vivo",
+    );
+    expect(cuantosLugaresDeNoche([])).toBe("");
   });
 });

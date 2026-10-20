@@ -5,7 +5,8 @@ Se guarda lo que dijo quien publica y nada más. Publicar otra vez el mismo even
 en vez de duplicarlo: su identificador sale de su nombre, sus fechas, su lugar y la entidad.
 
 A qué polos toca un evento no se guarda: se calcula con los artefactos del momento. Si los
-polos cambian con una versión nueva de los datos, lo publicado los sigue.
+polos cambian con una versión nueva de los datos, lo publicado los sigue. De esos polos, el
+que duerme más cerca es su zona (``Evento.polo``): adonde lleva «Ir a esta fiesta» en la app.
 
 Se suman al calendario oficial sin tocar el orden de las rutas: aparecen en ``eventos[]`` con
 ``fuente: "publicado"`` y con quién los publicó. Como también son datos, la versión de datos
@@ -121,8 +122,9 @@ class Publicado:
         campos["publicado"] = str(r.get("publicado") or "")
         return cls(**campos)
 
-    def evento(self) -> Evento:
-        """Como lo ve el viajero: con sus fechas, que son exactas porque las da quien lo organiza."""
+    def evento(self, polo: int | None = None) -> Evento:
+        """Como lo ve el viajero: con sus fechas, que son exactas porque las da quien lo organiza,
+        y con su zona, la que da ``zona``."""
         return Evento(
             id=self.id,
             nombre=self.nombre,
@@ -136,6 +138,7 @@ class Publicado:
             fuente="publicado",
             publicado_por=self.publicado_por,
             url=self.url,
+            polo=polo,
         )
 
 
@@ -166,6 +169,18 @@ def polos_cercanos(publicados: Iterable[Publicado], datos: Datos) -> list[frozen
     return salida
 
 
+def zona(publicado: Publicado, polos: frozenset[int], datos: Datos) -> int | None:
+    """De los polos en cuyas rutas sale el evento, el que duerme más cerca de él; si empatan,
+    el de número menor. None si no sale en ninguno."""
+    if not polos or publicado.lat is None or publicado.lon is None:
+        return None
+    orden = sorted(polos)
+    lats = np.radians(np.array([datos.polos[p].base["lat"] for p in orden], dtype=float))
+    lons = np.radians(np.array([datos.polos[p].base["lon"] for p in orden], dtype=float))
+    km = _km(float(np.radians(publicado.lat)), float(np.radians(publicado.lon)), lats, lons)
+    return orden[int(np.argmin(km))]
+
+
 @dataclass(frozen=True)
 class Instantanea:
     """Los eventos publicados en un momento dado, ya ubicados en sus polos. No cambia: una
@@ -173,6 +188,7 @@ class Instantanea:
 
     eventos: tuple[Publicado, ...] = ()
     polos: tuple[frozenset[int], ...] = ()  # los de cada evento, en el mismo orden
+    zonas: tuple[int | None, ...] = ()  # la de cada evento (``zona``), en el mismo orden
     huella: str = ""
 
     @classmethod
@@ -186,9 +202,11 @@ class Instantanea:
             return cls()
         contenido = [{c: r[c] for c in EN_LA_HUELLA} for r in (p.registro() for p in eventos)]
         texto = json.dumps(contenido, ensure_ascii=False, sort_keys=True)
+        polos = tuple(polos_cercanos(eventos, datos))
         return cls(
             eventos=eventos,
-            polos=tuple(polos_cercanos(eventos, datos)),
+            polos=polos,
+            zonas=tuple(zona(e, ps, datos) for e, ps in zip(eventos, polos, strict=True)),
             huella=hashlib.sha256(texto.encode()).hexdigest()[:7],
         )
 
@@ -200,8 +218,8 @@ class Instantanea:
     def entre(self, desde: date, hasta: date, polo: int | None = None) -> list[Evento]:
         """Los que caen entre dos fechas, de un polo o de todos, en el orden del calendario."""
         salida = [
-            p.evento()
-            for p, polos in zip(self.eventos, self.polos, strict=True)
+            p.evento(la_zona)
+            for p, polos, la_zona in zip(self.eventos, self.polos, self.zonas, strict=True)
             if p.fecha_inicio <= hasta and p.fecha_fin >= desde and (polo is None or polo in polos)
         ]
         return sorted(salida, key=lambda e: (e.fecha_inicio, e.id))
@@ -211,6 +229,12 @@ class Instantanea:
             if p.id == id_evento:
                 return polos
         return frozenset()
+
+    def zona_de(self, id_evento: str) -> int | None:
+        for p, la_zona in zip(self.eventos, self.zonas, strict=True):
+            if p.id == id_evento:
+                return la_zona
+        return None
 
 
 SIN_PUBLICADOS = Instantanea()

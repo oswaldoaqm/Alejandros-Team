@@ -1,7 +1,8 @@
 """Lo que cualquiera espera del motor: que proponga Machu Picchu y la Cordillera Blanca desde
-donde y cuando se puede ir, y que no mande a nadie más días en el bus que de visita. Corre
-contra los artefactos de dreemgo/datos: si un cambio en los datos o en el puntaje los saca de
-las tres rutas, aquí se nota (decisiones 0013 a 0015)."""
+donde y cuando se puede ir, que desde Lima se vuele al Cusco, que a Huaraz se vaya en bus de
+noche, y que no mande a nadie más días en el bus que de visita. Corre contra los artefactos de
+dreemgo/datos: si un cambio en los datos o en el puntaje los saca de las tres rutas, aquí se nota
+(decisiones 0013 a 0016 y 0019)."""
 
 import re
 
@@ -18,20 +19,42 @@ def _duermen_en(**consulta) -> list[str]:
     return [r.polo.base.nombre for r in viaje.resolver(Consulta(**consulta), artefactos.cargar()).rutas]
 
 
-def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_lleva_a_machu_picchu():
-    assert "Machupicchu Pueblo" in _duermen_en(origen="cusco", mes=6, dias=2)
+def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_lleva_al_valle_sagrado_y_a_puno():
+    """Con el bus de noche, Puno queda a una noche del Cusco: los dos días son allá (decisión 0019)."""
+    rutas = viaje.resolver(Consulta(origen="cusco", mes=6, dias=2), artefactos.cargar()).rutas
+    duermen = {r.polo.base.nombre: r for r in rutas}
+    assert "Urubamba" in duermen and duermen["Puno"].traslado.bus_de_noche is not None
 
 
-def test_desde_lima_seis_dias_de_julio_llevan_a_huaraz():
-    assert "Huaraz" in _duermen_en(origen="lima", mes=7, dias=6)
+def test_desde_el_cusco_un_fin_de_semana_de_historia_lleva_a_machu_picchu():
+    assert "Machupicchu Pueblo" in _duermen_en(origen="cusco", mes=6, dias=2, intereses=["historia"])
 
 
-def test_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
-    """Son 8 horas y 8 minutos de viaje: un día de ida, dos allá y un día de vuelta."""
-    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=4), artefactos.cargar()).rutas
+def test_desde_lima_seis_dias_de_julio_se_vuela_al_cusco():
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=6), artefactos.cargar()).rutas
+    [cusco] = [r for r in rutas if r.polo.base.nombre == "Cuzco"]
+    assert cusco.traslado.medios[0] == "avion" and [d.tipo for d in cusco.dias][1:5] == ["visita"] * 4
+
+
+def test_por_tierra_desde_lima_seis_dias_de_julio_llevan_a_huaraz():
+    assert "Huaraz" in _duermen_en(origen="lima", mes=7, dias=6, solo_por_tierra=True)
+
+
+def test_por_tierra_desde_lima_cuatro_dias_de_julio_tambien_llevan_a_huaraz():
+    """Son 8 horas de viaje, en bus de noche: los cuatro días son allá (decisión 0019)."""
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=4, solo_por_tierra=True), artefactos.cargar()).rutas
     [huaraz] = [r for r in rutas if r.polo.base.nombre == "Huaraz"]
-    assert [d.tipo for d in huaraz.dias] == ["ida", "visita", "visita", "vuelta"]
-    assert huaraz.traslado.dias_de_viaje == 2 and 8.0 < huaraz.dias[0].horas <= 9.0
+    assert [d.tipo for d in huaraz.dias] == ["ida_y_visita", "visita", "visita", "visita_y_vuelta"]
+    assert huaraz.traslado.dias_de_viaje == 0 and huaraz.traslado.bus_de_noche is not None
+    assert all(d.paradas and d.horas <= 8.0 for d in huaraz.dias)
+
+
+def test_desde_lima_un_fin_de_semana_lleva_a_huaraz_en_bus_de_noche_y_tambien_a_algo_cerca():
+    """Dos noches en el bus pesan como un día más: un fin de semana no sale solo lejos (decisión 0019)."""
+    rutas = viaje.resolver(Consulta(origen="lima", mes=7, dias=2), artefactos.cargar()).rutas
+    duermen = {r.polo.base.nombre: r for r in rutas}
+    assert duermen["Huaraz"].traslado.bus_de_noche is not None
+    assert any(r.traslado.bus_de_noche is None for r in rutas)
 
 
 # El ejemplo de la guía del avance del 9 de octubre: desde Lima, cuatro días, para alguien a quien le
@@ -41,6 +64,16 @@ NATURALEZA = {"origen": "lima", "dias": 4, "intereses": ["naturaleza", "caminata
 
 def test_con_naturaleza_y_caminatas_julio_lleva_a_huaraz():
     assert "Huaraz" in _duermen_en(mes=7, **NATURALEZA)
+
+
+def test_con_presupuesto_los_vuelos_que_lo_pasan_no_desplazan_a_los_que_entran():
+    """Sin presupuesto, desde Lima con cuatro días se vuela a Arequipa y al Cusco; con S/ 1 000,
+    que esos vuelos pasan, los tres viajes van en bus y entran (decisión 0016)."""
+    rutas = viaje.resolver(Consulta(mes=7, **NATURALEZA), artefactos.cargar()).rutas
+    assert len(rutas) == 3 and not any(r.traslado.vuelos for r in rutas)
+    assert all(r.costo.dentro_del_presupuesto for r in rutas)
+    sin_tope = viaje.resolver(Consulta(mes=7, **(NATURALEZA | {"presupuesto": None})), artefactos.cargar()).rutas
+    assert any(r.traslado.vuelos for r in sin_tope)
 
 
 def test_en_febrero_la_lluvia_de_la_sierra_saca_a_huaraz():
@@ -62,11 +95,13 @@ def test_con_mas_de_tres_imperdibles_el_motivo_nombra_algunos():
 
 
 def test_ningun_viaje_pasa_mas_dias_en_el_camino_que_alla():
-    """Sin vuelos, el Cusco desde Lima con nueve días eran seis en el bus y tres allá; y Tarapoto
-    desde Iquitos, ocho días de río y uno allá."""
+    """Por tierra, el Cusco desde Lima con nueve días eran seis en el bus y tres allá; y Tarapoto
+    desde Iquitos, ocho días de río y uno allá. En avión sí caben."""
     for origen, mes, fuera in (("lima", 7, "Cuzco"), ("iquitos", 6, "Tarapoto")):
-        rutas = viaje.resolver(Consulta(origen=origen, mes=mes, dias=9), artefactos.cargar()).rutas
-        assert rutas and fuera not in [r.polo.base.nombre for r in rutas]
-        for ruta in rutas:
-            de_camino = sum(1 for d in ruta.dias if d.tipo in ("ida", "vuelta") and not d.paradas)
-            assert de_camino <= len(ruta.dias) - de_camino, ruta.polo.nombre
+        for solo_por_tierra in (True, False):
+            consulta = Consulta(origen=origen, mes=mes, dias=9, solo_por_tierra=solo_por_tierra)
+            rutas = viaje.resolver(consulta, artefactos.cargar()).rutas
+            assert rutas and (fuera not in [r.polo.base.nombre for r in rutas] or not solo_por_tierra)
+            for ruta in rutas:
+                de_camino = sum(1 for d in ruta.dias if d.tipo in ("ida", "vuelta") and not d.paradas)
+                assert de_camino <= len(ruta.dias) - de_camino, ruta.polo.nombre

@@ -52,3 +52,14 @@ def test_ningun_pueblo_es_la_base_de_dos_polos():
         "Museo Arqueológico de Áncash Augusto Soriano Infante",
     }
     assert de_cada_grupo <= {datos.recursos[c]["nombre"] for c in huaraz.paradas}
+
+
+def test_cada_base_sabe_a_que_altura_esta():
+    """Sin la altura de la base, el motor no sabe si se duerme en la altura: no avisa, no arma el primer día
+    tranquilo y la altitud máxima no la filtra. Desde la 2026.10.8, las que OSM no trae salen del modelo de
+    elevación (pipeline/elevacion.py, decisión 0020)."""
+    datos = artefactos.cargar()
+    sin_altura = [p.base["nombre"] for p in datos.polos.values() if p.base["altitud_m"] is None]
+    assert sin_altura == []
+    fuentes = {p.base["altitud_fuente"] for p in datos.polos.values()}
+    assert fuentes == {"osm", "terrain_tiles"}

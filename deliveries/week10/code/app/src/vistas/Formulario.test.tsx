@@ -47,6 +47,19 @@ describe("el formulario", () => {
     );
   });
 
+  it("la vida nocturna va aparte, de noche, y viaja en la consulta como cualquier interés", async () => {
+    const api = await abrir();
+    await abrirFila(/^Qué te gusta/);
+    const hoja = screen.getByRole("dialog", { name: "¿Qué te gusta?" });
+    expect(within(hoja).getByRole("heading", { name: "De noche" })).toBeTruthy();
+    await userEvent.click(within(hoja).getByRole("checkbox", { name: "Vida nocturna" }));
+    await listo();
+    expect(fila(/^Qué te gusta/)).toBe("Qué te gusta Vida nocturna");
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toContain("intereses=vida_nocturna");
+  });
+
   it("propone el mes que viene, también en diciembre", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 9, 1));
@@ -121,6 +134,69 @@ describe("el formulario", () => {
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6");
   });
 
+  it("«A dónde» propone tres viajes; sin nada escrito, sugiere zonas de imperdibles fuera de tu ciudad", async () => {
+    await abrir();
+    expect(fila(/^A dónde/)).toBe("A dónde Te proponemos tres");
+    await abrirFila(/^A dónde/);
+    const hoja = screen.getByRole("dialog", { name: "¿A dónde quieres ir?" });
+    expect(within(hoja).getByRole("button", { pressed: true }).textContent).toBe(
+      "Te proponemos tresLas zonas que mejor te quedan",
+    );
+    const zonas = await within(hoja).findAllByRole("button", { pressed: false });
+    // Desde Lima, Miraflores no: es la misma ciudad.
+    expect(zonas.map((z) => z.querySelector("span span")?.textContent)).toEqual([
+      "Cuzco",
+      "Trujillo",
+      "Nasca",
+      "Machupicchu Pueblo",
+      "Yanque",
+    ]);
+    expect(plano(zonas[0]?.textContent)).toBe("CuzcoCentro Histórico del Cusco");
+  });
+
+  it("con un destino, el viaje es a esa zona y se abre directo; no hay «Sorpréndeme»", async () => {
+    const api = await abrir();
+    await abrirFila(/^A dónde/);
+    const buscador = screen.getByRole("searchbox", { name: "Buscar una zona o un lugar" });
+    await userEvent.type(buscador, "ocopa");
+    const hoja = screen.getByRole("dialog");
+    const [huancayo] = within(hoja).getAllByRole("button", { pressed: false });
+    expect(plano(huancayo?.textContent)).toBe("HuancayoPor Convento de Santa Rosa de Ocopa");
+    await userEvent.click(huancayo as HTMLElement);
+
+    expect(fila(/^A dónde/)).toBe("A dónde Huancayo");
+    expect(screen.queryByRole("button", { name: /Sorpréndeme/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Ver mi viaje" }));
+    await screen.findByRole("heading", { level: 1, name: "Huancayo" });
+    expect(consultaPedida(api)).toMatch(/^\/v1\/viajes\?origen=lima&destino=33&mes=\d+&dias=6$/);
+    expect(window.location.hash).toBe("#/ruta/1");
+  });
+
+  it("Enter elige la primera zona que coincide, y «Te proponemos tres» quita el destino", async () => {
+    await abrir();
+    await abrirFila(/^A dónde/);
+    await userEvent.type(
+      screen.getByRole("searchbox", { name: "Buscar una zona o un lugar" }),
+      "colca{Enter}",
+    );
+    expect(fila(/^A dónde/)).toBe("A dónde Yanque");
+
+    await abrirFila(/^A dónde/);
+    expect(within(screen.getByRole("dialog")).getByRole("button", { pressed: true }).textContent).toContain(
+      "Yanque",
+    );
+    await userEvent.click(screen.getByRole("button", { name: /^Te proponemos tres/ }));
+    expect(fila(/^A dónde/)).toBe("A dónde Te proponemos tres");
+    expect(screen.getByRole("button", { name: "Sorpréndeme fuera de Lima y Cusco" })).toBeTruthy();
+  });
+
+  it("al cambiar un viaje con destino, la fila nombra la zona", async () => {
+    irA("/?origen=lima&destino=36&mes=7&dias=4#/editar");
+    await abrir();
+    await waitFor(() => expect(fila(/^A dónde/)).toBe("A dónde Cuzco"));
+    expect(screen.getByRole("button", { name: "Ver mi viaje" })).toBeTruthy();
+  });
+
   it("el presupuesto y la altura solo viajan si se bajan del extremo", async () => {
     const api = await abrir();
     await abrirFila(/^Cuándo/);
@@ -158,6 +234,30 @@ describe("el formulario", () => {
     );
   });
 
+  it("vuela a lo lejano; con el interruptor apagado pide solo por tierra", async () => {
+    const api = await abrir();
+    const vuelos = screen.getByRole("switch", { name: "Vuelos" });
+    expect(vuelos).toHaveProperty("checked", true);
+    expect(plano(vuelos.closest("label")?.textContent)).toBe("Vuelos Si por tierra pasa de 16 h");
+    await abrirFila(/^Cuándo/);
+    await userEvent.click(screen.getByRole("radio", { name: "Julio" }));
+    await listo();
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6");
+
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
+    await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" });
+    await userEvent.click(screen.getByRole("switch", { name: "Vuelos" }));
+    expect(screen.getByRole("switch", { name: "Vuelos" })).toHaveProperty("checked", false);
+    expect(plano(screen.getByRole("switch", { name: "Vuelos" }).closest("label")?.textContent)).toBe(
+      "Vuelos Solo por tierra",
+    );
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6&solo_por_tierra=true");
+  });
+
   it("con fecha de salida manda la fecha, y el mes la sigue", async () => {
     const api = await abrir();
     await abrirFila(/^Cuándo/);
@@ -177,7 +277,7 @@ describe("el formulario", () => {
   });
 
   it("al cambiar el viaje, abre con la consulta que ya había", async () => {
-    irA("/?origen=cusco&mes=7&dias=4&intereses=playa&presupuesto=1800#/editar");
+    irA("/?origen=cusco&mes=7&dias=4&intereses=playa&presupuesto=1800&solo_por_tierra=true#/editar");
     await abrir();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Cambia tu viaje");
     expect(fila(/^Desde/)).toBe("Desde Cusco");
@@ -185,6 +285,17 @@ describe("el formulario", () => {
     expect(plano(screen.getByRole("group", { name: /Días/ }).textContent)).toContain("4 días");
     expect(fila(/^Qué te gusta/)).toBe("Qué te gusta Playa");
     expect(fila(/^Presupuesto y altura/)).toBe("Presupuesto y altura Hasta S/ 1 800");
+    expect(screen.getByRole("switch", { name: "Vuelos" })).toHaveProperty("checked", false);
+  });
+
+  it("si la lista de zonas no llega, el formulario sigue y la hoja lo dice", async () => {
+    irA("/?origen=lima&destino=36&mes=7&dias=4#/editar");
+    await abrir({ "/destinos.json": { estado: 404, cuerpo: {} } });
+    await waitFor(() => expect(fila(/^A dónde/)).toBe("A dónde La zona elegida"));
+    await abrirFila(/^A dónde/);
+    expect((await within(screen.getByRole("dialog")).findByRole("status")).textContent).toBe(
+      "No pudimos cargar las zonas. Revisa tu conexión y vuelve a abrir esta hoja.",
+    );
   });
 
   it("si el servidor todavía no responde, lo dice y deja reintentar", async () => {

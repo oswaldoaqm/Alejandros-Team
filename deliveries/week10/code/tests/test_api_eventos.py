@@ -107,6 +107,7 @@ class TestDondeAparece:
         id_ = sembrar(almacen)
         despues = cliente.get("/v1/eventos", params=NOVIEMBRE).json()
         [publicado] = [e for e in despues["eventos"] if e["fuente"] == "publicado"]
+        huaraz = min(p.id for p in artefactos.cargar().polos.values() if p.base["nombre"] == "Huaraz")
         assert publicado == {
             "id": id_,
             "nombre": "Festival del Café",
@@ -120,6 +121,7 @@ class TestDondeAparece:
             "fuente": "publicado",
             "publicado_por": "Municipalidad Provincial de Huaraz",
             "url": "https://www.munihuaraz.gob.pe/festival",
+            "polo": huaraz,  # la zona que duerme más cerca, adonde lleva «Ir a esta fiesta» (1.4)
         }
         assert [e for e in despues["eventos"] if e["fuente"] == "mincetur"] == antes["eventos"]
         fechas = [(e["fecha_inicio"], e["id"]) for e in despues["eventos"]]
@@ -310,6 +312,7 @@ class TestQueSeAcepta:
         evento = Evento.model_validate(r.json())
         assert evento.id.startswith("p-")
         assert (evento.fuente, evento.precision_fecha) == ("publicado", "exacta")
+        huaraz = min(p.id for p in artefactos.cargar().polos.values() if p.base["nombre"] == "Huaraz")
         assert r.json() == {
             "id": evento.id,
             "nombre": "Festival del Café",
@@ -323,6 +326,7 @@ class TestQueSeAcepta:
             "fuente": "publicado",
             "publicado_por": "Municipalidad Provincial de Huaraz",
             "url": "https://www.munihuaraz.gob.pe/festival",
+            "polo": huaraz,
         }
         [guardado] = almacen.leer()
         assert guardado["id"] == evento.id

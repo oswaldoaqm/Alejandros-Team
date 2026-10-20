@@ -13,6 +13,8 @@ import type {
   Recurso,
   Respuesta,
 } from "../api/tipos";
+import type { Destinos } from "../destinos";
+import { olvidarDestinos } from "../estado/destinos";
 import { olvidarPedidos } from "../estado/pedido";
 
 export const RESPUESTA = ejemplo as unknown as Respuesta;
@@ -27,9 +29,10 @@ export const OPCIONES: Opciones = {
     { id: "puerto-maldonado", nombre: "Puerto Maldonado", region: "Madre de Dios" },
   ],
   intereses: [
-    { id: "naturaleza", etiqueta: "Naturaleza", paradas: 2562 },
-    { id: "historia", etiqueta: "Historia y arqueología", paradas: 956 },
-    { id: "playa", etiqueta: "Playa", paradas: 214 },
+    { id: "naturaleza", etiqueta: "Naturaleza", paradas: 2562, de_noche: false },
+    { id: "historia", etiqueta: "Historia y arqueología", paradas: 956, de_noche: false },
+    { id: "playa", etiqueta: "Playa", paradas: 214, de_noche: false },
+    { id: "vida_nocturna", etiqueta: "Vida nocturna", paradas: 0, de_noche: true },
   ],
   dias: { minimo: 1, maximo: 14, defecto: 6 },
   presupuesto: { minimo: 100, maximo: 50000, defecto: null },
@@ -62,6 +65,56 @@ export const POLO: PoloDetalle = {
     };
   }),
   eventos: PRIMERA.eventos ?? [],
+  noche: {
+    lugares: [
+      {
+        nombre: "Bar de Prueba",
+        tipo: "bar",
+        lat: -14.83,
+        lon: -74.94,
+        minutos_a_pie: 4,
+        fuente: "openstreetmap",
+        url: "https://www.openstreetmap.org/node/1",
+        horario: null,
+      },
+      {
+        nombre: "Peña de Prueba",
+        tipo: "pena",
+        lat: -14.831,
+        lon: -74.941,
+        minutos_a_pie: 9,
+        fuente: "overture",
+        url: "https://www.openstreetmap.org/?mlat=-14.831&mlon=-74.941#map=19/-14.831/-74.941",
+        horario: null,
+      },
+    ],
+    cielo: {
+      desde: {
+        nombre: PRIMERA.polo.base.nombre,
+        tipo: "base",
+        minutos: 0,
+        lat: PRIMERA.polo.base.lat,
+        lon: PRIMERA.polo.base.lon,
+        url: null,
+        brillo: 0.8,
+        clase: "oscuro",
+      },
+      mas_oscuro: null,
+      observatorio: {
+        nombre: "Planetario de Prueba",
+        tipo: "planetario",
+        minutos: 8,
+        lat: -14.82,
+        lon: -74.93,
+        url: "https://www.openstreetmap.org/way/2",
+        brillo: 2.5,
+        clase: "con_luz",
+      },
+      noches_despejadas: [0.1, 0.05, 0.1, 0.4, 0.7, 0.9, 0.92, 0.85, 0.6, 0.3, 0.2, null],
+      fuente_nubes: "goes",
+      aeropuerto: null,
+    },
+  },
   atribucion: RESPUESTA.atribucion,
 };
 
@@ -119,19 +172,143 @@ export function consultaDe(url: URL): Respuesta["consulta"] {
     presupuesto: numero("presupuesto"),
     altitud_max: numero("altitud_max"),
     sorpresa: p.get("sorpresa") === "true",
+    solo_por_tierra: p.get("solo_por_tierra") === "true",
+    destino: numero("destino"),
   };
 }
 
-/** Los viajes del ejemplo, con la consulta que se pidió: el motor siempre la devuelve. */
+/** Lo que el motor dice cuando el viaje a una zona del ejemplo no cabe: es de mentira, con su forma. */
+export const SIN_VIAJE_A_CUZCO: NonNullable<Respuesta["sin_resultado"]> = {
+  motivo: "En 4 días no da para ir de Lima a Cuzco y volver: por carretera, solo la ida toma unas 22 horas.",
+  sugerencias: [
+    { campo: "dias", valor: 12, efecto: "sale el viaje, sin volar" },
+    { campo: "solo_por_tierra", valor: false, efecto: "sale el viaje, con vuelo" },
+    { campo: "destino", valor: null, efecto: "aparecen 3 viajes" },
+  ],
+};
+
+/**
+ * Los viajes del ejemplo, con la consulta que se pidió: el motor siempre la devuelve. Con un
+ * destino, solo el de esa zona; si no es una del ejemplo, la explicación de mentira.
+ */
 export function viajesPara(url: URL): Respuesta {
-  return { ...RESPUESTA, consulta: consultaDe(url) };
+  const consulta = consultaDe(url);
+  if (consulta.destino == null) return { ...RESPUESTA, consulta };
+  const rutas = RESPUESTA.rutas.filter((r) => r.polo.id === consulta.destino);
+  return { ...RESPUESTA, consulta, rutas, sin_resultado: rutas.length > 0 ? null : SIN_VIAJE_A_CUZCO };
 }
+
+/** Las zonas que la app busca: algunas de verdad (public/destinos.json), con pocos lugares. */
+export const DESTINOS: Destinos = {
+  version_datos: VERSION,
+  zonas: [
+    {
+      id: 36,
+      nombre: "Cuzco",
+      region: "Cusco",
+      regiones: ["Cusco", "Apurímac"],
+      peso: 126,
+      misma_ciudad: ["cusco"],
+      lugares: [
+        ["Centro Histórico del Cusco", 4],
+        ["Parque Arqueológico Nacional de Saqsaywaman", 4],
+        ["Calle Hatunrumiyoc", 3],
+      ],
+    },
+    {
+      id: 31,
+      nombre: "Miraflores",
+      region: "Lima",
+      regiones: ["Lima", "Callao"],
+      peso: 90,
+      misma_ciudad: ["lima"],
+      lugares: [
+        ["Centro Histórico de Lima", 4],
+        ["Centro Comercial Larcomar", 3],
+      ],
+    },
+    {
+      id: 139,
+      nombre: "Trujillo",
+      region: "La Libertad",
+      regiones: ["La Libertad"],
+      peso: 58,
+      misma_ciudad: ["trujillo"],
+      lugares: [
+        ["Complejo Arqueológico Chan Chan", 4],
+        ["Balneario de Huanchaco", 3],
+      ],
+    },
+    {
+      id: 27,
+      nombre: "Nasca",
+      region: "Ica",
+      regiones: ["Ica"],
+      peso: 50,
+      misma_ciudad: [],
+      lugares: [
+        ["Líneas y Geoglifos de Nasca y Palpa", 4],
+        ["Centro Ceremonial Cahuachi", 3],
+      ],
+    },
+    {
+      id: 4,
+      nombre: "Machupicchu Pueblo",
+      region: "Cusco",
+      regiones: ["Cusco"],
+      peso: 46,
+      misma_ciudad: [],
+      lugares: [
+        ["Parque Arqueológico Nacional de Machu Picchu", 4],
+        ["Cascada de Aguas Calientes", 2],
+      ],
+    },
+    {
+      id: 71,
+      nombre: "Yanque",
+      region: "Arequipa",
+      regiones: ["Arequipa"],
+      peso: 46,
+      misma_ciudad: [],
+      lugares: [
+        ["Valle del Colca", 4],
+        ["Aguas Termales de Sallihua", 2],
+      ],
+    },
+    {
+      id: 33,
+      nombre: "Huancayo",
+      region: "Junín",
+      regiones: ["Junín"],
+      peso: 32,
+      misma_ciudad: ["huancayo"],
+      lugares: [
+        ["Convento de Santa Rosa de Ocopa", 3],
+        ["Santuario Arqueológico de Wariwillka", 3],
+        ["Basílica Menor Catedral de Huancayo", 2],
+      ],
+    },
+    {
+      id: 147,
+      nombre: "Sangalle",
+      region: "Arequipa",
+      regiones: ["Arequipa"],
+      peso: 8,
+      misma_ciudad: [],
+      lugares: [
+        ["Cañon del Colca", 2],
+        ["Valle de Sangalle", 2],
+      ],
+    },
+  ],
+};
 
 const POR_DEFECTO: Record<string, Contestar> = {
   "/v1/opciones": () => ({ cuerpo: OPCIONES }),
   "/v1/viajes": (url) => ({ cuerpo: viajesPara(url) }),
   [`/v1/polos/${POLO.polo.id}`]: () => ({ cuerpo: POLO }),
   "/v1/eventos": () => ({ cuerpo: EVENTOS }),
+  "/destinos.json": () => ({ cuerpo: DESTINOS }),
 };
 
 /**
@@ -140,6 +317,7 @@ const POR_DEFECTO: Record<string, Contestar> = {
  */
 export function ponerApi(rutas: Record<string, Contestar | Contestacion> = {}) {
   olvidarPedidos(); // lo que respondió el API anterior no vale para este
+  olvidarDestinos();
   const tabla: Record<string, Contestar | Contestacion> = { ...POR_DEFECTO, ...rutas };
   const falso = vi.fn(async (entrada: RequestInfo | URL, opciones?: RequestInit): Promise<Response> => {
     const url = new URL(String(entrada));

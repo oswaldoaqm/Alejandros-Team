@@ -45,6 +45,13 @@
   color: var(--tinta-2);
 }
 
+/* «De noche», en la hoja de los gustos: separa lo de la noche de lo del día. */
+.hoja__subtitulo {
+  margin: 22px 0 4px;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+}
+
 .buscador {
   position: sticky;
   top: 0;
@@ -96,6 +103,34 @@
 .opciones-lista__vacia {
   padding: 16px 4px;
   color: var(--tinta-2);
+}
+
+/* «A dónde»: el nombre de la zona y, debajo, por qué salió o su lugar más importante. */
+.opcion__texto {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.opcion__nota {
+  overflow: hidden;
+  font-size: var(--t-nota);
+  font-weight: 400;
+  color: var(--tinta-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opciones-lista .opciones-lista__titulo {
+  padding: 18px 4px 6px;
+  font-size: var(--t-nota);
+  font-weight: 650;
+  color: var(--tinta-2);
+  border-top: 0;
+}
+
+.opciones-lista .opciones-lista__titulo + li {
+  border-top: 0;
 }
 
 .gustos {

@@ -432,6 +432,14 @@
   color: var(--tinta-3);
 }
 
+/* El primer día en la altura: una línea chica bajo los lugares, como la de la noche. */
+.dia-fila__tranquilo {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-pie);
+  color: var(--bien-tinta);
+}
+
 /* Un día: su cabeza, su nota y sus lugares en una línea de tiempo. */
 .un-dia {
   display: grid;
@@ -486,6 +494,23 @@
 
 .un-dia__fiesta {
   background: var(--lago-claro);
+}
+
+.un-dia__tranquilo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  font-size: var(--t-nota);
+  line-height: 1.45;
+  color: var(--bien-tinta);
+  background: var(--bien-fondo);
+  border-radius: var(--r-control);
+}
+
+.un-dia__tranquilo .icono {
+  margin-top: 2px;
 }
 
 .un-dia__fiesta .icono {
@@ -593,6 +618,41 @@
   gap: 2px 12px;
   font-size: var(--t-pie);
   color: var(--tinta-3);
+}
+
+/* La hora del almuerzo, en el mismo hilo: sin número, con un tenedor, y no se toca. */
+.almuerzo-fila {
+  display: grid;
+  grid-template-columns: 46px 26px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 14px 8px 12px;
+}
+
+.almuerzo-fila__marca {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: var(--tinta-2);
+  background: var(--superficie-2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--superficie);
+}
+
+.almuerzo-fila__titulo {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.almuerzo-fila__llevar {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--aviso-tinta);
 }
 
 /* ── Un lugar, en su hoja ─────────────────────────────────────────────────────── */

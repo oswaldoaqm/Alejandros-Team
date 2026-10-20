@@ -27,3 +27,7 @@ La 0009 partía en dos días toda ida de más de 8 horas, que es el tope de una 
 - **Huaraz pasa de 74 a 64 rutas.** Gana las consultas de Lima con cuatro días y pierde otras, de ciudades desde las que ahora caben destinos más lejanos: Trujillo, el Cusco, Nasca.
 - **Con la 0013, más viajes se van en el camino:** las rutas con más días de camino que de visita llegan a 9 de cada 100, y las que llevan el aviso de la ida y la vuelta, a 43.
 - Las 9 horas son un supuesto del producto, como las 8.
+
+## Actualización · 19 de octubre de 2026
+
+Lo que por tierra toma de 7 a 16 horas, como Huaraz desde Lima, va ahora en bus de noche, y sus noches van fuera de los días: el viaje ya no tiene días de solo viaje ([decisión 0019](./0019-plan-creible.md)). El día de 9 horas sigue para lo que va de día: lo que toma menos de 7 horas, lo que pasa de 16 sin vuelo y un viaje corto en que el bus de noche se llevaría demasiado.

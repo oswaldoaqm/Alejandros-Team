@@ -72,6 +72,23 @@ def test_un_viaje_de_un_dia_no_paga_bus_ni_hospedaje():
     assert not any("Hospedaje" in s or "interprovincial" in s for s in c.supuestos)
 
 
+def test_cada_tramo_aereo_se_cobra_de_ida_y_de_vuelta_y_un_pasaje_que_no_se_toma_no_cambia_nada():
+    vuelo = {"vuelo_LIM_CUZ": {"valor": 232, "minimo": 155, "maximo": 340}}
+    por_tierra = costo.estimar(PARAMETROS | vuelo, _gastos(), None)
+    assert por_tierra == costo.estimar(PARAMETROS, _gastos(), None)
+    en_avion = costo.estimar(
+        PARAMETROS | vuelo, _gastos(vuelos=("vuelo_LIM_CUZ",), tramos_aereos=("Lima–Cusco",)), None
+    )
+    assert list(en_avion.desglose) == ["transporte", "vuelos", "alojamiento", "alimentacion", "entradas"]
+    assert 2 * 155 < en_avion.desglose["vuelos"] < 2 * 340 and en_avion.p50 > por_tierra.p50
+    assert en_avion.supuestos[0] == (
+        "Vuelo Lima–Cusco, de ida y de vuelta: entre S/\u00a0155 y S/\u00a0340 por tramo, de la tarifa más "
+        "baja publicada a 2,2 veces esa"
+    )
+    assert "Por tierra, hasta y desde los aeropuertos: 600 km de ida y vuelta" in en_avion.supuestos
+    assert en_avion.supuestos[-1].startswith("Banda del percentil 20 al 80: vuelos, transporte, hospedaje")
+
+
 @pytest.mark.parametrize(
     "minutos, texto",
     [(45, "45 min"), (60, "1 h"), (160, "2 h 40"), (125, "2 h 05"), (59.6, "1 h")],

@@ -1,4 +1,5 @@
-"""El tren y el bote en el motor: lo que traen los artefactos, con qué se viaja (contrato 1.2) y cuánto cuesta."""
+"""El tren y el bote en el motor: lo que traen los artefactos, con qué se viaja (contrato 1.2; el
+avión, desde la 1.3) y cuánto cuesta."""
 
 import numpy as np
 import pytest
@@ -72,6 +73,7 @@ def test_como_se_escriben_los_medios():
     assert textos.por_medios(["carretera", "tren"]) == "por carretera y en tren"
     assert textos.por_medios(["carretera", "tren", "bote"]) == "por carretera, en tren y en bote"
     assert textos.por_medios(["bote"]) == "en bote"
+    assert textos.por_medios(["avion", "carretera"]) == "en avión y por carretera"
 
 
 PARAMETROS = {
@@ -135,10 +137,13 @@ def test_a_las_islas_del_titicaca_se_llega_en_bote():
 def test_la_respuesta_dice_con_que_se_viaja_y_avisa_del_tren():
     datos = artefactos.cargar()
     for consulta in (Consulta(origen="cusco", mes=6, dias=2, intereses=["naturaleza"]), Consulta(origen="lima", mes=7)):
+        origen = datos.origenes[consulta.origen]
         for ruta in viaje.resolver(consulta, datos).rutas:
             medios = ruta.traslado.medios
-            assert medios and medios == sorted(medios, key=["carretera", "tren", "bote"].index)
-            assert (ruta.traslado.acceso == "sin_acceso_terrestre") == ("bote" in medios)
+            assert medios and medios == sorted(medios, key=["avion", "carretera", "tren", "bote"].index)
+            # Aunque se vuele, el acceso es el del camino por tierra.
+            por_tierra = viaje.medios_por_tierra(datos.polos[ruta.polo.id], origen) if ruta.traslado.vuelos else medios
+            assert (ruta.traslado.acceso == "sin_acceso_terrestre") == ("bote" in por_tierra)
             con_tren = "tren" in medios or any(d.nota and "En tren hasta" in d.nota for d in ruta.dias)
             aviso = any(a.tipo == "acceso" and "tren" in a.mensaje for a in ruta.avisos)
             assert aviso == con_tren

@@ -8,14 +8,20 @@ pytest tests/pipeline
 python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
-python -m pipeline.clima     # después de tiempos, unos segundos
-python -m pipeline.artefactos --version 2026.10.4   # al final: lo que carga el motor
+python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red y la misma calibración
+python -m pipeline.elevacion # después de tiempos y de descargar_elevacion.py, unos segundos
+python -m pipeline.clima     # después de elevacion, unos segundos
+python -m pipeline.noche     # después de tiempos y de descargar_overture.py, unos 10 segundos
+python -m pipeline.cielo     # después de noche y de las descargas del cielo, unos 3 minutos
+python -m pipeline.comida    # después de bases y de descargar_overture.py, unos 2 minutos
+python -m pipeline.artefactos --version 2026.10.8   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
+python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.4` usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.10.8` suma la altura de las bases según un modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base ([más abajo](#la-altura-de-las-bases)). La `2026.10.7` sumó dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)), la `2026.10.6`, la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -29,11 +35,17 @@ La versión `2026.10.4` usa el clima de los 222 grupos, que se terminó de desca
 | [`red_vial.py`](./red_vial.py) | Convierte el extracto de OpenStreetMap del Perú en una red: un vértice en cada cruce y cada kilómetro, y una arista por tramo con su largo, su clase de vía, si es sin asfaltar y cuánto gira. Encima van el tren de pasajeros y los botes, unidos a las vías en las estaciones y en las orillas. Ubica cada punto en la red y busca el camino más rápido |
 | [`red_calibracion.py`](./red_calibracion.py) | Calibra la velocidad de cada clase de vía con los recorridos de acceso de las fichas y mide el error por validación cruzada |
 | [`tiempos.py`](./tiempos.py) | Con la red calibrada, calcula los tiempos que usa el motor en [`data/procesados/`](../data/procesados/): entre las paradas de cada polo, de su base a cada una y de cada ciudad de origen a cada parada y a cada base, con los km de cada camino que van en tren y en bote. Una sola búsqueda por grupo de TA-01 da las tres primeras, y los grupos que eligen el mismo pueblo salen juntos, como un solo polo |
+| [`vuelos.py`](./vuelos.py) | El viaje en avión de cada ciudad de origen a cada base, de puerta a puerta: por tierra hasta un aeropuerto sobre la misma red, los vuelos desde Lima (con escala en Lima entre otros dos aeropuertos) y por tierra hasta la base, con el aeropuerto más rápido en cada punta. También la banda del pasaje de cada ruta, en soles |
 | [`comparar_tiempos.py`](./comparar_tiempos.py) | Compara dos corridas de `tiempos.py`: qué pares empeoran, mejoran, ganan o pierden su camino, y si lo que empeora tiene explicación. Compara por parada y por grupo, así que sirve aunque los polos de las dos corridas no sean los mismos |
 | [`bases.py`](./bases.py) | Elige dónde se duerme en cada polo entre los pueblos de OpenStreetMap: el que deja las paradas más cerca, con preferencia por donde hay hospedaje registrado. Solo decide; los minutos los pone `tiempos.py` |
+| [`noche.py`](./noche.py) | Los bares, pubs, discotecas, karaokes y peñas a no más de 1,5 km de la base de cada polo, de OpenStreetMap y de Overture Maps, sin lo que su nombre dice que no es de noche ([más abajo](#de-noche)) |
+| [`comida.py`](./comida.py) | Cuántos restaurantes, cafés y locales de comida rápida hay a menos de 1,5 km de cada lugar del inventario y de cada base, de OpenStreetMap y de Overture Maps, y a cuántos metros queda el más cercano ([más abajo](#dónde-comer)) |
+| [`elevacion.py`](./elevacion.py) | La altura de cada base según el modelo de elevación de Terrain Tiles: completa las que OpenStreetMap no trae y comprueba las demás ([más abajo](#la-altura-de-las-bases)) |
+| [`cielo.py`](./cielo.py) | Cuánta luz artificial tiene el cielo de cada base, con las luces de VIIRS y el modelo de Duriscoe et al. (2018); el observatorio o planetario más cercano; y cuántas noches salen despejadas cada mes, con GOES-16 o, en la costa, con los METAR del aeropuerto |
 | [`clima.py`](./clima.py) | El clima de cada polo mes a mes, con la temperatura llevada a la altitud de su base, y su veredicto de temporada (TA-05 v2). Un polo que junta varios grupos toma el clima del más grande que ya esté descargado |
 | [`artefactos.py`](./artefactos.py) | Junta todo en los archivos que carga el motor ([`dreemgo/datos/`](../dreemgo/datos/)), con la versión de los datos y la huella de cada archivo. Ahí cada recurso y cada evento pasa del grupo de TA-01 que trae el maestro al polo que lo junta |
 | [`fotos.py`](./fotos.py) | Elige la foto de cada parada y de cada base entre lo que Wikidata tiene cerca, por nombre y por clase de lugar; descarta pueblos, regiones, batallas, mapas y fotos sin licencia libre o sin autor. Escribe [`app/public/fotos.json`](../app/public/fotos.json), que la app lee. Las correcciones de la revisión a mano van en [`referencia/fotos_revisadas.csv`](./referencia/fotos_revisadas.csv) |
+| [`destinos.py`](./destinos.py) | Escribe [`app/public/destinos.json`](../app/public/destinos.json): las zonas que la app busca en «A dónde», con sus regiones y sus lugares ([más abajo](#la-lista-de-zonas)) |
 | [`referencia/`](./referencia/) | Tablas pequeñas escritas a mano, con su fuente |
 
 ## Qué tan bien lee
@@ -128,6 +140,106 @@ Ningún par pierde su camino, y lo que empeora tiene explicación. `comparar_tie
 
 Lo que sigue fuera: los recursos que son un área y tienen su coordenada en medio del agua (la Reserva Nacional del Titicaca, el lago Titicaca), y Madre de Dios, donde OpenStreetMap no registra rutas de bote (el lago Sandoval, los lagos del Tambopata).
 
+## Los vuelos
+
+[`vuelos.py`](./vuelos.py) arma la ida en avión de cada ciudad de origen a cada base ([decisión 0016](../docs/decisiones/0016-vuelos.md)). Las rutas son las 22 regulares que salen de Lima, con su duración publicada ([`referencia/rutas_aereas.csv`](./referencia/rutas_aereas.csv)); entre dos aeropuertos que no son Lima se vuela con escala en Lima. De puerta a puerta se suman:
+
+1. el camino por tierra del origen a un aeropuerto, sobre la misma red y con la misma calibración que los demás tiempos;
+2. dos horas antes del vuelo, lo que piden los aeropuertos para un vuelo nacional;
+3. el vuelo o, con escala, los dos vuelos y dos horas entre ellos (un **supuesto del equipo**);
+4. media hora para salir del aeropuerto, sin maleta en bodega (otro supuesto);
+5. el camino por tierra del aeropuerto de llegada a la base.
+
+Se prueban los 23 aeropuertos en cada punta y queda el más rápido. Algunos tiempos de la rejilla, contra el mejor camino por tierra:
+
+| | En avión | Por tierra |
+|---|---:|---:|
+| Lima → Cusco | 4 h 28 | 22 h 28 |
+| Lima → Machupicchu Pueblo | 7 h 34 | 24 h 36 |
+| Lima → Iquitos | 5 h 03 | 52 h 55 |
+| Lima → Puno, por Juliaca | 5 h 26 | 24 h 19 |
+| Trujillo → Cusco, con escala en Lima | 7 h 40 | 33 h 24 |
+| Lima → Huaraz | 4 h 27 | 8 h 07 |
+
+Que se vuele o no lo decide el motor: solo a lo que por tierra pasa de 16 horas, así que a Huaraz se va en bus aunque el avión llegue 3 h 40 antes ([`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), `conviene_volar`).
+
+El pasaje de cada ruta es una banda por tramo: de la tarifa más baja publicada (la «desde» de Sky Airline, en dólares, pasada a soles con el tipo de cambio del BCRP del 5 de octubre) a 2,2 veces esa, con 1,5 veces como valor central. Los factores salen de los rangos típicos de una sola vía que Kayak publica para Lima–Cusco, Lima–Arequipa y Lima–Iquitos, que van de 1,1 a 2,3 veces el más barato. Seis rutas sin tarifa que se pueda citar toman la mediana de las demás. La banda no está calibrada contra lo que pagan los viajeros.
+
+Lo que queda fuera:
+
+- **Los horarios y las frecuencias.** El motor supone que hay un vuelo cuando se llega al aeropuerto. Las rutas con pocos vuelos por semana, como Huaraz, Chachapoyas o Mazamari, cuentan como si salieran todos los días.
+- **Las rutas sin escala entre regiones**, como Arequipa–Cusco o Cusco–Puerto Maldonado: las fuentes que las nombran son de 2020 a 2022 y no se pudo confirmar que sigan.
+- **Las avionetas** y los aeródromos sin vuelos regulares, como el de Nasca.
+
+Los caminos por tierra salen de la misma red que los tiempos de la `2026.10.4`: rehecha para los vuelos, reproduce sus 4 656 tiempos de origen a base al décimo de minuto.
+
+## De noche
+
+Dos tablas para los planes de noche ([decisión 0018](../docs/decisiones/0018-planes-de-noche.md)), en [`data/procesados/`](../data/procesados/): `noche_lugares.csv`, dónde salir cerca de cada base, y `cielo_polos.csv`, su cielo.
+
+**Dónde salir.** `noche.py` junta dos fuentes. De OpenStreetMap toma los bares, pubs, discotecas, karaokes, biergartens y salones de baile con nombre, y las peñas, que OSM marca como bar o como restaurante. De [Overture Maps](https://overturemaps.org/), los lugares de las mismas categorías con una confianza de al menos 0,7, solo de fuentes con licencia CDLA, que son las de Meta y Microsoft. Lo de Foursquare (Apache 2.0) queda fuera. `descargar_overture.py` baja del Perú solo las columnas que hacen falta: nunca teléfonos, correos, páginas ni redes. Un lugar de Overture que es uno de OSM, por nombre y a menos de 150 m, queda como el de OSM, con la confianza de Overture.
+
+La primera vuelta dio 1 367 lugares, y se revisaron todos a mano. En Overture, la categoría la pone quien abre la página: había un colegio, un instituto, una sauna, canchas, una catarata, un puente, el obelisco de Mollendo, direcciones («Jr Los Rosales 311») y pollerías, todos como bar. De esa revisión salen tres listas de palabras:
+
+- `NO_ES_DE_NOCHE` saca un lugar de las dos fuentes.
+- `DUDOSO_EN_OVERTURE` (un restaurante, una playa, un barrio, una dirección) saca un lugar de Overture si su nombre no tiene una palabra de `DE_NOCHE`. Lo de OSM queda, porque una persona lo marcó como bar: «Cafe Soprano's» es un bar de Huaraz.
+- `DE_NOCHE` también ordena: un lugar de Overture cuyo nombre no dice nada de la noche va al final.
+
+Los nombres se leen en la forma compatible de Unicode, así que las letras de adorno («𝙋𝙤𝙡𝙡𝙤𝙨») no esconden nada.
+
+| | Lugares | Zonas con alguno | Con cinco o más |
+|---|---:|---:|---:|
+| Solo OpenStreetMap | 455 | 62 | — |
+| OpenStreetMap y Overture, antes de revisar | 1 367 | 99 | 51 |
+| Después de revisar | 1 264 | 92 | 50 |
+
+Son 783 bares, 209 pubs, 203 discotecas, 54 karaokes, 13 peñas y 2 locales de música en vivo; 443 de OSM y 821 de Overture.
+
+**El cielo.** `cielo.py` estima la luz artificial del cielo entero en cada base (ALR, la luz artificial frente a la natural). Toma la mediana de 17 meses de luces de VIIRS, de 2024 a junio de 2025 sin octubre de 2024, y les aplica el modelo publicado. Las clases son las del Servicio de Parques Nacionales de Estados Unidos:
+
+- muy oscuro, debajo de 0,3;
+- oscuro, hasta 2;
+- con luz, sobre 2.
+
+Si la base tiene luz, la noche de estrellas es en el observatorio o el planetario con nombre más cercano a menos de 45 minutos. OpenStreetMap tiene 22 con nombre. Uno no mira el cielo y se descarta: el Observatorio Vulcanológico del Sur. Quedan 12 bases con uno a menos de 45 minutos. El lugar con nombre más oscuro a menos de 45 minutos se guarda solo como dato: un mirador de noche no se propone.
+
+| Desde la base | Polos |
+|---|---:|
+| Cielo muy oscuro | 48 |
+| Oscuro | 89 |
+| Con luz | 57 |
+
+**Las noches despejadas** salen de la máscara de nubes de GOES-16 a las 21:00 y a la 01:00, de 2022 a 2024. Son 2 188 imágenes; faltan 4. `cielo_validacion.csv` compara, mes a mes, el satélite con los METAR de cada aeropuerto:
+
+| Aeropuerto | Correlación | Diferencia media |
+|---|---:|---:|
+| Cusco | 0,98 | 8 puntos |
+| Arequipa | 0,96 | 15 |
+| Pucallpa | 0,94 | 17 |
+| Tarapoto | 0,92 | 24 |
+| Iquitos | 0,53 | 12 |
+| Lima (costa) | −0,81 | 37 |
+| Tacna (costa) | −0,67 | 45 |
+| Pisco (costa) | −0,52 | 32 |
+
+En la sierra y la selva el satélite sirve. En la costa, de noche, no ve la neblina baja del invierno. Por eso ahí, a menos de 100 km del mar y por debajo de 1 500 m, se usan los METAR del aeropuerto costero más cercano, si queda a menos de 150 km, contando como despejado sin nubes o con pocas (FEW). Así quedan 151 polos con GOES y 32 con METAR. Los 11 que quedan sin dato, como Nasca, están en la costa y lejos de un aeropuerto, y la app lo dice.
+
+Lo que queda fuera:
+
+- **Si un bar sigue abierto y qué noches abre.** Cada lugar enlaza a su mapa para verificarlo. El horario de OSM, cuando lo hay, viaja tal cual.
+- **Nombres de sitio que se escapan.** «Huaytapallana» es un nevado y no hay palabra que lo delate. Va al final del orden: se nombra solo si no hay otro.
+- **La altura en el modelo del cielo.** En el altiplano, con menos aire, el cielo suele ser más oscuro de lo que dice.
+- **La luna** no va en estas tablas: la calcula el motor para la fecha del viaje ([`dreemgo/astronomia.py`](../dreemgo/astronomia.py)).
+
+## Dónde comer
+
+`comida.py` escribe [`data/procesados/comida_cerca.csv`](../data/procesados/): por cada lugar del inventario y cada base, cuántos restaurantes, cafés y locales de comida rápida registra cada fuente a menos de 1,5 km en línea recta, y a cuántos metros queda el más cercano. El motor lo usa para elegir dónde se almuerza ([decisión 0019](../docs/decisiones/0019-plan-creible.md)).
+
+- **De OpenStreetMap**, los `amenity` restaurant, fast_food, cafe y food_court, con nombre o sin él: 16 648 en el Perú. Se leen del mismo extracto que la red y se guardan junto a él, con su MD5.
+- **De Overture Maps**, las categorías restaurant, fast_food_restaurant, cafe, food_court y food_truck_stand, con una confianza de al menos 0,7 y solo de fuentes CDLA, como en `noche.py`: 27 005. Sus nombres no se usan, solo dónde están.
+
+Hay dónde comer registrado cerca de 2 954 de los 6 225 lugares (47 %) y de 154 de las 194 bases. Que no haya ninguno no prueba que no haya dónde comer: OSM y Overture no registran todo lo que hay en un pueblo. Por eso el plan lo dice así: «no tenemos registrado dónde comer cerca». En la base se da por hecho que hay, porque es un pueblo con hospedaje.
+
 ## Dónde duerme cada polo
 
 `bases.py` elige entre 9 412 lugares poblados de OpenStreetMap. Los barrios y caseríos a menos de 8 km de una ciudad, o de 4 km de un pueblo, cuentan como parte de ella, para que la base se llame Cusco y no Wanchaq. El costo de cada candidato es el tiempo por carretera a las paradas del polo, en promedio pesado por su jerarquía, con 5 minutos a favor por cada vez que se duplica el hospedaje que OSM registra a menos de 3 km (hasta 25) y un recargo si no registra ninguno. Los 7 978 hoteles, hostales, casas de huéspedes y alojamientos que tiene el extracto se leen con `red_vial.leer_hospedajes`.
@@ -136,7 +248,7 @@ Resultado, en [`data/procesados/polos_bases.csv`](../data/procesados/):
 
 - **Los 194 polos** duermen en un lugar desde el que se llega a sus paradas por carretera, en tren o en bote.
 - **173 bases tienen hospedaje registrado** a menos de 3 km (la mediana, 6). Son 96 pueblos, 70 caseríos, 27 ciudades y un barrio (Miraflores, en Lima); 171 son capital de distrito.
-- **Altitud:** la del nodo de OSM en 170 bases y la mediana de los recursos a menos de 2 km en 11; 13 caseríos quedan sin altitud.
+- **Altitud:** la del nodo de OSM en 170 bases y la mediana de los recursos a menos de 2 km en 11; 13 caseríos quedan sin altitud. Desde la `2026.10.8`, los artefactos completan esas 24 con el modelo de elevación ([más abajo](#la-altura-de-las-bases)).
 - **Distancia:** desde la base, la parada típica queda a 40 minutos (la mediana de las 4 465; el 90 % a menos de 2 h 19). El promedio pesado por polo va de 13 minutos a 4 horas en los polos de trekking, como Huayhuash.
 
 Todas las bases quedan sobre una vía, también Machupicchu Pueblo, cuyas calles se unen con el resto del país por el tren. Frente a la red de solo carreteras cambian dos bases: la del bajo Urubamba pasa a Camisea, desde donde ahora se llega en bote a 9 de sus 12 paradas, y la de Santa Teresa reemplaza a Sicre.
@@ -154,6 +266,18 @@ Por eso `tiempos.py` junta en un polo los grupos que eligen el mismo pueblo, con
 - **El maestro y los eventos** siguen guardando el grupo de cada recurso. La columna `grupos` de `polos_bases.csv` dice qué grupos junta cada polo, y `artefactos.py` lleva cada recurso y cada evento a su polo.
 
 `comparar_tiempos.py` confirma lo anterior entre la corrida de antes y la nueva: ningún par empeora ni pierde su camino.
+
+### La altura de las bases
+
+Sin la altura de la base, el motor no sabe si se duerme en la altura: no avisa, no arma el primer día tranquilo y la altitud máxima de la consulta no la puede filtrar ([decisión 0020](../docs/decisiones/0020-primer-dia-tranquilo.md)). `elevacion.py` saca la del terreno de Terrain Tiles, en el registro de datos abiertos de AWS: en el Perú es SRTM, a un segundo de arco, unos 30 m entre punto y punto. `descargar_elevacion.py` baja las 84 teselas de 1° × 1° que tocan las bases y guarda solo una ventana de unos 600 m alrededor de cada una. La altura de un pueblo es la mediana de los 5 × 5 puntos alrededor de su base, unos 150 m de lado.
+
+Resultado, en [`data/procesados/altitud_bases.csv`](../data/procesados/):
+
+- **Contra OpenStreetMap**, en las 170 bases que traen su altura: 1 m de diferencia en la mediana y 26 como mucho, en Andahuaylas. El modelo y OSM coinciden.
+- **Contra la mediana de los lugares a 2 km**, en las 11 que la usaban: 28 m en la mediana y 137 como mucho, en Picoy.
+- **Las 13 sin altura** la toman del modelo. Siete quedan a 2 500 m o más, y tres sobre los 4 300 m: Quesquere (4 305 m), Imata (4 449 m) y Santa Inés (4 613 m).
+
+Por eso, en los artefactos, la de OSM se queda y en las otras 24 manda el modelo. `clima.py` usa la misma: las temperaturas de 23 polos cambian, porque se llevan a la altura de su base desde el punto donde se bajó el clima. La que más, Villa Pampilla: su punto de clima está a 3 799 m y su base a 1 665 m, y sus temperaturas suben 13,9 °C. Los veredictos del mes no cambian, porque salen de la lluvia.
 
 ## Clima por polo
 
@@ -209,11 +333,22 @@ Lo que falta:
 - **Lo que una miniatura no deja ver.** La revisión se hizo a 330 píxeles de ancho, con las esquinas ampliadas para buscar fechas y marcas. Una marca muy pequeña pudo pasar.
 - **El número del polo.** Las correcciones de las bases van por número de polo, que puede cambiar si se rehacen los polos. Por eso el motivo de cada una empieza con el nombre de la base, y una prueba avisa si ya no coincide. Pasó el 7 de octubre, al juntar los grupos que duermen en el mismo pueblo: cinco correcciones quedaron con el número de un polo que ya no existe y se quitaron. La misma corrección sigue en el polo que quedó con ese pueblo.
 
+## La lista de zonas
+
+«A dónde», en la app, busca una zona sin preguntarle al API: en [`app/public/destinos.json`](../app/public/destinos.json), que escribe `destinos.py` con los artefactos del motor y lleva su versión de datos. Con los datos `2026.10.5` son 193 zonas y 4 268 lugares, 47 KB comprimido ([decisión 0017](../docs/decisiones/0017-quiero-ir-a.md)).
+
+- **Qué zonas.** Las que tienen algún lugar que se visita en una jornada: con camino desde su base y una visita de 6 horas o menos, como las candidatas del motor. Queda fuera Queropalca, donde solo hay caminatas de más de un día: nunca daría un viaje.
+- **Qué lleva cada una.** Su nombre, su región y sus regiones, esos lugares de mayor a menor jerarquía, y los orígenes que quedan a menos de media hora de su base: desde ahí el motor no arma un viaje con noches, y la app no la propone.
+- **El orden.** Por lo que valen sus doce lugares más importantes, con la escala del motor. Sumar todos ponía a un pueblo con muchos lugares corrientes, como Kimbiri, antes que Urubamba o Machu Picchu.
+
+Hay que rehacerla cada vez que se rehacen los artefactos: [`tests/pipeline/test_destinos.py`](../tests/pipeline/test_destinos.py) falla si quedó atrás.
+
 ## Datos personales
 
 Las fichas publican el nombre, el correo y el teléfono de quien las llenó y, en el texto libre, los de quien abre la puerta: «coordinar con el Sr. … al cel. …». El producto no los necesita: cada parada enlaza a su ficha oficial, donde el viajero encuentra el contacto. Nada de eso llega a los artefactos ni al repositorio.
 
 - El pipeline no lee las secciones "Datos del Responsable" ni "Saneamiento Físico Legal".
+- De Overture Maps se bajan solo el nombre, la categoría, la confianza, la ubicación y las fuentes de cada lugar: nunca sus teléfonos, correos, páginas web ni redes. Ningún nombre de `noche_lugares.csv` trae un teléfono ni un correo, y una prueba lo verifica.
 - En el resto del texto, `texto.sin_contactos` reemplaza correos, celulares, teléfonos fijos y DNI por `[contacto en la ficha oficial]`, y el nombre de quien atiende, por `[encargado]`. A una persona la reconoce por sus mayúsculas junto a un contacto, o por su tratamiento o su cargo: «el señor …», «el propietario …».
 - Las observaciones de ingreso y de época son avisos de cómo se visita. Ahí un número de siete cifras o más se toma por un teléfono, y el nombre se quita aunque no traiga teléfono: el que sigue a un tratamiento o a un cargo, y el nombre completo, de tres palabras o más, de un aviso que pide permiso o coordinación.
 - Ante la duda, se quita. A veces se pierde el nombre de un caserío o de una asociación que estaba junto al teléfono.

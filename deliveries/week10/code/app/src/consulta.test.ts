@@ -26,12 +26,14 @@ const COMPLETA: Consulta = {
   presupuesto: 1800,
   altitud_max: 2500,
   sorpresa: true,
+  solo_por_tierra: true,
+  destino: null,
 };
 
 describe("la consulta y la URL", () => {
   it("escribe los parámetros que recibe GET /v1/viajes, en orden fijo", () => {
     expect(aParametros(COMPLETA).toString()).toBe(
-      "origen=cusco&mes=7&dias=4&intereses=historia&intereses=playa&presupuesto=1800&altitud_max=2500&sorpresa=true",
+      "origen=cusco&mes=7&dias=4&intereses=historia&intereses=playa&presupuesto=1800&altitud_max=2500&sorpresa=true&solo_por_tierra=true",
     );
     expect(aParametros({ ...POR_DEFECTO, mes: 2 }).toString()).toBe("origen=lima&mes=2&dias=6");
   });
@@ -46,6 +48,28 @@ describe("la consulta y la URL", () => {
     expect(deParametros(aParametros(COMPLETA))).toEqual(COMPLETA);
     const conFecha = { ...POR_DEFECTO, mes: 7, fecha_inicio: "2027-07-20" };
     expect(deParametros(aParametros(conFecha))).toEqual(conFecha);
+  });
+
+  it("por defecto se puede volar: «solo por tierra» va en la URL solo si se pide", () => {
+    expect(aParametros({ ...POR_DEFECTO, mes: 7 }).has("solo_por_tierra")).toBe(false);
+    expect(deParametros(new URLSearchParams("mes=7"))?.solo_por_tierra).toBe(false);
+    expect(deParametros(new URLSearchParams("mes=7&solo_por_tierra=1"))?.solo_por_tierra).toBe(true);
+    expect(clave({ ...COMPLETA, solo_por_tierra: false })).not.toBe(clave(COMPLETA));
+  });
+
+  it("con un destino lo manda después del origen, y sin sorpresa: el API no acepta los dos", () => {
+    const aCuzco = { ...COMPLETA, destino: 36 };
+    expect(aParametros(aCuzco).toString()).toBe(
+      "origen=cusco&destino=36&mes=7&dias=4&intereses=historia&intereses=playa&presupuesto=1800&altitud_max=2500&solo_por_tierra=true",
+    );
+    expect(deParametros(aParametros(aCuzco))).toEqual({ ...aCuzco, sorpresa: false });
+    expect(deParametros(new URLSearchParams("mes=7&destino=36&sorpresa=true"))).toMatchObject({
+      destino: 36,
+      sorpresa: false,
+    });
+    expect(deParametros(new URLSearchParams("mes=7&destino=-1"))?.destino).toBeNull();
+    expect(deParametros(new URLSearchParams("mes=7&destino=cusco"))?.destino).toBeNull();
+    expect(clave(aCuzco)).not.toBe(clave({ ...aCuzco, destino: 4 }));
   });
 
   it("sin mes ni fecha no hay consulta", () => {
@@ -83,6 +107,14 @@ describe("la consulta en palabras", () => {
     );
   });
 
+  it("con un destino y su nombre, de dónde a dónde", () => {
+    const aCuzco = { ...POR_DEFECTO, mes: 7, destino: 36 };
+    expect(titulo(aCuzco, NOMBRES, "Cuzco")).toBe(`De Lima a Cuzco, 6${nb}días en julio`);
+    // Sin el nombre de la zona, como sin destino.
+    expect(titulo(aCuzco, NOMBRES)).toBe(`Desde Lima, 6${nb}días en julio`);
+    expect(titulo({ ...aCuzco, destino: null }, NOMBRES, "Cuzco")).toBe(`Desde Lima, 6${nb}días en julio`);
+  });
+
   it("antes de que lleguen los nombres, el origen sale de su identificador", () => {
     const sinNombres = { origenes: {}, intereses: {} };
     expect(titulo({ ...POR_DEFECTO, origen: "puerto-maldonado", mes: 2 }, sinNombres)).toBe(
@@ -92,7 +124,7 @@ describe("la consulta en palabras", () => {
 
   it("lo demás que pidió, solo si pidió algo", () => {
     expect(detalles(COMPLETA, NOMBRES)).toBe(
-      `Historia y arqueología y Playa, hasta S/${nb}1${nb}800 por persona, hasta 2${nb}500${nb}m de altura, solo fuera de Lima y Cusco`,
+      `Historia y arqueología y Playa, hasta S/${nb}1${nb}800 por persona, hasta 2${nb}500${nb}m de altura, solo fuera de Lima y Cusco, solo por tierra`,
     );
     expect(detalles({ ...POR_DEFECTO, mes: 7 }, NOMBRES)).toBeNull();
   });

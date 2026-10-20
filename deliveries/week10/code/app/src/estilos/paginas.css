@@ -105,6 +105,12 @@
   margin-top: 12px;
 }
 
+/* «Armar un viaje aquí», bajo los datos de la zona. */
+.zona__armar {
+  justify-self: start;
+  margin-top: 18px;
+}
+
 /* Sin foto (todavía no llega, o la zona no tiene), la barra no flota: va sobre el título. */
 .portada--sin-arte .portada__barra {
   position: static;

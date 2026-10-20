@@ -6,10 +6,15 @@ Lo que construye el pipeline a partir de las descargas de `data/externos/` (fuer
 python -m pipeline.maestro
 python -m pipeline.eventos
 python -m pipeline.tiempos     # necesita el extracto de OpenStreetMap (pipeline/adquisicion)
-python -m pipeline.clima       # necesita el clima descargado (pipeline/adquisicion)
+python -m pipeline.vuelos      # después de tiempos: usa la misma red
+python -m pipeline.elevacion   # después de tiempos; necesita la altura del terreno (pipeline/adquisicion)
+python -m pipeline.clima       # después de elevacion; necesita el clima descargado (pipeline/adquisicion)
+python -m pipeline.noche       # después de tiempos; necesita los lugares de Overture
+python -m pipeline.cielo       # después de noche; necesita las luces, las nubes y los METAR
+python -m pipeline.comida      # después de bases; necesita los lugares de Overture
 ```
 
-Estas tablas son las de la versión de datos `2026.10.4`. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.10.8`, que suma la altura de las bases según el modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base; la `2026.10.7` sumó dónde comer, la `2026.10.6`, la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -26,9 +31,20 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `red_calibracion.json` | Velocidades calibradas de la red y su error, medido por validación cruzada |
 | `red_calibracion_recorridos.csv` | Cada recorrido de ficha usado para calibrar, con su tiempo en la ficha y en la red |
 | `polos_bases.csv` | Dónde se duerme en cada polo, por qué y a qué altitud, y qué grupos de TA-01 junta |
+| `altitud_bases.csv` | La altura de cada base según el modelo de elevación (`altitud_dem_m`, de Terrain Tiles), junto a la de `polos_bases.csv` y su fuente, y cuánto difieren (`diferencia_m`). En los artefactos se queda la de OpenStreetMap, y en las demás manda la del modelo ([`pipeline/README.md`](../../pipeline/README.md#la-altura-de-las-bases)) |
+| `altitud_resumen.json` | Cuántas bases toman la altura del modelo y cuánto difiere de la que tenían, por fuente |
 | `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
 | `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo |
-| `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada |
+| `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada. Las temperaturas van llevadas a la altura de la base que usan los artefactos |
+| `vuelos_rutas.csv` | Cada ruta aérea desde Lima: minutos de vuelo y la banda del pasaje por tramo, en soles |
+| `vuelos_origen_base.csv` | El viaje en avión de cada ciudad de origen a la base de cada polo, de puerta a puerta |
+| `noche_lugares.csv` | Cada lugar para salir a no más de 1,5 km de la base de un polo: nombre, tipo (bar, pub, discoteca, karaoke, peña, música en vivo), coordenadas, metros y minutos a pie, si viene de OpenStreetMap o de Overture con su identificador en cada una, la confianza de Overture y el horario de OSM tal cual. Del más al menos confiable ([`pipeline/README.md`](../../pipeline/README.md#de-noche)) |
+| `noche_resumen.json` | Cuántos lugares hay, de cada fuente y de cada tipo, y las versiones de OSM y de Overture con que se hizo |
+| `cielo_polos.csv` | El cielo de cada polo: el brillo artificial en su base; si la base tiene luz, el lugar con nombre más oscuro a menos de 45 minutos (`oscuro_*`); el observatorio o planetario más cercano (`astro_*`); los km al mar, de dónde salen las nubes (`goes` o `metar`, con el aeropuerto) y la parte de noches despejadas de cada mes (`despejadas_1` a `despejadas_12`, vacío si no hay dato) |
+| `cielo_validacion.csv` | Cada aeropuerto mes a mes: las noches despejadas según sus METAR y según GOES-16, si está en la costa, la correlación y la diferencia media |
+| `cielo_resumen.json` | Los meses de VIIRS, las imágenes de GOES-16, los aeropuertos y cuántos polos quedan en cada clase de cielo y con cada fuente de nubes |
+| `comida_cerca.csv` | Por cada lugar del inventario (`tipo` recurso, `clave` su código) y cada base (`tipo` base, `clave` el número del polo): cuántos restaurantes, cafés y locales de comida rápida registran OpenStreetMap (`comida_osm`) y Overture (`comida_overture`) a menos de 1,5 km, y a cuántos metros queda el más cercano (`mas_cerca_m`, vacío si no hay ninguno). Sin nombres ni ubicaciones de los locales |
+| `comida_resumen.json` | Cuántos locales se leyeron de cada fuente, con sus versiones, y cuántos lugares y bases tienen alguno cerca |
 
 ## `maestro_v3.csv`
 
@@ -199,6 +215,19 @@ Cómo se elige está en [`pipeline/bases.py`](../../pipeline/bases.py) y el resu
 | `grupos` | Los grupos de TA-01 que junta el polo, separados por `\|`, del que tiene más paradas al que tiene menos. 172 polos son un solo grupo; los otros 22 juntan dos, tres o cuatro (50 grupos entre todos) |
 
 Dos grupos que eligen el mismo pueblo para dormir se visitan desde la misma base, así que para el viajero son un solo lugar al que ir. Al juntarlos, la base no cambia y los tiempos que ya había, tampoco; se suman los 38 994 pares entre paradas de grupos distintos, calculados sobre la red como los demás.
+
+## Vuelos
+
+Los arma [`pipeline/vuelos.py`](../../pipeline/vuelos.py) con las 22 rutas regulares que salen de Lima ([`rutas_aereas.csv`](../../pipeline/referencia/rutas_aereas.csv)) y los 23 aeropuertos ([`aeropuertos.csv`](../../pipeline/referencia/aeropuertos.csv)); entre dos aeropuertos que no son Lima se vuela con escala en Lima ([decisión 0016](../../docs/decisiones/0016-vuelos.md)). Lo que va por tierra, hasta y desde los aeropuertos, se mide sobre la misma red que los tiempos de arriba: también es **obra derivada de OpenStreetMap**.
+
+De puerta a puerta, la ida en avión suma el camino por tierra hasta el aeropuerto, dos horas antes del vuelo, el vuelo (o los dos, con dos horas de escala en Lima), media hora para salir del aeropuerto y el camino por tierra hasta la base. Se prueban todos los aeropuertos en las dos puntas y queda el más rápido. Si conviene volar lo decide el motor.
+
+| Archivo | Columnas | Filas |
+|---|---|---|
+| `vuelos_rutas.csv` | `desde` (siempre `LIM`), `hasta` (código IATA), `minutos` de vuelo, `tarifa_minima`, `tarifa_central` y `tarifa_maxima` por tramo en soles, `tarifa_publicada` (si la mínima es una tarifa publicada o la mediana de las demás) y su `fuente` | 22 |
+| `vuelos_origen_base.csv` | `origen`, `polo`, `minutos` de puerta a puerta, `km` por tierra en las dos puntas (y cuántos de ellos van en tren, `km_tren`, y en bote, `km_bote`), `aeropuertos` del camino («LIM-CUZ» o, con escala, «TRU-LIM-CUZ»), `minutos_vuelo` (con la escala), `minutos_hasta_aeropuerto` y `km_hasta_aeropuerto` por tierra hasta el de salida, `minutos_desde_aeropuerto` por tierra desde el de llegada | 4 656: las 24 ciudades por los 194 polos |
+
+La banda del pasaje va de la tarifa más baja publicada, pasada a soles al tipo de cambio del BCRP del 5 de octubre de 2026 (3,436), a 2,2 veces esa, con 1,5 veces como valor central. Seis rutas no tienen una tarifa publicada que se pueda citar y toman la mediana de las demás: Andahuaylas, Chachapoyas, Huaraz, Huánuco, Mazamari y Tingo María.
 
 ## `clima_polo_mes.csv`
 

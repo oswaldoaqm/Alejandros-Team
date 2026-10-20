@@ -87,7 +87,9 @@
   min-height: 48px;
   font-size: 0.6875rem;
   font-weight: 600;
-  color: var(--tinta-3);
+  /* La barra es de vidrio: deja pasar lo que tiene detrás. Con tinta-2 la letra se lee (5:1 o
+     más) aunque detrás pase un botón azul o una foto oscura; con tinta-3 bajaba a 3,9:1. */
+  color: var(--tinta-2);
   text-decoration: none;
   border-radius: var(--r-chico);
 }
