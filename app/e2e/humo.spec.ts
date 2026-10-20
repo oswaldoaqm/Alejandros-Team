@@ -177,9 +177,11 @@ test("un municipio publica un evento, con su lugar, y sale en el calendario", as
   await expect(page.getByText(/sale también en los viajes que pasan a 10 km o menos/)).toBeVisible();
   await expect(page.locator(".evento")).toContainText(`Publicado por ${entidad}`);
 
-  // Y está en el calendario de su mes, que se pide de nuevo al API.
+  // Y está en el calendario de su mes, que se pide de nuevo al API. Un mes puede traer más de
+  // treinta fiestas, y las que pasan de treinta esperan a «Ver N eventos más»: con su región se ve.
   await page.getByRole("link", { name: /^Ver el calendario de / }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Fiestas" })).toBeVisible();
+  await page.getByLabel("Región").selectOption("Áncash");
   const publicado = page.locator(".evento", { hasText: nombre });
   await expect(publicado).toContainText("Huaraz, Áncash");
   await expect(publicado).toContainText(`Publicado por ${entidad}`);
