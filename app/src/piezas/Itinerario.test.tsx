@@ -34,6 +34,7 @@ const DIAS: Dia[] = [
     horas: 7.9,
     km: 307.7,
     nota: "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+    tranquilo: false,
     paradas: [
       {
         orden: 1,
@@ -65,6 +66,7 @@ const DIAS: Dia[] = [
     km: 0,
     nota: "Día libre en Huancayo.",
     paradas: [],
+    tranquilo: false,
   },
   {
     numero: 3,
@@ -73,6 +75,7 @@ const DIAS: Dia[] = [
     horas: 7.7,
     km: 315.3,
     nota: "Vuelta a Lima: 6 h 03 por carretera.",
+    tranquilo: false,
     paradas: [
       {
         orden: 1,

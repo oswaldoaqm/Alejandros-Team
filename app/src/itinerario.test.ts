@@ -34,7 +34,9 @@ describe("las paradas numeradas", () => {
 
   it("un viaje de un día no tiene base", () => {
     expect(esExcursion(ruta)).toBe(false);
-    expect(esExcursion({ dias: [{ numero: 1, tipo: "ida_visita_y_vuelta", horas: 7, km: 90 }] })).toBe(true);
+    expect(
+      esExcursion({ dias: [{ numero: 1, tipo: "ida_visita_y_vuelta", horas: 7, km: 90, tranquilo: false }] }),
+    ).toBe(true);
   });
 });
 
@@ -69,6 +71,7 @@ describe("el almuerzo entre los lugares del día", () => {
         horas: 1,
         km: 1,
         almuerzo,
+        tranquilo: false,
         paradas: ruta.dias.flatMap((d) => d.paradas ?? []).slice(0, 1),
       },
     ]);

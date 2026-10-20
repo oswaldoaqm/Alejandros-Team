@@ -597,6 +597,12 @@
             ],
             "title": "Tipo",
             "type": "string"
+          },
+          "tranquilo": {
+            "default": false,
+            "description": "El primer día en la base cuando se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, para que el cuerpo se acostumbre a la altura: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente (desde 1.7).",
+            "title": "Tranquilo",
+            "type": "boolean"
           }
         },
         "required": [
@@ -975,7 +981,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.6",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1457,7 +1463,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.6",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1625,7 +1631,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.6",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1873,7 +1879,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.6",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1973,7 +1979,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.6",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },

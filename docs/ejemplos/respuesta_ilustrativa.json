@@ -1,5 +1,5 @@
 {
-  "version_contrato": "1.6",
+  "version_contrato": "1.7",
   "version_datos": "2026.10.8",
   "consulta": {
     "origen": "lima",
@@ -134,7 +134,8 @@
             "en_la_base": true,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 2,
@@ -312,7 +313,8 @@
               ],
               "temp_min_c": 4.5
             }
-          }
+          },
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -462,7 +464,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -496,7 +499,8 @@
           ],
           "nota": "Vuelta a Lima: 6 h 03 por carretera.",
           "almuerzo": null,
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
@@ -802,7 +806,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 2,
@@ -952,7 +957,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -1102,7 +1108,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -1230,7 +1237,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
@@ -1459,7 +1467,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 2,
@@ -1637,7 +1646,8 @@
               ],
               "temp_min_c": 11.6
             }
-          }
+          },
+          "tranquilo": false
         },
         {
           "numero": 3,
@@ -1787,7 +1797,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         },
         {
           "numero": 4,
@@ -1893,7 +1904,8 @@
             "en_la_base": false,
             "hay_donde_comer": true
           },
-          "noche": null
+          "noche": null,
+          "tranquilo": false
         }
       ],
       "costo": {
