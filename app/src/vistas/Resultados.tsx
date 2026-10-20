@@ -38,6 +38,7 @@ function comoLaEntendio(c: Respuesta["consulta"]): Consulta {
     presupuesto: c.presupuesto ?? null,
     altitud_max: c.altitud_max ?? null,
     sorpresa: c.sorpresa,
+    solo_por_tierra: c.solo_por_tierra,
   };
 }
 

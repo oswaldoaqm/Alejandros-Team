@@ -1,7 +1,7 @@
 // Frases cortas que la app arma con los datos del contrato. Lo que ya viene escrito del
 // motor (motivos, avisos, notas, explicaciones) se muestra tal cual: aquí no se reescribe.
 
-import type { Dia, Medio, Recurso, Sugerencia } from "./api/tipos";
+import type { Dia, Medio, Recurso, Sugerencia, Traslado } from "./api/tipos";
 import type { Consulta, Nombres } from "./consulta";
 import { fecha, lista, mes, metros, plural, soles, solesExactos } from "./formato";
 
@@ -20,12 +20,24 @@ export function tipoDeDia(dia: Pick<Dia, "tipo" | "paradas">): string {
   return TIPO_DE_DIA[dia.tipo];
 }
 
-const CON_QUE: Record<Medio, string> = { carretera: "por carretera", tren: "en tren", bote: "en bote" };
+const CON_QUE: Record<Medio, string> = {
+  avion: "en avión",
+  carretera: "por carretera",
+  tren: "en tren",
+  bote: "en bote",
+};
 
-/** «por carretera», «por carretera y en bote»: con las palabras del motor. */
+/** «por carretera», «en avión y por carretera»: con las palabras del motor. */
 export function conQueSeViaja(medios: readonly Medio[] | null | undefined): string {
   const dichos = (medios ?? []).map((m) => CON_QUE[m]);
   return dichos.length > 0 ? lista(dichos) : CON_QUE.carretera;
+}
+
+/** Si la ida vuela: «con vuelo» o, con escala en Lima, «con dos vuelos»; null si va por tierra. */
+export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
+  const cuantos = (traslado.vuelos ?? []).length;
+  if (cuantos === 0) return null;
+  return cuantos === 1 ? "con vuelo" : "con dos vuelos";
 }
 
 /** Lo que la ficha dice del ingreso. Si no publica la tarifa, se dice: no se inventa. */
@@ -58,6 +70,8 @@ export function aplicarSugerencia(c: Consulta, s: Sugerencia): Consulta | null {
       return typeof valor === "string" ? { ...c, fecha_inicio: valor } : null;
     case "origen":
       return typeof valor === "string" ? { ...c, origen: valor } : null;
+    case "solo_por_tierra":
+      return typeof valor === "boolean" ? { ...c, solo_por_tierra: valor } : null;
   }
 }
 
@@ -85,6 +99,8 @@ export function textoDeSugerencia(s: Sugerencia, nombres: Nombres): string {
       return typeof valor === "string"
         ? `Salir desde ${nombres.origenes[valor] ?? valor}`
         : "Cambiar el origen";
+    case "solo_por_tierra":
+      return valor === true ? "Buscar solo por tierra" : "Buscar también con vuelos";
   }
 }
 

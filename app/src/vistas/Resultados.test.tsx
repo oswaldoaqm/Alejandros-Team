@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
 import { leerViajes } from "../almacen";
+import type { Ruta } from "../api/tipos";
 import type { PropsDeMapa } from "../piezas/MapaRuta";
 import { irA, pedidosA, ponerApi, RESPUESTA, VERSION, viajesPara } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
@@ -68,10 +69,20 @@ describe("los tres viajes", () => {
   });
 
   it("marca los viajes que están fuera del circuito cuando no lo están todos", async () => {
-    await abrir();
+    // El primero, en el circuito; los otros dos, fuera, sea cual sea el ejemplo del contrato.
+    await abrir(`/?${CONSULTA}`, {
+      "/v1/viajes": (url: URL) => {
+        const respuesta = viajesPara(url);
+        const rutas = respuesta.rutas.map((r, i) => ({
+          ...r,
+          polo: { ...r.polo, fuera_del_circuito: i > 0 },
+        }));
+        return { cuerpo: { ...respuesta, rutas } };
+      },
+    });
     const lista = await tarjetas();
     const sellos = lista.map((t) => within(t).queryByText("Fuera del circuito") !== null);
-    expect(sellos).toEqual(RESPUESTA.rutas.map((r) => r.polo.fuera_del_circuito));
+    expect(sellos).toEqual([false, true, true]);
   });
 
   // Los `cuantos` primeros viajes del ejemplo, todos fuera de Lima y de Cusco.
@@ -270,6 +281,46 @@ describe("un viaje abierto", () => {
     if (datos) expect(plano(antes.textContent)).not.toContain(plano(datos.mensaje));
     for (const linea of RESPUESTA.atribucion) expect(screen.getByText(linea)).toBeDefined();
     expect(screen.getByText(A.estacionalidad.explicacion)).toBeDefined();
+  });
+
+  it("un viaje con vuelo lo dice en su tarjeta, en sus datos y en su costo", async () => {
+    const conVuelo = {
+      "/v1/viajes": (url: URL) => {
+        const respuesta = viajesPara(url);
+        const [primera, ...resto] = respuesta.rutas;
+        if (!primera) throw new Error("El ejemplo del contrato no trae rutas.");
+        const enAvion: Ruta = {
+          ...primera,
+          traslado: {
+            ...primera.traslado,
+            horas: 4.5,
+            medios: ["avion", "carretera"],
+            vuelos: [
+              { desde: "Lima", hasta: "Cusco", codigo_desde: "LIM", codigo_hasta: "CUZ", horas: 1.33 },
+            ],
+            fuente: "red_vial_y_vuelos",
+          },
+          costo: {
+            ...primera.costo,
+            desglose: { transporte: 227, vuelos: 527, alojamiento: 398, alimentacion: 341, entradas: 250 },
+          },
+        };
+        return { cuerpo: { ...respuesta, rutas: [enAvion, ...resto] } };
+      },
+    };
+    await abrir(`/?${CONSULTA}`, conVuelo);
+    const [primera] = await tarjetas();
+    expect(plano(primera?.textContent)).toContain("4 h 30 desde Lima, con vuelo");
+    await userEvent.click(primera as HTMLElement);
+    await viajeAbierto();
+    expect(screen.getByText("desde Lima, con vuelo")).toBeDefined();
+    const costo = within(screen.getByRole("region", { name: "Cuánto cuesta" }));
+    expect(
+      costo
+        .getAllByRole("listitem")
+        .slice(0, 2)
+        .map((li) => plano(li.textContent)),
+    ).toEqual(["TransporteS/ 227", "VuelosS/ 527"]);
   });
 
   it("el plan va de a un día, y el mapa sigue al día elegido", async () => {

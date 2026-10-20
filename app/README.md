@@ -61,7 +61,7 @@ Así, sin `https`, el navegador no deja copiar ni usar el menú de compartir: «
 
 | Dirección | Pantalla | De dónde salen sus datos |
 |---|---|---|
-| `./` | El formulario: cinco filas, y las que piden elegir abren su hoja | `GET /v1/opciones` |
+| `./` | El formulario: seis filas. Las que piden elegir abren su hoja; la de los vuelos es un interruptor, encendido por defecto, que apagado pide `solo_por_tierra` | `GET /v1/opciones` |
 | `./?origen=lima&mes=7&dias=6&…&v=2026.10.3` | Los tres viajes, en tarjetas para comparar | `GET /v1/viajes` |
 | `…#/ruta/2` | El segundo viaje, en su pantalla: por qué conviene, qué saber antes de ir, el plan día por día con su mapa, el costo, el clima y las fiestas. Cada lugar abre su hoja | |
 | `…#/editar` | El formulario con esa consulta | |

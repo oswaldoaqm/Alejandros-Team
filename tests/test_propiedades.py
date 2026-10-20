@@ -53,6 +53,7 @@ def consultas(draw) -> Consulta:
         presupuesto=draw(st.one_of(st.none(), st.integers(PRESUPUESTO_MIN, PRESUPUESTO_MAX))),
         altitud_max=draw(st.one_of(st.none(), st.integers(0, ALTITUD_MAX_M))),
         sorpresa=draw(st.booleans()),
+        solo_por_tierra=draw(st.booleans()),
     )
 
 
@@ -120,10 +121,14 @@ def test_las_diez_propiedades(consulta):
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()
 
-    # 7. El presupuesto ordena y advierte, pero nunca esconde una ruta.
+    # 7. El presupuesto ordena, elige y avisa. Con él salen tantas rutas como sin él; una que
+    #    entra en el presupuesto y salía sin él sigue saliendo; y la que lo pasa lleva su aviso.
     if consulta.presupuesto is not None:
         sin_presupuesto = resolver(consulta.model_copy(update={"presupuesto": None}), datos)
-        assert sorted(polos) == sorted(r.polo.id for r in sin_presupuesto.rutas)
+        assert len(polos) == len(sin_presupuesto.rutas)
+        for ruta in sin_presupuesto.rutas:
+            if ruta.costo.p50 <= consulta.presupuesto:
+                assert ruta.polo.id in polos
         for ruta in respuesta.rutas:
             if ruta.costo.exceso:
                 assert any(a.tipo == "presupuesto" for a in ruta.avisos)

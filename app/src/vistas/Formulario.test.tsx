@@ -158,6 +158,30 @@ describe("el formulario", () => {
     );
   });
 
+  it("vuela a lo lejano; con el interruptor apagado pide solo por tierra", async () => {
+    const api = await abrir();
+    const vuelos = screen.getByRole("switch", { name: "Vuelos" });
+    expect(vuelos).toHaveProperty("checked", true);
+    expect(plano(vuelos.closest("label")?.textContent)).toBe("Vuelos Si por tierra pasa de 16 h");
+    await abrirFila(/^Cuándo/);
+    await userEvent.click(screen.getByRole("radio", { name: "Julio" }));
+    await listo();
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6");
+
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
+    await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" });
+    await userEvent.click(screen.getByRole("switch", { name: "Vuelos" }));
+    expect(screen.getByRole("switch", { name: "Vuelos" })).toHaveProperty("checked", false);
+    expect(plano(screen.getByRole("switch", { name: "Vuelos" }).closest("label")?.textContent)).toBe(
+      "Vuelos Solo por tierra",
+    );
+    await buscar();
+    await enResultados();
+    expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6&solo_por_tierra=true");
+  });
+
   it("con fecha de salida manda la fecha, y el mes la sigue", async () => {
     const api = await abrir();
     await abrirFila(/^Cuándo/);
@@ -177,7 +201,7 @@ describe("el formulario", () => {
   });
 
   it("al cambiar el viaje, abre con la consulta que ya había", async () => {
-    irA("/?origen=cusco&mes=7&dias=4&intereses=playa&presupuesto=1800#/editar");
+    irA("/?origen=cusco&mes=7&dias=4&intereses=playa&presupuesto=1800&solo_por_tierra=true#/editar");
     await abrir();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Cambia tu viaje");
     expect(fila(/^Desde/)).toBe("Desde Cusco");
@@ -185,6 +209,7 @@ describe("el formulario", () => {
     expect(plano(screen.getByRole("group", { name: /Días/ }).textContent)).toContain("4 días");
     expect(fila(/^Qué te gusta/)).toBe("Qué te gusta Playa");
     expect(fila(/^Presupuesto y altura/)).toBe("Presupuesto y altura Hasta S/ 1 800");
+    expect(screen.getByRole("switch", { name: "Vuelos" })).toHaveProperty("checked", false);
   });
 
   it("si el servidor todavía no responde, lo dice y deja reintentar", async () => {

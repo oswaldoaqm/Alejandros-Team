@@ -145,8 +145,8 @@ oficiales y deja en [`data/procesados/`](./data/procesados/) el **maestro v3**, 
 fuente de cada campo; el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
 medida sobre una muestra anotada a mano; los **tiempos de viaje** sobre la red vial de OpenStreetMap,
 calibrada con los recorridos de las fichas (22 % de error medio), con el tren a Machu Picchu y los botes del
-Titicaca, las Ballestas y la Amazonía; **dónde se duerme en cada polo**, y el **clima de cada polo mes a
-mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
+Titicaca, las Ballestas y la Amazonía; los **vuelos** de las 22 rutas que salen de Lima, de puerta a puerta;
+**dónde se duerme en cada polo**, y el **clima de cada polo mes a mes**. El motor ([`dreemgo/motor/`](./dreemgo/motor/)) carga todo eso y responde `/v1/viajes` según el
 [contrato](./docs/CONTRATO.md).
 
 Fuentes complementarias en uso: [Open-Meteo](https://open-meteo.com/) (clima diario por polo),
@@ -254,8 +254,9 @@ python pipeline/adquisicion/descargar_clima_polos.py   # días: respeta la cuota
 python -m pipeline.maestro     # data/procesados/maestro_v3.csv
 python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
+python -m pipeline.vuelos      # el viaje en avión de cada origen a cada base, unos 3 minutos
 python -m pipeline.clima       # clima por polo y mes
-python -m pipeline.artefactos --version 2026.10.4   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.10.5   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 pytest

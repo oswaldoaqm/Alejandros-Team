@@ -1,6 +1,7 @@
-// Pantalla 1: qué viaje quiere el viajero. Una pregunta grande y una tarjeta con cinco filas;
-// cada fila abre una hoja para elegir. Ya viene lista para buscar: el mes que viene, desde
-// Lima y seis días. Las opciones (orígenes, intereses y rangos) vienen de GET /v1/opciones.
+// Pantalla 1: qué viaje quiere el viajero. Una pregunta grande y una tarjeta con seis filas;
+// casi todas abren una hoja para elegir, y la de los vuelos es un interruptor. Ya viene lista
+// para buscar: el mes que viene, desde Lima, seis días y con vuelos a lo lejano. Las opciones
+// (orígenes, intereses y rangos) vienen de GET /v1/opciones.
 
 import { type FormEvent, useId, useMemo, useState } from "react";
 import type { Opciones } from "../api/tipos";
@@ -185,6 +186,33 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
             <Icono nombre="flecha" />
           </span>
         </button>
+
+        {/* El motor vuela a lo que por tierra pasa de 16 horas (decisión 0016); apagado, solo por tierra. */}
+        <label className="fila fila--interruptor">
+          <span className="fila__icono">
+            <Icono nombre="avion" />
+          </span>
+          <span className="fila__texto">
+            <span className="fila__nombre" id={`${id}-vuelos`}>
+              Vuelos
+            </span>{" "}
+            <span className="fila__valor" id={`${id}-vuelos-valor`}>
+              {c.solo_por_tierra ? "Solo por tierra" : "Si por tierra pasa de 16 h"}
+            </span>
+          </span>
+          <span className="interruptor">
+            <input
+              type="checkbox"
+              role="switch"
+              aria-labelledby={`${id}-vuelos`}
+              aria-describedby={`${id}-vuelos-valor`}
+              aria-checked={!c.solo_por_tierra}
+              checked={!c.solo_por_tierra}
+              onChange={(e) => cambiar({ solo_por_tierra: !e.target.checked })}
+            />
+            <span className="interruptor__pista" aria-hidden="true" />
+          </span>
+        </label>
       </div>
 
       <div className="inicio__acciones">
@@ -405,7 +433,7 @@ function ElegirFiltros({ c, cambiar }: { c: Consulta; cambiar: (p: Partial<Consu
           }}
         />
         <p className="hoja__ayuda">
-          Para todo el viaje. Ordena los viajes y te avisa si uno se pasa; no esconde ninguno.
+          Para todo el viaje. Elige y ordena los viajes, y te avisa si uno se pasa.
         </p>
       </div>
       <div className="deslizador">

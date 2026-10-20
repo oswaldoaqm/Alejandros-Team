@@ -59,11 +59,12 @@ from dreemgo.contrato import (
     Ruta,
     SinResultado,
     Sugerencia,
+    TramoAereo,
     Traslado,
 )
 from dreemgo.motor import costo as costos
 from dreemgo.motor import textos
-from dreemgo.motor.datos import Datos, Origen
+from dreemgo.motor.datos import Datos, Origen, Vuelo
 from dreemgo.motor.datos import Polo as PoloDatos
 from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, mejor_plan, valor_visitado
 from dreemgo.publicados import SIN_PUBLICADOS, Instantanea
@@ -93,6 +94,12 @@ CANDIDATAS_MAX = 40
 ALTITUD_AVISO_M = 3_500
 ACLIMATACION_M = 2_500
 KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la estación o al muelle
+# Cuándo se vuela (decisión 0016). Solo a lo lejano: lo que por tierra no pasa de 16 horas se
+# hace en un bus de noche, como Trujillo o Huaraz desde Lima. Y solo si en avión se llega al
+# menos media jornada antes y si el avión no se lleva una parte grande de un viaje corto.
+LEJOS_PARA_VOLAR_MIN = 16 * 60
+AHORRO_PARA_VOLAR_MIN = 4 * 60
+CAMINO_QUE_PESA = 0.4  # la parte del viaje que, en ir y volver, ya pesa: el aviso «dias» y los vuelos
 
 
 class OrigenDesconocido(ValueError):
@@ -166,22 +173,69 @@ class Plan:
     salida: int  # día en que se deja la base
 
 
-def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None) -> Plan | None:
-    """La ida y la vuelta, partidas en partes iguales si pasan de 9 horas, y los días en la
-    base; None si no caben. El día de llegada y el de salida tienen visitas solo si el viaje
-    y las visitas caben juntos en una jornada de 8 horas."""
+def _partes_iguales(minutos: int) -> list[int]:
+    """Un camino por tierra en días de hasta 9 horas, en partes iguales; el último maneja un
+    poco menos."""
+    k = max(1, math.ceil(minutos / SOLO_VIAJE_MAX_MIN))
+    tramo = math.ceil(minutos / k)
+    return [tramo] * (k - 1) + [minutos - tramo * (k - 1)]
+
+
+Segmento = tuple[str, int]  # («antes» | «aire» | «despues», minutos)
+
+
+def dias_en_avion(vuelo: Vuelo) -> list[list[Segmento]]:
+    """Los días de la ida con vuelo y lo que se hace en cada uno: «antes», por tierra hasta el
+    aeropuerto de salida; «aire», en los aeropuertos y en el aire, con la escala si la hay; y
+    «despues», por tierra del aeropuerto de llegada a la base. Como cualquier día de solo
+    viaje, ninguno pasa de 9 horas: si no cabe todo en uno, se duerme junto al aeropuerto de
+    llegada; y si llegar al de salida ya se lleva casi el día, también junto a ese, la noche
+    antes de volar. Lo que va por tierra se parte en partes iguales (decisión 0016)."""
+    ida = math.ceil(vuelo.minutos)
+    antes = min(ida, math.ceil(vuelo.minutos_hasta_aeropuerto))
+    despues = min(ida - antes, math.ceil(vuelo.minutos_desde_aeropuerto))
+    aire = ida - antes - despues
+    if ida <= SOLO_VIAJE_MAX_MIN:
+        return [[("antes", antes), ("aire", aire), ("despues", despues)]]
+    luego = [[("despues", m)] for m in _partes_iguales(despues)]
+    if antes + aire <= SOLO_VIAJE_MAX_MIN:
+        return [[("antes", antes), ("aire", aire)], *luego]
+    hasta = [[("antes", m)] for m in _partes_iguales(antes)]
+    if aire + despues <= SOLO_VIAJE_MAX_MIN:
+        return [*hasta, [("aire", aire), ("despues", despues)]]
+    return [*hasta, [("aire", aire)], *luego]
+
+
+def tramos_de_la_ida(minutos_ida: float, vuelo: Vuelo | None = None) -> list[int]:
+    """Los minutos de viaje de cada día de la ida: por tierra, en partes iguales de hasta 9
+    horas; con un vuelo, como dice ``dias_en_avion``."""
+    if vuelo is None:
+        return _partes_iguales(int(math.ceil(minutos_ida)))
+    return [sum(m for _, m in dia) for dia in dias_en_avion(vuelo)]
+
+
+def llegada(tramos: list[int]) -> int:
+    """Cuándo se llega a la base, en minutos desde la salida del primer día: las noches del
+    camino cuentan."""
+    return 24 * 60 * (len(tramos) - 1) + tramos[-1]
+
+
+def plan_de_dias(dias: int, minutos_ida: float, fecha_inicio: date | None, vuelo: Vuelo | None = None) -> Plan | None:
+    """La ida y la vuelta, partidas en días como dice ``tramos_de_la_ida``, y los días en la
+    base; None si no caben. La vuelta hace los mismos tramos al revés. El día de llegada y el
+    de salida tienen visitas solo si el viaje y las visitas caben juntos en una jornada de 8
+    horas."""
 
     def dia_semana(n: int) -> int | None:
         return None if fecha_inicio is None else (fecha_inicio + timedelta(days=n - 1)).weekday()
 
-    ida = int(math.ceil(minutos_ida))
-    k = max(1, math.ceil(ida / SOLO_VIAJE_MAX_MIN))  # días de viaje de ida (y de vuelta)
+    de_ida = tramos_de_la_ida(minutos_ida, vuelo)
+    k = len(de_ida)  # días de viaje de ida (y de vuelta)
     if dias < 2 * k:
         return None
-    tramo = math.ceil(ida / k)
-    ultimo = ida - tramo * (k - 1)  # el día de llegada (y el de salida) maneja un poco menos
-    tramos = {n: tramo for n in range(1, k)} | {k: ultimo}
-    tramos |= {dias - k + 1: ultimo} | {n: tramo for n in range(dias - k + 2, dias + 1)}
+    ultimo = de_ida[-1]  # el día de llegada (y el de salida) maneja un poco menos
+    tramos = {n: t for n, t in enumerate(de_ida, start=1)}
+    tramos |= {dias - n + 1: t for n, t in enumerate(de_ida, start=1)}
     jornadas, dia_de = [], []
     libre = JORNADA_MIN - ultimo
     if libre >= MINIMO_PARA_VISITAR:
@@ -339,6 +393,7 @@ class Itinerario:
     km_tren_ida: float = 0.0
     km_bote_ida: float = 0.0
     desde_en_capa: tuple[np.ndarray, np.ndarray] | None = None  # km en tren y en bote del depósito a cada parada
+    vuelo: Vuelo | None = None  # si la ida y la vuelta van en avión
 
 
 # ─────────────────────────────── tren y bote ───────────────────────────────
@@ -379,10 +434,18 @@ def tramos_en_capa(it: Itinerario, recorrido: Recorrido) -> list[tuple[float, fl
     return [(_numero(t), _numero(b)) for t, b in tramos]
 
 
+def medios_por_tierra(polo: PoloDatos, origen: Origen) -> list[str]:
+    """Con qué se haría la ida sin volar."""
+    km = origen.a_base.get(polo.id, (np.nan, np.nan))[1]
+    return medios(km, *origen.a_base_en_capa.get(polo.id, (0.0, 0.0)))
+
+
 def medios_del_traslado(it: Itinerario) -> list[str]:
-    """Con qué se hace la ida; en un viaje de un día, con qué se recorre el día."""
+    """Con qué se hace la ida; en un viaje de un día, con qué se recorre el día. Con un vuelo, el
+    avión va primero y después lo que se hace por tierra en las dos puntas."""
     if it.plan.tipo_viaje != "excursion":
-        return medios(it.km_ida, it.km_tren_ida, it.km_bote_ida)
+        por_tierra = medios(it.km_ida, it.km_tren_ida, it.km_bote_ida)
+        return ["avion", *por_tierra] if it.vuelo is not None else por_tierra
     tramos = [t for r in it.recorridos for t in tramos_en_capa(it, r)]
     tren, bote = sum(t for t, _ in tramos), sum(b for _, b in tramos)
     return medios(KM_CARRETERA_MIN + tren + bote, tren, bote)
@@ -431,13 +494,31 @@ def _paradas(polo: PoloDatos, recorrido: Recorrido, km_desde: np.ndarray, datos:
     return salida
 
 
+def con_vuelos(aeropuertos: tuple[str, ...], datos: Datos) -> str:
+    """("LIM", "CUZ") → "con el vuelo Lima–Cusco de 1 h 20"; con escala en Lima, ("AQP", "LIM",
+    "IQT") → "con los vuelos Arequipa–Lima y Lima–Iquitos"."""
+
+    def ciudad(codigo: str) -> str:
+        return datos.aeropuertos.get(codigo, {}).get("ciudad", codigo)
+
+    tramos = list(zip(aeropuertos, aeropuertos[1:], strict=False))
+    if len(tramos) == 1:
+        a, b = tramos[0]
+        minutos = datos.aeropuertos.get(b if a == "LIM" else a, {}).get("minutos_a_lima")
+        duracion = f" de {textos.duracion(minutos)}" if minutos else ""
+        return f"con el vuelo {ciudad(a)}–{ciudad(b)}{duracion}"
+    return "con los vuelos " + textos.lista([f"{ciudad(a)}–{ciudad(b)}" for a, b in tramos])
+
+
 def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Datos) -> list[Dia]:
     polo, plan = it.polo, it.plan
     base = polo.base["nombre"]
     por_dia = dict(zip(plan.dia_de_jornada, it.recorridos, strict=True))
     excursion = plan.tipo_viaje == "excursion"
     km_desde = _km_desde_deposito(polo, origen, excursion)
-    por = textos.por_medios(medios_del_traslado(it))
+    # Con un vuelo, «por» dice cómo se hace lo que va por tierra; el avión lo nombran las notas.
+    por = textos.por_medios(medios(it.km_ida, it.km_tren_ida, it.km_bote_ida) if it.vuelo else medios_del_traslado(it))
+    km_de_viaje = _km_por_dia(it, consulta.dias)
     dias = []
     for n in range(1, consulta.dias + 1):
         fecha = None if consulta.fecha_inicio is None else consulta.fecha_inicio + timedelta(days=n - 1)
@@ -446,7 +527,7 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
         visita_min = recorrido.minutos if recorrido else 0
         visita_km = _km(polo, recorrido, km_desde) if recorrido else 0.0
         carretera = plan.tramos.get(n, 0)
-        km_carretera = it.km_ida * carretera / it.minutos_ida if carretera and it.minutos_ida else 0.0
+        km_carretera = km_de_viaje.get(n, 0.0)
         viaje, salida = textos.duracion(carretera), textos.hora(SALIDA_DEL_ORIGEN)
         if excursion:
             tipo, nota = "ida_visita_y_vuelta", f"Sale de {origen.nombre} a las {salida} y vuelve el mismo día."
@@ -474,6 +555,8 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
                 nota = f"Otro tramo de vuelta a {origen.nombre}: {viaje} {por}; se duerme en el camino."
         else:
             tipo, nota = "visita", None if paradas else f"Día libre en {base}."
+        if it.vuelo is not None and n in plan.tramos:
+            nota = _nota_en_avion(n, it, consulta.dias, origen, datos, viaje, por)
         en_capa = _nota_en_capa(it, recorrido, paradas) if recorrido else None
         # El día de salida se visita antes de volver: su nota va en ese orden.
         notas = (en_capa, nota) if not excursion and n == plan.salida else (nota, en_capa)
@@ -489,6 +572,79 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
             )
         )
     return dias
+
+
+def _km_por_dia(it: Itinerario, dias: int) -> dict[int, float]:
+    """Los km por tierra de cada día de ida o de vuelta. Sin vuelo, en proporción a los minutos.
+    Con un vuelo, cada día lleva su parte de los km hasta el aeropuerto de salida y de los km
+    desde el de llegada, en proporción a sus minutos de cada uno; la vuelta, al revés."""
+    tramos, vuelo = it.plan.tramos, it.vuelo
+    if vuelo is None:
+        return {n: it.km_ida * t / it.minutos_ida if t and it.minutos_ida else 0.0 for n, t in tramos.items()}
+    de_ida = dias_en_avion(vuelo)
+    km = {"antes": vuelo.km_hasta_aeropuerto, "aire": 0.0, "despues": max(0.0, it.km_ida - vuelo.km_hasta_aeropuerto)}
+    minutos = {tipo: sum(m for dia in de_ida for t, m in dia if t == tipo) for tipo in km}
+    por_dia = [sum(km[t] * m / minutos[t] for t, m in dia if minutos[t]) for dia in de_ida]
+    k = len(por_dia)
+    return {n: por_dia[n - 1] for n in range(1, k + 1)} | {dias - n + 1: por_dia[n - 1] for n in range(1, k + 1)}
+
+
+def _nota_en_avion(n: int, it: Itinerario, dias: int, origen: Origen, datos: Datos, viaje: str, por: str) -> str:
+    """La nota de un día de ida o de vuelta con vuelo, según lo que se haga ese día
+    (``dias_en_avion``). La vuelta hace los mismos días al revés."""
+    vuelo, base, salida = it.vuelo, it.polo.base["nombre"], textos.hora(SALIDA_DEL_ORIGEN)
+    de_ida = dias_en_avion(vuelo)
+    k = len(de_ida)
+
+    def ciudad(codigo: str) -> str:
+        return datos.aeropuertos.get(codigo, {}).get("ciudad", codigo)
+
+    sale, llega = ciudad(vuelo.aeropuertos[0]), ciudad(vuelo.aeropuertos[-1])
+    if n <= k:  # la ida
+        i = n - 1
+        hace = {t for t, _ in de_ida[i]}
+        en_vuelo = con_vuelos(vuelo.aeropuertos, datos)
+        if hace == {"antes", "aire", "despues"}:
+            return (
+                f"Salida de {origen.nombre} a las {salida}; {viaje} de puerta a puerta hasta {base}: {en_vuelo}, "
+                f"y el resto {por}."
+            )
+        if hace == {"antes", "aire"}:
+            return f"Salida de {origen.nombre} a las {salida}: {viaje} hasta {llega}, {en_vuelo}; se duerme en {llega}."
+        if hace == {"antes"}:
+            duerme = "el camino" if i + 1 < k and {t for t, _ in de_ida[i + 1]} == {"antes"} else sale
+            if i == 0:
+                return (
+                    f"Salida de {origen.nombre} a las {salida}: {viaje} por tierra hacia {sale}, de donde sale el "
+                    f"vuelo; se duerme en {duerme}."
+                )
+            return f"Otro tramo hacia {sale}: {viaje} por tierra; se duerme en {duerme}."
+        if hace == {"aire", "despues"}:
+            return f"Del aeropuerto de {sale} hasta {base}: {viaje}, {en_vuelo}, y el resto {por}."
+        if hace == {"aire"}:
+            return f"Del aeropuerto de {sale} al de {llega}: {viaje}, {en_vuelo}; se duerme en {llega}."
+        if n < k:
+            return f"Otro tramo hacia {base}: {viaje} {por}; se duerme en el camino."
+        return f"Último tramo hasta {base}: {viaje} {por}."
+    i = dias - n  # la vuelta: el último día del viaje es el primero de la ida
+    hace = {t for t, _ in de_ida[i]}
+    de_vuelta = con_vuelos(tuple(reversed(vuelo.aeropuertos)), datos)
+    if hace == {"antes", "aire", "despues"}:
+        return f"Vuelta a {origen.nombre}: {viaje} de puerta a puerta, {de_vuelta}."
+    if hace == {"antes", "aire"}:
+        return f"Vuelta a {origen.nombre}: {viaje}, {de_vuelta}."
+    if hace == {"antes"}:
+        if i == 0:
+            return f"Vuelta a {origen.nombre}: {viaje} por tierra desde {sale}."
+        return f"Otro tramo de vuelta a {origen.nombre}: {viaje} por tierra; se duerme en el camino."
+    if hace == {"aire", "despues"}:
+        return f"Se deja {base}: {viaje} hasta {sale}, {de_vuelta}; se duerme en {sale}."
+    if hace == {"aire"}:
+        return f"Del aeropuerto de {llega} al de {sale}: {viaje}, {de_vuelta}; se duerme en {sale}."
+    duerme = "el camino" if {t for t, _ in de_ida[i - 1]} == {"despues"} else llega
+    if n == it.plan.salida:
+        return f"Se deja {base}: {viaje} {por} hacia {llega}; se duerme en {duerme}."
+    return f"Otro tramo hacia {llega}: {viaje} {por}; se duerme en {duerme}."
 
 
 def _km_desde_deposito(polo: PoloDatos, origen: Origen, excursion: bool) -> np.ndarray:
@@ -536,8 +692,26 @@ def costo_del_viaje(it: Itinerario, consulta: Consulta, datos: Datos, dias: list
         base=it.polo.base["nombre"],
         tramos_tren=(2 if tren_ida > 0 else 0) + sum(1 for t, _ in tramos if t > 0),
         km_bote=2 * bote_ida + bote_local,
+        vuelos=_parametros_de_vuelo(it.vuelo),
+        tramos_aereos=_tramos_aereos(it.vuelo, datos),
     )
     return costos.estimar(datos.costos, gastos, consulta.presupuesto)
+
+
+def _pares(vuelo: Vuelo | None) -> list[tuple[str, str]]:
+    return [] if vuelo is None else list(zip(vuelo.aeropuertos, vuelo.aeropuertos[1:], strict=False))
+
+
+def _parametros_de_vuelo(vuelo: Vuelo | None) -> tuple[str, ...]:
+    """El parámetro de costo de cada tramo: las rutas se guardan desde Lima («vuelo_LIM_CUZ»)."""
+    return tuple(f"vuelo_LIM_{b if a == 'LIM' else a}" for a, b in _pares(vuelo))
+
+
+def _tramos_aereos(vuelo: Vuelo | None, datos: Datos) -> tuple[str, ...]:
+    def ciudad(codigo: str) -> str:
+        return datos.aeropuertos.get(codigo, {}).get("ciudad", codigo)
+
+    return tuple(f"{ciudad(a)}–{ciudad(b)}" for a, b in _pares(vuelo))
 
 
 def indicadores(it: Itinerario, dias: list[Dia], datos: Datos, alcanzable: float) -> Indicadores:
@@ -618,12 +792,14 @@ def avisos(
         )
     altura_base = polo.base["altitud_m"]
     if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= ACLIMATACION_M:
+        en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
         salida.append(
             Aviso(
                 tipo="aclimatacion",
                 nivel="advertencia",
                 mensaje=f"Se duerme a {textos.miles(altura_base)} m en {polo.base['nombre']}. Si llegas desde "
-                "la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.",
+                f"la costa, el cuerpo tarda uno o dos días en acostumbrarse{en_avion}: conviene un primer día "
+                "tranquilo.",
             )
         )
     if costo.exceso:
@@ -633,6 +809,15 @@ def avisos(
                 nivel="advertencia",
                 mensaje=f"El costo central ({textos.soles(costo.p50)}) pasa tu presupuesto "
                 f"por {textos.soles(costo.exceso)}.",
+            )
+        )
+    if it.vuelo is not None:
+        salida.append(
+            Aviso(
+                tipo="acceso",
+                nivel="info",
+                mensaje="La ida y la vuelta van en avión. El pasaje cambia mucho según cuándo lo compres: "
+                "con anticipación sale más barato.",
             )
         )
     en_tren = "tren" in medios_del_traslado(it) or any(t > 0 for r in it.recorridos for t, _ in tramos_en_capa(it, r))
@@ -651,7 +836,7 @@ def avisos(
             Aviso(tipo="acceso", nivel="info", mensaje=f"Hay que caminar más de una hora para llegar a {nombres}.")
         )
     carretera = sum(it.plan.tramos.values())
-    if it.plan.tipo_viaje == "estrella" and carretera >= 0.4 * consulta.dias * JORNADA_MIN:
+    if it.plan.tipo_viaje == "estrella" and carretera >= CAMINO_QUE_PESA * consulta.dias * JORNADA_MIN:
         salida.append(
             Aviso(
                 tipo="dias",
@@ -702,6 +887,7 @@ class Preparado:
     km_tren_ida: float = 0.0
     km_bote_ida: float = 0.0
     desde_en_capa: tuple[np.ndarray, np.ndarray] | None = None
+    vuelo: Vuelo | None = None
 
 
 def _cota(cands: list[Candidata], desde: np.ndarray, capacidad: float) -> float:
@@ -723,15 +909,15 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
     excursion = consulta.dias == 1
     if not excursion and origen.a_base.get(polo.id, (np.inf,))[0] < CASA_MIN:
         return None
+    vuelo = None
     if excursion:
         plan = plan_de_excursion(consulta.fecha_inicio)
         minutos_ida, km_ida, km_tren_ida, km_bote_ida = 0.0, 0.0, 0.0, 0.0
     else:
-        minutos_ida, km_ida = origen.a_base.get(polo.id, (np.nan, np.nan))
-        km_tren_ida, km_bote_ida = origen.a_base_en_capa.get(polo.id, (0.0, 0.0))
+        minutos_ida, km_ida, km_tren_ida, km_bote_ida, vuelo = ida(polo, consulta, origen)
         if not np.isfinite(minutos_ida):
             return None
-        plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio)
+        plan = plan_de_dias(consulta.dias, minutos_ida, consulta.fecha_inicio, vuelo)
         if plan is None or not plan.jornadas or mas_camino_que_visita(plan):
             return None
     desde = _minutos_desde_deposito(polo, origen, excursion)
@@ -755,7 +941,39 @@ def preparar(polo: PoloDatos, consulta: Consulta, origen: Origen, datos: Datos) 
         km_tren_ida=km_tren_ida,
         km_bote_ida=km_bote_ida,
         desde_en_capa=_en_capa_desde_deposito(polo, origen, excursion),
+        vuelo=vuelo,
     )
+
+
+def conviene_volar(por_tierra: float, vuelo: Vuelo, dias: int) -> bool:
+    """Si conviene ir en avión a una base a la que por tierra se tarda ``por_tierra`` minutos
+    (nan si no hay camino), en un viaje de ``dias`` días (decisión 0016):
+
+    - si ida y vuelta en avión se llevan el 40 % de las horas del viaje o más, no: en un viaje
+      corto rinde más quedarse cerca, y desde el Cusco un fin de semana es Machu Picchu y no Lima;
+    - si por tierra no hay camino, sí;
+    - si por tierra no pasa de 16 horas, no: eso se hace en un bus de noche;
+    - y si no, solo si en avión se llega al menos media jornada antes, con las noches contadas."""
+    if 2 * vuelo.minutos >= CAMINO_QUE_PESA * dias * JORNADA_MIN:
+        return False
+    if not np.isfinite(por_tierra):
+        return True
+    if por_tierra <= LEJOS_PARA_VOLAR_MIN:
+        return False
+    en_avion = llegada(tramos_de_la_ida(vuelo.minutos, vuelo))
+    return en_avion <= llegada(tramos_de_la_ida(por_tierra)) - AHORRO_PARA_VOLAR_MIN
+
+
+def ida(polo: PoloDatos, consulta: Consulta, origen: Origen) -> tuple[float, float, float, float, Vuelo | None]:
+    """(minutos, km, km en tren, km en bote, vuelo) de la ida a la base: en avión si conviene
+    (``conviene_volar``) y la consulta no pide ir solo por tierra. Con un vuelo, los km son los
+    de tierra."""
+    minutos, km = origen.a_base.get(polo.id, (np.nan, np.nan))
+    km_tren, km_bote = origen.a_base_en_capa.get(polo.id, (0.0, 0.0))
+    vuelo = None if consulta.solo_por_tierra else origen.a_base_en_avion.get(polo.id)
+    if vuelo is not None and conviene_volar(minutos, vuelo, consulta.dias):
+        return vuelo.minutos, vuelo.km, vuelo.km_tren, vuelo.km_bote, vuelo
+    return minutos, km, km_tren, km_bote, None
 
 
 def resolver(
@@ -789,40 +1007,47 @@ def resolver(
                 p.km_tren_ida,
                 p.km_bote_ida,
                 p.desde_en_capa,
+                p.vuelo,
             )
             itinerarios.append((p, it))
             bases_planificadas.add(p.polo.base["nombre"])
 
-    # Primero se eligen tres bases distintas por su puntaje sin el presupuesto, que solo
-    # reordena esas tres y avisa: un presupuesto corto nunca esconde una ruta (CONTRATO §3.7).
+    # Las tres bases distintas se eligen por su puntaje, con el presupuesto: un viaje que lo
+    # pasa compite castigado por (presupuesto / costo)², así que sale solo si es mucho mejor que
+    # los que entran, y siempre con su aviso. Sin presupuesto, elegir no necesita el costo
+    # (CONTRATO §3.7 y decisión 0016).
     mejor = max((it.valor for _, it in itinerarios), default=1.0)
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
         calidad = it.valor / mejor * ocupacion * p.temporada
-        puntuados.append((calidad, (1 - lam) * calidad + lam * it.polo.novedad, p, it))
-    puntuados.sort(key=lambda x: (-x[1], x[2].polo.id))
+        dias = costo = None
+        if consulta.presupuesto is not None:
+            dias = dias_del_viaje(it, consulta, origen, datos)
+            costo = costo_del_viaje(it, consulta, datos, dias)
+        puntaje = (1 - lam) * calidad * por_presupuesto(costo, consulta.presupuesto) + lam * it.polo.novedad
+        puntuados.append((puntaje, p, it, dias, costo))
+    puntuados.sort(key=lambda x: (-x[0], x[1].polo.id))
     desde, hasta = ventana(consulta, datos.version)
     elegidas, bases = [], set()
-    for calidad, _, p, it in puntuados:
+    for puntaje, p, it, dias, costo in puntuados:
         if it.polo.base["nombre"] in bases:
             continue
         bases.add(it.polo.base["nombre"])
-        dias = dias_del_viaje(it, consulta, origen, datos)
-        costo = costo_del_viaje(it, consulta, datos, dias)
+        if dias is None or costo is None:
+            dias = dias_del_viaje(it, consulta, origen, datos)
+            costo = costo_del_viaje(it, consulta, datos, dias)
         est = estacionalidad(it.polo, consulta.mes)
         eventos = eventos_del_polo(it.polo, desde, hasta, datos)
         # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.
         todos = sorted(eventos + publicados.entre(desde, hasta, it.polo.id), key=lambda e: (e.fecha_inicio, e.id))
-        presupuesto = 1.0 if not costo.exceso else (consulta.presupuesto / costo.p50) ** 2
-        puntaje = (1 - lam) * calidad * presupuesto + lam * it.polo.novedad
         elegidas.append(
             Ruta(
                 polo=polo_publico(it.polo),
                 puntaje=round(min(1.0, puntaje), 3),
                 motivos=motivos(it, consulta, origen, est, eventos, datos),
                 estacionalidad=est,
-                traslado=_traslado(it, origen),
+                traslado=_traslado(it, origen, datos),
                 dias=dias,
                 costo=costo,
                 eventos=todos,
@@ -844,9 +1069,17 @@ def resolver(
     )
 
 
-def _traslado(it: Itinerario, origen: Origen) -> Traslado:
+def por_presupuesto(costo: Costo | None, presupuesto: int | None) -> float:
+    """Lo que el presupuesto multiplica en el puntaje: 1 si no hay presupuesto o el costo central
+    entra; si lo pasa, (presupuesto / costo)²."""
+    return 1.0 if costo is None or presupuesto is None or not costo.exceso else (presupuesto / costo.p50) ** 2
+
+
+def _traslado(it: Itinerario, origen: Origen, datos: Datos) -> Traslado:
     medios_ = medios_del_traslado(it)
-    acceso = "sin_acceso_terrestre" if "bote" in medios_ else "terrestre"
+    # El acceso es el del camino por tierra aunque se vuele: a Iquitos, por tierra, hace falta bote.
+    por_tierra = medios_ if it.vuelo is None else medios_por_tierra(it.polo, origen)
+    acceso = "sin_acceso_terrestre" if "bote" in por_tierra else "terrestre"
     if it.plan.tipo_viaje == "excursion":
         primera = it.recorridos[0].visitas[0] if it.recorridos[0].visitas else None
         horas = None if primera is None else round(primera.traslado / 60, 1)
@@ -860,8 +1093,26 @@ def _traslado(it: Itinerario, origen: Origen) -> Traslado:
         dias_de_viaje=len(tramos),
         medios=medios_,
         acceso=acceso,
-        fuente="red_vial",
+        fuente="red_vial" if it.vuelo is None else "red_vial_y_vuelos",
+        vuelos=_vuelos_de_ida(it.vuelo, datos),
     )
+
+
+def _vuelos_de_ida(vuelo: Vuelo | None, datos: Datos) -> list[TramoAereo]:
+    salida = []
+    for a, b in _pares(vuelo):
+        otro = b if a == "LIM" else a
+        minutos = datos.aeropuertos.get(otro, {}).get("minutos_a_lima")
+        salida.append(
+            TramoAereo(
+                desde=datos.aeropuertos.get(a, {}).get("ciudad", a),
+                hasta=datos.aeropuertos.get(b, {}).get("ciudad", b),
+                codigo_desde=a,
+                codigo_hasta=b,
+                horas=None if not minutos else round(minutos / 60, 2),
+            )
+        )
+    return salida
 
 
 def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bool) -> SinResultado:
@@ -879,6 +1130,8 @@ def _sin_resultado(consulta: Consulta, origen: Origen, datos: Datos, sugerir: bo
             pruebas.append(("altitud_max", None, {"altitud_max": None}))
         if consulta.intereses:
             pruebas.append(("intereses", [], {"intereses": []}))
+        if consulta.solo_por_tierra:
+            pruebas.append(("solo_por_tierra", False, {"solo_por_tierra": False}))
         for campo, valor_nuevo, cambio in pruebas:
             otra = consulta.model_copy(update=cambio)
             n = len(resolver(otra, datos, sugerir=False).rutas)
