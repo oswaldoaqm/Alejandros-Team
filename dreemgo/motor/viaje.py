@@ -72,8 +72,8 @@ from dreemgo.contrato import (
     TramoAereo,
     Traslado,
 )
+from dreemgo.motor import aclimatacion, noche, textos
 from dreemgo.motor import costo as costos
-from dreemgo.motor import noche, textos
 from dreemgo.motor.datos import Datos, Origen, Vuelo
 from dreemgo.motor.datos import Polo as PoloDatos
 from dreemgo.motor.planificador import Candidata, Jornada, Recorrido, Tiempos, mejor_plan, valor_visitado
@@ -102,7 +102,6 @@ POLOS_A_PLANIFICAR = 12  # como mínimo; se sigue hasta tener tres bases distint
 POLOS_A_PLANIFICAR_MAX = 30
 CANDIDATAS_MAX = 40
 ALTITUD_AVISO_M = 3_500
-ACLIMATACION_M = 2_500
 KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la estación o al muelle
 # Cuándo se vuela (decisión 0016). Solo a lo lejano: lo que por tierra no pasa de 16 horas se
 # hace en un bus de noche, como Trujillo o Huaraz desde Lima. Y solo si en avión se llega al
@@ -927,7 +926,7 @@ def avisos(
             )
         )
     altura_base = polo.base["altitud_m"]
-    if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= ACLIMATACION_M:
+    if it.plan.tipo_viaje == "estrella" and altura_base is not None and altura_base >= aclimatacion.ALTURA_QUE_PESA_M:
         en_avion = ", y en avión se nota más" if it.vuelo is not None else ""  # se sube de golpe
         salida.append(
             Aviso(
