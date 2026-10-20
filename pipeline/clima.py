@@ -15,7 +15,9 @@ Por polo y mes, el promedio de los diez años de:
   dias_con_lluvia        días con 1 mm o más, la definición de la OMM
   temp_min_c, temp_max_c promedio de las mínimas y de las máximas diarias, llevadas de la
                          altitud del punto de clima a la de la base del polo con el
-                         gradiente estándar de la atmósfera (6,5 °C por km)
+                         gradiente estándar de la atmósfera (6,5 °C por km). La de la base
+                         es la que va a los artefactos: la de OpenStreetMap o, si no la
+                         tiene, la del modelo de elevación (pipeline/elevacion.py)
 
 El veredicto es la regla de la semana 6, ahora con el clima del propio polo:
   absoluto · 150 mm o más en el mes: el cuartil más lluvioso del país;
@@ -28,10 +30,10 @@ Lo que no se publica, y por qué:
     costa de Lima en julio, cuando el cielo pasa cubierto casi todo el mes.
   - Nieve. Cae en las cumbres, no donde duerme el viajero.
 
-Lee data/externos/clima/crudo/polo_<id>.json y data/procesados/polos_bases.csv.
-Escribe data/procesados/clima_polo_mes.csv.
+Lee data/externos/clima/crudo/polo_<id>.json, data/procesados/polos_bases.csv y, si está,
+data/procesados/altitud_bases.csv. Escribe data/procesados/clima_polo_mes.csv.
 
-Uso:  python -m pipeline.clima          (después de python -m pipeline.tiempos)
+Uso:  python -m pipeline.clima          (después de python -m pipeline.tiempos y de pipeline.elevacion)
 """
 
 from __future__ import annotations
@@ -44,6 +46,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from pipeline import elevacion
 from pipeline.maestro import EXTERNOS, PROCESADOS, RAIZ
 
 CRUDO = EXTERNOS / "clima" / "crudo"
@@ -166,11 +169,14 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Clima por polo y mes con su veredicto de temporada.")
     ap.add_argument("--crudo", type=Path, default=CRUDO)
     ap.add_argument("--bases", type=Path, default=PROCESADOS / "polos_bases.csv")
+    ap.add_argument("--altitudes", type=Path, default=PROCESADOS / "altitud_bases.csv")
     ap.add_argument("--regional", type=Path, default=REGIONAL)
     ap.add_argument("--salida", type=Path, default=PROCESADOS / "clima_polo_mes.csv")
     a = ap.parse_args()
 
     bases = pd.read_csv(a.bases, sep=";", encoding="utf-8-sig")
+    if a.altitudes.exists():  # la altura de cada base, la misma que va a los artefactos
+        bases = elevacion.completar(bases, pd.read_csv(a.altitudes, sep=";", encoding="utf-8-sig"))
     semana6 = pd.read_csv(a.regional, sep=";", encoding="utf-8-sig")
     clima = construir(bases, a.crudo, semana6)
     clima.to_csv(a.salida, sep=";", index=False, encoding="utf-8-sig", lineterminator="\n", float_format="%.1f")
