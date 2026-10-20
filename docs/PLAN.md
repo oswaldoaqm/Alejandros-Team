@@ -66,6 +66,7 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
 | Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados; y las alternativas gratuitas mientras no haya cuenta |
 | Pruebas | [`tests/`](../tests/) | Contrato, API y, con el motor, propiedades sobre miles de consultas |
+| Evaluación | [`evaluacion/`](../evaluacion/) | Las 40 consultas que califica el equipo, la línea de base, el kit para calificar y las cifras del informe de la semana 12 ([decisión 0021](./decisiones/0021-evaluacion-semana-12.md)) |
 | Decisiones | [`docs/decisiones/`](./decisiones/) | Por qué cada cosa es como es |
 | Entregas | [`deliveries/`](../deliveries/) | Lo que pide cada semana del curso, con sus erratas |
 
