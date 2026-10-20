@@ -135,7 +135,7 @@
             "hay_donde_comer": true
           },
           "noche": null,
-          "tranquilo": false
+          "tranquilo": true
         },
         {
           "numero": 2,
