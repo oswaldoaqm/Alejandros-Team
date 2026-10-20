@@ -68,6 +68,9 @@ export function dondeSeAlmuerza(
 /** Lo que se dice cuando cerca del almuerzo no hay registrado dónde comer. */
 export const LLEVA_TU_ALMUERZO = "Lleva tu almuerzo: no tenemos registrado dónde comer cerca.";
 
+/** El primer día en la altura (desde el contrato 1.7): cómo es, lo dice el aviso del motor. */
+export const DIA_TRANQUILO = "Día tranquilo para acostumbrarte a la altura";
+
 const TIPO_DE_LUGAR_DE_NOCHE: Record<LugarDeNoche["tipo"], string> = {
   bar: "bar",
   pub: "pub",
