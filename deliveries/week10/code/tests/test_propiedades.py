@@ -1,6 +1,6 @@
 """
-Las diez propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar, y lo que
-esas propiedades piden cuando además hay eventos publicados por los municipios.
+Las propiedades de docs/CONTRATO.md §3, sobre consultas generadas al azar, y lo que esas
+propiedades piden cuando además hay eventos publicados por los municipios.
 
 Corren contra los artefactos de dreemgo/datos. Por defecto, 100 consultas (las mismas en
 cada corrida: hypothesis va en modo determinista). Las mil del plan:
@@ -41,8 +41,11 @@ POLO = re.compile(r"\bpolos?\b", re.IGNORECASE)
 
 @st.composite
 def consultas(draw) -> Consulta:
-    origenes = sorted(artefactos.cargar().origenes)
+    datos = artefactos.cargar()
+    origenes = sorted(datos.origenes)
     con_fecha = draw(st.booleans())
+    # Una de cada tres, más o menos, con un destino elegido: no va con «Sorpréndeme».
+    destino = draw(st.one_of(st.none(), st.none(), st.sampled_from(sorted(datos.polos))))
     fecha = draw(st.dates(date(2026, 10, 1), date(2027, 12, 31))) if con_fecha else None
     return Consulta(
         origen=draw(st.sampled_from(origenes)),
@@ -52,13 +55,124 @@ def consultas(draw) -> Consulta:
         intereses=draw(st.lists(st.sampled_from(list(Interes)), max_size=3, unique=True)),
         presupuesto=draw(st.one_of(st.none(), st.integers(PRESUPUESTO_MIN, PRESUPUESTO_MAX))),
         altitud_max=draw(st.one_of(st.none(), st.integers(0, ALTITUD_MAX_M))),
-        sorpresa=draw(st.booleans()),
+        sorpresa=destino is None and draw(st.booleans()),
+        solo_por_tierra=draw(st.booleans()),
+        destino=destino,
     )
 
 
 def _hhmm(texto: str) -> int:
     h, m = texto.split(":")
     return int(h) * 60 + int(m)
+
+
+def _la_noche(consulta: Consulta, ruta) -> None:
+    """La noche (desde 1.5): solo las que se duermen en la base, solo lo que la consulta pide, a lo más
+    una de estrellas, y cada lugar para salir a pie de la base."""
+    noches = [d for d in ruta.dias if d.noche is not None]
+    pide_salir = Interes.vida_nocturna in consulta.intereses
+    pide_estrellas = Interes.naturaleza in consulta.intereses or not consulta.intereses
+    for d in noches:
+        # Se duerme en la base: no es un viaje de un día ni el día en que se deja, y si es de ida,
+        # es el último tramo.
+        assert d.tipo not in ("ida_visita_y_vuelta", "vuelta", "visita_y_vuelta")
+        if d.tipo == "ida":
+            assert all(otro.tipo != "ida" for otro in ruta.dias if otro.numero > d.numero)
+        assert d.noche.tipo != "salir" or pide_salir
+        assert d.noche.tipo != "descanso" or pide_salir
+        assert d.noche.tipo != "estrellas" or pide_estrellas
+        assert len(d.noche.lugares) <= 3 and all(lugar.minutos_a_pie <= 30 for lugar in d.noche.lugares)
+        assert (d.noche.cielo is not None) == (d.noche.tipo == "estrellas")
+    assert sum(1 for d in noches if d.noche.tipo == "estrellas") <= 1
+
+
+def _el_almuerzo(consulta: Consulta, ruta) -> None:
+    """12. El almuerzo (desde 1.6): solo en un día con paradas, desde las 11:30, en su lugar entre las
+    paradas; y si un día con paradas no lo trae, es porque sus visitas terminan antes de las 12:30."""
+    deposito = ruta.traslado.desde if consulta.dias == 1 else ruta.polo.base.nombre
+    for d in ruta.dias:
+        a = d.almuerzo
+        if a is None:
+            if d.paradas:
+                ultima = d.paradas[-1]
+                assert _hhmm(ultima.llegada) + ultima.minutos_visita < 12 * 60 + 30
+            continue
+        assert d.paradas and _hhmm(a.hora) >= 11 * 60 + 30
+        assert 0 <= a.despues_de <= len(d.paradas)
+        if a.despues_de:
+            assert _hhmm(a.hora) >= _hhmm(d.paradas[a.despues_de - 1].llegada)
+        if a.despues_de < len(d.paradas):
+            assert _hhmm(a.hora) + 60 <= _hhmm(d.paradas[a.despues_de].llegada)
+        assert a.en_la_base == (a.lugar == deposito)
+        assert a.hay_donde_comer is not False or not a.en_la_base
+        if a.hay_donde_comer is False:
+            event("algún almuerzo donde no hay registrado dónde comer")
+
+
+def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
+    """13. El bus de noche (desde 1.6): solo por carretera, de 7 a 16 horas, en un viaje de dos días o
+    más y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches. Sus noches van
+    fuera de los días: sale a las 19:00 o después, ningún día lleva horas de camino y el día 1 se visita
+    desde una hora después de llegar. Y lo que cumple todo eso va en bus de noche."""
+    t = ruta.traslado
+    solo_carretera = t.medios == ["carretera"] and t.horas is not None and consulta.dias >= 2
+    if t.bus_de_noche is None:
+        # Las horas vienen redondeadas a la décima: en los bordes manda la cuenta del motor.
+        adentro = solo_carretera and 7.1 <= t.horas <= 15.9
+        assert not (adentro and 2 * t.horas < 0.4 * 24 * consulta.dias - 0.2)
+        return
+    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.4 * 24 * consulta.dias + 0.2
+    assert t.dias_de_viaje == 0
+    event("alguna ruta en bus de noche")
+    assert _hhmm(t.bus_de_noche.sale) >= 19 * 60 and _hhmm(t.bus_de_noche.llega) < 12 * 60
+    assert [d.tipo for d in ruta.dias][:: len(ruta.dias) - 1] in (
+        ["ida_y_visita", "visita_y_vuelta"],
+        ["ida", "visita_y_vuelta"],
+        ["ida_y_visita", "vuelta"],
+        ["ida", "vuelta"],
+    )
+    assert all(d.tipo == "visita" for d in ruta.dias[1:-1])
+    if ruta.dias[0].paradas:
+        assert _hhmm(ruta.dias[0].paradas[0].llegada) >= _hhmm(t.bus_de_noche.llega) + 60
+
+
+def _la_altura_del_origen(origen: str, datos) -> int | None:
+    """La de la base de la zona de su misma ciudad, a menos de media hora: otra cuenta que la del motor."""
+    cerca = sorted((m, p) for p, (m, _) in datos.origenes[origen].a_base.items() if m < 30)
+    return datos.polos[cerca[0][1]].base["altitud_m"] if cerca else None
+
+
+def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
+    """14. El primer día en la altura (desde 1.7). Si se duerme a 2 500 m o más y se llega desde 1 000 m o
+    más abajo, un día es tranquilo, y es el primero en la base: medio día de visitas como mucho, ninguna
+    parada a más de 500 m sobre la base, ninguna exigente y, después de un bus de noche, desde las 9:00. Si
+    no, ningún día lo es. Y la noche de descanso sigue la misma regla."""
+    base, de_origen = ruta.polo.base.altitud_m, _la_altura_del_origen(consulta.origen, datos)
+    pesa = (
+        consulta.dias > 1 and base is not None and de_origen is not None and base >= 2500 and base - de_origen >= 1000
+    )
+    tranquilos = [d for d in ruta.dias if d.tranquilo]
+    descanso = any(d.noche is not None and d.noche.tipo == "descanso" for d in ruta.dias)
+    assert not descanso or pesa
+    if not pesa:
+        assert tranquilos == []
+        return
+    event("algún viaje con día tranquilo")
+    [d] = tranquilos
+    assert all(not antes.paradas for antes in ruta.dias[: d.numero - 1])
+    assert any(a.tipo == "aclimatacion" and f"El día {d.numero} es tranquilo" in a.mensaje for a in ruta.avisos)
+    if not d.paradas:
+        return
+    primera, ultima = d.paradas[0], d.paradas[-1]
+    assert sum(p.minutos_traslado + p.minutos_visita for p in d.paradas) <= 4 * 60
+    sale = _hhmm(primera.llegada) - primera.minutos_traslado
+    assert _hhmm(ultima.llegada) + ultima.minutos_visita - sale <= 4 * 60 + 60  # y el almuerzo, si va adentro
+    for p in d.paradas:
+        r = datos.recursos[p.recurso.codigo]
+        assert r["altitud_m"] is not None and r["altitud_m"] <= base + 500
+        assert (r["caminata_min"] or 0) <= 30 and (r["visita_min"] or 0) <= 120
+    if ruta.traslado.bus_de_noche is not None:
+        assert d.numero == 1 and sale >= 9 * 60
 
 
 @settings(
@@ -68,7 +182,7 @@ def _hhmm(texto: str) -> int:
     suppress_health_check=[HealthCheck.too_slow, HealthCheck.data_too_large],
 )
 @given(consultas())
-def test_las_diez_propiedades(consulta):
+def test_las_propiedades(consulta):
     datos = artefactos.cargar()
     respuesta = resolver(consulta, datos)
     desde, hasta = ventana(consulta, datos.version)
@@ -76,12 +190,14 @@ def test_las_diez_propiedades(consulta):
 
     for ruta in respuesta.rutas:
         paradas = [p for d in ruta.dias for p in d.paradas]
-        # 1. Ninguna parada supera la altitud máxima.
+        # 1. Ninguna parada supera la altitud máxima, ni la base donde se duerme (desde 1.7).
         if consulta.altitud_max is not None:
             assert all(p.recurso.altitud_m is not None and p.recurso.altitud_m <= consulta.altitud_max for p in paradas)
+            altura = ruta.polo.base.altitud_m
+            assert consulta.dias == 1 or (altura is not None and altura <= consulta.altitud_max)
         # 2. Los días suman exactamente los pedidos, con la ida y la vuelta.
         assert [d.numero for d in ruta.dias] == list(range(1, consulta.dias + 1))
-        # 3. Ninguna jornada con visitas pasa de 8 horas, ni un día de solo viaje de 9.
+        # 3. Ninguna jornada con visitas pasa de 8 horas, sin el almuerzo, ni un día de solo viaje de 9.
         assert all(d.horas <= (8.0 if d.paradas else 9.0) for d in ruta.dias)
         # 4. Toda parada enlaza a su ficha oficial.
         assert all(FICHA.match(str(p.recurso.url_ficha)) for p in paradas)
@@ -109,21 +225,59 @@ def test_las_diez_propiedades(consulta):
         # Y lo que el viajero lee del clima habla de la zona, como la app, no del polo.
         del_clima = [a.mensaje for a in ruta.avisos if a.tipo in ("datos", "estacionalidad")]
         assert not any(POLO.search(frase) for frase in [ruta.estacionalidad.explicacion, *del_clima])
+        _la_noche(consulta, ruta)
+        _el_almuerzo(consulta, ruta)
+        _el_bus_de_noche(consulta, ruta)
+        _el_dia_tranquilo(consulta, ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
+        # Y cada sugerencia, aceptada sola, hace salir algún viaje.
+        for s in respuesta.sin_resultado.sugerencias:
+            assert resolver(consulta.model_copy(update={s.campo: s.valor}), datos, sugerir=False).rutas
 
-    # 9. Las rutas son de polos distintos.
+    # 9. Las rutas son de polos distintos; con destino, una como mucho, y es la de esa zona.
     polos = [r.polo.id for r in respuesta.rutas]
     assert len(polos) == len(set(polos))
+    if consulta.destino is not None:
+        assert polos in ([], [consulta.destino])
+    # Y el viaje a una zona es el mismo cuando la elige el motor que cuando la elige el viajero:
+    # solo cambia el puntaje, que la compara con las demás. Salvo el avión: con la zona elegida, el
+    # 40 % del viaje no impide volar, así que puede volar donde el motor iba por tierra (desde 1.6).
+    if consulta.destino is None and respuesta.rutas:
+        ruta = respuesta.rutas[-1]
+        [elegida] = resolver(consulta.model_copy(update={"destino": ruta.polo.id, "sorpresa": False}), datos).rutas
+        if ("avion" in elegida.traslado.medios) == ("avion" in ruta.traslado.medios):
+            assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
+        else:
+            assert "avion" in elegida.traslado.medios and not consulta.solo_por_tierra
+            event("con destino, vuela donde el motor iba por tierra")
 
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()
 
-    # 7. El presupuesto ordena y advierte, pero nunca esconde una ruta.
+    # Y la vida nocturna no cambia el día: en la misma zona, sin ella, las paradas, sus horas, el
+    # traslado y el costo son los mismos (desde 1.5).
+    if Interes.vida_nocturna in consulta.intereses and respuesta.rutas:
+        zona = {"destino": respuesta.rutas[0].polo.id, "sorpresa": False}
+        [ruta] = resolver(consulta.model_copy(update=zona), datos).rutas
+        sin_noche = consulta.model_copy(
+            update=zona | {"intereses": [i for i in consulta.intereses if i != Interes.vida_nocturna]}
+        )
+        [del_dia] = resolver(sin_noche, datos).rutas
+        assert [d.model_dump(exclude={"noche"}) for d in ruta.dias] == [
+            d.model_dump(exclude={"noche"}) for d in del_dia.dias
+        ]
+        assert (ruta.costo, ruta.traslado) == (del_dia.costo, del_dia.traslado)
+
+    # 7. El presupuesto ordena, elige y avisa. Con él salen tantas rutas como sin él; una que
+    #    entra en el presupuesto y salía sin él sigue saliendo; y la que lo pasa lleva su aviso.
     if consulta.presupuesto is not None:
         sin_presupuesto = resolver(consulta.model_copy(update={"presupuesto": None}), datos)
-        assert sorted(polos) == sorted(r.polo.id for r in sin_presupuesto.rutas)
+        assert len(polos) == len(sin_presupuesto.rutas)
+        for ruta in sin_presupuesto.rutas:
+            if ruta.costo.p50 <= consulta.presupuesto:
+                assert ruta.polo.id in polos
         for ruta in respuesta.rutas:
             if ruta.costo.exceso:
                 assert any(a.tipo == "presupuesto" for a in ruta.avisos)

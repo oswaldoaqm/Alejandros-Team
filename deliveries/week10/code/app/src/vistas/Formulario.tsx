@@ -1,11 +1,23 @@
-// Pantalla 1: qué viaje quiere el viajero. Una pregunta grande y una tarjeta con cinco filas;
-// cada fila abre una hoja para elegir. Ya viene lista para buscar: el mes que viene, desde
-// Lima y seis días. Las opciones (orígenes, intereses y rangos) vienen de GET /v1/opciones.
+// Pantalla 1: qué viaje quiere el viajero. Una pregunta grande y una tarjeta con siete filas;
+// casi todas abren una hoja para elegir, y la de los vuelos es un interruptor. Ya viene lista
+// para buscar: el mes que viene, desde Lima, seis días, con vuelos a lo lejano y tres viajes a
+// elegir. Con «A dónde», el viaje es a esa zona. Las opciones (orígenes, intereses y rangos)
+// vienen de GET /v1/opciones; las zonas, de public/destinos.json.
 
 import { type FormEvent, useId, useMemo, useState } from "react";
 import type { Opciones } from "../api/tipos";
-import { type Consulta, POR_DEFECTO } from "../consulta";
+import { type Consulta, consultaNueva } from "../consulta";
+import {
+  buscarZonas,
+  type Destinos,
+  type Encontrada,
+  nombreDeZona,
+  notaDeZona,
+  plano,
+  zonasDestacadas,
+} from "../destinos";
 import { useApp } from "../estado/contexto";
+import { useDestinos } from "../estado/destinos";
 import { useTitulo } from "../estado/titulo";
 import { aIso, fecha, fechaLocal, MESES_CORTOS, mayuscula, mes, metros, plural, soles } from "../formato";
 import { Cargando, ErrorVista } from "../piezas/Estados";
@@ -26,24 +38,47 @@ const ICONO_DE_INTERES: Record<string, NombreDeIcono> = {
   fiestas: "fiestas",
   arquitectura: "arquitectura",
   aventura: "aventura",
+  vida_nocturna: "copa",
 };
 
-type Eleccion = "origen" | "cuando" | "intereses" | "filtros" | null;
+type Eleccion = "origen" | "destino" | "cuando" | "intereses" | "filtros" | null;
 
-function mesQueViene(): number {
-  return ((new Date().getMonth() + 1) % 12) + 1;
+function Gustos({
+  intereses,
+  c,
+  cambiar,
+}: {
+  intereses: Opciones["intereses"];
+  c: Consulta;
+  cambiar: (cambios: Partial<Consulta>) => void;
+}) {
+  return (
+    <div className="gustos">
+      {intereses.map((i) => (
+        <label key={i.id} className="gusto">
+          <input
+            type="checkbox"
+            checked={c.intereses.includes(i.id)}
+            onChange={() =>
+              cambiar({
+                intereses: c.intereses.includes(i.id)
+                  ? c.intereses.filter((x) => x !== i.id)
+                  : [...c.intereses, i.id],
+              })
+            }
+          />
+          <span>
+            <Icono nombre={ICONO_DE_INTERES[i.id] ?? "estrella"} tamano={26} />
+            {i.etiqueta}
+          </span>
+        </label>
+      ))}
+    </div>
+  );
 }
 
 function acotar(valor: number, minimo: number, maximo: number): number {
   return Math.min(maximo, Math.max(minimo, valor));
-}
-
-/** Sin tildes ni mayúsculas: «cusco» encuentra «Cusco» y «junin» encuentra «Junín». */
-function plano(texto: string): string {
-  return texto
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase();
 }
 
 export function Formulario({ inicial }: { inicial: Consulta | null }) {
@@ -73,16 +108,26 @@ export function Formulario({ inicial }: { inicial: Consulta | null }) {
 function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta | null }) {
   const { navegar } = useApp();
   const id = useId();
-  const [c, poner] = useState<Consulta>(() => inicial ?? { ...POR_DEFECTO, mes: mesQueViene() });
+  const [c, poner] = useState<Consulta>(() => inicial ?? consultaNueva());
   const [abierta, abrir] = useState<Eleccion>(null);
   const cambiar = (parte: Partial<Consulta>) => poner((antes) => ({ ...antes, ...parte }));
   const cerrar = () => abrir(null);
+  // Las zonas se piden al buscar una o para nombrar la elegida.
+  const destinos = useDestinos(abierta === "destino" || c.destino !== null);
 
   const dias = { minimo: opciones.dias.minimo, maximo: opciones.dias.maximo };
   const origen = opciones.origenes.find((o) => o.id === c.origen)?.nombre ?? c.origen;
   const etiquetas = new Map<string, string>(opciones.intereses.map((i) => [i.id, i.etiqueta]));
+  const destino =
+    c.destino === null ? "Te proponemos tres" : (nombreDeZona(destinos, c.destino) ?? "La zona elegida");
 
-  const buscar = (sorpresa: boolean) => navegar(enlaces.resultados({ ...c, sorpresa }));
+  // Con un destino sale un solo viaje: se abre directo.
+  const buscar = (sorpresa: boolean) =>
+    navegar(
+      c.destino === null
+        ? enlaces.resultados({ ...c, sorpresa })
+        : enlaces.resultados({ ...c, sorpresa: false }, null, 1),
+    );
   const enviar = (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
     buscar(false);
@@ -109,6 +154,18 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
           </span>
           <span className="fila__texto">
             <span className="fila__nombre">Desde</span> <span className="fila__valor">{origen}</span>
+          </span>
+          <span className="fila__fin">
+            <Icono nombre="flecha" />
+          </span>
+        </button>
+
+        <button type="button" className="fila" onClick={() => abrir("destino")} aria-haspopup="dialog">
+          <span className="fila__icono">
+            <Icono nombre="destino" />
+          </span>
+          <span className="fila__texto">
+            <span className="fila__nombre">A dónde</span> <span className="fila__valor">{destino}</span>
           </span>
           <span className="fila__fin">
             <Icono nombre="flecha" />
@@ -185,15 +242,45 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
             <Icono nombre="flecha" />
           </span>
         </button>
+
+        {/* El motor vuela a lo que por tierra pasa de 16 horas (decisión 0016); apagado, solo por tierra. */}
+        <label className="fila fila--interruptor">
+          <span className="fila__icono">
+            <Icono nombre="avion" />
+          </span>
+          <span className="fila__texto">
+            <span className="fila__nombre" id={`${id}-vuelos`}>
+              Vuelos
+            </span>{" "}
+            <span className="fila__valor" id={`${id}-vuelos-valor`}>
+              {c.solo_por_tierra ? "Solo por tierra" : "Si por tierra pasa de 16 h"}
+            </span>
+          </span>
+          <span className="interruptor">
+            <input
+              type="checkbox"
+              role="switch"
+              aria-labelledby={`${id}-vuelos`}
+              aria-describedby={`${id}-vuelos-valor`}
+              aria-checked={!c.solo_por_tierra}
+              checked={!c.solo_por_tierra}
+              onChange={(e) => cambiar({ solo_por_tierra: !e.target.checked })}
+            />
+            <span className="interruptor__pista" aria-hidden="true" />
+          </span>
+        </label>
       </div>
 
       <div className="inicio__acciones">
         <button type="submit" className="boton boton--primario boton--grande boton--ancho">
-          Ver mis viajes
+          {c.destino === null ? "Ver mis viajes" : "Ver mi viaje"}
         </button>
-        <button type="button" className="boton boton--texto" onClick={() => buscar(true)}>
-          Sorpréndeme fuera de Lima y Cusco
-        </button>
+        {/* Con un destino no hay sorpresa: el viaje ya tiene a dónde. */}
+        {c.destino === null ? (
+          <button type="button" className="boton boton--texto" onClick={() => buscar(true)}>
+            Sorpréndeme fuera de Lima y Cusco
+          </button>
+        ) : null}
       </div>
 
       <Hoja abierta={abierta === "origen"} alCerrar={cerrar} titulo="¿Desde dónde sales?">
@@ -202,6 +289,18 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
           elegido={c.origen}
           elegir={(o) => {
             cambiar({ origen: o });
+            cerrar();
+          }}
+        />
+      </Hoja>
+
+      <Hoja abierta={abierta === "destino"} alCerrar={cerrar} titulo="¿A dónde quieres ir?">
+        <ElegirDestino
+          destinos={destinos}
+          origen={c.origen}
+          elegido={c.destino}
+          elegir={(id) => {
+            cambiar({ destino: id, sorpresa: false });
             cerrar();
           }}
         />
@@ -231,29 +330,17 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
         }
       >
         <p className="hoja__ayuda">
-          Elige uno, varios o ninguno. Los lugares que te gustan pesan más en el plan.
+          Elige uno, varios o ninguno. Los lugares que te gustan pesan más en el plan, y con «Naturaleza» o
+          sin ninguno, una noche para ver estrellas donde el cielo es oscuro.
         </p>
-        <div className="gustos">
-          {opciones.intereses.map((i) => (
-            <label key={i.id} className="gusto">
-              <input
-                type="checkbox"
-                checked={c.intereses.includes(i.id)}
-                onChange={() =>
-                  cambiar({
-                    intereses: c.intereses.includes(i.id)
-                      ? c.intereses.filter((x) => x !== i.id)
-                      : [...c.intereses, i.id],
-                  })
-                }
-              />
-              <span>
-                <Icono nombre={ICONO_DE_INTERES[i.id] ?? "estrella"} tamano={26} />
-                {i.etiqueta}
-              </span>
-            </label>
-          ))}
-        </div>
+        <Gustos intereses={opciones.intereses.filter((i) => !i.de_noche)} c={c} cambiar={cambiar} />
+        {opciones.intereses.some((i) => i.de_noche) ? (
+          <>
+            <h3 className="hoja__subtitulo">De noche</h3>
+            <p className="hoja__ayuda">Bares, pubs, discotecas, karaokes y peñas cerca de donde duermes.</p>
+            <Gustos intereses={opciones.intereses.filter((i) => i.de_noche)} c={c} cambiar={cambiar} />
+          </>
+        ) : null}
       </Hoja>
 
       <Hoja
@@ -321,6 +408,102 @@ function ElegirOrigen({
           </li>
         ))}
         {lista.length === 0 ? <li className="opciones-lista__vacia">Ninguna ciudad coincide.</li> : null}
+      </ul>
+    </>
+  );
+}
+
+function ElegirDestino({
+  destinos,
+  origen,
+  elegido,
+  elegir,
+}: {
+  /** undefined mientras llega; null si no llegó. */
+  destinos: Destinos | null | undefined;
+  origen: string;
+  elegido: number | null;
+  elegir: (id: number | null) => void;
+}) {
+  const id = useId();
+  const [texto, ponerTexto] = useState("");
+  const buscando = texto.trim() !== "";
+  const lista: Encontrada[] = useMemo(() => {
+    if (!destinos) return [];
+    if (buscando) return buscarZonas(destinos, texto);
+    return zonasDestacadas(destinos, origen);
+  }, [destinos, texto, buscando, origen]);
+
+  return (
+    <>
+      <label className="buscador">
+        <Icono nombre="lupa" />
+        <span className="solo-lector">Buscar una zona o un lugar</span>
+        <input
+          type="search"
+          placeholder="Machu Picchu, Colca, Máncora…"
+          value={texto}
+          aria-describedby={`${id}-ayuda`}
+          onChange={(e) => ponerTexto(e.target.value)}
+          // Enter elige la primera zona que coincide; no manda el formulario de atrás.
+          onKeyDown={(e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const primera = buscando ? lista[0] : undefined;
+            if (primera) elegir(primera.zona.id);
+          }}
+          autoComplete="off"
+        />
+      </label>
+      <p className="hoja__ayuda" id={`${id}-ayuda`}>
+        Escribe una zona, un lugar o una región. Te armamos el viaje a esa zona y, si no cabe en tus días, te
+        decimos qué cambiar.
+      </p>
+      <ul className="opciones-lista">
+        <li>
+          <button
+            type="button"
+            className="opcion"
+            aria-pressed={elegido === null}
+            onClick={() => elegir(null)}
+          >
+            <span className="opcion__texto">
+              <span>Te proponemos tres</span>
+              <span className="opcion__nota">Las zonas que mejor te quedan</span>
+            </span>
+            {elegido === null ? <Icono nombre="bien" /> : null}
+          </button>
+        </li>
+        {!buscando && lista.length > 0 ? (
+          <li className="opciones-lista__titulo">Con lugares imperdibles</li>
+        ) : null}
+        {lista.map((encontrada) => (
+          <li key={encontrada.zona.id}>
+            <button
+              type="button"
+              className="opcion"
+              aria-pressed={encontrada.zona.id === elegido}
+              onClick={() => elegir(encontrada.zona.id)}
+            >
+              <span className="opcion__texto">
+                <span>{encontrada.zona.nombre}</span>
+                <span className="opcion__nota">{notaDeZona(encontrada)}</span>
+              </span>
+              {encontrada.zona.id === elegido ? <Icono nombre="bien" /> : null}
+            </button>
+          </li>
+        ))}
+        {destinos === undefined ? (
+          <li className="opciones-lista__vacia" role="status">
+            Cargando las zonas…
+          </li>
+        ) : destinos === null ? (
+          <li className="opciones-lista__vacia" role="status">
+            No pudimos cargar las zonas. Revisa tu conexión y vuelve a abrir esta hoja.
+          </li>
+        ) : buscando && lista.length === 0 ? (
+          <li className="opciones-lista__vacia">Ninguna zona ni lugar coincide.</li>
+        ) : null}
       </ul>
     </>
   );
@@ -405,7 +588,7 @@ function ElegirFiltros({ c, cambiar }: { c: Consulta; cambiar: (p: Partial<Consu
           }}
         />
         <p className="hoja__ayuda">
-          Para todo el viaje. Ordena los viajes y te avisa si uno se pasa; no esconde ninguno.
+          Para todo el viaje. Elige y ordena los viajes, y te avisa si uno se pasa.
         </p>
       </div>
       <div className="deslizador">

@@ -41,6 +41,7 @@ from dreemgo.api.publicaciones import (
 from dreemgo.contrato import (
     ALTITUD_MAX_M,
     ALTITUD_MIN_M,
+    DE_NOCHE,
     DIAS_DEFECTO,
     DIAS_MAX,
     DIAS_MIN,
@@ -61,7 +62,7 @@ from dreemgo.contrato import (
     Salud,
 )
 from dreemgo.motor import datos as artefactos
-from dreemgo.motor import textos, viaje
+from dreemgo.motor import noche, textos, viaje
 from dreemgo.publicados import Instantanea, Publicado, region_del_inventario, regiones
 
 bitacora = logging.getLogger("dreemgo.api")
@@ -183,6 +184,8 @@ def viajes(consulta: Annotated[Consulta, Query()], publicadas: Publicadas) -> Re
     except viaje.OrigenDesconocido as e:
         opciones = ", ".join(datos.origenes)
         raise _error("origen", f"Origen desconocido. Opciones: {opciones}.") from e
+    except viaje.DestinoDesconocido as e:
+        raise _error("destino", "No hay una zona con ese número.") from e
 
 
 @app.get(
@@ -198,7 +201,12 @@ def opciones(publicadas: Publicadas) -> Opciones:
         version_datos=publicadas.instantanea(datos).version(datos.version),
         origenes=[OpcionOrigen(id=o.id, nombre=o.nombre, region=o.region) for o in datos.origenes.values()],
         intereses=[
-            OpcionInteres(id=i, etiqueta=ETIQUETAS_INTERES[i], paradas=datos.intereses[i.value]["paradas"])
+            OpcionInteres(
+                id=i,
+                etiqueta=ETIQUETAS_INTERES[i],
+                paradas=datos.intereses.get(i.value, {}).get("paradas", 0),
+                de_noche=i in DE_NOCHE,
+            )
             for i in Interes
         ],
         dias=Rango(minimo=DIAS_MIN, maximo=DIAS_MAX, defecto=DIAS_DEFECTO),
@@ -232,6 +240,7 @@ def polo(polo_id: Annotated[int, Path(ge=0)], publicadas: Publicadas) -> PoloDet
         recursos=[viaje.recurso(r) for r in paradas],
         clima=[viaje.estacionalidad(p, mes) for mes in range(1, 13)],
         eventos=_en_orden(viaje.eventos_del_polo(p, desde, hasta, datos) + publicados.entre(desde, hasta, p.id)),
+        noche=noche.noche_de_la_zona(p),
         atribucion=list(datos.atribucion),
     )
 
@@ -328,4 +337,4 @@ def publicar(
     bitacora.info(
         "Evento %s publicado; sale en los polos %s.", publicado.id, sorted(instantanea.polos_de(publicado.id))
     )
-    return publicado.evento()
+    return publicado.evento(instantanea.zona_de(publicado.id))

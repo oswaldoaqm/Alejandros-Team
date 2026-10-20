@@ -14,9 +14,31 @@ El 10 de octubre entró el clima propio de los 194 polos, con los datos `2026.10
 
 El 14 de octubre el profesor movió la entrega de la semana 10, con su exposición, al 21 de octubre. La carpeta [`deliveries/week10/`](../deliveries/week10/) ya tiene todo lo que pide el enunciado, con la presentación y las capturas.
 
+Después de esa entrega entran los vuelos, con el [contrato 1.3](./CONTRATO.md) y los datos `2026.10.5`. Se vuela solo a lo que por tierra queda a más de 16 horas, y no en viajes cortos: desde Lima salen el Cusco, Arequipa y Puno en avión, y Huaraz y Trujillo siguen en bus. El presupuesto entra ahora a elegir las tres rutas. Quien no quiere volar apaga el interruptor «Vuelos». Lo que se midió está en la [decisión 0016](./decisiones/0016-vuelos.md).
+
+Con los vuelos entra «Quiero ir a…», con el [contrato 1.4](./CONTRATO.md). Quien ya sabe a dónde quiere ir elige la zona en el formulario, desde la zona o desde una fiesta del calendario. El motor arma ese viaje o dice por qué no cabe y qué cambiar: desde Lima, el Cusco sale con tres días, Machu Picchu con cinco y Huaraz con cuatro. Está en la [decisión 0017](./decisiones/0017-quiero-ir-a.md), que deja abierta una pregunta para el equipo: si con destino se vuela también en viajes cortos.
+
+Después entran los planes de noche, con el [contrato 1.5](./CONTRATO.md) y los datos `2026.10.6`. Cada noche que se duerme en la zona trae un plan, sin cambiar el día:
+
+- con «Vida nocturna», hasta tres bares, pubs, discotecas, karaokes o peñas a pie de la base, otros cada noche, y un descanso la primera noche en la altura;
+- con «Naturaleza», o sin intereses, una noche de estrellas: desde la base si su cielo es oscuro, o en un observatorio o planetario cercano. Con fecha, la de menos luna.
+
+La página de cada zona muestra dónde salir y cuántas noches salen despejadas cada mes. Está en la [decisión 0018](./decisiones/0018-planes-de-noche.md).
+
+Después, el plan creíble, con el [contrato 1.6](./CONTRATO.md) y los datos `2026.10.7`:
+
+- **el almuerzo**: una hora más, que no cuenta en las 8 de paseo, en un lugar con dónde comer si lo hay a la hora, o con el aviso de llevarlo;
+- **el bus de noche**: lo que por tierra toma de 7 a 16 horas va de noche, y sus noches quedan fuera de los días. Desde Lima, Huaraz y Nasca salen con dos días;
+- **una jornada que no se corre**: se vuelve a las 17:00 aunque el primer lugar abra tarde, y no se espera más de una hora en una puerta;
+- **con destino se vuela aunque el viaje sea corto**: el Cusco sale desde Lima con dos días. Así se cierra la pregunta que dejó la 0017.
+
+Para que un fin de semana no salga siempre lejos, el bus no va si se lleva el 40 % del viaje, con sus noches, y sus dos noches pesan en el puntaje como un día más. Está en la [decisión 0019](./decisiones/0019-plan-creible.md).
+
+Después, el primer día tranquilo en la altura, con el [contrato 1.7](./CONTRATO.md) y los datos `2026.10.8`. El aviso de aclimatación decía «conviene un primer día tranquilo», y ahora el plan lo da: si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la zona tiene medio día de visitas como mucho, sin subir más de 500 m sobre la base ni caminatas largas, y después de un bus de noche empieza a las 9:00. Es la misma regla de la noche de descanso, y sale del Yellow Book del CDC. Las 13 bases que no tenían altura la toman de un modelo de elevación, y con eso la altitud máxima también filtra dónde se duerme. Está en la [decisión 0020](./decisiones/0020-primer-dia-tranquilo.md).
+
 ## Qué promete el producto
 
-El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
+El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa. Cada noche en la zona tiene su plan: dónde salir, desde dónde ver las estrellas o, en la altura, descansar. Y el plan se puede seguir: cada día almuerza, lo que queda a una noche de bus va de noche y el primer día en la altura va con calma.
 
 ## Calendario
 
@@ -38,12 +60,13 @@ Las fases 1 y 2 se solapan a propósito: la app se construye contra el contrato 
 
 | Pieza | Dónde | Qué hace |
 |---|---|---|
-| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo, red vial y los datos de las fotos |
+| Adquisición | [`pipeline/adquisicion/`](../pipeline/adquisicion/) | Baja las fuentes: inventario, fichas oficiales, clima por polo, red vial, los datos de las fotos y, para la noche, los lugares de Overture, las luces de VIIRS, las nubes de GOES-16 y los METAR |
 | Pipeline | [`pipeline/`](../pipeline/) | Convierte las descargas en artefactos versionados con procedencia, en [`data/procesados/`](../data/procesados/), y elige la foto de cada lugar |
 | Motor y API | [`dreemgo/`](../dreemgo/) | Carga los artefactos y resuelve consultas, y recibe los eventos que publican los municipios: [contrato](./CONTRATO.md) |
 | App | [`app/`](../app/) | React, Vite, TypeScript y MapLibre; en GitHub Pages |
 | Infraestructura | [`infra/`](../infra/) | Imagen del API y despliegue en AWS con SAM, con la tabla de los eventos publicados; y las alternativas gratuitas mientras no haya cuenta |
 | Pruebas | [`tests/`](../tests/) | Contrato, API y, con el motor, propiedades sobre miles de consultas |
+| Evaluación | [`evaluacion/`](../evaluacion/) | Las 40 consultas que califica el equipo, la línea de base, el kit para calificar y las cifras del informe de la semana 12 ([decisión 0021](./decisiones/0021-evaluacion-semana-12.md)) |
 | Decisiones | [`docs/decisiones/`](./decisiones/) | Por qué cada cosa es como es |
 | Entregas | [`deliveries/`](../deliveries/) | Lo que pide cada semana del curso, con sus erratas |
 

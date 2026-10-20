@@ -22,6 +22,9 @@ export const TRAZOS = {
     "M15 14h.01",
   ],
   bote: ["M3 14h18l-2.5 5h-13L3 14Z", "M12 14V4", "M12 5l6 6h-6"],
+  avion: [
+    "M12 3c.9 0 1.5.8 1.5 2v5l7 4v2l-7-2v4l2 1.5V21l-3.5-1-3.5 1v-1.5l2-1.5v-4l-7 2v-2l7-4V5c0-1.2.6-2 1.5-2Z",
+  ],
   compartir: ["M12 15V4", "m8 8 4-4 4 4", "M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"],
   guardar: ["M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1Z"],
   imprimir: [
@@ -52,6 +55,8 @@ export const TRAZOS = {
     "M12 21s6.5-5.6 6.5-11a6.5 6.5 0 1 0-13 0C5.5 15.4 12 21 12 21Z",
     "M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
   ],
+  // Una bandera en su asta: a dónde se va.
+  destino: ["M6 21V4", "M6 4.5h11.5l-2.5 4 2.5 4H6"],
   copiar: ["M9 9h10v11H9z", "M5 15V4h10"],
   borrar: ["M5 7h14", "M9 7V4h6v3", "M7 7l1 13h8l1-13"],
   estrella: ["m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8L12 3.6Z"],
@@ -119,9 +124,25 @@ export const TRAZOS = {
   fiestas: ["M9 18V6l11-2v12", "M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z", "M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"],
   arquitectura: ["M4 21h16", "M6 21V10l6-6 6 6v11", "M10 21v-5h4v5", "M12 7.5v2.5"],
   aventura: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m15.5 8.5-2 5-5 2 2-5 5-2Z"],
+  // La noche: una copa para salir, una luna para descansar y tres destellos para las estrellas.
+  copa: ["M5 4h14l-7 8-7-8Z", "M12 12v8", "M8 20h8", "M7.5 7h9"],
+  luna: ["M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z"],
+  estrellas: [
+    "M10 3.5 11.3 7 14.8 8.3 11.3 9.6 10 13.1 8.7 9.6 5.2 8.3 8.7 7 10 3.5Z",
+    "M17.5 12.5 18.3 14.7 20.5 15.5 18.3 16.3 17.5 18.5 16.7 16.3 14.5 15.5 16.7 14.7 17.5 12.5Z",
+    "M6.5 15.5 7 17 8.5 17.5 7 18 6.5 19.5 6 18 4.5 17.5 6 17 6.5 15.5Z",
+  ],
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;
+
+/** El ícono de la ida: el avión si se vuela; si no, el tren o el bote si van, y si no, el bus. */
+export function iconoDeLaIda(medios: readonly string[] | null | undefined): NombreDeIcono {
+  const m = medios ?? [];
+  if (m.includes("avion")) return "avion";
+  if (m.includes("tren")) return "tren";
+  return m.includes("bote") ? "bote" : "bus";
+}
 
 export function Icono({
   nombre,

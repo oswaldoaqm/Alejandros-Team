@@ -1,17 +1,24 @@
 // Uno de los tres viajes, para elegir de un vistazo: su foto (o su flor, si no tiene), su
-// nombre, sus imperdibles y los datos que deciden: cuánto cuesta, cuánto se tarda en llegar,
-// cómo está el clima ese mes y, si se siente, la altura.
+// nombre, sus imperdibles y los datos que deciden: cuánto cuesta, cuánto se tarda en llegar (y
+// si se vuela o se va en bus de noche), cómo está el clima ese mes y, si se siente, la altura.
 
 import { useMemo, useState } from "react";
 import type { Ruta } from "../api/tipos";
 import { horas, metros, soles } from "../formato";
 import type { FotoDe } from "../fotos";
 import { numerar, puntosDeMapa } from "../itinerario";
-import { ALTURA_QUE_SE_SIENTE, climaCorto, imperdibles, lugaresDelViaje, nombreDelViaje } from "../textos";
+import {
+  ALTURA_QUE_SE_SIENTE,
+  climaCorto,
+  comoSeVa,
+  imperdibles,
+  lugaresDelViaje,
+  nombreDelViaje,
+} from "../textos";
 import { Enlace } from "./Enlace";
 import { DibujoFlor } from "./Flor";
 import { Foto } from "./Foto";
-import { Icono, type NombreDeIcono } from "./Icono";
+import { Icono, iconoDeLaIda, type NombreDeIcono } from "./Icono";
 
 interface Props {
   ruta: Ruta;
@@ -43,11 +50,7 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
       ? `${principal} y ${total - 1} ${total - 1 === 1 ? "lugar" : "lugares"} más`
       : principal
     : `${total} ${total === 1 ? "lugar" : "lugares"} para visitar`;
-  const medio = (traslado.medios ?? []).includes("tren")
-    ? "tren"
-    : (traslado.medios ?? []).includes("bote")
-      ? "bote"
-      : "bus";
+  const como = comoSeVa(traslado);
 
   return (
     <Enlace href={enlace} className="viaje-tarjeta">
@@ -92,8 +95,9 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
           </li>
           {traslado.horas != null ? (
             <li>
-              <Icono nombre={medio} />
+              <Icono nombre={iconoDeLaIda(traslado.medios)} />
               {horas(traslado.horas)} desde {traslado.desde}
+              {como ? `, ${como}` : null}
             </li>
           ) : null}
           <li>

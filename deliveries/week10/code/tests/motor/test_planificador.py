@@ -3,6 +3,7 @@
 import numpy as np
 
 from dreemgo.motor.planificador import (
+    ESPERA_MAX,
     PARADAS_POR_DIA,
     Candidata,
     Jornada,
@@ -42,13 +43,14 @@ def test_el_tope_deja_fuera_lo_que_no_cabe_y_prefiere_lo_que_vale_mas():
 
 
 def test_respeta_el_horario_de_cada_lugar():
+    # La segunda abre a las 10:00: se llega a las 9:20 y se espera en la puerta (más de una hora no).
     t = _linea(2)
     temprano = Candidata(0, valor=1.0, visita=60, abre=0, cierra=10 * 60)
-    tarde = Candidata(1, valor=1.0, visita=60, abre=14 * 60, cierra=18 * 60)
+    tarde = Candidata(1, valor=1.0, visita=60, abre=10 * 60, cierra=18 * 60)
     (r,) = planificar([temprano, tarde], [Jornada(8 * 60, OCHO)], t)
     llegadas = {v.candidata.i: v for v in r.visitas}
     assert llegadas[0].llegada + 60 <= 10 * 60
-    assert llegadas[1].llegada + llegadas[1].espera >= 14 * 60
+    assert llegadas[1].llegada + llegadas[1].espera >= 10 * 60
     assert r.minutos <= OCHO
 
 
@@ -101,3 +103,24 @@ def test_determinista_y_el_mejor_arranque_no_empeora():
     assert [[v.candidata.i for v in r.visitas] for r in uno] == [[v.candidata.i for v in r.visitas] for r in otro]
     assert valor_visitado(uno) >= valor_visitado(planificar(c, jornadas, t))
     assert all(r.minutos <= OCHO for r in uno)
+
+
+def test_la_jornada_no_se_corre_aunque_el_primer_lugar_abra_tarde():
+    # Un teatro que abre a las 18:00: un día entero termina a las 17:00, con su almuerzo.
+    teatro = Candidata(0, valor=1.0, visita=60, abre=18 * 60, cierra=22 * 60)
+    assert horario([teatro], Jornada(8 * 60, OCHO), _linea(1)) is None
+    # Si abre a las 15:00, se sale a las 14:50, después de almorzar a la hora en la base.
+    museo = Candidata(0, valor=1.0, visita=60, abre=15 * 60, cierra=18 * 60)
+    r = horario([museo], Jornada(8 * 60, OCHO), _linea(1))
+    assert (r.almuerzo.hora, r.almuerzo.en, r.almuerzo.dentro) == (12 * 60 + 30, None, False)
+    assert (r.salida, r.vuelta) == (14 * 60 + 50, 16 * 60 + 10)
+
+
+def test_no_se_espera_mas_de_una_hora_en_la_puerta():
+    t = _linea(2)
+    temprano = Candidata(0, valor=1.0, visita=60, abre=0, cierra=10 * 60)
+    tarde = Candidata(1, valor=1.0, visita=60, abre=14 * 60, cierra=18 * 60)
+    # 8:10 a 9:10 la primera; la segunda abre a las 14:00: casi cinco horas en la puerta.
+    assert horario([temprano, tarde], Jornada(8 * 60, OCHO), t) is None
+    (r,) = planificar([temprano, tarde], [Jornada(8 * 60, OCHO)], t)
+    assert len(r.visitas) == 1 and all(v.espera <= ESPERA_MAX for v in r.visitas)

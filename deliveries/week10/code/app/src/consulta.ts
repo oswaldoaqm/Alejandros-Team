@@ -13,6 +13,10 @@ export interface Consulta {
   presupuesto: number | null;
   altitud_max: number | null;
   sorpresa: boolean;
+  /** Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote (contrato 1.3). */
+  solo_por_tierra: boolean;
+  /** La zona elegida, por su número: el viaje a esa zona y no tres propuestas (contrato 1.4). */
+  destino: number | null;
 }
 
 export const POR_DEFECTO: Consulta = {
@@ -24,7 +28,14 @@ export const POR_DEFECTO: Consulta = {
   presupuesto: null,
   altitud_max: null,
   sorpresa: false,
+  solo_por_tierra: false,
+  destino: null,
 };
+
+/** Una consulta nueva, lista para buscar: el mes que viene, desde Lima y seis días. */
+export function consultaNueva(cambios: Partial<Consulta> = {}): Consulta {
+  return { ...POR_DEFECTO, mes: ((new Date().getMonth() + 1) % 12) + 1, ...cambios };
+}
 
 function entero(texto: string | null): number | null {
   if (texto === null || !/^-?\d+$/.test(texto.trim())) return null;
@@ -35,13 +46,15 @@ function entero(texto: string | null): number | null {
 export function aParametros(c: Consulta): URLSearchParams {
   const p = new URLSearchParams();
   p.set("origen", c.origen);
+  if (c.destino !== null) p.set("destino", String(c.destino));
   if (c.fecha_inicio) p.set("fecha_inicio", c.fecha_inicio);
   else if (c.mes !== null) p.set("mes", String(c.mes));
   p.set("dias", String(c.dias));
   for (const interes of c.intereses) p.append("intereses", interes);
   if (c.presupuesto !== null) p.set("presupuesto", String(c.presupuesto));
   if (c.altitud_max !== null) p.set("altitud_max", String(c.altitud_max));
-  if (c.sorpresa) p.set("sorpresa", "true");
+  if (c.sorpresa && c.destino === null) p.set("sorpresa", "true");
+  if (c.solo_por_tierra) p.set("solo_por_tierra", "true");
   return p;
 }
 
@@ -52,6 +65,7 @@ export function deParametros(p: URLSearchParams): Consulta | null {
   if (!fecha && mesPedido === null) return null;
   const intereses = [...new Set(p.getAll("intereses").filter(Boolean))];
   const deLaFecha = fecha ? fechaLocal(fecha) : null;
+  const destino = entero(p.get("destino"));
   return {
     origen: p.get("origen")?.trim() || POR_DEFECTO.origen,
     mes: deLaFecha ? deLaFecha.getMonth() + 1 : mesPedido,
@@ -60,7 +74,11 @@ export function deParametros(p: URLSearchParams): Consulta | null {
     intereses,
     presupuesto: entero(p.get("presupuesto")),
     altitud_max: entero(p.get("altitud_max")),
-    sorpresa: p.get("sorpresa") === "true" || p.get("sorpresa") === "1",
+    // Con un destino no hay sorpresa: el API rechaza los dos juntos.
+    sorpresa:
+      (destino === null || destino < 0) && (p.get("sorpresa") === "true" || p.get("sorpresa") === "1"),
+    solo_por_tierra: p.get("solo_por_tierra") === "true" || p.get("solo_por_tierra") === "1",
+    destino: destino !== null && destino >= 0 ? destino : null,
   };
 }
 
@@ -89,20 +107,27 @@ export function nombreDeOrigen(id: string, nombres: Nombres): string {
 
 /**
  * La consulta en una frase, como la diría una persona: «Desde Lima, 6 días en julio», o «desde
- * el 20 de julio» si ya tiene fecha. Es el título de la pestaña y el nombre de un viaje guardado.
+ * el 20 de julio» si ya tiene fecha. Con un destino y su nombre, «De Lima a Cuzco, 6 días en
+ * julio». Es el título de la pestaña y el nombre de un viaje guardado.
  */
-export function titulo(c: Consulta, nombres: Nombres): string {
+export function titulo(c: Consulta, nombres: Nombres, zona: string | null = null): string {
   const f = c.fecha_inicio ? fechaLocal(c.fecha_inicio) : null;
   const cuando = f ? `desde el ${f.getDate()} de ${mes(f.getMonth() + 1)}` : `en ${mes(c.mes)}`;
-  return `Desde ${nombreDeOrigen(c.origen, nombres)}, ${plural(c.dias, "día", "días")} ${cuando}`;
+  const origen = nombreDeOrigen(c.origen, nombres);
+  const ruta = c.destino !== null && zona ? `De ${origen} a ${zona}` : `Desde ${origen}`;
+  return `${ruta}, ${plural(c.dias, "día", "días")} ${cuando}`;
 }
 
-/** Lo demás que pidió, si pidió algo: «Playa, hasta S/ 1 800 por persona, solo fuera de Lima y Cusco». */
+/**
+ * Lo demás que pidió, si pidió algo: «Playa, hasta S/ 1 800 por persona, solo fuera de Lima y
+ * Cusco, solo por tierra».
+ */
 export function detalles(c: Consulta, nombres: Nombres): string | null {
   const partes: string[] = [];
   if (c.intereses.length > 0) partes.push(lista(c.intereses.map((i) => nombres.intereses[i] ?? i)));
   if (c.presupuesto !== null) partes.push(`hasta ${soles(c.presupuesto)} por persona`);
   if (c.altitud_max !== null) partes.push(`hasta ${metros(c.altitud_max)} de altura`);
   if (c.sorpresa) partes.push("solo fuera de Lima y Cusco");
+  if (c.solo_por_tierra) partes.push("solo por tierra");
   return partes.length > 0 ? mayuscula(partes.join(", ")) : null;
 }

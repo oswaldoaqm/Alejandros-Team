@@ -1,6 +1,54 @@
 {
   "components": {
     "schemas": {
+      "Almuerzo": {
+        "additionalProperties": false,
+        "description": "La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.",
+        "properties": {
+          "despues_de": {
+            "description": "Cuántas paradas del día van antes: 0, antes de la primera.",
+            "minimum": 0.0,
+            "title": "Despues De",
+            "type": "integer"
+          },
+          "en_la_base": {
+            "description": "Si es en la base o, en un viaje de un día, en la ciudad de origen.",
+            "title": "En La Base",
+            "type": "boolean"
+          },
+          "hay_donde_comer": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si OpenStreetMap u Overture registran restaurantes, cafés o comida rápida a menos de 1,5 km. false: no registran ninguno, y conviene llevar el almuerzo. En la base o en el origen, null si no registran ninguno: es un pueblo con hospedaje, y se da por hecho que hay.",
+            "title": "Hay Donde Comer"
+          },
+          "hora": {
+            "description": "Cuándo empieza, HH:MM. Dura una hora.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Hora",
+            "type": "string"
+          },
+          "lugar": {
+            "description": "Dónde: el nombre de la parada o de la base.",
+            "title": "Lugar",
+            "type": "string"
+          }
+        },
+        "required": [
+          "hora",
+          "despues_de",
+          "lugar",
+          "en_la_base"
+        ],
+        "title": "Almuerzo",
+        "type": "object"
+      },
       "Aviso": {
         "additionalProperties": false,
         "properties": {
@@ -38,6 +86,246 @@
         "title": "Aviso",
         "type": "object"
       },
+      "BusDeNoche": {
+        "additionalProperties": false,
+        "description": "La ida y la vuelta en bus de noche: las noches del bus van fuera de los días del viaje (desde 1.6).",
+        "properties": {
+          "llega": {
+            "description": "La llegada a la base, el día 1.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Llega",
+            "type": "string"
+          },
+          "llega_vuelta": {
+            "description": "La llegada al origen, la mañana siguiente.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Llega Vuelta",
+            "type": "string"
+          },
+          "sale": {
+            "description": "La salida del origen, la noche antes del día 1.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Sale",
+            "type": "string"
+          },
+          "sale_vuelta": {
+            "description": "La salida de la base, la noche del último día.",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Sale Vuelta",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sale",
+          "llega",
+          "sale_vuelta",
+          "llega_vuelta"
+        ],
+        "title": "BusDeNoche",
+        "type": "object"
+      },
+      "Cielo": {
+        "additionalProperties": false,
+        "description": "Cómo se ve el cielo para mirar las estrellas (desde 1.5).",
+        "properties": {
+          "aclara": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: cuando empieza el crepúsculo de la mañana.",
+            "title": "Aclara"
+          },
+          "aeropuerto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "El aeropuerto del METAR, si de ahí sale el dato.",
+            "title": "Aeropuerto"
+          },
+          "desde": {
+            "$ref": "#/components/schemas/LugarDeEstrellas"
+          },
+          "fuente_nubes": {
+            "anyOf": [
+              {
+                "enum": [
+                  "goes",
+                  "metar"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fuente Nubes"
+          },
+          "luna": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Luna"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: la luna de esa noche."
+          },
+          "lunas_nuevas": {
+            "description": "Sin fecha: los días de luna nueva del mes del viaje, los mejores.",
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Lunas Nuevas",
+            "type": "array"
+          },
+          "noches_despejadas": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La parte de las noches del mes con el cielo despejado, a las 21:00 y a la 01:00: según GOES-16 o, en la costa, según el METAR del aeropuerto más cercano. null si no hay un dato confiable.",
+            "title": "Noches Despejadas"
+          },
+          "observatorio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Un observatorio o un planetario a menos de 45 minutos, aunque su cielo tenga luz."
+          },
+          "oscurece": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con fecha: cuando termina el crepúsculo, el Sol a 18° bajo el horizonte.",
+            "title": "Oscurece"
+          },
+          "temp_min_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La mínima media del mes donde se mira.",
+            "title": "Temp Min C"
+          }
+        },
+        "required": [
+          "desde"
+        ],
+        "title": "Cielo",
+        "type": "object"
+      },
+      "CieloDeLaZona": {
+        "additionalProperties": false,
+        "description": "El cielo de una zona para mirar las estrellas, mes a mes (desde 1.5).",
+        "properties": {
+          "aeropuerto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aeropuerto"
+          },
+          "desde": {
+            "$ref": "#/components/schemas/LugarDeEstrellas",
+            "description": "La base."
+          },
+          "fuente_nubes": {
+            "anyOf": [
+              {
+                "enum": [
+                  "goes",
+                  "metar"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fuente Nubes"
+          },
+          "mas_oscuro": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si la base tiene luz: el mirador, observatorio o planetario con nombre más oscuro a menos de 45 minutos, si su cielo es oscuro. Es un dato: el motor no propone ir de noche."
+          },
+          "noches_despejadas": {
+            "description": "Enero a diciembre: la parte de las noches con el cielo despejado; null donde no hay dato.",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Noches Despejadas",
+            "type": "array"
+          },
+          "observatorio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LugarDeEstrellas"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "desde",
+          "noches_despejadas"
+        ],
+        "title": "CieloDeLaZona",
+        "type": "object"
+      },
       "Consulta": {
         "additionalProperties": false,
         "description": "Lo que el viajero pide. Es también el enlace para compartir: el motor es\ndeterminista, así que la misma consulta con la misma versión de datos\ndevuelve el mismo viaje.",
@@ -56,9 +344,22 @@
             "description": "Altitud máxima tolerada, en metros. Ninguna parada la supera.",
             "title": "Altitud Max"
           },
+          "destino": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+            "title": "Destino"
+          },
           "dias": {
             "default": 6,
-            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
             "maximum": 14.0,
             "minimum": 1.0,
             "title": "Dias",
@@ -74,15 +375,15 @@
                 "type": "null"
               }
             ],
-            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
             "title": "Fecha Inicio"
           },
           "intereses": {
-            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
             "items": {
               "$ref": "#/components/schemas/Interes"
             },
-            "maxItems": 8,
+            "maxItems": 9,
             "title": "Intereses",
             "type": "array"
           },
@@ -120,8 +421,14 @@
                 "type": "null"
               }
             ],
-            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
             "title": "Presupuesto"
+          },
+          "solo_por_tierra": {
+            "default": false,
+            "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+            "title": "Solo Por Tierra",
+            "type": "boolean"
           },
           "sorpresa": {
             "default": false,
@@ -153,7 +460,7 @@
             "additionalProperties": {
               "type": "integer"
             },
-            "description": "Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.",
+            "description": "Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas y, si se vuela, vuelos (desde 1.3).",
             "title": "Desglose",
             "type": "object"
           },
@@ -210,6 +517,17 @@
       "Dia": {
         "additionalProperties": false,
         "properties": {
+          "almuerzo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Almuerzo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cuándo y dónde se almuerza, si el día tiene visitas y llega a la hora del almuerzo: null si las visitas terminan antes de las 12:30 (desde 1.6)."
+          },
           "fecha": {
             "anyOf": [
               {
@@ -223,7 +541,7 @@
             "title": "Fecha"
           },
           "horas": {
-            "description": "Horas ocupadas entre traslados y visitas.",
+            "description": "Horas ocupadas entre traslados y visitas: el almuerzo no cuenta.",
             "minimum": 0.0,
             "title": "Horas",
             "type": "number"
@@ -232,6 +550,17 @@
             "minimum": 0.0,
             "title": "Km",
             "type": "number"
+          },
+          "noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Noche"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las estrellas, naturaleza o ningún interés (desde 1.5)."
           },
           "nota": {
             "anyOf": [
@@ -257,7 +586,7 @@
             "type": "array"
           },
           "tipo": {
-            "description": "ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.",
+            "description": "ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él. Con bus de noche (desde 1.6), el día 1 es de ida y el último de vuelta aunque el bus vaya de noche: ida_y_visita y visita_y_vuelta, si tienen paradas.",
             "enum": [
               "ida",
               "visita",
@@ -268,6 +597,12 @@
             ],
             "title": "Tipo",
             "type": "string"
+          },
+          "tranquilo": {
+            "default": false,
+            "description": "El primer día en la base cuando se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, para que el cuerpo se acostumbre a la altura: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente (desde 1.7).",
+            "title": "Tranquilo",
+            "type": "boolean"
           }
         },
         "required": [
@@ -420,6 +755,19 @@
           "nombre": {
             "title": "Nombre",
             "type": "string"
+          },
+          "polo": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La zona donde cae, por su número de polo: la del inventario o, si lo publicó un municipio, la que duerme más cerca. null si no queda cerca de ninguna (desde 1.4).",
+            "title": "Polo"
           },
           "precision_fecha": {
             "description": "exacta: la fuente la publica. aproximada: calculada (santoral, cómputo de Pascua). por_confirmar: sin fecha conocida.",
@@ -633,7 +981,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -692,6 +1040,7 @@
             "title": "Jerarquia Media"
           },
           "km_total": {
+            "description": "Los km por tierra de todos los días; con bus de noche (desde 1.6), más los del bus.",
             "minimum": 0.0,
             "title": "Km Total",
             "type": "number"
@@ -734,14 +1083,311 @@
           "playa",
           "fiestas",
           "arquitectura",
-          "aventura"
+          "aventura",
+          "vida_nocturna"
         ],
         "title": "Interes",
         "type": "string"
       },
+      "LugarDeEstrellas": {
+        "additionalProperties": false,
+        "description": "Desde dónde se mira el cielo (desde 1.5).",
+        "properties": {
+          "brillo": {
+            "description": "La luz artificial del cielo frente a la natural (ALR), estimada con las luces nocturnas de VIIRS y el modelo de Duriscoe et al. (2018).",
+            "minimum": 0.0,
+            "title": "Brillo",
+            "type": "number"
+          },
+          "clase": {
+            "description": "Las del Servicio de Parques Nacionales de EE. UU.: brillo menor que 0,3, excelente; de 0,3 a 2, se ve lo principal; más de 2, la noche natural ya no se ve.",
+            "enum": [
+              "muy_oscuro",
+              "oscuro",
+              "con_luz"
+            ],
+            "title": "Clase",
+            "type": "string"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "minutos": {
+            "description": "Desde la base por la red, de puerta a puerta; 0 si es la base.",
+            "minimum": 0.0,
+            "title": "Minutos",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "base",
+              "mirador",
+              "observatorio",
+              "planetario"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Su página en OpenStreetMap; null si es la base.",
+            "title": "Url"
+          }
+        },
+        "required": [
+          "nombre",
+          "tipo",
+          "minutos",
+          "lat",
+          "lon",
+          "brillo",
+          "clase"
+        ],
+        "title": "LugarDeEstrellas",
+        "type": "object"
+      },
+      "LugarDeNoche": {
+        "additionalProperties": false,
+        "description": "Un lugar para salir de noche cerca de donde se duerme (desde 1.5).",
+        "properties": {
+          "fuente": {
+            "enum": [
+              "openstreetmap",
+              "overture"
+            ],
+            "title": "Fuente",
+            "type": "string"
+          },
+          "horario": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "El que publica OpenStreetMap, tal cual (opening_hours).",
+            "title": "Horario"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "minutos_a_pie": {
+            "description": "Desde la base, con un 30 % más de camino que la línea recta y a 4,5 km/h.",
+            "minimum": 1.0,
+            "title": "Minutos A Pie",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "tipo": {
+            "description": "pub también es cervecería; pena, una peña, con música criolla o andina en vivo; musica, música en vivo; comedia, de pie.",
+            "enum": [
+              "bar",
+              "pub",
+              "discoteca",
+              "karaoke",
+              "pena",
+              "musica",
+              "comedia"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "url": {
+            "description": "Dónde verificarlo: su página en OpenStreetMap o, si solo está en Overture Maps, el mapa de OpenStreetMap en ese punto.",
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "tipo",
+          "lat",
+          "lon",
+          "minutos_a_pie",
+          "fuente",
+          "url"
+        ],
+        "title": "LugarDeNoche",
+        "type": "object"
+      },
+      "Luna": {
+        "additionalProperties": false,
+        "description": "La luna de una noche, en hora del Perú (desde 1.5).",
+        "properties": {
+          "creciente": {
+            "title": "Creciente",
+            "type": "boolean"
+          },
+          "horas_sin_luna": {
+            "description": "Horas de noche oscura con la luna bajo el horizonte o casi sin luz.",
+            "minimum": 0.0,
+            "title": "Horas Sin Luna",
+            "type": "number"
+          },
+          "iluminada": {
+            "description": "La parte iluminada a medianoche.",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Iluminada",
+            "type": "number"
+          },
+          "sale": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si sale con la noche ya oscura.",
+            "title": "Sale"
+          },
+          "se_pone": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si se pone con la noche ya oscura.",
+            "title": "Se Pone"
+          }
+        },
+        "required": [
+          "iluminada",
+          "creciente",
+          "horas_sin_luna"
+        ],
+        "title": "Luna",
+        "type": "object"
+      },
+      "Noche": {
+        "additionalProperties": false,
+        "description": "Qué hacer una noche que se duerme en la base (desde 1.5). No cambia nada del día.",
+        "properties": {
+          "cielo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Cielo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Con estrellas."
+          },
+          "lugares": {
+            "description": "Con salir: los que se proponen esa noche.",
+            "items": {
+              "$ref": "#/components/schemas/LugarDeNoche"
+            },
+            "title": "Lugares",
+            "type": "array"
+          },
+          "nota": {
+            "title": "Nota",
+            "type": "string"
+          },
+          "tipo": {
+            "description": "salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna.",
+            "enum": [
+              "salir",
+              "estrellas",
+              "descanso"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo",
+          "titulo",
+          "nota"
+        ],
+        "title": "Noche",
+        "type": "object"
+      },
+      "NocheDeLaZona": {
+        "additionalProperties": false,
+        "description": "Lo que hay de noche en una zona (desde 1.5).",
+        "properties": {
+          "cielo": {
+            "$ref": "#/components/schemas/CieloDeLaZona"
+          },
+          "lugares": {
+            "description": "Para salir, a menos de 1,5 km de la base, del más al menos confiable.",
+            "items": {
+              "$ref": "#/components/schemas/LugarDeNoche"
+            },
+            "title": "Lugares",
+            "type": "array"
+          }
+        },
+        "required": [
+          "lugares",
+          "cielo"
+        ],
+        "title": "NocheDeLaZona",
+        "type": "object"
+      },
       "OpcionInteres": {
         "additionalProperties": false,
         "properties": {
+          "de_noche": {
+            "default": false,
+            "description": "Si es de la noche: no atiende paradas, sino lo que se hace de noche cerca de donde se duerme (desde 1.5).",
+            "title": "De Noche",
+            "type": "boolean"
+          },
           "etiqueta": {
             "title": "Etiqueta",
             "type": "string"
@@ -817,7 +1463,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -846,7 +1492,7 @@
             "type": "number"
           },
           "llegada": {
-            "description": "Hora estimada de llegada, HH:MM.",
+            "description": "Hora estimada de llegada, HH:MM. Si se almuerza al llegar (desde 1.6), la de después del almuerzo.",
             "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
             "title": "Llegada",
             "type": "string"
@@ -962,6 +1608,17 @@
             "title": "Eventos",
             "type": "array"
           },
+          "noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NocheDeLaZona"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Para salir y para mirar las estrellas (desde 1.5)."
+          },
           "polo": {
             "$ref": "#/components/schemas/Polo"
           },
@@ -974,7 +1631,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1202,7 +1859,7 @@
             "description": "La consulta tal como la entendió el motor."
           },
           "rutas": {
-            "description": "Hasta tres polos distintos, del mejor al peor.",
+            "description": "Hasta tres polos distintos, del mejor al peor; con destino, solo el de esa zona.",
             "items": {
               "$ref": "#/components/schemas/Ruta"
             },
@@ -1219,10 +1876,10 @@
                 "type": "null"
               }
             ],
-            "description": "Presente solo si no hay ninguna ruta: por qué y qué relajar."
+            "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1322,7 +1979,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.2",
+            "default": "1.7",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1377,7 +2034,9 @@
               "dias",
               "intereses",
               "presupuesto",
-              "altitud_max"
+              "altitud_max",
+              "solo_por_tierra",
+              "destino"
             ],
             "title": "Campo",
             "type": "string"
@@ -1402,6 +2061,9 @@
                 "type": "array"
               },
               {
+                "type": "boolean"
+              },
+              {
                 "type": "null"
               }
             ],
@@ -1416,11 +2078,62 @@
         "title": "Sugerencia",
         "type": "object"
       },
+      "TramoAereo": {
+        "additionalProperties": false,
+        "description": "Un vuelo de la ida. La vuelta hace los mismos al revés.",
+        "properties": {
+          "codigo_desde": {
+            "description": "Código IATA del aeropuerto de salida.",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Codigo Desde",
+            "type": "string"
+          },
+          "codigo_hasta": {
+            "description": "Código IATA del aeropuerto de llegada.",
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Codigo Hasta",
+            "type": "string"
+          },
+          "desde": {
+            "description": "Ciudad del aeropuerto de salida.",
+            "title": "Desde",
+            "type": "string"
+          },
+          "hasta": {
+            "description": "Ciudad del aeropuerto de llegada.",
+            "title": "Hasta",
+            "type": "string"
+          },
+          "horas": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Duración publicada del vuelo.",
+            "title": "Horas"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta",
+          "codigo_desde",
+          "codigo_hasta"
+        ],
+        "title": "TramoAereo",
+        "type": "object"
+      },
       "Traslado": {
         "additionalProperties": false,
         "properties": {
           "acceso": {
-            "description": "terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.",
+            "description": "El del camino por tierra, aunque se vuele. terrestre: se llega por carretera o en tren. sin_acceso_terrestre: hace falta bote.",
             "enum": [
               "terrestre",
               "sin_acceso_terrestre",
@@ -1429,21 +2142,33 @@
             "title": "Acceso",
             "type": "string"
           },
+          "bus_de_noche": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BusDeNoche"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si la ida y la vuelta son en bus de noche, sus horas: por tierra de 7 a 16 horas, sin tren ni bote, en un viaje de dos días o más (desde 1.6)."
+          },
           "desde": {
             "description": "Nombre de la ciudad de origen.",
             "title": "Desde",
             "type": "string"
           },
           "dias_de_viaje": {
-            "description": "Días del viaje que se van en la ida y la vuelta.",
+            "description": "Días del viaje que se van en la ida y la vuelta. Con bus de noche (desde 1.6), 0: el bus va de noche, fuera de los días.",
             "minimum": 0.0,
             "title": "Dias De Viaje",
             "type": "integer"
           },
           "fuente": {
-            "description": "red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. estimado: línea recta por un factor calibrado.",
+            "description": "red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. red_vial_y_vuelos: lo mismo hasta y desde los aeropuertos, más la duración publicada de cada vuelo (desde 1.3). estimado: línea recta por un factor calibrado.",
             "enum": [
               "red_vial",
+              "red_vial_y_vuelos",
               "estimado"
             ],
             "title": "Fuente",
@@ -1459,13 +2184,14 @@
                 "type": "null"
               }
             ],
-            "description": "Horas de viaje de ida: por carretera, en tren o en bote.",
+            "description": "Horas de la ida, de puerta a puerta: por carretera, en tren o en bote y, si se vuela, con el tiempo en los aeropuertos y en el aire.",
             "title": "Horas"
           },
           "medios": {
-            "description": "Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.",
+            "description": "Con qué se hace la ida, en este orden: avión (desde 1.3), carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.",
             "items": {
               "enum": [
+                "avion",
                 "carretera",
                 "tren",
                 "bote"
@@ -1473,6 +2199,14 @@
               "type": "string"
             },
             "title": "Medios",
+            "type": "array"
+          },
+          "vuelos": {
+            "description": "Los vuelos de la ida, en orden; vacío si no se vuela (desde 1.3).",
+            "items": {
+              "$ref": "#/components/schemas/TramoAereo"
+            },
+            "title": "Vuelos",
             "type": "array"
           }
         },
@@ -1800,7 +2534,7 @@
             }
           },
           {
-            "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+            "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
             "in": "query",
             "name": "fecha_inicio",
             "required": false,
@@ -1814,18 +2548,18 @@
                   "type": "null"
                 }
               ],
-              "description": "Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
+              "description": "El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.",
               "title": "Fecha Inicio"
             }
           },
           {
-            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+            "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
             "in": "query",
             "name": "dias",
             "required": false,
             "schema": {
               "default": 6,
-              "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
+              "description": "Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.",
               "maximum": 14,
               "minimum": 1,
               "title": "Dias",
@@ -1833,22 +2567,22 @@
             }
           },
           {
-            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+            "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
             "in": "query",
             "name": "intereses",
             "required": false,
             "schema": {
-              "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.",
+              "description": "Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.",
               "items": {
                 "$ref": "#/components/schemas/Interes"
               },
-              "maxItems": 8,
+              "maxItems": 9,
               "title": "Intereses",
               "type": "array"
             }
           },
           {
-            "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+            "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
             "in": "query",
             "name": "presupuesto",
             "required": false,
@@ -1863,7 +2597,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.",
+              "description": "Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).",
               "title": "Presupuesto"
             }
           },
@@ -1897,6 +2631,37 @@
               "description": "Prioriza polos fuera del circuito habitual (término de novedad al máximo).",
               "title": "Sorpresa",
               "type": "boolean"
+            }
+          },
+          {
+            "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+            "in": "query",
+            "name": "solo_por_tierra",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
+              "title": "Solo Por Tierra",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+            "in": "query",
+            "name": "destino",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+              "title": "Destino"
             }
           }
         ],

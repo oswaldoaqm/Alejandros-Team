@@ -40,9 +40,28 @@ class Polo:
     base_km_bote: np.ndarray
     entre_km_tren: np.ndarray
     entre_km_bote: np.ndarray
+    # Su noche (desde 2026.10.6): los lugares para salir cerca de la base, de pipeline/noche.py,
+    # y su cielo para ver estrellas, de pipeline/cielo.py. Vacía si los datos no la traen.
+    noche: dict = field(default_factory=dict)
 
     def indice(self) -> dict[str, int]:
         return {c: i for i, c in enumerate(self.paradas)}
+
+
+@dataclass(frozen=True)
+class Vuelo:
+    """La ida en avión de un origen a la base de un polo, de puerta a puerta (pipeline/vuelos.py).
+    La vuelta es la misma al revés."""
+
+    minutos: float  # de puerta a puerta: tierra, aeropuertos, vuelos y tierra
+    km: float  # por tierra, en las dos puntas
+    km_tren: float
+    km_bote: float
+    minutos_vuelo: float  # en el aire, con la escala si la hay
+    minutos_hasta_aeropuerto: float  # por tierra, del origen al aeropuerto de salida
+    km_hasta_aeropuerto: float
+    minutos_desde_aeropuerto: float  # por tierra, del aeropuerto de llegada a la base
+    aeropuertos: tuple[str, ...]  # ("LIM", "CUZ") o, con escala en Lima, ("AQP", "LIM", "IQT")
 
 
 @dataclass(frozen=True)
@@ -56,6 +75,7 @@ class Origen:
     a_parada: dict[str, tuple[float, float]]  # solo las paradas a menos de 4 horas
     a_base_en_capa: dict[int, tuple[float, float]]  # polo → (km en tren, km en bote)
     a_parada_en_capa: dict[str, tuple[float, float]]
+    a_base_en_avion: dict[int, Vuelo] = field(default_factory=dict)  # polo → la ida en avión
 
 
 @dataclass(frozen=True)
@@ -69,6 +89,7 @@ class Datos:
     intereses: dict[str, dict]
     atribucion: tuple[str, ...]
     fuentes: dict = field(default_factory=dict)
+    aeropuertos: dict[str, dict] = field(default_factory=dict)  # código IATA → ciudad y minutos a Lima
 
 
 def _gz(ruta: Path):
@@ -116,6 +137,7 @@ def _polo(p: dict) -> Polo:
         base_km_bote=_en_capa(p, "base_km_bote", (n,)),
         entre_km_tren=_en_capa(p, "entre_km_tren", (n, n)),
         entre_km_bote=_en_capa(p, "entre_km_bote", (n, n)),
+        noche=p.get("noche", {}),
     )
 
 
@@ -125,6 +147,11 @@ def _origen(o: dict) -> Origen:
 
     def en_capa(v):  # [minutos, km, km en tren, km en bote]; los de antes no traen los dos últimos
         return tuple(0.0 if len(v) <= k or v[k] is None else v[k] for k in (2, 3))
+
+    def vuelo(v):  # [minutos, km, km en tren, km en bote, de vuelo, minutos y km hasta el aeropuerto,
+        # minutos desde el aeropuerto, aeropuertos]: ver pipeline/artefactos.py
+        numeros = (np.nan if x is None else float(x) for x in v[:8])
+        return Vuelo(*numeros, aeropuertos=tuple(v[8].split("-")))
 
     return Origen(
         id=o["id"],
@@ -136,6 +163,7 @@ def _origen(o: dict) -> Origen:
         a_parada={k: par(v) for k, v in o["a_parada"].items()},
         a_base_en_capa={int(k): en_capa(v) for k, v in o["a_base"].items()},
         a_parada_en_capa={k: en_capa(v) for k, v in o["a_parada"].items()},
+        a_base_en_avion={int(k): vuelo(v) for k, v in o.get("a_base_en_avion", {}).items()},
     )
 
 
@@ -153,6 +181,7 @@ def cargar(carpeta: Path = DATOS) -> Datos:
         intereses=manifiesto["intereses"],
         atribucion=tuple(manifiesto["atribucion"]),
         fuentes=manifiesto["fuentes"],
+        aeropuertos=manifiesto.get("aeropuertos", {}),
     )
 
 

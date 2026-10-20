@@ -109,6 +109,37 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Almuerzo
+         * @description La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.
+         */
+        Almuerzo: {
+            /**
+             * Despues De
+             * @description Cuántas paradas del día van antes: 0, antes de la primera.
+             */
+            despues_de: number;
+            /**
+             * En La Base
+             * @description Si es en la base o, en un viaje de un día, en la ciudad de origen.
+             */
+            en_la_base: boolean;
+            /**
+             * Hay Donde Comer
+             * @description Si OpenStreetMap u Overture registran restaurantes, cafés o comida rápida a menos de 1,5 km. false: no registran ninguno, y conviene llevar el almuerzo. En la base o en el origen, null si no registran ninguno: es un pueblo con hospedaje, y se da por hecho que hay.
+             */
+            hay_donde_comer?: boolean | null;
+            /**
+             * Hora
+             * @description Cuándo empieza, HH:MM. Dura una hora.
+             */
+            hora: string;
+            /**
+             * Lugar
+             * @description Dónde: el nombre de la parada o de la base.
+             */
+            lugar: string;
+        };
         /** Aviso */
         Aviso: {
             /** Mensaje */
@@ -125,6 +156,95 @@ export interface components {
             tipo: "estacionalidad" | "altitud" | "aclimatacion" | "presupuesto" | "acceso" | "dias" | "datos";
         };
         /**
+         * BusDeNoche
+         * @description La ida y la vuelta en bus de noche: las noches del bus van fuera de los días del viaje (desde 1.6).
+         */
+        BusDeNoche: {
+            /**
+             * Llega
+             * @description La llegada a la base, el día 1.
+             */
+            llega: string;
+            /**
+             * Llega Vuelta
+             * @description La llegada al origen, la mañana siguiente.
+             */
+            llega_vuelta: string;
+            /**
+             * Sale
+             * @description La salida del origen, la noche antes del día 1.
+             */
+            sale: string;
+            /**
+             * Sale Vuelta
+             * @description La salida de la base, la noche del último día.
+             */
+            sale_vuelta: string;
+        };
+        /**
+         * Cielo
+         * @description Cómo se ve el cielo para mirar las estrellas (desde 1.5).
+         */
+        Cielo: {
+            /**
+             * Aclara
+             * @description Con fecha: cuando empieza el crepúsculo de la mañana.
+             */
+            aclara?: string | null;
+            /**
+             * Aeropuerto
+             * @description El aeropuerto del METAR, si de ahí sale el dato.
+             */
+            aeropuerto?: string | null;
+            desde: components["schemas"]["LugarDeEstrellas"];
+            /** Fuente Nubes */
+            fuente_nubes?: ("goes" | "metar") | null;
+            /** @description Con fecha: la luna de esa noche. */
+            luna?: components["schemas"]["Luna"] | null;
+            /**
+             * Lunas Nuevas
+             * @description Sin fecha: los días de luna nueva del mes del viaje, los mejores.
+             */
+            lunas_nuevas?: string[];
+            /**
+             * Noches Despejadas
+             * @description La parte de las noches del mes con el cielo despejado, a las 21:00 y a la 01:00: según GOES-16 o, en la costa, según el METAR del aeropuerto más cercano. null si no hay un dato confiable.
+             */
+            noches_despejadas?: number | null;
+            /** @description Un observatorio o un planetario a menos de 45 minutos, aunque su cielo tenga luz. */
+            observatorio?: components["schemas"]["LugarDeEstrellas"] | null;
+            /**
+             * Oscurece
+             * @description Con fecha: cuando termina el crepúsculo, el Sol a 18° bajo el horizonte.
+             */
+            oscurece?: string | null;
+            /**
+             * Temp Min C
+             * @description La mínima media del mes donde se mira.
+             */
+            temp_min_c?: number | null;
+        };
+        /**
+         * CieloDeLaZona
+         * @description El cielo de una zona para mirar las estrellas, mes a mes (desde 1.5).
+         */
+        CieloDeLaZona: {
+            /** Aeropuerto */
+            aeropuerto?: string | null;
+            /** @description La base. */
+            desde: components["schemas"]["LugarDeEstrellas"];
+            /** Fuente Nubes */
+            fuente_nubes?: ("goes" | "metar") | null;
+            /** @description Si la base tiene luz: el mirador, observatorio o planetario con nombre más oscuro a menos de 45 minutos, si su cielo es oscuro. Es un dato: el motor no propone ir de noche. */
+            mas_oscuro?: components["schemas"]["LugarDeEstrellas"] | null;
+            /**
+             * Noches Despejadas
+             * @description Enero a diciembre: la parte de las noches con el cielo despejado; null donde no hay dato.
+             */
+            noches_despejadas: (number | null)[];
+            observatorio?: components["schemas"]["LugarDeEstrellas"] | null;
+        };
+        /**
          * Consulta
          * @description Lo que el viajero pide. Es también el enlace para compartir: el motor es
          *     determinista, así que la misma consulta con la misma versión de datos
@@ -137,19 +257,24 @@ export interface components {
              */
             altitud_max?: number | null;
             /**
+             * Destino
+             * @description La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.
+             */
+            destino?: number | null;
+            /**
              * Dias
-             * @description Días disponibles en total, contando la ida y la vuelta desde el origen.
+             * @description Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último.
              * @default 6
              */
             dias: number;
             /**
              * Fecha Inicio
-             * @description Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.
+             * @description El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes.
              */
             fecha_inicio?: string | null;
             /**
              * Intereses
-             * @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo.
+             * @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas.
              */
             intereses?: components["schemas"]["Interes"][];
             /**
@@ -165,9 +290,15 @@ export interface components {
             origen: string;
             /**
              * Presupuesto
-             * @description Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas.
+             * @description Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba).
              */
             presupuesto?: number | null;
+            /**
+             * Solo Por Tierra
+             * @description Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).
+             * @default false
+             */
+            solo_por_tierra: boolean;
             /**
              * Sorpresa
              * @description Prioriza polos fuera del circuito habitual (término de novedad al máximo).
@@ -187,7 +318,7 @@ export interface components {
             dentro_del_presupuesto?: boolean | null;
             /**
              * Desglose
-             * @description Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas.
+             * @description Componentes del P50: transporte (con el tren y el bote), alojamiento, alimentación, entradas y, si se vuela, vuelos (desde 1.3).
              */
             desglose?: {
                 [key: string]: number;
@@ -214,15 +345,19 @@ export interface components {
         };
         /** Dia */
         Dia: {
+            /** @description Cuándo y dónde se almuerza, si el día tiene visitas y llega a la hora del almuerzo: null si las visitas terminan antes de las 12:30 (desde 1.6). */
+            almuerzo?: components["schemas"]["Almuerzo"] | null;
             /** Fecha */
             fecha?: string | null;
             /**
              * Horas
-             * @description Horas ocupadas entre traslados y visitas.
+             * @description Horas ocupadas entre traslados y visitas: el almuerzo no cuenta.
              */
             horas: number;
             /** Km */
             km: number;
+            /** @description Qué hacer esa noche, si se duerme en la base y la consulta lo pide: vida_nocturna o, para las estrellas, naturaleza o ningún interés (desde 1.5). */
+            noche?: components["schemas"]["Noche"] | null;
             /** Nota */
             nota?: string | null;
             /** Numero */
@@ -231,10 +366,16 @@ export interface components {
             paradas?: components["schemas"]["Parada"][];
             /**
              * Tipo
-             * @description ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él.
+             * @description ida_visita_y_vuelta (desde 1.1): un viaje de un día, que sale del origen y vuelve a él. Con bus de noche (desde 1.6), el día 1 es de ida y el último de vuelta aunque el bus vaya de noche: ida_y_visita y visita_y_vuelta, si tienen paradas.
              * @enum {string}
              */
             tipo: "ida" | "visita" | "vuelta" | "ida_y_visita" | "visita_y_vuelta" | "ida_visita_y_vuelta";
+            /**
+             * Tranquilo
+             * @description El primer día en la base cuando se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, para que el cuerpo se acostumbre a la altura: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente (desde 1.7).
+             * @default false
+             */
+            tranquilo: boolean;
         };
         /** Estacionalidad */
         Estacionalidad: {
@@ -286,6 +427,11 @@ export interface components {
             id: string;
             /** Nombre */
             nombre: string;
+            /**
+             * Polo
+             * @description La zona donde cae, por su número de polo: la del inventario o, si lo publicó un municipio, la que duerme más cerca. null si no queda cerca de ninguna (desde 1.4).
+             */
+            polo?: number | null;
             /**
              * Precision Fecha
              * @description exacta: la fuente la publica. aproximada: calculada (santoral, cómputo de Pascua). por_confirmar: sin fecha conocida.
@@ -366,7 +512,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.2
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -383,7 +529,10 @@ export interface components {
             altitud_max_m?: number | null;
             /** Jerarquia Media */
             jerarquia_media?: number | null;
-            /** Km Total */
+            /**
+             * Km Total
+             * @description Los km por tierra de todos los días; con bus de noche (desde 1.6), más los del bus.
+             */
             km_total: number;
             /** Paradas */
             paradas: number;
@@ -405,9 +554,155 @@ export interface components {
          *     la tabla de equivalencias es un artefacto del pipeline.
          * @enum {string}
          */
-        Interes: "naturaleza" | "historia" | "gastronomia" | "caminatas" | "playa" | "fiestas" | "arquitectura" | "aventura";
+        Interes: "naturaleza" | "historia" | "gastronomia" | "caminatas" | "playa" | "fiestas" | "arquitectura" | "aventura" | "vida_nocturna";
+        /**
+         * LugarDeEstrellas
+         * @description Desde dónde se mira el cielo (desde 1.5).
+         */
+        LugarDeEstrellas: {
+            /**
+             * Brillo
+             * @description La luz artificial del cielo frente a la natural (ALR), estimada con las luces nocturnas de VIIRS y el modelo de Duriscoe et al. (2018).
+             */
+            brillo: number;
+            /**
+             * Clase
+             * @description Las del Servicio de Parques Nacionales de EE. UU.: brillo menor que 0,3, excelente; de 0,3 a 2, se ve lo principal; más de 2, la noche natural ya no se ve.
+             * @enum {string}
+             */
+            clase: "muy_oscuro" | "oscuro" | "con_luz";
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /**
+             * Minutos
+             * @description Desde la base por la red, de puerta a puerta; 0 si es la base.
+             */
+            minutos: number;
+            /** Nombre */
+            nombre: string;
+            /**
+             * Tipo
+             * @enum {string}
+             */
+            tipo: "base" | "mirador" | "observatorio" | "planetario";
+            /**
+             * Url
+             * @description Su página en OpenStreetMap; null si es la base.
+             */
+            url?: string | null;
+        };
+        /**
+         * LugarDeNoche
+         * @description Un lugar para salir de noche cerca de donde se duerme (desde 1.5).
+         */
+        LugarDeNoche: {
+            /**
+             * Fuente
+             * @enum {string}
+             */
+            fuente: "openstreetmap" | "overture";
+            /**
+             * Horario
+             * @description El que publica OpenStreetMap, tal cual (opening_hours).
+             */
+            horario?: string | null;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /**
+             * Minutos A Pie
+             * @description Desde la base, con un 30 % más de camino que la línea recta y a 4,5 km/h.
+             */
+            minutos_a_pie: number;
+            /** Nombre */
+            nombre: string;
+            /**
+             * Tipo
+             * @description pub también es cervecería; pena, una peña, con música criolla o andina en vivo; musica, música en vivo; comedia, de pie.
+             * @enum {string}
+             */
+            tipo: "bar" | "pub" | "discoteca" | "karaoke" | "pena" | "musica" | "comedia";
+            /**
+             * Url
+             * Format: uri
+             * @description Dónde verificarlo: su página en OpenStreetMap o, si solo está en Overture Maps, el mapa de OpenStreetMap en ese punto.
+             */
+            url: string;
+        };
+        /**
+         * Luna
+         * @description La luna de una noche, en hora del Perú (desde 1.5).
+         */
+        Luna: {
+            /** Creciente */
+            creciente: boolean;
+            /**
+             * Horas Sin Luna
+             * @description Horas de noche oscura con la luna bajo el horizonte o casi sin luz.
+             */
+            horas_sin_luna: number;
+            /**
+             * Iluminada
+             * @description La parte iluminada a medianoche.
+             */
+            iluminada: number;
+            /**
+             * Sale
+             * @description Si sale con la noche ya oscura.
+             */
+            sale?: string | null;
+            /**
+             * Se Pone
+             * @description Si se pone con la noche ya oscura.
+             */
+            se_pone?: string | null;
+        };
+        /**
+         * Noche
+         * @description Qué hacer una noche que se duerme en la base (desde 1.5). No cambia nada del día.
+         */
+        Noche: {
+            /** @description Con estrellas. */
+            cielo?: components["schemas"]["Cielo"] | null;
+            /**
+             * Lugares
+             * @description Con salir: los que se proponen esa noche.
+             */
+            lugares?: components["schemas"]["LugarDeNoche"][];
+            /** Nota */
+            nota: string;
+            /**
+             * Tipo
+             * @description salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna.
+             * @enum {string}
+             */
+            tipo: "salir" | "estrellas" | "descanso";
+            /** Titulo */
+            titulo: string;
+        };
+        /**
+         * NocheDeLaZona
+         * @description Lo que hay de noche en una zona (desde 1.5).
+         */
+        NocheDeLaZona: {
+            cielo: components["schemas"]["CieloDeLaZona"];
+            /**
+             * Lugares
+             * @description Para salir, a menos de 1,5 km de la base, del más al menos confiable.
+             */
+            lugares: components["schemas"]["LugarDeNoche"][];
+        };
         /** OpcionInteres */
         OpcionInteres: {
+            /**
+             * De Noche
+             * @description Si es de la noche: no atiende paradas, sino lo que se hace de noche cerca de donde se duerme (desde 1.5).
+             * @default false
+             */
+            de_noche: boolean;
             /** Etiqueta */
             etiqueta: string;
             id: components["schemas"]["Interes"];
@@ -443,7 +738,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.2
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -455,7 +750,7 @@ export interface components {
             km_desde_anterior: number;
             /**
              * Llegada
-             * @description Hora estimada de llegada, HH:MM.
+             * @description Hora estimada de llegada, HH:MM. Si se almuerza al llegar (desde 1.6), la de después del almuerzo.
              */
             llegada: string;
             /**
@@ -518,6 +813,8 @@ export interface components {
              * @description Los acontecimientos del polo en los próximos doce meses.
              */
             eventos: components["schemas"]["Evento"][];
+            /** @description Para salir y para mirar las estrellas (desde 1.5). */
+            noche?: components["schemas"]["NocheDeLaZona"] | null;
             polo: components["schemas"]["Polo"];
             /**
              * Recursos
@@ -526,7 +823,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.2
+             * @default 1.7
              */
             version_contrato: string;
             /** Version Datos */
@@ -609,14 +906,14 @@ export interface components {
             consulta: components["schemas"]["Consulta"];
             /**
              * Rutas
-             * @description Hasta tres polos distintos, del mejor al peor.
+             * @description Hasta tres polos distintos, del mejor al peor; con destino, solo el de esa zona.
              */
             rutas: components["schemas"]["Ruta"][];
-            /** @description Presente solo si no hay ninguna ruta: por qué y qué relajar. */
+            /** @description Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga. */
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.2
+             * @default 1.7
              */
             version_contrato: string;
             /**
@@ -658,7 +955,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.2
+             * @default 1.7
              */
             version_contrato: string;
             /**
@@ -680,23 +977,56 @@ export interface components {
              * Campo
              * @enum {string}
              */
-            campo: "origen" | "mes" | "fecha_inicio" | "dias" | "intereses" | "presupuesto" | "altitud_max";
+            campo: "origen" | "mes" | "fecha_inicio" | "dias" | "intereses" | "presupuesto" | "altitud_max" | "solo_por_tierra" | "destino";
             /**
              * Efecto
              * @description Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».
              */
             efecto: string;
             /** Valor */
-            valor: number | string | string[] | null;
+            valor: number | string | string[] | boolean | null;
+        };
+        /**
+         * TramoAereo
+         * @description Un vuelo de la ida. La vuelta hace los mismos al revés.
+         */
+        TramoAereo: {
+            /**
+             * Codigo Desde
+             * @description Código IATA del aeropuerto de salida.
+             */
+            codigo_desde: string;
+            /**
+             * Codigo Hasta
+             * @description Código IATA del aeropuerto de llegada.
+             */
+            codigo_hasta: string;
+            /**
+             * Desde
+             * @description Ciudad del aeropuerto de salida.
+             */
+            desde: string;
+            /**
+             * Hasta
+             * @description Ciudad del aeropuerto de llegada.
+             */
+            hasta: string;
+            /**
+             * Horas
+             * @description Duración publicada del vuelo.
+             */
+            horas?: number | null;
         };
         /** Traslado */
         Traslado: {
             /**
              * Acceso
-             * @description terrestre: se llega por carretera o en tren. sin_acceso_terrestre: la ida necesita bote.
+             * @description El del camino por tierra, aunque se vuele. terrestre: se llega por carretera o en tren. sin_acceso_terrestre: hace falta bote.
              * @enum {string}
              */
             acceso: "terrestre" | "sin_acceso_terrestre" | "desconocido";
+            /** @description Si la ida y la vuelta son en bus de noche, sus horas: por tierra de 7 a 16 horas, sin tren ni bote, en un viaje de dos días o más (desde 1.6). */
+            bus_de_noche?: components["schemas"]["BusDeNoche"] | null;
             /**
              * Desde
              * @description Nombre de la ciudad de origen.
@@ -704,25 +1034,30 @@ export interface components {
             desde: string;
             /**
              * Dias De Viaje
-             * @description Días del viaje que se van en la ida y la vuelta.
+             * @description Días del viaje que se van en la ida y la vuelta. Con bus de noche (desde 1.6), 0: el bus va de noche, fuera de los días.
              */
             dias_de_viaje: number;
             /**
              * Fuente
-             * @description red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. estimado: línea recta por un factor calibrado.
+             * @description red_vial: calculado sobre la red de OpenStreetMap, con sus vías, trenes y botes. red_vial_y_vuelos: lo mismo hasta y desde los aeropuertos, más la duración publicada de cada vuelo (desde 1.3). estimado: línea recta por un factor calibrado.
              * @enum {string}
              */
-            fuente: "red_vial" | "estimado";
+            fuente: "red_vial" | "red_vial_y_vuelos" | "estimado";
             /**
              * Horas
-             * @description Horas de viaje de ida: por carretera, en tren o en bote.
+             * @description Horas de la ida, de puerta a puerta: por carretera, en tren o en bote y, si se vuela, con el tiempo en los aeropuertos y en el aire.
              */
             horas?: number | null;
             /**
              * Medios
-             * @description Con qué se hace la ida, en este orden: carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.
+             * @description Con qué se hace la ida, en este orden: avión (desde 1.3), carretera, tren, bote (desde 1.2). En un viaje de un día, con qué se recorre el día.
              */
-            medios?: ("carretera" | "tren" | "bote")[];
+            medios?: ("avion" | "carretera" | "tren" | "bote")[];
+            /**
+             * Vuelos
+             * @description Los vuelos de la ida, en orden; vacío si no se vuela (desde 1.3).
+             */
+            vuelos?: components["schemas"]["TramoAereo"][];
         };
         /** ValidationError */
         ValidationError: {
@@ -945,18 +1280,22 @@ export interface operations {
                 origen?: string;
                 /** @description Mes del viaje, 1 a 12. Obligatorio salvo que se dé fecha_inicio. */
                 mes?: number | null;
-                /** @description Día en que se sale del origen. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes. */
+                /** @description El día 1 del viaje: el día en que se sale del origen o, con bus de noche (desde 1.6), el día en que se llega, porque el bus sale la noche anterior. Con ella los días del itinerario llevan fecha y los eventos se cruzan día a día; sin ella, se cruzan con el mes. */
                 fecha_inicio?: string | null;
-                /** @description Días disponibles en total, contando la ida y la vuelta desde el origen. */
+                /** @description Días disponibles en total, contando la ida y la vuelta desde el origen. Con bus de noche (desde 1.6), las noches del bus van fuera: se sale la noche antes del día 1 y se vuelve la noche del último. */
                 dias?: number;
-                /** @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. */
+                /** @description Cero o más intereses. Sin intereses, el motor busca lo más valioso de cada polo. vida_nocturna (desde 1.5) no cambia las paradas del día: trae los bares, pubs, discotecas y peñas cerca de donde se duerme, y pesa al elegir las zonas. */
                 intereses?: components["schemas"]["Interes"][];
-                /** @description Soles por persona para todo el viaje. Ordena y advierte; no descarta rutas. */
+                /** @description Soles por persona para todo el viaje. Elige, ordena y advierte: una ruta que lo pasa sale solo si es mucho mejor que las que entran (desde 1.3; antes solo ordenaba). */
                 presupuesto?: number | null;
                 /** @description Altitud máxima tolerada, en metros. Ninguna parada la supera. */
                 altitud_max?: number | null;
                 /** @description Prioriza polos fuera del circuito habitual (término de novedad al máximo). */
                 sorpresa?: boolean;
+                /** @description Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3). */
+                solo_por_tierra?: boolean;
+                /** @description La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa. */
+                destino?: number | null;
             };
             header?: never;
             path?: never;

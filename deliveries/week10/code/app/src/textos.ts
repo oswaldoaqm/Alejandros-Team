@@ -1,7 +1,16 @@
 // Frases cortas que la app arma con los datos del contrato. Lo que ya viene escrito del
 // motor (motivos, avisos, notas, explicaciones) se muestra tal cual: aquí no se reescribe.
 
-import type { Dia, Medio, Recurso, Sugerencia } from "./api/tipos";
+import type {
+  Almuerzo,
+  Dia,
+  LugarDeEstrellas,
+  LugarDeNoche,
+  Medio,
+  Recurso,
+  Sugerencia,
+  Traslado,
+} from "./api/tipos";
 import type { Consulta, Nombres } from "./consulta";
 import { fecha, lista, mes, metros, plural, soles, solesExactos } from "./formato";
 
@@ -20,12 +29,93 @@ export function tipoDeDia(dia: Pick<Dia, "tipo" | "paradas">): string {
   return TIPO_DE_DIA[dia.tipo];
 }
 
-const CON_QUE: Record<Medio, string> = { carretera: "por carretera", tren: "en tren", bote: "en bote" };
+const CON_QUE: Record<Medio, string> = {
+  avion: "en avión",
+  carretera: "por carretera",
+  tren: "en tren",
+  bote: "en bote",
+};
 
-/** «por carretera», «por carretera y en bote»: con las palabras del motor. */
+/** «por carretera», «en avión y por carretera»: con las palabras del motor. */
 export function conQueSeViaja(medios: readonly Medio[] | null | undefined): string {
   const dichos = (medios ?? []).map((m) => CON_QUE[m]);
   return dichos.length > 0 ? lista(dichos) : CON_QUE.carretera;
+}
+
+/** Si la ida vuela: «con vuelo» o, con escala en Lima, «con dos vuelos»; null si va por tierra. */
+export function conVuelos(traslado: Pick<Traslado, "vuelos">): string | null {
+  const cuantos = (traslado.vuelos ?? []).length;
+  if (cuantos === 0) return null;
+  return cuantos === 1 ? "con vuelo" : "con dos vuelos";
+}
+
+/** Cómo se va, si no es lo de siempre: «con vuelo», «en bus de noche»; null si es de día por tierra. */
+export function comoSeVa(traslado: Pick<Traslado, "vuelos" | "bus_de_noche">): string | null {
+  return conVuelos(traslado) ?? (traslado.bus_de_noche ? "en bus de noche" : null);
+}
+
+/**
+ * Dónde se almuerza: «En Huaraz», en la base; «Cerca de Mirador de Rataquenua», si hay dónde
+ * comer a menos de 1,5 km; y «En Parque Nacional Huascarán», si no lo hay y toca llevarlo.
+ */
+export function dondeSeAlmuerza(
+  almuerzo: Pick<Almuerzo, "lugar" | "en_la_base" | "hay_donde_comer">,
+): string {
+  const en = almuerzo.en_la_base || almuerzo.hay_donde_comer === false ? "En" : "Cerca de";
+  return `${en} ${almuerzo.lugar}`;
+}
+
+/** Lo que se dice cuando cerca del almuerzo no hay registrado dónde comer. */
+export const LLEVA_TU_ALMUERZO = "Lleva tu almuerzo: no tenemos registrado dónde comer cerca.";
+
+/** El primer día en la altura (desde el contrato 1.7): cómo es, lo dice el aviso del motor. */
+export const DIA_TRANQUILO = "Día tranquilo para acostumbrarte a la altura";
+
+const TIPO_DE_LUGAR_DE_NOCHE: Record<LugarDeNoche["tipo"], string> = {
+  bar: "bar",
+  pub: "pub",
+  discoteca: "discoteca",
+  karaoke: "karaoke",
+  pena: "peña",
+  musica: "música en vivo",
+  comedia: "comedia",
+};
+
+/** «bar», «peña», «música en vivo»: qué es un lugar para salir. */
+export function tipoDeLugarDeNoche(tipo: LugarDeNoche["tipo"]): string {
+  return TIPO_DE_LUGAR_DE_NOCHE[tipo];
+}
+
+// Como en el motor (dreemgo/motor/noche.py): el mismo orden y los mismos nombres.
+const CUANTOS_DE_NOCHE: [LugarDeNoche["tipo"], string, string][] = [
+  ["bar", "bar", "bares"],
+  ["pub", "pub", "pubs"],
+  ["discoteca", "discoteca", "discotecas"],
+  ["karaoke", "karaoke", "karaokes"],
+  ["pena", "peña", "peñas"],
+  ["musica", "local con música en vivo", "locales con música en vivo"],
+  ["comedia", "local de comedia", "locales de comedia"],
+];
+
+/** «72 bares, 17 pubs y 1 peña»: cuántos lugares para salir hay de cada tipo. */
+export function cuantosLugaresDeNoche(lugares: Pick<LugarDeNoche, "tipo">[]): string {
+  return lista(
+    CUANTOS_DE_NOCHE.map(([tipo, uno, varios]) => {
+      const n = lugares.filter((l) => l.tipo === tipo).length;
+      return n > 0 ? plural(n, uno, varios) : "";
+    }),
+  );
+}
+
+const CLASE_DEL_CIELO: Record<LugarDeEstrellas["clase"], string> = {
+  muy_oscuro: "Cielo muy oscuro",
+  oscuro: "Cielo oscuro",
+  con_luz: "Cielo con luz",
+};
+
+/** «Cielo muy oscuro»: las clases del Servicio de Parques Nacionales de EE. UU. */
+export function claseDelCielo(clase: LugarDeEstrellas["clase"]): string {
+  return CLASE_DEL_CIELO[clase];
 }
 
 /** Lo que la ficha dice del ingreso. Si no publica la tarifa, se dice: no se inventa. */
@@ -58,6 +148,11 @@ export function aplicarSugerencia(c: Consulta, s: Sugerencia): Consulta | null {
       return typeof valor === "string" ? { ...c, fecha_inicio: valor } : null;
     case "origen":
       return typeof valor === "string" ? { ...c, origen: valor } : null;
+    case "solo_por_tierra":
+      return typeof valor === "boolean" ? { ...c, solo_por_tierra: valor } : null;
+    case "destino":
+      if (valor === null) return { ...c, destino: null };
+      return typeof valor === "number" ? { ...c, destino: valor, sorpresa: false } : null;
   }
 }
 
@@ -85,6 +180,10 @@ export function textoDeSugerencia(s: Sugerencia, nombres: Nombres): string {
       return typeof valor === "string"
         ? `Salir desde ${nombres.origenes[valor] ?? valor}`
         : "Cambiar el origen";
+    case "solo_por_tierra":
+      return valor === true ? "Buscar solo por tierra" : "Buscar también con vuelos";
+    case "destino":
+      return valor === null ? "Ver viajes a otras zonas" : "Ir a otra zona";
   }
 }
 

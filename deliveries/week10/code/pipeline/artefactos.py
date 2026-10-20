@@ -5,16 +5,21 @@ Junta las tablas de data/procesados en pocos archivos compactos dentro de dreemg
 que entran a la imagen del API:
 
   manifiesto.json     versión de los datos, de dónde sale cada cosa y la huella de cada archivo
-  recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos y lo que
-                      el motor necesita para programarlos
-  polos.json.gz       cada polo: base, novedad, clima mes a mes, sus paradas y los tiempos
-                      entre ellas y desde la base; si algún camino va en tren o en bote, cuántos
-                      de sus km van en cada uno
+  recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos, lo que
+                      el motor necesita para programarlos y a cuántos metros hay dónde comer
+                      (pipeline/comida.py)
+  polos.json.gz       cada polo: base, con su altura (la de OpenStreetMap o, si no la tiene, la
+                      del modelo de elevación: pipeline/elevacion.py), novedad, clima mes a mes,
+                      sus paradas y los tiempos entre ellas y desde la base; si algún camino va en
+                      tren o en bote, cuántos de sus km van en cada uno; su noche: dónde salir
+                      cerca de la base y su cielo para mirar las estrellas (pipeline/noche.py y
+                      pipeline/cielo.py); y a cuántos metros de la base hay dónde comer
   origenes.json.gz    las 24 ciudades de partida, con sus tiempos a cada base y a las paradas a
                       menos de 4 horas, que son las que caben en un viaje de un día: minutos, km,
-                      km en tren y km en bote
+                      km en tren y km en bote; y el viaje en avión a cada base (pipeline/vuelos.py)
   eventos.json.gz     los acontecimientos programados con la regla de su fecha
-  costos.json         los parámetros del costo (pipeline/referencia/costos.csv)
+  costos.json         los parámetros del costo (pipeline/referencia/costos.csv) y el pasaje de
+                      cada ruta aérea, por tramo (data/procesados/vuelos_rutas.csv)
 
 Los archivos son deterministas: con las mismas tablas salen los mismos bytes (JSON con las
 claves ordenadas y gzip sin fecha), así que su huella sirve para comprobar que dos máquinas
@@ -24,8 +29,8 @@ Un polo es lo que se visita desde una base. El maestro y los eventos traen el gr
 de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
 recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
 
-Uso:  python -m pipeline.artefactos --version 2026.10.4
-      (después de maestro, eventos, tiempos y clima)
+Uso:  python -m pipeline.artefactos --version 2026.10.8
+      (después de maestro, eventos, tiempos, vuelos, clima, noche, cielo, comida y elevacion)
 """
 
 from __future__ import annotations
@@ -41,13 +46,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from dreemgo.contrato import ETIQUETAS_INTERES, Interes
+from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
+from pipeline import elevacion
 from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.4"
+VERSION_DATOS = "2026.10.8"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
 MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote
@@ -55,13 +61,23 @@ MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos va
 ATRIBUCION = [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
     "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
-    "Red de vías, trenes y botes, pueblos y hospedajes: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+]
+ATRIBUCION_ALTURA = [
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del"
+    " U.S. Geological Survey",
+]
+ATRIBUCION_NOCHE = [
+    "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every"
+    " Night» del Banco Mundial",
+    "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA",
 ]
 
 
 def _limpio(v):
-    """Un valor listo para JSON: NaN es null, los enteros de numpy son int."""
-    if v is None:
+    """Un valor listo para JSON: NaN y el NA de pandas son null, los enteros de numpy son int."""
+    if v is None or v is pd.NA:
         return None
     if isinstance(v, float | np.floating):
         return None if math.isnan(v) else float(v)
@@ -102,12 +118,26 @@ def en_su_polo(tabla: pd.DataFrame, bases: pd.DataFrame) -> pd.DataFrame:
     return tabla.assign(polo=tabla["polo"].map(lambda grupo: a_polo.get(grupo, grupo)).astype(int))
 
 
-def recursos(maestro: pd.DataFrame) -> list[dict]:
-    """Los recursos que están en un polo, ordenados por código."""
+def _comida(comida: pd.DataFrame | None, tipo: str) -> dict[str, int | None] | None:
+    """Clave → metros hasta el lugar de comida más cercano a menos de 1,5 km (pipeline/comida.py),
+    o None si no hay ninguno; None si no hay tabla."""
+    if comida is None:
+        return None
+    filas = comida[comida["tipo"] == tipo]
+    return {str(k): _entero(m) for k, m in zip(filas["clave"], filas["mas_cerca_m"], strict=True)}
+
+
+def recursos(maestro: pd.DataFrame, comida: pd.DataFrame | None = None) -> list[dict]:
+    """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
+    lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
+    menos de 1,5 km)."""
+    cerca = _comida(comida, "recurso")
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
+        con_comida = {} if cerca is None else {"comida_m": cerca.get(str(f["codigo"]))}
         filas.append(
-            {
+            con_comida
+            | {
                 "codigo": str(f["codigo"]),
                 "nombre": f["nombre"],
                 "categoria": f["categoria"],
@@ -156,8 +186,11 @@ def polos(
     tiempos_origen_base: pd.DataFrame,
     eventos: pd.DataFrame,
     origenes: pd.DataFrame,
+    noche: dict[int, dict] | None = None,
+    comida: pd.DataFrame | None = None,
 ) -> list[dict]:
     """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla."""
+    comida_en_base = _comida(comida, "base")
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
@@ -244,7 +277,8 @@ def polos(
                     "lugar": b.lugar,
                     "hospedajes_osm": int(b.hospedajes_osm),
                     "criterio": b.criterio,
-                },
+                }
+                | ({} if comida_en_base is None else {"comida_m": comida_en_base.get(str(int(b.polo)))}),
                 "paradas": [str(c) for c in codigos],
                 "base_minutos": [_redondo(desde_base["minutos"].get(c)) for c in codigos],
                 "base_km": [_redondo(desde_base["km"].get(c)) for c in codigos],
@@ -265,8 +299,63 @@ def polos(
                     for c in clima_de[p].itertuples()
                 ],
                 "eventos": list(eventos_de.get(p, [])),
+                **({"noche": noche[p]} if noche and p in noche else {}),
             }
         )
+    return salida
+
+
+def _texto(x) -> str | None:
+    return None if x is None or (isinstance(x, float) and math.isnan(x)) or x == "" else str(x)
+
+
+def _de_estrellas(fila: dict, prefijo: str) -> dict | None:
+    """Un lugar de cielo_polos.csv (``oscuro_*`` o ``astro_*``), o None si no hay."""
+    nombre = _texto(fila.get(f"{prefijo}_nombre"))
+    if nombre is None:
+        return None
+    return {
+        "nombre": nombre,
+        "tipo": fila[f"{prefijo}_tipo"],
+        "osm": fila[f"{prefijo}_osm"],
+        "lat": round(float(fila[f"{prefijo}_lat"]), 6),
+        "lon": round(float(fila[f"{prefijo}_lon"]), 6),
+        "minutos": int(fila[f"{prefijo}_minutos"]),
+        "brillo": round(float(fila[f"{prefijo}_brillo"]), 3),
+    }
+
+
+def noches(lugares: pd.DataFrame, cielo: pd.DataFrame) -> dict[int, dict]:
+    """La noche de cada polo: los lugares para salir, en el orden de pipeline/noche.py, y su cielo,
+    de pipeline/cielo.py."""
+    salida = {}
+    por_polo = {int(p): g for p, g in lugares.groupby("polo")}
+    for fila in cielo.to_dict("records"):
+        p = int(fila["polo"])
+        aqui = por_polo.get(p, lugares.iloc[0:0])
+        salida[p] = {
+            "lugares": [
+                {
+                    "nombre": f["nombre"],
+                    "tipo": f["tipo"],
+                    "lat": round(float(f["lat"]), 6),
+                    "lon": round(float(f["lon"]), 6),
+                    "minutos_a_pie": int(f["minutos_a_pie"]),
+                    "fuente": f["fuente"],
+                    "osm": _texto(f["osm"]),
+                    "horario": _texto(f["horario"]),
+                }
+                for f in aqui.to_dict("records")
+            ],
+            "cielo": {
+                "brillo": round(float(fila["brillo_base"]), 3),
+                "oscuro": _de_estrellas(fila, "oscuro"),
+                "astro": _de_estrellas(fila, "astro"),
+                "despejadas": [_redondo(fila[f"despejadas_{m}"], 3) for m in range(1, 13)],
+                "nubes": _texto(fila["nubes"]),
+                "aeropuerto": _texto(fila["nubes_aeropuerto"]),
+            },
+        }
     return salida
 
 
@@ -276,23 +365,46 @@ def _tiempos(fila) -> list:
     return [_redondo(getattr(fila, c, 0.0)) for c in ("minutos", *MEDIOS_KM)]
 
 
-def origenes_(origenes: pd.DataFrame, tiempos_origen_base: pd.DataFrame, tiempos_origen: pd.DataFrame) -> list[dict]:
+def _en_avion(fila) -> list:
+    """[minutos de puerta a puerta, km por tierra, km en tren, km en bote, minutos de vuelo,
+    minutos y km por tierra hasta el aeropuerto, minutos desde el de llegada, aeropuertos]."""
+    numeros = (
+        "minutos",
+        *MEDIOS_KM,
+        "minutos_vuelo",
+        "minutos_hasta_aeropuerto",
+        "km_hasta_aeropuerto",
+        "minutos_desde_aeropuerto",
+    )
+    return [*(_redondo(getattr(fila, c)) for c in numeros), fila.aeropuertos]
+
+
+def origenes_(
+    origenes: pd.DataFrame,
+    tiempos_origen_base: pd.DataFrame,
+    tiempos_origen: pd.DataFrame,
+    vuelos_origen_base: pd.DataFrame | None = None,
+) -> list[dict]:
     salida = []
     for o in origenes.itertuples():
         a_base = tiempos_origen_base[tiempos_origen_base["origen"] == o.id].sort_values("polo")
         cerca = tiempos_origen[(tiempos_origen["origen"] == o.id) & (tiempos_origen["minutos"] <= EXCURSION_MAX_MIN)]
         cerca = cerca.sort_values("codigo")
-        salida.append(
-            {
-                "id": o.id,
-                "nombre": o.ciudad,
-                "region": o.region,
-                "lat": o.lat,
-                "lon": o.lon,
-                "a_base": {str(p): _tiempos(f) for p, f in zip(a_base["polo"], a_base.itertuples(), strict=True)},
-                "a_parada": {str(c): _tiempos(f) for c, f in zip(cerca["codigo"], cerca.itertuples(), strict=True)},
+        fila = {
+            "id": o.id,
+            "nombre": o.ciudad,
+            "region": o.region,
+            "lat": o.lat,
+            "lon": o.lon,
+            "a_base": {str(p): _tiempos(f) for p, f in zip(a_base["polo"], a_base.itertuples(), strict=True)},
+            "a_parada": {str(c): _tiempos(f) for c, f in zip(cerca["codigo"], cerca.itertuples(), strict=True)},
+        }
+        if vuelos_origen_base is not None:
+            avion = vuelos_origen_base[vuelos_origen_base["origen"] == o.id].sort_values("polo")
+            fila["a_base_en_avion"] = {
+                str(p): _en_avion(f) for p, f in zip(avion["polo"], avion.itertuples(), strict=True)
             }
-        )
+        salida.append(fila)
     return salida
 
 
@@ -317,12 +429,33 @@ def eventos_(eventos: pd.DataFrame) -> list[dict]:
     return salida
 
 
-def costos_() -> dict:
+def costos_(vuelos_rutas: pd.DataFrame | None = None) -> dict:
     t = pd.read_csv(REFERENCIA / "costos.csv", sep=";")
-    return {
+    salida = {
         f.parametro: {"valor": f.valor, "minimo": f.minimo, "maximo": f.maximo, "unidad": f.unidad, "fuente": f.fuente}
         for f in t.itertuples()
     }
+    for r in [] if vuelos_rutas is None else vuelos_rutas.itertuples():
+        fuente = (
+            f"{r.fuente}, recogida el 15 de octubre de 2026 y pasada a soles: el mínimo"
+            if r.tarifa_publicada
+            else f"{r.fuente}: la mediana de las demás rutas como mínimo"
+        )
+        salida[f"vuelo_{r.desde}_{r.hasta}"] = {
+            "valor": float(r.tarifa_central),
+            "minimo": float(r.tarifa_minima),
+            "maximo": float(r.tarifa_maxima),
+            "unidad": "S/ por persona y tramo",
+            "fuente": f"{fuente}. Central y máximo: 1,5 y 2,2 veces el mínimo (pipeline/vuelos.py). Sin calibrar",
+        }
+    return salida
+
+
+def aeropuertos_(vuelos_rutas: pd.DataFrame) -> dict:
+    """Cada aeropuerto con su ciudad y los minutos de su vuelo a Lima, para los textos del motor."""
+    aeropuertos = pd.read_csv(REFERENCIA / "aeropuertos.csv", sep=";")
+    minutos = dict(zip(vuelos_rutas["hasta"], vuelos_rutas["minutos"].astype(int), strict=True))
+    return {a.iata: {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)} for a in aeropuertos.itertuples()}
 
 
 def _fecha(aaaammdd) -> str:
@@ -347,6 +480,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
         return pd.read_csv(entrada / nombre, sep=";", encoding="utf-8-sig", **kw)
 
     bases = leer("polos_bases.csv")
+    hay_altura = (entrada / "altitud_bases.csv").exists()
+    if hay_altura:
+        bases = elevacion.completar(bases, leer("altitud_bases.csv"))
     maestro = en_su_polo(leer("maestro_v3.csv", dtype={"dias": str}), bases)
     eventos = en_su_polo(leer("eventos_v3.csv"), bases)
     clima = leer("clima_polo_mes.csv")
@@ -356,20 +492,31 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     tiempos_origen = leer("tiempos_origen.csv")
     origenes = pd.read_csv(REFERENCIA / "origenes.csv", sep=";")
     calibracion = json.loads((entrada / "red_calibracion.json").read_text(encoding="utf-8"))
+    hay_vuelos = (entrada / "vuelos_origen_base.csv").exists()
+    vuelos_origen_base = leer("vuelos_origen_base.csv") if hay_vuelos else None
+    vuelos_rutas = leer("vuelos_rutas.csv") if hay_vuelos else None
+    comida = leer("comida_cerca.csv", dtype={"clave": str}) if (entrada / "comida_cerca.csv").exists() else None
+    hay_noche = (entrada / "noche_lugares.csv").exists() and (entrada / "cielo_polos.csv").exists()
+    noche = None
+    if hay_noche:
+        lugares_de_noche = leer("noche_lugares.csv", keep_default_na=False, dtype={"osm": str, "horario": str})
+        noche = noches(lugares_de_noche, leer("cielo_polos.csv", dtype={"oscuro_osm": str, "astro_osm": str}))
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {
-        "recursos.json.gz": _escribir_gz(recursos(maestro), destino / "recursos.json.gz"),
+        "recursos.json.gz": _escribir_gz(recursos(maestro, comida), destino / "recursos.json.gz"),
         "polos.json.gz": _escribir_gz(
-            polos(maestro, bases, clima, tiempos_polo, tiempos_base, tiempos_origen_base, eventos, origenes),
+            polos(
+                maestro, bases, clima, tiempos_polo, tiempos_base, tiempos_origen_base, eventos, origenes, noche, comida
+            ),
             destino / "polos.json.gz",
         ),
         "origenes.json.gz": _escribir_gz(
-            origenes_(origenes, tiempos_origen_base, tiempos_origen), destino / "origenes.json.gz"
+            origenes_(origenes, tiempos_origen_base, tiempos_origen, vuelos_origen_base), destino / "origenes.json.gz"
         ),
         "eventos.json.gz": _escribir_gz(eventos_(eventos), destino / "eventos.json.gz"),
     }
-    costos = _bytes_json(costos_())
+    costos = _bytes_json(costos_(vuelos_rutas))
     (destino / "costos.json").write_bytes(costos)
     huellas["costos.json"] = hashlib.sha256(costos).hexdigest()
 
@@ -390,12 +537,27 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
             i.value: {
                 "etiqueta": ETIQUETAS_INTERES[i],
                 "paradas": int(intereses_de.apply(lambda xs, i=i: i.value in xs).sum()),
+                **({"de_noche": True} if i in DE_NOCHE else {}),
             }
             for i in Interes
         },
-        "atribucion": ATRIBUCION,
+        "atribucion": ATRIBUCION + (ATRIBUCION_ALTURA if hay_altura else []) + (ATRIBUCION_NOCHE if hay_noche else []),
         "archivos": huellas,
     }
+    if hay_noche:
+        lugares = sum(len(n["lugares"]) for n in noche.values())
+        manifiesto["intereses"][Interes.vida_nocturna.value]["lugares"] = lugares
+        for nombre in ("noche", "cielo"):
+            resumen = entrada / f"{nombre}_resumen.json"
+            if resumen.exists():
+                manifiesto["fuentes"][nombre] = json.loads(resumen.read_text(encoding="utf-8"))
+    if hay_altura and (entrada / "altitud_resumen.json").exists():
+        manifiesto["fuentes"]["altura"] = json.loads((entrada / "altitud_resumen.json").read_text(encoding="utf-8"))
+    if comida is not None and (entrada / "comida_resumen.json").exists():
+        manifiesto["fuentes"]["comida"] = json.loads((entrada / "comida_resumen.json").read_text(encoding="utf-8"))
+    if vuelos_rutas is not None:
+        manifiesto["aeropuertos"] = aeropuertos_(vuelos_rutas)
+        manifiesto["fuentes"]["vuelos"] = {"rutas": len(vuelos_rutas), "consultadas": "2026-10-15"}
     (destino / "manifiesto.json").write_text(
         json.dumps(manifiesto, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )

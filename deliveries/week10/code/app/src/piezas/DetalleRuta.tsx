@@ -14,6 +14,7 @@ import { enlaces } from "../ruta";
 import {
   ALTURA_QUE_SE_SIENTE,
   CLIMA_EN_POCAS_PALABRAS,
+  comoSeVa,
   imperdibles,
   lugaresDelViaje,
   nombreDelViaje,
@@ -25,7 +26,7 @@ import { type Dato, DatosClave } from "./DatosClave";
 import { Enlace } from "./Enlace";
 import { DibujoFlor } from "./Flor";
 import { CreditoDeFoto, Foto } from "./Foto";
-import { Icono, type NombreDeIcono } from "./Icono";
+import { Icono, iconoDeLaIda, type NombreDeIcono } from "./Icono";
 import { HojaDeLugar, Itinerario, type LugarAbierto, PlanParaImprimir, SelectorDeDias } from "./Itinerario";
 import { ListaEventos } from "./Listas";
 import { Mapa } from "./Mapa";
@@ -37,8 +38,15 @@ interface Props {
   fotos: Fotos | null;
   consulta: Consulta;
   version: string | null;
-  /** El enlace a los viajes propuestos. */
+  /** El enlace a los viajes propuestos o, con un destino, a cambiar el viaje. */
   volver: string;
+  /** Lo que dice ese enlace: «Tus viajes» o «Cambiar el viaje». */
+  textoVolver?: string;
+  /**
+   * Si el enlace retrocede cuando se llegó desde la app, y deja la lista como estaba. Para cambiar
+   * el viaje no: el formulario de atrás no recuerda la consulta, el enlace sí.
+   */
+  retrocede?: boolean;
   /** El aviso de que el enlace se armó con otros datos, cuando hace falta. */
   aviso?: ReactNode;
   /** Guardar y compartir: van sobre la portada. */
@@ -52,7 +60,7 @@ interface Props {
 
 function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
   const { costo, traslado, estacionalidad, indicadores } = ruta;
-  const medios = traslado.medios ?? [];
+  const como = comoSeVa(traslado);
   const datos: Dato[] = [
     {
       etiqueta: "Costo",
@@ -65,9 +73,9 @@ function datosClave(ruta: Ruta, excursion: boolean): Dato[] {
   if (traslado.horas != null) {
     datos.push({
       etiqueta: excursion ? "Hasta el primer lugar" : "Viaje de ida",
-      icono: medios.includes("tren") ? "tren" : medios.includes("bote") ? "bote" : "bus",
+      icono: iconoDeLaIda(traslado.medios),
       valor: horas(traslado.horas),
-      nota: `desde ${traslado.desde}`,
+      nota: como ? `desde ${traslado.desde}, ${como}` : `desde ${traslado.desde}`,
     });
   }
   datos.push({
@@ -136,10 +144,24 @@ const ICONO_DEL_AVISO: Record<Aviso["tipo"], NombreDeIcono> = {
   altitud: "montana",
   aclimatacion: "montana",
   presupuesto: "billete",
-  acceso: "bote",
+  acceso: "pin",
   dias: "reloj",
   datos: "info",
 };
+
+/**
+ * Los avisos de acceso hablan del avión, del bus de noche, del tren o de una caminata larga
+ * (dreemgo/motor/viaje.py, `avisos`): cada uno con su ícono. Si una frase cambia, lo peor que pasa
+ * es que vaya el pin.
+ */
+function iconoDelAviso(a: Aviso): NombreDeIcono {
+  if (a.tipo !== "acceso") return ICONO_DEL_AVISO[a.tipo];
+  if (/avi[oó]n/i.test(a.mensaje)) return "avion";
+  if (/bus de noche/i.test(a.mensaje)) return "bus";
+  if (/\btren\b/i.test(a.mensaje)) return "tren";
+  if (/caminar/i.test(a.mensaje)) return "caminatas";
+  return ICONO_DEL_AVISO.acceso;
+}
 
 function AntesDeIr({ avisos }: { avisos: Aviso[] }) {
   if (avisos.length === 0) return null;
@@ -151,7 +173,7 @@ function AntesDeIr({ avisos }: { avisos: Aviso[] }) {
       <ul className="antes">
         {avisos.map((a) => (
           <li key={`${a.tipo}-${a.mensaje}`} className={`antes__aviso antes__aviso--${a.nivel}`}>
-            <Icono nombre={ICONO_DEL_AVISO[a.tipo]} />
+            <Icono nombre={iconoDelAviso(a)} />
             <p>
               <span className="solo-lector">
                 {a.nivel === "advertencia" ? "Importante: " : "Para saber: "}
@@ -173,6 +195,8 @@ export function DetalleRuta({
   consulta,
   version,
   volver,
+  textoVolver = "Tus viajes",
+  retrocede = true,
   aviso,
   acciones,
   atribucion,
@@ -258,9 +282,9 @@ export function DetalleRuta({
             </div>
           )}
           <div className="portada__barra">
-            <Enlace href={volver} volver className="boton boton--flotante portada__volver">
+            <Enlace href={volver} volver={retrocede} className="boton boton--flotante portada__volver">
               <Icono nombre="atras" tamano={20} />
-              <span className="boton__texto">Tus viajes</span>
+              <span className="boton__texto">{textoVolver}</span>
             </Enlace>
             {acciones}
           </div>

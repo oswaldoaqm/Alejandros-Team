@@ -44,6 +44,14 @@ describe("guardados", () => {
     expect(estaGuardado(julio, 2)).toBe(true);
   });
 
+  it("a lo que guardó una versión anterior, sin vuelos ni destino, le valen los de siempre", () => {
+    const { solo_por_tierra: _, destino: __, ...consulta } = { ...POR_DEFECTO, mes: 7 };
+    localStorage.setItem("dreemgo.viajes.v1", JSON.stringify([{ ...viaje(7), consulta }]));
+    const [leido] = leerViajes();
+    expect(leido?.consulta).toEqual({ ...POR_DEFECTO, mes: 7 });
+    expect(estaGuardado({ ...POR_DEFECTO, mes: 7 }, 1)).toBe(true);
+  });
+
   it("lo guardado cuando los tres viajes iban en una pantalla se lee como la consulta entera", () => {
     const { ruta: _, ...deAntes } = viaje(7);
     localStorage.setItem(

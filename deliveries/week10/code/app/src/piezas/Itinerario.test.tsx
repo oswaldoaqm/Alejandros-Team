@@ -5,7 +5,7 @@ import type { Dia, Evento, Recurso } from "../api/tipos";
 import type { Foto } from "../fotos";
 import { numerar } from "../itinerario";
 import { plano } from "../pruebas/texto";
-import { HojaDeLugar, Itinerario, type LugarAbierto, SelectorDeDias } from "./Itinerario";
+import { HojaDeLugar, Itinerario, type LugarAbierto, PlanParaImprimir, SelectorDeDias } from "./Itinerario";
 
 function recurso(codigo: string, nombre: string, extra: Partial<Recurso> = {}): Recurso {
   return {
@@ -34,6 +34,7 @@ const DIAS: Dia[] = [
     horas: 7.9,
     km: 307.7,
     nota: "Salida de Lima a las 07:00; 6 h 03 por carretera hasta Huancayo.",
+    tranquilo: false,
     paradas: [
       {
         orden: 1,
@@ -65,6 +66,7 @@ const DIAS: Dia[] = [
     km: 0,
     nota: "Día libre en Huancayo.",
     paradas: [],
+    tranquilo: false,
   },
   {
     numero: 3,
@@ -73,6 +75,7 @@ const DIAS: Dia[] = [
     horas: 7.7,
     km: 315.3,
     nota: "Vuelta a Lima: 6 h 03 por carretera.",
+    tranquilo: false,
     paradas: [
       {
         orden: 1,
@@ -124,12 +127,12 @@ const EVENTOS: Evento[] = [
   },
 ];
 
-function pintar(dia: number | null) {
+function pintar(dia: number | null, dias: Dia[] = DIAS) {
   const elegirDia = vi.fn();
   const abrirLugar = vi.fn();
   render(
     <Itinerario
-      dias={numerar(DIAS)}
+      dias={numerar(dias)}
       eventos={EVENTOS}
       dia={dia}
       elegirDia={elegirDia}
@@ -154,6 +157,82 @@ describe("todo el viaje", () => {
     const { elegirDia } = pintar(null);
     await userEvent.click(screen.getByRole("button", { name: /Día 3/ }));
     expect(elegirDia).toHaveBeenCalledWith(3);
+  });
+});
+
+describe("la noche", () => {
+  const CON_NOCHE: Dia[] = DIAS.map((d) =>
+    d.numero === 2
+      ? {
+          ...d,
+          noche: {
+            tipo: "salir",
+            titulo: "Salir en Huancayo",
+            nota: "A no más de 20 minutos a pie de donde duermes hay 12 bares.",
+            lugares: [
+              {
+                nombre: "Bar del Valle",
+                tipo: "bar",
+                lat: -12.06,
+                lon: -75.2,
+                minutos_a_pie: 5,
+                fuente: "openstreetmap",
+                url: "https://www.openstreetmap.org/node/7",
+                horario: null,
+              },
+            ],
+            cielo: null,
+          },
+        }
+      : d,
+  );
+
+  it("en la lista, una línea bajo lo del día", () => {
+    pintar(null, CON_NOCHE);
+    expect(plano(screen.getByRole("button", { name: /Día 2/ }).textContent)).toBe(
+      "Día 2 mié 21 jul Día libre Día libre en Huancayo. De noche: Salir en Huancayo",
+    );
+  });
+
+  it("en el día, después de sus lugares, con dónde salir", () => {
+    pintar(2, CON_NOCHE);
+    const noche = screen.getByRole("region", { name: "De noche: Salir en Huancayo" });
+    expect(within(noche).getByRole("link", { name: "Bar del Valle" })).toBeTruthy();
+  });
+});
+
+describe("el primer día en la altura", () => {
+  // Huancayo está a 3 250 m: si se llega desde Lima, el día de llegada es tranquilo (contrato 1.7).
+  const TRANQUILO: Dia[] = DIAS.map((d) => (d.numero === 1 ? { ...d, tranquilo: true } : d));
+
+  it("en la lista, una línea bajo sus lugares; los otros días no la llevan", () => {
+    pintar(null, TRANQUILO);
+    const [uno, dos] = screen.getAllByRole("button");
+    expect(plano(uno?.textContent)).toBe(
+      "Día 1 mar 20 jul Ida y visitas Capilla de la Merced y Lugar de la Memoria Día tranquilo para acostumbrarte a la altura",
+    );
+    expect(plano(dos?.textContent)).not.toContain("tranquilo");
+  });
+
+  it("en el día, después de cómo se llega", () => {
+    pintar(1, TRANQUILO);
+    const aviso = screen.getByText("Día tranquilo para acostumbrarte a la altura.");
+    expect(aviso.closest(".un-dia__tranquilo")).toBeTruthy();
+    expect(screen.getByText(/Salida de Lima/).compareDocumentPosition(aviso)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
+  it("los otros días, no", () => {
+    pintar(3, TRANQUILO);
+    expect(screen.queryByText(/Día tranquilo/)).toBeNull();
+  });
+
+  it("y en el plan impreso, en su día", () => {
+    const { container } = render(<PlanParaImprimir dias={numerar(TRANQUILO)} />);
+    const [uno, dos] = container.querySelectorAll(".plan-impreso__dia");
+    expect(plano(uno?.textContent)).toContain("Día tranquilo para acostumbrarte a la altura.");
+    expect(plano(dos?.textContent)).not.toContain("tranquilo");
   });
 });
 
@@ -236,6 +315,69 @@ describe("un día", () => {
     const { elegirDia } = pintar(3);
     await userEvent.click(screen.getByRole("button", { name: "Ver todo el viaje" }));
     expect(elegirDia).toHaveBeenCalledWith(null);
+  });
+});
+
+describe("el almuerzo", () => {
+  const conAlmuerzo = (almuerzo: Dia["almuerzo"]): Dia[] =>
+    DIAS.map((d) => (d.numero === 1 ? { ...d, almuerzo } : d));
+
+  it("va en la línea del día, después de los lugares que van antes, sin número y sin abrirse", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "13:45",
+        despues_de: 1,
+        lugar: "Lugar de la Memoria",
+        en_la_base: false,
+        hay_donde_comer: true,
+      }),
+    );
+    const filas = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole("listitem");
+    expect(filas.map((f) => plano(f.textContent))).toEqual([
+      "13:11 1Capilla de la Merced Visita de 25 min",
+      "13:45 Almuerzo Cerca de Lugar de la Memoria",
+      "13:46 2Lugar de la Memoria Visita de 1 h",
+    ]);
+    expect(within(filas[1] as HTMLElement).queryByRole("button")).toBeNull();
+    // Las horas del día no cuentan el almuerzo: el resumen lo dice.
+    expect(plano(screen.getByText(/Ida y visitas/).textContent)).toBe(
+      "Ida y visitas: 7 h 54 de jornada, más el almuerzo, y 308 km de camino.",
+    );
+  });
+
+  it("si cerca no hay registrado dónde comer, dice que lo lleves", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "14:46",
+        despues_de: 2,
+        lugar: "Lugar de la Memoria",
+        en_la_base: false,
+        hay_donde_comer: false,
+      }),
+    );
+    const filas = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole("listitem");
+    expect(plano(filas[2]?.textContent)).toBe(
+      "14:46 Almuerzo En Lugar de la Memoria Lleva tu almuerzo: no tenemos registrado dónde comer cerca.",
+    );
+  });
+
+  it("en la base, antes de salir", () => {
+    pintar(
+      1,
+      conAlmuerzo({
+        hora: "12:30",
+        despues_de: 0,
+        lugar: "Huancayo",
+        en_la_base: true,
+        hay_donde_comer: null,
+      }),
+    );
+    const [primera] = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole(
+      "listitem",
+    );
+    expect(plano(primera?.textContent)).toBe("12:30 Almuerzo En Huancayo");
   });
 });
 

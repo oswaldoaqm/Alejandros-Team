@@ -61,6 +61,46 @@ describe("la zona de un viaje", () => {
     ).toBe(primero.url_ficha);
   });
 
+  it("«Armar un viaje aquí» abre el formulario con esta zona, desde la consulta con que se llegó", async () => {
+    await abrir(`/?origen=cusco&mes=7&dias=4&sorpresa=true#/polo/${POLO.polo.id}`);
+    const armar = await screen.findByRole("link", { name: "Armar un viaje aquí" });
+    expect(armar.getAttribute("href")).toBe(`?origen=cusco&destino=${POLO.polo.id}&mes=7&dias=4#/editar`);
+    await userEvent.click(armar);
+    await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" });
+    await waitFor(() =>
+      expect(plano(screen.getByRole("button", { name: /^A dónde/ }).textContent)).toBe(`A dónde ${ZONA}`),
+    );
+  });
+
+  it("sin consulta, el viaje que arma es uno nuevo: desde Lima, el mes que viene", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 16));
+    await abrir(`/#/polo/${POLO.polo.id}`);
+    expect((await screen.findByRole("link", { name: "Armar un viaje aquí" })).getAttribute("href")).toBe(
+      `?origen=lima&destino=${POLO.polo.id}&mes=11&dias=6#/editar`,
+    );
+  });
+
+  it("cada fiesta de la zona ofrece armar el viaje para ir", async () => {
+    await abrir(`/?origen=cusco&mes=7&dias=4#/polo/${POLO.polo.id}`, {
+      // Las fiestas de Huancayo, la zona 33, que el ejemplo del contrato trae en uno de sus viajes.
+      [`/v1/polos/${POLO.polo.id}`]: {
+        cuerpo: { ...POLO, eventos: EVENTOS.eventos.filter((e) => e.polo === 33) },
+      },
+    });
+    const fiestas = await screen.findByRole("region", { name: "Fiestas de los próximos meses" });
+    const ir = within(fiestas).getAllByRole("link", { name: /^Ir a esta fiesta/ });
+    expect(ir.map((a) => a.getAttribute("href"))).toEqual([
+      // La que dura todo el mes, en su mes; las de un día, saliendo la víspera.
+      "?origen=cusco&destino=33&mes=7&dias=4#/editar",
+      "?origen=cusco&destino=33&fecha_inicio=2027-07-10&dias=4#/editar",
+      "?origen=cusco&destino=33&fecha_inicio=2027-07-30&dias=4#/editar",
+    ]);
+    expect(ir[1]?.getAttribute("aria-label")).toBe(
+      "Ir a esta fiesta: Escenificación de los Hechos Heroicos del 11 de Julio en Matahuasi",
+    );
+  });
+
   it("si la zona no existe, lo dice", async () => {
     await abrir("/#/polo/9999");
     const alerta = await screen.findByRole("alert");
@@ -121,6 +161,28 @@ describe("el calendario de fiestas", () => {
     expect(screen.getByRole("link", { name: "Armar un viaje para julio" }).getAttribute("href")).toBe(
       "?origen=cusco&mes=7&dias=4#/editar",
     );
+  });
+
+  it("«Ir a esta fiesta» arma el viaje a su zona; si no queda cerca de ninguna, no se ofrece", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 9, 1));
+    const lejos = {
+      ...PUBLICADO,
+      nombre: "Feria sin zona",
+      fecha_inicio: "2027-07-20",
+      fecha_fin: "2027-07-20",
+    };
+    await abrir("/#/calendario/7", {
+      "/v1/eventos": { cuerpo: { ...EVENTOS, eventos: [...EVENTOS.eventos, lejos] } },
+    });
+    await screen.findByText(/eventos en julio de 2027$/);
+    const ir = screen.getAllByRole("link", { name: /^Ir a esta fiesta/ });
+    expect(ir).toHaveLength(EVENTOS.eventos.length);
+    // Sin consulta, desde Lima y seis días.
+    expect(ir[1]?.getAttribute("href")).toBe(
+      "?origen=lima&destino=33&fecha_inicio=2027-07-10&dias=6#/editar",
+    );
+    expect(screen.queryByRole("link", { name: "Ir a esta fiesta: Feria sin zona" })).toBeNull();
   });
 
   it("«#/calendario/11» abre en noviembre, y si el enlace pide otro mes, cambia", async () => {

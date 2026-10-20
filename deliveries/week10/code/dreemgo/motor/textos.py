@@ -57,10 +57,13 @@ def lista(cosas: list[str], conjuncion: str = "y") -> str:
     return ", ".join(cosas[:-1]) + f" {conjuncion} " + cosas[-1]
 
 
+COMO = {"avion": "en avión", "carretera": "por carretera", "tren": "en tren", "bote": "en bote"}
+
+
 def por_medios(medios: list[str]) -> str:
     """["carretera"] → "por carretera"; ["carretera", "tren"] → "por carretera y en tren";
-    ["bote"] → "en bote"."""
-    return lista(["por carretera" if m == "carretera" else f"en {m}" for m in medios]) or "por carretera"
+    ["bote"] → "en bote"; ["avion", "carretera"] → "en avión y por carretera"."""
+    return lista([COMO[m] for m in medios]) or "por carretera"
 
 
 def fechas(inicio, fin) -> str:
