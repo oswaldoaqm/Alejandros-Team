@@ -41,8 +41,11 @@ POLO = re.compile(r"\bpolos?\b", re.IGNORECASE)
 
 @st.composite
 def consultas(draw) -> Consulta:
-    origenes = sorted(artefactos.cargar().origenes)
+    datos = artefactos.cargar()
+    origenes = sorted(datos.origenes)
     con_fecha = draw(st.booleans())
+    # Una de cada tres, más o menos, con un destino elegido: no va con «Sorpréndeme».
+    destino = draw(st.one_of(st.none(), st.none(), st.sampled_from(sorted(datos.polos))))
     fecha = draw(st.dates(date(2026, 10, 1), date(2027, 12, 31))) if con_fecha else None
     return Consulta(
         origen=draw(st.sampled_from(origenes)),
@@ -52,8 +55,9 @@ def consultas(draw) -> Consulta:
         intereses=draw(st.lists(st.sampled_from(list(Interes)), max_size=3, unique=True)),
         presupuesto=draw(st.one_of(st.none(), st.integers(PRESUPUESTO_MIN, PRESUPUESTO_MAX))),
         altitud_max=draw(st.one_of(st.none(), st.integers(0, ALTITUD_MAX_M))),
-        sorpresa=draw(st.booleans()),
+        sorpresa=destino is None and draw(st.booleans()),
         solo_por_tierra=draw(st.booleans()),
+        destino=destino,
     )
 
 
@@ -113,10 +117,21 @@ def test_las_diez_propiedades(consulta):
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
+        # Y cada sugerencia, aceptada sola, hace salir algún viaje.
+        for s in respuesta.sin_resultado.sugerencias:
+            assert resolver(consulta.model_copy(update={s.campo: s.valor}), datos, sugerir=False).rutas
 
-    # 9. Las rutas son de polos distintos.
+    # 9. Las rutas son de polos distintos; con destino, una como mucho, y es la de esa zona.
     polos = [r.polo.id for r in respuesta.rutas]
     assert len(polos) == len(set(polos))
+    if consulta.destino is not None:
+        assert polos in ([], [consulta.destino])
+    # Y el viaje a una zona es el mismo cuando la elige el motor que cuando la elige el viajero:
+    # solo cambia el puntaje, que la compara con las demás.
+    if consulta.destino is None and respuesta.rutas:
+        ruta = respuesta.rutas[-1]
+        [elegida] = resolver(consulta.model_copy(update={"destino": ruta.polo.id, "sorpresa": False}), datos).rutas
+        assert elegida.model_dump(exclude={"puntaje"}) == ruta.model_dump(exclude={"puntaje"})
 
     # 8. La misma consulta con los mismos datos da exactamente la misma respuesta.
     assert resolver(consulta, datos).model_dump_json() == respuesta.model_dump_json()

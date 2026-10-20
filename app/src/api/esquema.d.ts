@@ -137,6 +137,11 @@ export interface components {
              */
             altitud_max?: number | null;
             /**
+             * Destino
+             * @description La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.
+             */
+            destino?: number | null;
+            /**
              * Dias
              * @description Días disponibles en total, contando la ida y la vuelta desde el origen.
              * @default 6
@@ -293,6 +298,11 @@ export interface components {
             /** Nombre */
             nombre: string;
             /**
+             * Polo
+             * @description La zona donde cae, por su número de polo: la del inventario o, si lo publicó un municipio, la que duerme más cerca. null si no queda cerca de ninguna (desde 1.4).
+             */
+            polo?: number | null;
+            /**
              * Precision Fecha
              * @description exacta: la fuente la publica. aproximada: calculada (santoral, cómputo de Pascua). por_confirmar: sin fecha conocida.
              * @enum {string}
@@ -372,7 +382,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.3
+             * @default 1.4
              */
             version_contrato: string;
             /** Version Datos */
@@ -449,7 +459,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.3
+             * @default 1.4
              */
             version_contrato: string;
             /** Version Datos */
@@ -532,7 +542,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.3
+             * @default 1.4
              */
             version_contrato: string;
             /** Version Datos */
@@ -615,14 +625,14 @@ export interface components {
             consulta: components["schemas"]["Consulta"];
             /**
              * Rutas
-             * @description Hasta tres polos distintos, del mejor al peor.
+             * @description Hasta tres polos distintos, del mejor al peor; con destino, solo el de esa zona.
              */
             rutas: components["schemas"]["Ruta"][];
-            /** @description Presente solo si no hay ninguna ruta: por qué y qué relajar. */
+            /** @description Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga. */
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.3
+             * @default 1.4
              */
             version_contrato: string;
             /**
@@ -664,7 +674,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.3
+             * @default 1.4
              */
             version_contrato: string;
             /**
@@ -686,7 +696,7 @@ export interface components {
              * Campo
              * @enum {string}
              */
-            campo: "origen" | "mes" | "fecha_inicio" | "dias" | "intereses" | "presupuesto" | "altitud_max" | "solo_por_tierra";
+            campo: "origen" | "mes" | "fecha_inicio" | "dias" | "intereses" | "presupuesto" | "altitud_max" | "solo_por_tierra" | "destino";
             /**
              * Efecto
              * @description Qué cambia si se acepta, por ejemplo «aparecen 5 viajes».
@@ -1001,6 +1011,8 @@ export interface operations {
                 sorpresa?: boolean;
                 /** @description Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3). */
                 solo_por_tierra?: boolean;
+                /** @description La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa. */
+                destino?: number | null;
             };
             header?: never;
             path?: never;

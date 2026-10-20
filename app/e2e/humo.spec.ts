@@ -107,6 +107,40 @@ test("desde Lima con seis días al Cusco se vuela, y con «Solo por tierra» no 
   await expect(tarjetas(page).filter({ hasText: /con (dos )?vuelos?/ })).toHaveCount(0);
 });
 
+test("«A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y con eso sale", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await elegir(page, /^Cuándo/, () => page.getByRole("radio", { name: "Julio" }).check({ force: true }));
+  await elegir(
+    page,
+    /^A dónde/,
+    async () => {
+      await page.getByRole("searchbox", { name: "Buscar una zona o un lugar" }).fill("machu picchu");
+      await page
+        .getByRole("dialog")
+        .getByRole("button", { name: /^Machupicchu Pueblo/ })
+        .click();
+    },
+    false,
+  );
+  await expect(page.getByRole("button", { name: /^A dónde/ })).toContainText("Machupicchu Pueblo");
+  await expect(page.getByRole("button", { name: /Sorpréndeme/ })).toHaveCount(0);
+  for (let dias = 6; dias > 2; dias--) await page.getByRole("button", { name: "Un día menos" }).click();
+  await page.getByRole("button", { name: "Ver mi viaje" }).click();
+
+  await expect(page.getByRole("heading", { level: 2, name: "Así no cabe" })).toBeVisible();
+  await expect(
+    page.getByText(/^En 2.días no da para ir de Lima a Machupicchu Pueblo y volver/),
+  ).toBeVisible();
+  await page.getByRole("link", { name: /^Probar con 5.días$/ }).click();
+  await expect(titulo(page)).toHaveText("Machupicchu Pueblo");
+  await expect(page).toHaveURL(/\?origen=lima&destino=4&mes=7&dias=5&v=[^#]+#\/ruta\/1$/);
+
+  await page.getByRole("link", { name: "Cambiar el viaje" }).click();
+  await expect(page.getByRole("button", { name: /^A dónde/ })).toContainText("Machupicchu Pueblo");
+});
+
 test("guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él", async ({
   page,
 }) => {
@@ -227,6 +261,7 @@ const PANTALLAS = [
   ["el formulario", "./"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
   ["un viaje", "./?origen=lima&mes=7&dias=6#/ruta/1"],
+  ["un viaje a una zona que no cabe", "./?origen=lima&destino=4&mes=7&dias=2#/ruta/1"],
   ["la zona de un viaje", "./#/polo/33"],
   ["el calendario", "./#/calendario"],
   ["cómo funciona", "./#/acerca"],

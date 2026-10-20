@@ -168,6 +168,43 @@ def test_origen_desconocido(cliente):
 
 
 @con_datos
+def test_con_destino_sale_solo_ese_viaje(cliente):
+    cusco = next(p.id for p in artefactos.cargar().polos.values() if p.nombre == "Cuzco")
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 6, "destino": cusco})
+    assert r.status_code == 200
+    assert [ruta["polo"]["id"] for ruta in r.json()["rutas"]] == [cusco]
+
+
+@con_datos
+def test_con_destino_si_no_cabe_dice_por_que_y_que_cambiar(cliente):
+    cusco = next(p.id for p in artefactos.cargar().polos.values() if p.nombre == "Cuzco")
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, "dias": 2, "destino": cusco}).json()
+    assert r["rutas"] == [] and r["sin_resultado"]["motivo"].startswith("En 2 días no da para ir de Lima a Cuzco")
+    assert r["sin_resultado"]["sugerencias"] == [
+        {"campo": "dias", "valor": 3, "efecto": "sale el viaje, con vuelo"},
+        {"campo": "destino", "valor": None, "efecto": "aparecen 3 viajes"},
+    ]
+
+
+@con_datos
+@pytest.mark.parametrize(
+    "params, campo, mensaje",
+    [
+        ({"destino": 9_999}, "destino", "No hay una zona con ese número."),
+        (
+            {"destino": 4, "sorpresa": "true"},
+            "consulta",
+            "Con un destino elegido no hay sorpresa: quita uno de los dos.",
+        ),
+    ],
+)
+def test_un_destino_que_no_vale(cliente, params, campo, mensaje):
+    r = cliente.get("/v1/viajes", params={"origen": "lima", "mes": 7, **params})
+    assert r.status_code == 422
+    assert [(e["campo"], e["mensaje"]) for e in r.json()["detail"]] == [(campo, mensaje)]
+
+
+@con_datos
 def test_opciones(cliente):
     r = cliente.get("/v1/opciones").json()
     assert len(r["origenes"]) == 24 and r["origenes"][0]["id"] == "lima"

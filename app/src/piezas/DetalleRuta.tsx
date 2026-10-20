@@ -38,8 +38,15 @@ interface Props {
   fotos: Fotos | null;
   consulta: Consulta;
   version: string | null;
-  /** El enlace a los viajes propuestos. */
+  /** El enlace a los viajes propuestos o, con un destino, a cambiar el viaje. */
   volver: string;
+  /** Lo que dice ese enlace: «Tus viajes» o «Cambiar el viaje». */
+  textoVolver?: string;
+  /**
+   * Si el enlace retrocede cuando se llegó desde la app, y deja la lista como estaba. Para cambiar
+   * el viaje no: el formulario de atrás no recuerda la consulta, el enlace sí.
+   */
+  retrocede?: boolean;
   /** El aviso de que el enlace se armó con otros datos, cuando hace falta. */
   aviso?: ReactNode;
   /** Guardar y compartir: van sobre la portada. */
@@ -186,6 +193,8 @@ export function DetalleRuta({
   consulta,
   version,
   volver,
+  textoVolver = "Tus viajes",
+  retrocede = true,
   aviso,
   acciones,
   atribucion,
@@ -271,9 +280,9 @@ export function DetalleRuta({
             </div>
           )}
           <div className="portada__barra">
-            <Enlace href={volver} volver className="boton boton--flotante portada__volver">
+            <Enlace href={volver} volver={retrocede} className="boton boton--flotante portada__volver">
               <Icono nombre="atras" tamano={20} />
-              <span className="boton__texto">Tus viajes</span>
+              <span className="boton__texto">{textoVolver}</span>
             </Enlace>
             {acciones}
           </div>

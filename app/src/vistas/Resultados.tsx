@@ -1,11 +1,14 @@
 // Pantalla 2: los tres viajes de la consulta de la URL, para elegir de un vistazo. Al tocar uno
-// se abre su plan (`#/ruta/N`), en su propia pantalla; «Volver» regresa a los tres.
+// se abre su plan (`#/ruta/N`), en su propia pantalla; «Volver» regresa a los tres. Con un
+// destino sale un solo viaje y se abre directo; si no cabe, aquí se dice por qué y qué cambiar.
 
 import { useEffect, useState } from "react";
 import { borrarViaje, estaGuardado, guardarViaje } from "../almacen";
 import type { Respuesta } from "../api/tipos";
 import { aParametros, type Consulta, clave, detalles, titulo } from "../consulta";
+import { nombreDeZona } from "../destinos";
 import { useApp } from "../estado/contexto";
+import { useDestinos } from "../estado/destinos";
 import { useFotos } from "../estado/fotos";
 import { usePedido } from "../estado/pedido";
 import { useTitulo } from "../estado/titulo";
@@ -39,6 +42,7 @@ function comoLaEntendio(c: Respuesta["consulta"]): Consulta {
     altitud_max: c.altitud_max ?? null,
     sorpresa: c.sorpresa,
     solo_por_tierra: c.solo_por_tierra,
+    destino: c.destino ?? null,
   };
 }
 
@@ -100,7 +104,7 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
 
   const compartir = async () => {
     const enlace = new URL(enlaces.resultados(consulta, version, elegida), window.location.href).href;
-    const pedido = titulo(consulta, nombres);
+    const pedido = titulo(consulta, nombres, nombre);
     const conElDedo =
       typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
     if (conElDedo && typeof navigator.share === "function") {
@@ -175,22 +179,24 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
 function SinRutas({ respuesta, consulta }: { respuesta: Respuesta; consulta: Consulta }) {
   const { nombres } = useApp();
   const sin = respuesta.sin_resultado;
+  const conDestino = consulta.destino !== null;
   const sugerencias = (sin?.sugerencias ?? []).flatMap((s) => {
     const nueva = aplicarSugerencia(consulta, s);
     return nueva ? [{ s, nueva }] : [];
   });
   return (
     <div className="vacio-viajes">
-      <h2>No encontramos un viaje así</h2>
+      <h2>{conDestino ? "Así no cabe" : "No encontramos un viaje así"}</h2>
       <p>{sin?.motivo ?? "Ninguna zona cumple todo lo que pediste."}</p>
       {sugerencias.length > 0 ? (
         <>
-          <p>Con un cambio sí aparecen:</p>
+          <p>{conDestino ? "Con un cambio sí sale:" : "Con un cambio sí aparecen:"}</p>
           <ul className="sugerencias">
             {sugerencias.map(({ s, nueva }) => (
               <li key={`${s.campo}-${String(s.valor)}`}>
+                {/* Si el cambio deja el destino, el viaje se abre directo. */}
                 <Enlace
-                  href={enlaces.resultados(nueva, respuesta.version_datos)}
+                  href={enlaces.resultados(nueva, respuesta.version_datos, nueva.destino !== null ? 1 : null)}
                   className="boton boton--secundario"
                 >
                   {textoDeSugerencia(s, nombres)}
@@ -216,22 +222,33 @@ export function Resultados({ consulta, version, elegida }: Props) {
   const respuesta = pedido.datos;
   const alDia = respuesta !== null && !pedido.cargando && pedido.de === `/v1/viajes?${parametros}`;
   const vigente = respuesta?.version_datos ?? version;
+  const rutas = respuesta?.rutas ?? [];
+  // Con un destino, su nombre sale de la lista de zonas o, si no llega, del viaje mismo.
+  const conDestino = consulta.destino !== null;
+  const destinos = useDestinos(conDestino);
+  const zona = conDestino
+    ? (nombreDeZona(destinos, consulta.destino) ?? rutas[0]?.polo.nombre ?? null)
+    : null;
 
   // El enlace completo lleva la versión de datos: si la barra de direcciones no la trae, se le
   // pone. Y si solo cambiaron los eventos publicados, se pone la vigente sin avisar: las rutas
-  // son las mismas (src/version.ts).
+  // son las mismas (src/version.ts). Con un destino, el único viaje se abre directo.
   const versionRecibida = alDia ? respuesta.version_datos : null;
   const cambio = versionRecibida === null ? "ninguno" : cambioDeVersion(version, versionRecibida);
+  const abrirElUnico = alDia && conDestino && rutas.length > 0 && elegida === null;
   useEffect(() => {
-    if (versionRecibida !== null && (version === null || cambio === "eventos")) {
-      navegar(enlaces.resultados(consulta, versionRecibida, elegida), {
-        reemplazar: true,
-        conservarPosicion: true,
-      });
+    const ponerVersion = versionRecibida !== null && (version === null || cambio === "eventos");
+    if (ponerVersion || abrirElUnico) {
+      navegar(
+        enlaces.resultados(consulta, ponerVersion ? versionRecibida : version, abrirElUnico ? 1 : elegida),
+        {
+          reemplazar: true,
+          conservarPosicion: !abrirElUnico,
+        },
+      );
     }
-  }, [versionRecibida, version, cambio, consulta, elegida, navegar]);
+  }, [versionRecibida, version, cambio, abrirElUnico, consulta, elegida, navegar]);
 
-  const rutas = respuesta?.rutas ?? [];
   const deOtraVersion = alDia && cambio === "datos";
   const entendida = alDia ? comoLaEntendio(respuesta.consulta) : consulta;
 
@@ -259,7 +276,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
 
   // Un viaje abierto: su plan completo, en su propia pantalla.
   const abierta = elegida !== null ? rutas[Math.min(Math.max(elegida, 1), rutas.length) - 1] : undefined;
-  useTitulo(abierta ? nombreDelViaje(abierta.polo.nombre).titulo : titulo(consulta, nombres));
+  useTitulo(abierta ? nombreDelViaje(abierta.polo.nombre).titulo : titulo(consulta, nombres, zona));
   if (respuesta !== null && abierta && elegida !== null) {
     const indice = rutas.indexOf(abierta);
     return (
@@ -270,7 +287,10 @@ export function Resultados({ consulta, version, elegida }: Props) {
           fotos={fotos}
           consulta={entendida}
           version={vigente}
-          volver={enlaces.resultados(consulta, vigente)}
+          // Con un destino no hay tres viajes a los que volver: se vuelve a cambiar este.
+          volver={conDestino ? enlaces.editar(consulta, vigente) : enlaces.resultados(consulta, vigente)}
+          textoVolver={conDestino ? "Cambiar el viaje" : "Tus viajes"}
+          retrocede={!conDestino}
           aviso={avisoDeVersion}
           acciones={
             alDia ? (
@@ -292,12 +312,24 @@ export function Resultados({ consulta, version, elegida }: Props) {
   const demas = detalles(entendida, nombres);
   // Si ninguno pasa por Lima ni por Cusco, lo dice una frase arriba y no la etiqueta de cada tarjeta.
   const todosFuera = rutas.length > 1 && rutas.every((r) => r.polo.fuera_del_circuito);
+  const armando = pedido.cargando && respuesta === null;
+  const encabezado = conDestino
+    ? armando
+      ? "Armando tu viaje"
+      : zona
+        ? `Tu viaje a ${zona}`
+        : "Tu viaje"
+    : armando
+      ? "Armando tus viajes"
+      : alDia
+        ? (CUANTOS[rutas.length] ?? `${rutas.length} viajes para ti`)
+        : "Tus viajes";
 
   return (
     <section className="pagina resultados">
       <div className="resultados__consulta">
         <div>
-          <p className="resultados__frase">{titulo(entendida, nombres)}</p>
+          <p className="resultados__frase">{titulo(entendida, nombres, zona)}</p>
           {demas ? <p className="resultados__demas">{demas}</p> : null}
         </div>
         <Enlace href={enlaces.editar(consulta, vigente)} className="boton boton--secundario">
@@ -307,15 +339,11 @@ export function Resultados({ consulta, version, elegida }: Props) {
       </div>
 
       <h1 tabIndex={-1} className="resultados__titulo">
-        {pedido.cargando && respuesta === null
-          ? "Armando tus viajes"
-          : alDia
-            ? (CUANTOS[rutas.length] ?? `${rutas.length} viajes para ti`)
-            : "Tus viajes"}
+        {encabezado}
       </h1>
       <p className="resultados__estado" role="status">
         {pedido.cargando
-          ? "Estamos revisando las zonas del país. La primera vez puede tardar unos segundos."
+          ? `Estamos ${conDestino ? "armando el viaje" : "revisando las zonas del país"}. La primera vez puede tardar unos segundos.`
           : alDia && rutas.length > 1
             ? `Del que más te conviene al que menos.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
             : ""}
@@ -336,7 +364,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
         </ErrorVista>
       ) : null}
 
-      {respuesta === null && pedido.cargando ? <Cargando texto="Armando tus viajes…" /> : null}
+      {armando ? <Cargando texto={conDestino ? "Armando tu viaje…" : "Armando tus viajes…"} /> : null}
 
       {avisoDeVersion}
 

@@ -56,6 +56,19 @@
             "description": "Altitud máxima tolerada, en metros. Ninguna parada la supera.",
             "title": "Altitud Max"
           },
+          "destino": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+            "title": "Destino"
+          },
           "dias": {
             "default": 6,
             "description": "Días disponibles en total, contando la ida y la vuelta desde el origen.",
@@ -427,6 +440,19 @@
             "title": "Nombre",
             "type": "string"
           },
+          "polo": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "La zona donde cae, por su número de polo: la del inventario o, si lo publicó un municipio, la que duerme más cerca. null si no queda cerca de ninguna (desde 1.4).",
+            "title": "Polo"
+          },
           "precision_fecha": {
             "description": "exacta: la fuente la publica. aproximada: calculada (santoral, cómputo de Pascua). por_confirmar: sin fecha conocida.",
             "enum": [
@@ -639,7 +665,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.3",
+            "default": "1.4",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -823,7 +849,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.3",
+            "default": "1.4",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -980,7 +1006,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.3",
+            "default": "1.4",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1208,7 +1234,7 @@
             "description": "La consulta tal como la entendió el motor."
           },
           "rutas": {
-            "description": "Hasta tres polos distintos, del mejor al peor.",
+            "description": "Hasta tres polos distintos, del mejor al peor; con destino, solo el de esa zona.",
             "items": {
               "$ref": "#/components/schemas/Ruta"
             },
@@ -1225,10 +1251,10 @@
                 "type": "null"
               }
             ],
-            "description": "Presente solo si no hay ninguna ruta: por qué y qué relajar."
+            "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.3",
+            "default": "1.4",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1328,7 +1354,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.3",
+            "default": "1.4",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1384,7 +1410,8 @@
               "intereses",
               "presupuesto",
               "altitud_max",
-              "solo_por_tierra"
+              "solo_por_tierra",
+              "destino"
             ],
             "title": "Campo",
             "type": "string"
@@ -1980,6 +2007,25 @@
               "description": "Sin vuelos: la ida y la vuelta van por carretera, en tren o en bote. Por defecto el motor vuela a lo que por tierra queda a más de 16 horas (desde 1.3).",
               "title": "Solo Por Tierra",
               "type": "boolean"
+            }
+          },
+          {
+            "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+            "in": "query",
+            "name": "destino",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "La zona a la que el viajero quiere ir, por su número de polo. Con ella el motor arma solo ese viaje y, si no cabe, dice por qué y qué cambiar (desde 1.4). No va con sorpresa.",
+              "title": "Destino"
             }
           }
         ],

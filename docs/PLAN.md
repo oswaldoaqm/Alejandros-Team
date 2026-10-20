@@ -16,9 +16,11 @@ El 14 de octubre el profesor movió la entrega de la semana 10, con su exposici�
 
 Después de esa entrega entran los vuelos, con el [contrato 1.3](./CONTRATO.md) y los datos `2026.10.5`. Se vuela solo a lo que por tierra queda a más de 16 horas, y no en viajes cortos: desde Lima salen el Cusco, Arequipa y Puno en avión, y Huaraz y Trujillo siguen en bus. El presupuesto entra ahora a elegir las tres rutas. Quien no quiere volar apaga el interruptor «Vuelos». Lo que se midió está en la [decisión 0016](./decisiones/0016-vuelos.md).
 
+Con los vuelos entra «Quiero ir a…», con el [contrato 1.4](./CONTRATO.md). Quien ya sabe a dónde quiere ir elige la zona en el formulario, desde la zona o desde una fiesta del calendario. El motor arma ese viaje o dice por qué no cabe y qué cambiar: desde Lima, el Cusco sale con tres días, Machu Picchu con cinco y Huaraz con cuatro. Está en la [decisión 0017](./decisiones/0017-quiero-ir-a.md), que deja abierta una pregunta para el equipo: si con destino se vuela también en viajes cortos.
+
 ## Qué promete el producto
 
-El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR.
+El viajero dice desde dónde sale, cuántos días tiene, en qué mes viaja, qué le interesa, cuánto quiere gastar y hasta qué altura tolera. DreemGO le devuelve **tres viajes distintos, cada uno a un polo turístico, con el itinerario día por día**: qué visitar, en qué orden, a qué hora se llega, cuánto cuesta en una banda realista, qué fiestas caen en sus fechas y por qué ese mes conviene o no. Cada parada enlaza a su ficha oficial de MINCETUR. Si ya sabe a dónde quiere ir, le arma ese viaje o le dice qué cambiar para que quepa.
 
 ## Calendario
 

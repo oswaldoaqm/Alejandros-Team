@@ -1,11 +1,13 @@
 // Las fiestas de un mes, en todo el país o en una región: las del inventario oficial de
-// MINCETUR y las que publican las municipalidades. Sale de GET /v1/eventos?desde=…&hasta=…
+// MINCETUR y las que publican las municipalidades. Desde cada una se arma el viaje para ir.
+// Sale de GET /v1/eventos?desde=…&hasta=…
 
 import { useId, useMemo, useState } from "react";
-import type { Eventos } from "../api/tipos";
-import { type Consulta, POR_DEFECTO } from "../consulta";
+import type { Evento, Eventos } from "../api/tipos";
+import { type Consulta, consultaNueva, POR_DEFECTO } from "../consulta";
 import { usePedido } from "../estado/pedido";
 import { useTitulo } from "../estado/titulo";
+import { viajeAlEvento } from "../eventos";
 import { aIso, MESES_CORTOS, mayuscula, mes, plural } from "../formato";
 import { Enlace } from "../piezas/Enlace";
 import { Cargando, ErrorVista } from "../piezas/Estados";
@@ -60,6 +62,11 @@ export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
   const empiezan = visibles.filter((e) => !e.fecha_inicio || e.fecha_inicio >= desde);
   const siguen = visibles.filter((e) => e.fecha_inicio && e.fecha_inicio < desde);
   const cuando = `${mes(elegido)} de ${anio}`;
+  // «Ir a esta fiesta» arma el viaje desde la consulta con que se llegó o, si no hay, desde una nueva.
+  const irA = (evento: Evento) => {
+    const ir = viajeAlEvento(evento, consulta ?? consultaNueva());
+    return ir ? enlaces.editar(ir) : null;
+  };
 
   return (
     <section className="pagina pagina--media calendario">
@@ -122,13 +129,14 @@ export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
                 ? `Ninguno empieza en ${mes(elegido)}.`
                 : "No hay fiestas ni eventos registrados ese mes."
             }
+            irA={irA}
           />
           {siguen.length > 0 ? (
             <section className="calendario__siguen" aria-labelledby={`${id}-siguen`}>
               <h3 id={`${id}-siguen`} className="calendario__subtitulo">
                 Empezaron en {mes(elegido === 1 ? 12 : elegido - 1)} y siguen en {mes(elegido)}
               </h3>
-              <ListaEventos key={`${elegido}-${filtro}`} eventos={siguen} limite={5} />
+              <ListaEventos key={`${elegido}-${filtro}`} eventos={siguen} limite={5} irA={irA} />
             </section>
           ) : null}
         </div>
