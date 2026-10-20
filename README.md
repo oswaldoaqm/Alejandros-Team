@@ -101,11 +101,15 @@ Alejandros-Team/
 │   └── referencia/                 tablas escritas a mano: ciudades de origen, intereses, santoral, fotos
 │                                   revisadas…
 ├── data/procesados/                maestro v3, eventos, tiempos de viaje, bases y clima, con su diccionario
+├── data/evaluacion/                el kit para calificar los viajes, las calificaciones y los resultados
+├── evaluacion/                     la evaluación de la semana 12: las 40 consultas, la línea de base, la
+│                                   variante, el kit para calificar y las cifras del informe
 ├── app/                            la app web: React, Vite, TypeScript y MapLibre
 ├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
 │                                   publicados, o gratis en Render
-├── tests/                          pruebas del contrato, del API y del pipeline
-├── docs/                           plan, contrato de la API (con su esquema OpenAPI) y registro de decisiones
+├── tests/                          pruebas del contrato, del API, del pipeline y de la evaluación
+├── docs/                           plan, contrato de la API (con su esquema OpenAPI), registro de decisiones
+│                                   y cómo se califica y se prueba la app (docs/evaluacion/)
 └── deliveries/                     lo que pide cada hito del curso, una carpeta por semana
     ├── week04/                     tema, equipo y selección de dataset
     ├── week05/                     propuesta, Data Product Canvas y requerimientos
@@ -202,7 +206,7 @@ mismo pueblo, como los cuatro de Huaraz, son un solo lugar al que ir y se juntan
 | 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | [`week06/`](./deliveries/week06/) | Entregado |
 | 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | [`week07/`](./deliveries/week07/) | Entregado |
 | 10 | 21 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | En curso |
-| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | | Pendiente |
+| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | | En curso |
 | 15 | 18 nov 2026 | Presentación final y **Delivery 2** | | Pendiente |
 
 Los documentos de cada una:
@@ -279,3 +283,10 @@ pytest
 ```
 
 Con eso quedan los datos que usa el motor, y el producto se corre como dice [Probarlo](#probarlo).
+
+La evaluación de la semana 12 sale de dos comandos ([decisión 0021](./docs/decisiones/0021-evaluacion-semana-12.md)): uno arma el kit que califica el equipo, y el otro, con sus calificaciones en `data/evaluacion/calificaciones/`, calcula las cifras.
+
+```bash
+python -m evaluacion.kit       # data/evaluacion/: el cuadernillo, la planilla y la clave, en un minuto
+python -m evaluacion.informe   # data/evaluacion/resultados/: el acuerdo y las métricas de cada sistema
+```

@@ -1217,22 +1217,8 @@ def resolver(
     for n, p in enumerate(preparados[:POLOS_A_PLANIFICAR_MAX]):
         if n >= POLOS_A_PLANIFICAR and len(bases_planificadas) >= RUTAS_MAX:
             break
-        recorridos = mejor_plan(p.candidatas, p.plan.jornadas, p.tiempos)
-        visitado = valor_visitado(recorridos)
-        if visitado > 0:
-            it = Itinerario(
-                p.polo,
-                p.plan,
-                recorridos,
-                p.candidatas,
-                visitado,
-                p.minutos_ida,
-                p.km_ida,
-                p.km_tren_ida,
-                p.km_bote_ida,
-                p.desde_en_capa,
-                p.vuelo,
-            )
+        it = armar_itinerario(p)
+        if it is not None:
             itinerarios.append((p, it))
             bases_planificadas.add(p.polo.base["nombre"])
 
@@ -1252,35 +1238,12 @@ def resolver(
         puntaje = (1 - lam) * calidad * por_presupuesto(costo, consulta.presupuesto) + lam * it.polo.novedad
         puntuados.append((puntaje, p, it, dias, costo))
     puntuados.sort(key=lambda x: (-x[0], x[1].polo.id))
-    desde, hasta = ventana(consulta, datos.version)
     elegidas, bases = [], set()
     for puntaje, p, it, dias, costo in puntuados:
         if it.polo.base["nombre"] in bases:
             continue
         bases.add(it.polo.base["nombre"])
-        if dias is None or costo is None:
-            dias = dias_del_viaje(it, consulta, origen, datos)
-            costo = costo_del_viaje(it, consulta, datos, dias)
-        noches = noche.plan_de_noches(it, consulta, origen, datos, anio_de_referencia(datos.version, consulta.mes))
-        dias = [d.model_copy(update={"noche": noches.get(d.numero)}) for d in dias]
-        est = estacionalidad(it.polo, consulta.mes)
-        eventos = eventos_del_polo(it.polo, desde, hasta, datos)
-        # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.
-        todos = sorted(eventos + publicados.entre(desde, hasta, it.polo.id), key=lambda e: (e.fecha_inicio, e.id))
-        elegidas.append(
-            Ruta(
-                polo=polo_publico(it.polo),
-                puntaje=round(min(1.0, puntaje), 3),
-                motivos=motivos(it, consulta, origen, est, eventos, datos),
-                estacionalidad=est,
-                traslado=_traslado(it, origen, datos),
-                dias=dias,
-                costo=costo,
-                eventos=todos,
-                avisos=avisos(it, consulta, est, costo, dias, datos),
-                indicadores=indicadores(it, dias, datos, sum(c.valor for c in p.candidatas)),
-            )
-        )
+        elegidas.append(armar_ruta(p, it, puntaje, consulta, origen, datos, publicados, dias, costo))
         if len(elegidas) == RUTAS_MAX:
             break
     elegidas.sort(key=lambda r: (-r.puntaje, r.polo.id))
@@ -1292,6 +1255,67 @@ def resolver(
         rutas=elegidas,
         sin_resultado=sin_resultado,
         atribucion=list(datos.atribucion),
+    )
+
+
+def armar_itinerario(p: Preparado) -> Itinerario | None:
+    """El itinerario de un polo preparado: el de más valor entre los arranques del planificador. None si no
+    visita nada."""
+    recorridos = mejor_plan(p.candidatas, p.plan.jornadas, p.tiempos)
+    visitado = valor_visitado(recorridos)
+    if visitado <= 0:
+        return None
+    return Itinerario(
+        p.polo,
+        p.plan,
+        recorridos,
+        p.candidatas,
+        visitado,
+        p.minutos_ida,
+        p.km_ida,
+        p.km_tren_ida,
+        p.km_bote_ida,
+        p.desde_en_capa,
+        p.vuelo,
+    )
+
+
+def armar_ruta(
+    p: Preparado,
+    it: Itinerario,
+    puntaje: float,
+    consulta: Consulta,
+    origen: Origen,
+    datos: Datos,
+    publicados: Instantanea = SIN_PUBLICADOS,
+    dias: list[Dia] | None = None,
+    costo: Costo | None = None,
+) -> Ruta:
+    """El viaje a un polo como lo devuelve el API: sus días, con la noche de cada uno; el costo, la
+    temporada, los eventos de sus fechas, los motivos, los avisos y los indicadores. ``dias`` y ``costo``, si
+    ya se calcularon para el puntaje. Lo usa ``resolver`` y, para comparar, la línea de base de la evaluación
+    (``evaluacion/linea_base.py``), que arma así sus viajes con las mismas reglas."""
+    if dias is None or costo is None:
+        dias = dias_del_viaje(it, consulta, origen, datos)
+        costo = costo_del_viaje(it, consulta, datos, dias)
+    desde, hasta = ventana(consulta, datos.version)
+    noches = noche.plan_de_noches(it, consulta, origen, datos, anio_de_referencia(datos.version, consulta.mes))
+    dias = [d.model_copy(update={"noche": noches.get(d.numero)}) for d in dias]
+    est = estacionalidad(it.polo, consulta.mes)
+    eventos = eventos_del_polo(it.polo, desde, hasta, datos)
+    # Lo publicado se lista con lo oficial, pero no es un motivo para proponer el polo.
+    todos = sorted(eventos + publicados.entre(desde, hasta, it.polo.id), key=lambda e: (e.fecha_inicio, e.id))
+    return Ruta(
+        polo=polo_publico(it.polo),
+        puntaje=round(min(1.0, puntaje), 3),
+        motivos=motivos(it, consulta, origen, est, eventos, datos),
+        estacionalidad=est,
+        traslado=_traslado(it, origen, datos),
+        dias=dias,
+        costo=costo,
+        eventos=todos,
+        avisos=avisos(it, consulta, est, costo, dias, datos),
+        indicadores=indicadores(it, dias, datos, sum(c.valor for c in p.candidatas)),
     )
 
 
