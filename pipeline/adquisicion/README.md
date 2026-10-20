@@ -12,6 +12,7 @@ Los únicos scripts del proyecto que salen a internet. Se corren en la máquina 
 | `descargar_luces.py` | Las luces nocturnas de VIIRS de 17 meses (los compuestos mensuales del Earth Observation Group, en la copia del Banco Mundial en AWS), leyendo de cada archivo solo la ventana del Perú y sus alrededores. Si se corta, sigue con los meses que faltan. Unos 500 MB | 6-30 min, según la conexión | Dominio público; el Banco Mundial pide citar su copia |
 | `descargar_nubes.py` | La máscara de nubes de GOES-16 a las 21:00 y a la 01:00 de cada noche de 2022 a 2024: 2 188 imágenes, de las que lee solo la ventana del Perú. Trabaja seis meses a la vez y, si se corta, baja solo los meses que faltan. Unos 30 MB | 20-60 min, según la conexión | Dominio público (NOAA) |
 | `descargar_metar.py` | Los METAR de los aeropuertos peruanos de 2022 a 2024, de NOAA: de cada fila, solo la fecha, la estación con su nombre y su lugar, y el texto METAR. Unos 6 MB | un par de minutos | NOAA, con cita. Los de estaciones fuera de EE. UU. no se redistribuyen (Resolución 40 de la OMM): quedan en `data/externos/` |
+| `descargar_elevacion.py` | De Terrain Tiles, en el registro de datos abiertos de AWS, las teselas de 1° × 1° de la altura del terreno (SRTM, a un segundo de arco) que tocan las 194 bases. De cada tesela guarda solo una ventana de unos 600 m alrededor de cada base: baja unos 1 100 MB y guarda menos de 1 MB | 2-10 min, según la conexión | Dominio público (USGS y NOAA), con el crédito del USGS |
 | `descargar_fotos.py` | De Wikidata, lo que tiene coordenadas y foto cerca de las paradas y las bases, con sus nombres y sus tipos; de Wikimedia Commons, el autor, la licencia y el tamaño de cada una de esas fotos, y de las que la revisión puso a mano en `pipeline/referencia/fotos_revisadas.csv`. Las fotos no: la app las pide a Wikimedia | 10-20 min | Wikidata, CC0; cada foto, la suya |
 
 Los que tardan retoman donde quedaron si se cortan: basta volver a correr el mismo comando.
@@ -29,6 +30,7 @@ python pipeline/adquisicion/descargar_inventario.py
 python pipeline/adquisicion/descargar_osm.py
 python pipeline/adquisicion/descargar_fichas_html.py
 python pipeline/adquisicion/descargar_fotos.py   # después de los artefactos del motor: busca fotos para sus paradas y bases
+python pipeline/adquisicion/descargar_elevacion.py   # después de tiempos.py, que elige las bases
 
 # para la noche: en cualquier orden, antes de pipeline/noche.py y pipeline/cielo.py
 python pipeline/adquisicion/descargar_overture.py
@@ -52,5 +54,5 @@ Open-Meteo es gratuito para uso no comercial con 10 000 llamadas al día y 5 000
 - MINCETUR: una petición por segundo y un agente que identifica al proyecto. El inventario base se baja entero en una sola petición.
 - Open-Meteo: siempre bajo la cuota gratuita, sin paralelizar.
 - Wikidata y Wikimedia Commons: de a un pedido, con pausa, un agente que identifica al proyecto y respetando el `Retry-After` cuando responden 429. A Commons, los archivos de a 50.
-- Overture, VIIRS, GOES-16 y los METAR están en el programa de datos abiertos de AWS: se leen por rangos, solo lo que cae en el Perú, sin bajar los archivos enteros.
+- Overture, VIIRS, GOES-16 y los METAR están en el programa de datos abiertos de AWS: se leen por rangos, solo lo que cae en el Perú, sin bajar los archivos enteros. Las teselas de Terrain Tiles, en cambio, vienen comprimidas enteras: se baja cada una una sola vez y se guarda solo lo que rodea a cada base.
 - Geofabrik: una sola descarga del extracto, verificada por MD5, en vez de consultar servicios de ruteo públicos miles de veces. Geofabrik publica uno nuevo cada día; el script conserva el que ya bajó para que todo el cálculo use el mismo archivo.
