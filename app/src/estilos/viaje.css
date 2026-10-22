@@ -20,8 +20,9 @@
 
 .viaje__titular {
   margin-bottom: 14px;
+  font-family: var(--fuente-titular);
   font-size: var(--t-titular);
-  font-weight: 750;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.015em;
   scroll-margin-top: 72px;
@@ -161,10 +162,11 @@
 }
 
 .portada__titulo {
+  font-family: var(--fuente-titular);
   font-size: var(--t-display);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
 }
 
 .portada__sub {
@@ -330,10 +332,10 @@
   margin-bottom: 0;
 }
 
-/* El selector de días queda a mano mientras se recorre el día (bajo la cabecera, que mide 56 px). */
+/* El selector de días queda a mano mientras se recorre el día (bajo la cabecera). */
 .recorrido__selector {
   position: sticky;
-  top: 56px;
+  top: var(--alto-cabecera);
   z-index: 6;
   margin: -4px calc(var(--margen) * -1) 0;
   padding: 8px var(--margen);

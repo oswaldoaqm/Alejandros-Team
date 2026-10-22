@@ -21,7 +21,7 @@ import { boton, ESTILO, ESTILO_LISO, icono, PERU, TEXTOS } from "./maplibre";
 
 const FUENTE = "petalos";
 // El rojo de la marca (bandera peruana). El fondo del mapa es claro también en modo oscuro: va el tono de día.
-const LAGO = "#c8102e";
+const LAGO = "#a00c22";
 const BLANCO = "#ffffff";
 
 export interface BaseDeMapa {

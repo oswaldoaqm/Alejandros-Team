@@ -123,12 +123,25 @@ export function App() {
         </Limite>
       </main>
       <footer className="pie">
+        <div className="pie__municipal">
+          <div className="pie__municipal-bloque">
+            <span className="pie__municipal-icono">
+              <Icono nombre="municipalidad" tamano={28} />
+            </span>
+            <div className="pie__municipal-texto">
+              <p className="pie__municipal-titulo">¿Eres de una municipalidad?</p>
+              <p className="pie__municipal-bajada">
+                Publica las festividades y atractivos de tu localidad en DreemGO.
+              </p>
+            </div>
+          </div>
+          <Enlace href={enlaces.publicar()} className="boton boton--municipal">
+            Publica un evento
+          </Enlace>
+        </div>
         <p>
           Rutas y atractivos por el Perú, clima de Open-Meteo y caminos de OpenStreetMap.{" "}
           <Enlace href={enlaces.acerca()}>Cómo funciona</Enlace>
-        </p>
-        <p>
-          ¿Eres de una municipalidad? <Enlace href={enlaces.publicar()}>Publica un evento</Enlace>
         </p>
       </footer>
       {/* En celular, las secciones van abajo, al alcance del pulgar. */}

@@ -4,10 +4,10 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--cristal);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid color-mix(in srgb, var(--linea) 70%, transparent);
+  color: #ffffff;
+  background: var(--lago);
+  border-bottom: 1px solid var(--lago-hundido);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 12%);
 }
 
 .cabecera__ancho {
@@ -23,20 +23,20 @@
 
 .marca {
   display: inline-flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   font-family: var(--fuente-titular);
-  font-size: 1.1875rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--tinta);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
   text-decoration: none;
 }
 
 .marca__flor {
   width: 26px;
   height: 26px;
-  color: var(--lago);
+  color: #ffffff;
 }
 
 /* En celular, las secciones van en la barra de abajo, al alcance del pulgar. */
@@ -45,22 +45,25 @@
 }
 
 .cabecera__nav a {
-  padding: 8px 12px;
+  padding: 8px 16px;
   font-size: var(--t-nota);
   font-weight: 700;
-  color: var(--tinta-2);
+  color: rgb(255 255 255 / 90%);
   text-decoration: none;
   border-radius: 999px;
+  transition:
+    background-color var(--movimiento),
+    color var(--movimiento);
 }
 
 .cabecera__nav a:hover {
-  color: var(--tinta);
-  background: var(--superficie-2);
+  color: #ffffff;
+  background: rgb(255 255 255 / 18%);
 }
 
 .cabecera__nav a[aria-current="page"] {
-  color: var(--tinta);
-  background: var(--superficie-2);
+  color: #ffffff;
+  background: rgb(255 255 255 / 26%);
 }
 
 .barra-inferior {
@@ -134,17 +137,94 @@ main:focus {
   border-top: 1px solid var(--linea);
 }
 
+.pie__municipal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 26px;
+  margin-bottom: 24px;
+  color: #ffffff;
+  background: var(--lago);
+  border-radius: var(--r-tarjeta);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 14%);
+}
+
+.pie__municipal-bloque {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.pie__municipal-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  color: #ffffff;
+  background: rgb(255 255 255 / 16%);
+  border-radius: 12px;
+}
+
+.pie__municipal-texto {
+  display: grid;
+  gap: 4px;
+}
+
+.pie__municipal-titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+.pie__municipal-bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: rgb(255 255 255 / 90%);
+}
+
+.boton--municipal {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  flex: none;
+  font-weight: 700;
+  color: var(--lago);
+  background: #ffffff;
+  border: 0;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+  white-space: nowrap;
+}
+
+.boton--municipal:hover {
+  background: #fdf2f4;
+  color: var(--lago-tinta);
+}
+
+@media (min-width: 640px) {
+  .pie__municipal {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
 .pie p + p {
   margin-top: 6px;
 }
 
 .pie a {
   font-weight: 700;
-  color: var(--tinta-2);
+  color: var(--enlace);
 }
 
 .pie a:hover {
-  color: var(--lago);
+  color: var(--lago-hundido);
 }
 
 @media (min-width: 960px) {
