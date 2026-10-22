@@ -10,7 +10,8 @@
   text-align: center;
   padding: 36px var(--margen) 44px;
   color: #ffffff;
-  background: var(--lago);
+  background: var(--lago-hundido);
+  border-bottom: 1px solid rgb(0 0 0 / 14%);
 }
 
 .pagina-hero__icono {
@@ -284,10 +285,11 @@
 }
 
 .clima__lectura {
-  padding: 12px 14px;
-  background: var(--superficie-2);
-  border: 0;
-  border-radius: var(--r-control);
+  padding: 14px 18px;
+  background: var(--superficie);
+  border-left: 4px solid var(--lago);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 }
 
 .clima__lectura strong {

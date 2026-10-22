@@ -286,9 +286,8 @@
 /* ── Antes de ir ──────────────────────────────────────────────────────────────── */
 
 .antes {
-  overflow: hidden;
-  background: var(--superficie);
-  border-radius: var(--r-tarjeta);
+  display: grid;
+  gap: 10px;
 }
 
 .antes__aviso {
@@ -296,13 +295,13 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 14px;
   align-items: start;
-  padding: 14px 16px;
+  padding: 14px 18px;
   font-size: var(--t-nota);
-  line-height: 1.45;
-}
-
-.antes__aviso + .antes__aviso {
-  border-top: 1px solid var(--linea);
+  line-height: 1.5;
+  background: var(--superficie);
+  border-left: 4px solid var(--lago);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 }
 
 .antes__aviso > .icono {
@@ -315,9 +314,15 @@
   border-radius: 10px;
 }
 
+.antes__aviso--advertencia {
+  color: var(--tinta);
+  background: var(--aviso-fondo);
+  border-left-color: var(--aviso);
+}
+
 .antes__aviso--advertencia > .icono {
   color: var(--aviso-tinta);
-  background: var(--aviso-fondo);
+  background: color-mix(in srgb, var(--aviso) 20%, transparent);
 }
 
 /* ── Día por día ──────────────────────────────────────────────────────────────── */
@@ -434,12 +439,26 @@
   color: var(--tinta-3);
 }
 
-/* El primer día en la altura: una línea chica bajo los lugares, como la de la noche. */
+/* El primer día en la altura: directiva estilo callout bajo los lugares */
 .dia-fila__tranquilo {
-  display: block;
-  margin-top: 2px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-self: start;
+  margin-top: 6px;
+  padding: 3px 8px;
   font-size: var(--t-pie);
+  font-weight: 600;
+  line-height: 1.35;
   color: var(--bien-tinta);
+  background: var(--bien-fondo);
+  border-left: 3px solid var(--bien);
+  border-radius: 0 var(--r-chico) var(--r-chico) 0;
+}
+
+.dia-fila__tranquilo .icono {
+  color: var(--bien);
+  flex-shrink: 0;
 }
 
 /* Un día: su cabeza, su nota y sus lugares en una línea de tiempo. */
@@ -501,18 +520,19 @@
 .un-dia__tranquilo {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
-  align-items: start;
-  padding: 12px 14px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
   font-size: var(--t-nota);
   line-height: 1.45;
   color: var(--bien-tinta);
   background: var(--bien-fondo);
-  border-radius: var(--r-control);
+  border-left: 4px solid var(--bien);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
 }
 
 .un-dia__tranquilo .icono {
-  margin-top: 2px;
+  color: var(--bien);
 }
 
 .un-dia__fiesta .icono {
@@ -662,6 +682,7 @@
 .lugar-hoja {
   display: grid;
   gap: 18px;
+  min-height: 0;
 }
 
 .lugar-hoja .foto img {
@@ -788,7 +809,53 @@
 }
 
 .viaje .temporada {
-  gap: 14px;
+  gap: 16px;
+}
+
+.temporada__dictamen {
+  display: grid;
+  gap: 8px;
+  padding: 12px 16px 12px 10px;
+  border-left: 4px solid var(--bien);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  background: var(--bien-fondo);
+}
+
+.temporada__dictamen .insignia {
+  margin-left: -8px;
+}
+
+.temporada__dictamen--viable {
+  border-left-color: var(--bien);
+  background: var(--bien-fondo);
+}
+
+.temporada__dictamen--viable .temporada__explicacion {
+  color: var(--bien-tinta);
+}
+
+.temporada__dictamen--advertencia {
+  border-left-color: var(--aviso);
+  background: var(--aviso-fondo);
+}
+
+.temporada__dictamen--advertencia .temporada__explicacion {
+  color: var(--aviso-tinta);
+}
+
+.temporada__dictamen--desaconsejado {
+  border-left-color: var(--lago);
+  background: var(--critico-fondo);
+}
+
+.temporada__dictamen--desaconsejado .temporada__explicacion {
+  color: var(--critico-tinta);
+}
+
+.temporada__explicacion {
+  font-size: var(--t-nota);
+  line-height: 1.5;
+  font-weight: 550;
 }
 
 .viaje .temporada .cifras {

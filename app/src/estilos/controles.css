@@ -178,6 +178,9 @@
   text-decoration: none;
   background: none;
   border: 0;
+  transition:
+    background-color 160ms ease,
+    transform 120ms ease;
 }
 
 .fila + .fila,
@@ -185,9 +188,42 @@
   border-top: 1px solid var(--linea);
 }
 
+button.fila,
+a.fila,
+.fila--interruptor {
+  cursor: pointer;
+}
+
 button.fila:hover,
-a.fila:hover {
-  background: var(--superficie-2);
+a.fila:hover,
+.fila--interruptor:hover {
+  background: color-mix(in srgb, var(--lago-claro) 40%, var(--superficie));
+}
+
+button.fila:active,
+a.fila:active,
+.fila--interruptor:active {
+  background: color-mix(in srgb, var(--lago-claro) 70%, var(--superficie));
+  transform: scale(0.995);
+}
+
+button.fila:hover .fila__icono,
+a.fila:hover .fila__icono,
+.fila--interruptor:hover .fila__icono {
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--lago) 25%, transparent);
+}
+
+button.fila:active .fila__icono,
+a.fila:active .fila__icono,
+.fila--interruptor:active .fila__icono {
+  transform: scale(0.96);
+}
+
+button.fila:hover .fila__fin,
+a.fila:hover .fila__fin {
+  transform: translateX(3px);
+  color: var(--lago);
 }
 
 .fila__icono {
@@ -199,6 +235,11 @@ a.fila:hover {
   color: var(--lago);
   background: var(--lago-claro);
   border-radius: 10px;
+  transition:
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 200ms ease,
+    background-color var(--movimiento),
+    color var(--movimiento);
 }
 
 .fila__texto {
@@ -211,6 +252,12 @@ a.fila:hover {
   font-size: var(--t-pie);
   font-weight: 600;
   color: var(--tinta-3);
+  transition: color var(--movimiento);
+}
+
+button.fila:hover .fila__nombre,
+a.fila:hover .fila__nombre {
+  color: var(--tinta-2);
 }
 
 .fila__valor {
@@ -224,6 +271,9 @@ a.fila:hover {
 .fila__fin {
   flex: none;
   color: var(--tinta-3);
+  transition:
+    transform 180ms ease,
+    color var(--movimiento);
 }
 
 /* ── Interruptor: un sí o no, como en Ajustes. La fila entera lo cambia ──────── */
@@ -330,6 +380,7 @@ a.fila:hover {
 .hoja {
   width: 100%;
   max-width: 100%;
+  height: fit-content;
   max-height: min(88vh, 760px);
   margin: auto 0 0;
   padding: 0;
@@ -358,6 +409,7 @@ a.fila:hover {
   gap: 8px;
   align-items: center;
   padding: 8px 12px 4px;
+  flex-shrink: 0;
 }
 
 .hoja__cabeza::before {
@@ -384,7 +436,8 @@ a.fila:hover {
 }
 
 .hoja__cuerpo {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 8px 20px 20px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -393,6 +446,7 @@ a.fila:hover {
 .hoja__pie {
   padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--linea);
+  flex-shrink: 0;
 }
 
 @keyframes hoja-sube {
@@ -449,6 +503,26 @@ a.fila:hover {
 
 .imperdible .icono {
   color: var(--ichu);
+}
+
+.insignia-jerarquia {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: var(--t-pie);
+  font-weight: 700;
+  border-radius: var(--r-chico);
+}
+
+.insignia-jerarquia--4 {
+  color: #ffffff;
+  background: var(--lago);
+}
+
+.insignia-jerarquia--3 {
+  color: #ffffff;
+  background: #0056ac;
 }
 
 /* ── Fotos (piezas/Foto.tsx) ─────────────────────────────────────────────────── */
@@ -510,23 +584,68 @@ a.fila:hover {
 }
 
 /* ── Esperas y avisos (piezas/Estados.tsx y los avisos de cada pantalla) ─────────
-   Sin borde: el fondo teñido basta, y sus tonos tienen versión oscura. */
+   Patrón oficial de directivas técnicas Gob.pe: borde lateral sólido de 4px,
+   fondo tenue y contraste accesible. */
 
 .cargando__punto {
   background: var(--lago);
 }
 
 .aviso {
-  gap: 12px;
-  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px 18px;
   font-size: var(--t-nota);
-  line-height: 1.45;
+  line-height: 1.5;
   border: 0;
-  border-radius: var(--r-control);
+  border-left: 4px solid var(--linea);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+}
+
+.aviso > .icono {
+  margin-top: 2px;
+}
+
+.aviso--info {
+  background: var(--azul-fondo);
+  border-left-color: #0056ac;
+}
+
+.aviso--info > .icono {
+  color: #0056ac;
+}
+
+.aviso--critico {
+  background: var(--critico-fondo);
+  border-left-color: var(--lago);
+}
+
+.aviso--critico > .icono {
+  color: var(--lago);
+}
+
+.aviso--bien {
+  background: var(--bien-fondo);
+  border-left-color: var(--bien);
+}
+
+.aviso--bien > .icono {
+  color: var(--bien);
+}
+
+.aviso--advertencia {
+  background: var(--aviso-fondo);
+  border-left-color: var(--aviso);
+}
+
+.aviso--advertencia > .icono {
+  color: var(--aviso-tinta);
 }
 
 .aviso__titulo {
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .aviso__acciones {

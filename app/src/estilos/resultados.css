@@ -210,18 +210,42 @@
   padding: 6px;
 }
 
-.viaje-tarjeta__sello {
+.viaje-tarjeta__sellos {
   position: absolute;
   top: 12px;
   left: 12px;
-  padding: 5px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.viaje-tarjeta__sello {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 4px 10px;
   font-size: var(--t-pie);
-  font-weight: 650;
+  font-weight: 700;
   color: var(--tinta);
   background: var(--cristal);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
   backdrop-filter: saturate(180%) blur(12px);
   border-radius: 999px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 16%);
+}
+
+.viaje-tarjeta__sello--j4 {
+  color: #ffffff;
+  background: var(--lago);
+  box-shadow: 0 2px 8px rgb(158 10 34 / 45%);
+}
+
+.viaje-tarjeta__sello--j3 {
+  color: #ffffff;
+  background: #0056ac;
+  box-shadow: 0 2px 8px rgb(0 86 172 / 40%);
 }
 
 .viaje-tarjeta__cuerpo {

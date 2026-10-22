@@ -156,6 +156,7 @@ export const TRAZOS = {
     "M8 13h8a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1Z",
     "M10 16h4",
   ],
+  escudo: ["M12 2 4 5v6.5C4 17.5 7.4 21 12 22c4.6-1 8-4.5 8-10.5V5l-8-3Z"],
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;
