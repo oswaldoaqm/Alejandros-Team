@@ -331,8 +331,8 @@
 .viaje-tarjeta__exceso {
   flex-basis: 100%;
   font-size: var(--t-pie);
-  font-weight: 600;
-  color: var(--aviso-tinta);
+  font-weight: 700;
+  color: #523200;
 }
 
 /* ── Sin viajes, y el aviso que flota ─────────────────────────────────────────── */
