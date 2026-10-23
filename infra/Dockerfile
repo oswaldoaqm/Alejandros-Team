@@ -11,7 +11,7 @@
 # (lo pone template.yaml), Docker en local y hostes como Render. Google Cloud Run, en cambio,
 # inyecta su propio PORT: con `docker run -e PORT=...`, el contenedor lo respeta sin cambios.
 
-FROM public.ecr.aws/docker/library/python:3.12-slim
+FROM python:3.12-slim
 
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:1.0.1 /lambda-adapter /opt/extensions/lambda-adapter
 

@@ -70,13 +70,25 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
       {recurso ? (
         <div className="lugar-hoja">
           {foto ? (
-            <Foto foto={foto} alt={recurso.nombre} sizes="(min-width: 720px) 520px, 100vw" tope={960} />
+            <Foto
+              foto={foto}
+              alt={recurso.nombre}
+              sizes="(min-width: 720px) 520px, 100vw"
+              tope={960}
+              principal
+            />
           ) : null}
           <p className="lugar-hoja__clase">
             {esImperdible(recurso) ? (
               <>
                 <Imperdible />{" "}
               </>
+            ) : null}
+            {recurso.jerarquia && recurso.jerarquia >= 3 ? (
+              <span className={`insignia-jerarquia insignia-jerarquia--${recurso.jerarquia}`}>
+                <Icono nombre="escudo" tamano={12} />
+                Jerarquía {recurso.jerarquia} · MINCETUR
+              </span>
             ) : null}
             <span>{claseDeRecurso(recurso)}</span>
           </p>

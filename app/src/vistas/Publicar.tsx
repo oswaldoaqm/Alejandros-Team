@@ -213,232 +213,238 @@ export function Publicar() {
   };
 
   return (
-    <section className="pagina pagina--angosta">
-      <h1 tabIndex={-1} ref={titulo} className="pagina__titulo">
-        Publicar un evento
-      </h1>
-      <p className="pagina__bajada">
-        Para municipalidades y oficinas de destino. Lo que publiques sale en el calendario de fiestas y, si
-        marcas dónde es, en los viajes que pasan cerca en esas fechas, con el nombre de tu entidad. No cambia
-        qué viajes se proponen ni en qué orden.
-      </p>
+    <>
+      <header className="pagina-hero">
+        <span className="pagina-hero__icono">
+          <Icono nombre="municipalidad" tamano={36} />
+        </span>
+        <h1 tabIndex={-1} ref={titulo} className="pagina-hero__titulo">
+          Publicar un evento
+        </h1>
+        <p className="pagina-hero__bajada">
+          Para municipalidades y oficinas de destino. Lo que publiques sale en el calendario de fiestas y, si
+          marcas dónde es, en los viajes que pasan cerca en esas fechas, con el nombre de tu entidad.
+        </p>
+      </header>
 
-      {error ? (
-        <div className="aviso aviso--critico" role="alert" tabIndex={-1} ref={aviso}>
-          <Icono nombre="critico" />
-          <div>
-            <p className="aviso__titulo">No se publicó</p>
-            {error.tipo === "validacion" ? (
-              sueltos.length > 0 ? (
-                <ul className="lista-simple">
-                  {sueltos.map((mensaje) => (
-                    <li key={mensaje}>{mensaje}</li>
-                  ))}
-                </ul>
+      <section className="pagina pagina--angosta">
+        {error ? (
+          <div className="aviso aviso--critico" role="alert" tabIndex={-1} ref={aviso}>
+            <Icono nombre="critico" />
+            <div>
+              <p className="aviso__titulo">No se publicó</p>
+              {error.tipo === "validacion" ? (
+                sueltos.length > 0 ? (
+                  <ul className="lista-simple">
+                    {sueltos.map((mensaje) => (
+                      <li key={mensaje}>{mensaje}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Hay algo que corregir: está marcado en su casilla.</p>
+                )
               ) : (
-                <p>Hay algo que corregir: está marcado en su casilla.</p>
-              )
-            ) : (
-              <p>{error.message}</p>
-            )}
+                <p>{error.message}</p>
+              )}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      <form className="formulario" onSubmit={enviar} aria-label="Publicar un evento">
-        <div className="campo">
-          <label htmlFor={`${id}-nombre`}>Nombre del evento</label>
-          <input
-            id={`${id}-nombre`}
-            type="text"
-            required
-            minLength={3}
-            maxLength={120}
-            value={c.nombre}
-            onChange={(e) => cambiar({ nombre: e.target.value })}
-            {...falla("nombre").atributos}
-          />
-          {falla("nombre").texto}
-        </div>
-
-        <div className="formulario__par">
+        <form className="formulario" onSubmit={enviar} aria-label="Publicar un evento">
           <div className="campo">
-            <label htmlFor={`${id}-inicio`}>Empieza</label>
+            <label htmlFor={`${id}-nombre`}>Nombre del evento</label>
             <input
-              id={`${id}-inicio`}
-              type="date"
+              id={`${id}-nombre`}
+              type="text"
               required
-              max={ultimoInicio(hoy)}
-              value={c.fecha_inicio}
-              onChange={(e) => cambiar({ fecha_inicio: e.target.value })}
-              {...falla("fecha_inicio").atributos}
+              minLength={3}
+              maxLength={120}
+              value={c.nombre}
+              onChange={(e) => cambiar({ nombre: e.target.value })}
+              {...falla("nombre").atributos}
             />
-            {falla("fecha_inicio").texto}
+            {falla("nombre").texto}
           </div>
+
+          <div className="formulario__par">
+            <div className="campo">
+              <label htmlFor={`${id}-inicio`}>Empieza</label>
+              <input
+                id={`${id}-inicio`}
+                type="date"
+                required
+                max={ultimoInicio(hoy)}
+                value={c.fecha_inicio}
+                onChange={(e) => cambiar({ fecha_inicio: e.target.value })}
+                {...falla("fecha_inicio").atributos}
+              />
+              {falla("fecha_inicio").texto}
+            </div>
+            <div className="campo">
+              <label htmlFor={`${id}-fin`}>
+                Termina <span className="opcional">Opcional</span>
+              </label>
+              <input
+                id={`${id}-fin`}
+                type="date"
+                min={finMinimo}
+                max={c.fecha_inicio ? masDias(c.fecha_inicio, DURACION_MAX_DIAS) : undefined}
+                value={c.fecha_fin}
+                onChange={(e) => cambiar({ fecha_fin: e.target.value })}
+                {...falla("fecha_fin", `${id}-fin-ayuda`).atributos}
+              />
+              {falla("fecha_fin").texto}
+              <p className="ayuda" id={`${id}-fin-ayuda`}>
+                Si dura un día, se deja en blanco.
+              </p>
+            </div>
+          </div>
+
+          <div className="formulario__par">
+            <div className="campo">
+              <label htmlFor={`${id}-region`}>Región</label>
+              <select
+                id={`${id}-region`}
+                required
+                value={c.region}
+                onChange={(e) => cambiar({ region: e.target.value })}
+                {...falla("region").atributos}
+              >
+                <option value="">Elige una</option>
+                {REGIONES.map((r) => (
+                  <option key={r.nombre} value={r.nombre}>
+                    {r.nombre}
+                  </option>
+                ))}
+              </select>
+              {falla("region").texto}
+            </div>
+            <div className="campo">
+              <label htmlFor={`${id}-provincia`}>Provincia</label>
+              <input
+                id={`${id}-provincia`}
+                type="text"
+                required
+                minLength={2}
+                maxLength={80}
+                value={c.provincia}
+                onChange={(e) => cambiar({ provincia: e.target.value })}
+                {...falla("provincia").atributos}
+              />
+              {falla("provincia").texto}
+            </div>
+          </div>
+
+          <div className="formulario__par">
+            <div className="campo">
+              <label htmlFor={`${id}-distrito`}>Distrito</label>
+              <input
+                id={`${id}-distrito`}
+                type="text"
+                required
+                minLength={2}
+                maxLength={80}
+                value={c.distrito}
+                onChange={(e) => cambiar({ distrito: e.target.value })}
+                {...falla("distrito").atributos}
+              />
+              {falla("distrito").texto}
+            </div>
+            <div className="campo">
+              <label htmlFor={`${id}-tipo`}>
+                Tipo de evento <span className="opcional">Opcional</span>
+              </label>
+              <input
+                id={`${id}-tipo`}
+                type="text"
+                maxLength={60}
+                placeholder="Feria gastronómica"
+                value={c.tipo}
+                onChange={(e) => cambiar({ tipo: e.target.value })}
+                {...falla("tipo").atributos}
+              />
+              {falla("tipo").texto}
+            </div>
+          </div>
+
+          <fieldset className="campo">
+            <legend>
+              Dónde es <span className="opcional">Sin marcarlo, sale solo en el calendario</span>
+            </legend>
+            <p className="ayuda">
+              Toca el mapa en el lugar del evento; la marca se puede arrastrar. Con la marca, el evento sale
+              también en los viajes que pasan a 10 km o menos.
+              {region ? "" : " Al elegir la región, el mapa se acerca a su ciudad principal."}
+            </p>
+            <ElegirLugar lugar={lugar} cerca={cerca} alElegir={ponerLugar} />
+            {falla("lugar").texto}
+          </fieldset>
+
           <div className="campo">
-            <label htmlFor={`${id}-fin`}>
-              Termina <span className="opcional">Opcional</span>
+            <label htmlFor={`${id}-url`}>
+              Enlace con más información <span className="opcional">Opcional</span>
             </label>
             <input
-              id={`${id}-fin`}
-              type="date"
-              min={finMinimo}
-              max={c.fecha_inicio ? masDias(c.fecha_inicio, DURACION_MAX_DIAS) : undefined}
-              value={c.fecha_fin}
-              onChange={(e) => cambiar({ fecha_fin: e.target.value })}
-              {...falla("fecha_fin", `${id}-fin-ayuda`).atributos}
+              id={`${id}-url`}
+              type="url"
+              inputMode="url"
+              placeholder="https://"
+              value={c.url}
+              onChange={(e) => cambiar({ url: e.target.value })}
+              {...falla("url").atributos}
             />
-            {falla("fecha_fin").texto}
-            <p className="ayuda" id={`${id}-fin-ayuda`}>
-              Si dura un día, se deja en blanco.
+            {falla("url").texto}
+          </div>
+
+          <div className="campo">
+            <label htmlFor={`${id}-entidad`}>Entidad que publica</label>
+            <input
+              id={`${id}-entidad`}
+              type="text"
+              required
+              minLength={3}
+              maxLength={120}
+              autoComplete="organization"
+              value={c.publicado_por}
+              onChange={(e) => cambiar({ publicado_por: e.target.value })}
+              {...falla("publicado_por", `${id}-entidad-ayuda`).atributos}
+            />
+            {falla("publicado_por").texto}
+            <p className="ayuda" id={`${id}-entidad-ayuda`}>
+              La municipalidad o la oficina, no una persona. Es lo que el viajero lee junto al evento:
+              «Publicado por…».
             </p>
           </div>
-        </div>
 
-        <div className="formulario__par">
           <div className="campo">
-            <label htmlFor={`${id}-region`}>Región</label>
-            <select
-              id={`${id}-region`}
-              required
-              value={c.region}
-              onChange={(e) => cambiar({ region: e.target.value })}
-              {...falla("region").atributos}
-            >
-              <option value="">Elige una</option>
-              {REGIONES.map((r) => (
-                <option key={r.nombre} value={r.nombre}>
-                  {r.nombre}
-                </option>
-              ))}
-            </select>
-            {falla("region").texto}
-          </div>
-          <div className="campo">
-            <label htmlFor={`${id}-provincia`}>Provincia</label>
+            <label htmlFor={`${id}-clave`}>Clave de publicador</label>
             <input
-              id={`${id}-provincia`}
-              type="text"
+              id={`${id}-clave`}
+              type="password"
               required
-              minLength={2}
-              maxLength={80}
-              value={c.provincia}
-              onChange={(e) => cambiar({ provincia: e.target.value })}
-              {...falla("provincia").atributos}
+              autoComplete="off"
+              value={c.clave}
+              onChange={(e) => cambiar({ clave: e.target.value })}
+              {...falla("clave", `${id}-clave-ayuda`).atributos}
             />
-            {falla("provincia").texto}
+            {falla("clave").texto}
+            <p className="ayuda" id={`${id}-clave-ayuda`}>
+              La que el equipo de DreemGO le dio a tu entidad. No se guarda en este navegador.
+            </p>
           </div>
-        </div>
 
-        <div className="formulario__par">
-          <div className="campo">
-            <label htmlFor={`${id}-distrito`}>Distrito</label>
-            <input
-              id={`${id}-distrito`}
-              type="text"
-              required
-              minLength={2}
-              maxLength={80}
-              value={c.distrito}
-              onChange={(e) => cambiar({ distrito: e.target.value })}
-              {...falla("distrito").atributos}
-            />
-            {falla("distrito").texto}
+          <div className="formulario__acciones">
+            <button type="submit" className="boton boton--primario boton--grande" disabled={enviando}>
+              {enviando ? "Publicando…" : "Publicar el evento"}
+            </button>
           </div>
-          <div className="campo">
-            <label htmlFor={`${id}-tipo`}>
-              Tipo de evento <span className="opcional">Opcional</span>
-            </label>
-            <input
-              id={`${id}-tipo`}
-              type="text"
-              maxLength={60}
-              placeholder="Feria gastronómica"
-              value={c.tipo}
-              onChange={(e) => cambiar({ tipo: e.target.value })}
-              {...falla("tipo").atributos}
-            />
-            {falla("tipo").texto}
-          </div>
-        </div>
-
-        <fieldset className="campo">
-          <legend>
-            Dónde es <span className="opcional">Sin marcarlo, sale solo en el calendario</span>
-          </legend>
-          <p className="ayuda">
-            Toca el mapa en el lugar del evento; la marca se puede arrastrar. Con la marca, el evento sale
-            también en los viajes que pasan a 10 km o menos.
-            {region ? "" : " Al elegir la región, el mapa se acerca a su ciudad principal."}
+          <p className="ayuda ayuda--centrada">
+            Si te equivocaste en la ubicación o en el enlace, publícalo otra vez con el mismo nombre, fechas,
+            distrito y entidad: se corrige, no se duplica.
           </p>
-          <ElegirLugar lugar={lugar} cerca={cerca} alElegir={ponerLugar} />
-          {falla("lugar").texto}
-        </fieldset>
-
-        <div className="campo">
-          <label htmlFor={`${id}-url`}>
-            Enlace con más información <span className="opcional">Opcional</span>
-          </label>
-          <input
-            id={`${id}-url`}
-            type="url"
-            inputMode="url"
-            placeholder="https://"
-            value={c.url}
-            onChange={(e) => cambiar({ url: e.target.value })}
-            {...falla("url").atributos}
-          />
-          {falla("url").texto}
-        </div>
-
-        <div className="campo">
-          <label htmlFor={`${id}-entidad`}>Entidad que publica</label>
-          <input
-            id={`${id}-entidad`}
-            type="text"
-            required
-            minLength={3}
-            maxLength={120}
-            autoComplete="organization"
-            value={c.publicado_por}
-            onChange={(e) => cambiar({ publicado_por: e.target.value })}
-            {...falla("publicado_por", `${id}-entidad-ayuda`).atributos}
-          />
-          {falla("publicado_por").texto}
-          <p className="ayuda" id={`${id}-entidad-ayuda`}>
-            La municipalidad o la oficina, no una persona. Es lo que el viajero lee junto al evento:
-            «Publicado por…».
-          </p>
-        </div>
-
-        <div className="campo">
-          <label htmlFor={`${id}-clave`}>Clave de publicador</label>
-          <input
-            id={`${id}-clave`}
-            type="password"
-            required
-            autoComplete="off"
-            value={c.clave}
-            onChange={(e) => cambiar({ clave: e.target.value })}
-            {...falla("clave", `${id}-clave-ayuda`).atributos}
-          />
-          {falla("clave").texto}
-          <p className="ayuda" id={`${id}-clave-ayuda`}>
-            La que el equipo de DreemGO le dio a tu entidad. No se guarda en este navegador.
-          </p>
-        </div>
-
-        <div className="formulario__acciones">
-          <button type="submit" className="boton boton--primario boton--grande" disabled={enviando}>
-            {enviando ? "Publicando…" : "Publicar el evento"}
-          </button>
-        </div>
-        <p className="ayuda ayuda--centrada">
-          Si te equivocaste en la ubicación o en el enlace, publícalo otra vez con el mismo nombre, fechas,
-          distrito y entidad: se corrige, no se duplica.
-        </p>
-      </form>
-    </section>
+        </form>
+      </section>
+    </>
   );
 }
 

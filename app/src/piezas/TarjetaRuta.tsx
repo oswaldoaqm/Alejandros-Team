@@ -51,6 +51,9 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
       : principal
     : `${total} ${total === 1 ? "lugar" : "lugares"} para visitar`;
   const como = comoSeVa(traslado);
+  const maxJerarquia = useMemo(() => {
+    return Math.max(0, ...ruta.dias.flatMap((d) => (d.paradas ?? []).map((p) => p.recurso.jerarquia ?? 0)));
+  }, [ruta.dias]);
 
   return (
     <Enlace href={enlace} className="viaje-tarjeta">
@@ -73,9 +76,24 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
         ) : (
           <DibujoFlor base={base} puntos={puntos} ida={traslado.horas} />
         )}
-        {marcarFueraDelCircuito && polo.fuera_del_circuito ? (
-          <span className="viaje-tarjeta__sello">Fuera del circuito</span>
-        ) : null}
+        <div className="viaje-tarjeta__sellos">
+          {marcarFueraDelCircuito && polo.fuera_del_circuito ? (
+            <span className="viaje-tarjeta__sello">Fuera del circuito</span>
+          ) : null}
+          {maxJerarquia >= 3 ? (
+            <span
+              className={`viaje-tarjeta__sello viaje-tarjeta__sello--j${maxJerarquia}`}
+              title={
+                maxJerarquia === 4
+                  ? "Atractivo de jerarquía 4 (Significación internacional según MINCETUR)"
+                  : "Atractivo de jerarquía 3 (Significación nacional según MINCETUR)"
+              }
+            >
+              <Icono nombre="escudo" tamano={12} />
+              Jerarquía {maxJerarquia} · MINCETUR
+            </span>
+          ) : null}
+        </div>
       </div>
       <div className="viaje-tarjeta__cuerpo">
         <h2 className="viaje-tarjeta__nombre">

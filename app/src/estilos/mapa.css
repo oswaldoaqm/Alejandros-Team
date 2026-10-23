@@ -61,14 +61,14 @@
   line-height: 1;
   color: #fff;
   cursor: pointer;
-  background: #0b5c80;
+  background: var(--lago);
   border: 2px solid #fff;
   border-radius: 50%;
   box-shadow: 0 1px 4px rgb(19 32 43 / 35%);
 }
 
 .pin:hover {
-  background: #084663;
+  background: var(--lago-hundido);
 }
 
 /* Con todo el viaje a la vista, cada lugar es un punto: tocarlo elige su día. */
@@ -89,13 +89,13 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  color: #0b5c80;
+  color: var(--lago);
   cursor: pointer;
   background: #fff;
   border: 0;
   border-radius: 50%;
   box-shadow:
-    0 0 0 2px #0b5c80,
+    0 0 0 2px var(--lago),
     0 2px 8px rgb(19 32 43 / 30%);
 }
 
@@ -152,43 +152,54 @@
   color: inherit;
 }
 
-/* El globo de la base («Aquí duermes»): con los colores de la página, también en modo oscuro. */
+/* El globo de la base («Aquí duermes»): el mapa siempre es claro, así que el globo siempre
+   lleva fondo blanco y tinta oscura de máximo contraste, tanto en modo claro como oscuro. */
 .maplibregl-popup-content {
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--fuente);
   font-size: var(--t-nota);
   line-height: 1.35;
-  color: var(--tinta);
-  background: var(--superficie);
+  color: #13202b !important;
+  background: #ffffff !important;
   border-radius: 12px;
-  box-shadow: var(--sombra-flota);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 22%);
 }
 
-.maplibregl-popup-content strong {
+.maplibregl-popup-content strong,
+.globo-base strong {
   display: block;
+  font-family: var(--fuente-titular);
+  font-size: 1.1875rem;
+  font-weight: 800 !important;
+  line-height: 1.25;
+  color: #13202b !important;
+  margin-bottom: 2px;
 }
 
-.maplibregl-popup-content span {
+.maplibregl-popup-content span,
+.globo-base span {
+  display: block;
   font-size: var(--t-pie);
-  color: var(--tinta-2);
+  font-weight: 600 !important;
+  color: #4b5a66 !important;
 }
 
 .maplibregl-popup-anchor-top .maplibregl-popup-tip,
 .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
 .maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
-  border-bottom-color: var(--superficie);
+  border-bottom-color: #ffffff !important;
 }
 
 .maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
 .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
 .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
-  border-top-color: var(--superficie);
+  border-top-color: #ffffff !important;
 }
 
 .maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: var(--superficie);
+  border-right-color: #ffffff !important;
 }
 
 .maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: var(--superficie);
+  border-left-color: #ffffff !important;
 }

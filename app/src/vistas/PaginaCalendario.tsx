@@ -69,102 +69,110 @@ export function PaginaCalendario({ consulta, mes: alAbrir }: Props) {
   };
 
   return (
-    <section className="pagina pagina--media calendario">
-      {consulta ? (
-        <p className="volver">
-          <Enlace href={enlaces.resultados(consulta)} volver>
-            <Icono nombre="atras" tamano={16} />
-            Volver a tus viajes
-          </Enlace>
-        </p>
-      ) : null}
-      <h1 tabIndex={-1} className="pagina__titulo">
-        Fiestas
-      </h1>
-      <p className="pagina__bajada">Fiestas, ferias y festivales de todo el Perú, mes por mes.</p>
-
-      <div className="calendario__filtros">
-        <Segmentos
-          leyenda="Mes"
-          segmentos={MESES}
-          valor={elegido}
-          elegir={elegir}
-          className="selector-de-meses"
-        />
-        <div className="calendario__region">
-          <label htmlFor={`${id}-region`}>Región</label>
-          <select id={`${id}-region`} value={filtro} onChange={(e) => elegirRegion(e.target.value)}>
-            <option value="">Todo el país</option>
-            {regiones.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Sigue siendo un título; lo de adentro avisa a los lectores de pantalla cuando cambia la cuenta. */}
-      <h2 className="calendario__cuenta">
-        <span role="status">
-          {pedido.cargando
-            ? "Buscando…"
-            : alDia
-              ? `${plural(visibles.length, "evento", "eventos")} en ${filtro ? `${filtro}, en ` : ""}${cuando}`
-              : mayuscula(cuando)}
+    <>
+      <header className="pagina-hero">
+        <span className="pagina-hero__icono">
+          <Icono nombre="banderines" tamano={36} />
         </span>
-      </h2>
+        <h1 tabIndex={-1} className="pagina-hero__titulo">
+          Fiestas
+        </h1>
+        <p className="pagina-hero__bajada">Fiestas, ferias y festivales de todo el Perú, mes por mes.</p>
+      </header>
 
-      {pedido.error ? <ErrorVista error={pedido.error} reintentar={pedido.reintentar} /> : null}
-      {pedido.datos === null && pedido.cargando ? <Cargando texto="Cargando las fiestas…" /> : null}
-      {pedido.datos !== null ? (
-        <div aria-busy={pedido.cargando} className={pedido.cargando ? "resultado--espera" : undefined}>
-          {/* La llave la rehace al cambiar de mes o de región: vuelve a mostrar solo las primeras. */}
-          <ListaEventos
-            key={`${elegido}-${filtro}`}
-            eventos={empiezan}
-            limite={PRIMEROS}
-            vacio={
-              siguen.length > 0
-                ? `Ninguno empieza en ${mes(elegido)}.`
-                : "No hay fiestas ni eventos registrados ese mes."
-            }
-            irA={irA}
+      <section className="pagina pagina--media calendario">
+        {consulta ? (
+          <p className="volver">
+            <Enlace href={enlaces.resultados(consulta)} volver>
+              <Icono nombre="atras" tamano={16} />
+              Volver a tus viajes
+            </Enlace>
+          </p>
+        ) : null}
+
+        <div className="calendario__filtros">
+          <Segmentos
+            leyenda="Mes"
+            segmentos={MESES}
+            valor={elegido}
+            elegir={elegir}
+            className="selector-de-meses"
           />
-          {siguen.length > 0 ? (
-            <section className="calendario__siguen" aria-labelledby={`${id}-siguen`}>
-              <h3 id={`${id}-siguen`} className="calendario__subtitulo">
-                Empezaron en {mes(elegido === 1 ? 12 : elegido - 1)} y siguen en {mes(elegido)}
-              </h3>
-              <ListaEventos key={`${elegido}-${filtro}`} eventos={siguen} limite={5} irA={irA} />
-            </section>
-          ) : null}
+          <div className="calendario__region">
+            <label htmlFor={`${id}-region`}>Región</label>
+            <select id={`${id}-region`} value={filtro} onChange={(e) => elegirRegion(e.target.value)}>
+              <option value="">Todo el país</option>
+              {regiones.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      ) : null}
 
-      <div className="calendario__accion">
-        <Enlace
-          href={enlaces.editar({ ...(consulta ?? POR_DEFECTO), mes: elegido, fecha_inicio: null })}
-          className="boton boton--primario"
-        >
-          Armar un viaje para {mes(elegido)}
-        </Enlace>
-        <p>
-          ¿Organizas una fiesta o una feria? <Enlace href={enlaces.publicar()}>Publícala aquí</Enlace>
-        </p>
-      </div>
+        {/* Sigue siendo un título; lo de adentro avisa a los lectores de pantalla cuando cambia la cuenta. */}
+        <h2 className="calendario__cuenta">
+          <span role="status">
+            {pedido.cargando
+              ? "Buscando…"
+              : alDia
+                ? `${plural(visibles.length, "evento", "eventos")} en ${filtro ? `${filtro}, en ` : ""}${cuando}`
+                : mayuscula(cuando)}
+          </span>
+        </h2>
 
-      <footer className="letra-chica">
-        <h2 className="letra-chica__titulo">Sobre estos datos</h2>
-        <p>
-          Una fecha aproximada no viene con su día en la ficha: se calcula (el santo del día, la Pascua) o
-          solo se conoce el mes. Conviene confirmarla antes de viajar.
-        </p>
-        <p>
-          La mayoría de las fiestas viene del inventario oficial de MINCETUR, y cada una enlaza a su ficha.
-          Las que dicen «Publicado por…» las anunció esa municipalidad o entidad, con sus fechas.
-        </p>
-      </footer>
-    </section>
+        {pedido.error ? <ErrorVista error={pedido.error} reintentar={pedido.reintentar} /> : null}
+        {pedido.datos === null && pedido.cargando ? <Cargando texto="Cargando las fiestas…" /> : null}
+        {pedido.datos !== null ? (
+          <div aria-busy={pedido.cargando} className={pedido.cargando ? "resultado--espera" : undefined}>
+            {/* La llave la rehace al cambiar de mes o de región: vuelve a mostrar solo las primeras. */}
+            <ListaEventos
+              key={`${elegido}-${filtro}`}
+              eventos={empiezan}
+              limite={PRIMEROS}
+              vacio={
+                siguen.length > 0
+                  ? `Ninguno empieza en ${mes(elegido)}.`
+                  : "No hay fiestas ni eventos registrados ese mes."
+              }
+              irA={irA}
+            />
+            {siguen.length > 0 ? (
+              <section className="calendario__siguen" aria-labelledby={`${id}-siguen`}>
+                <h3 id={`${id}-siguen`} className="calendario__subtitulo">
+                  Empezaron en {mes(elegido === 1 ? 12 : elegido - 1)} y siguen en {mes(elegido)}
+                </h3>
+                <ListaEventos key={`${elegido}-${filtro}`} eventos={siguen} limite={5} irA={irA} />
+              </section>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="calendario__accion">
+          <Enlace
+            href={enlaces.editar({ ...(consulta ?? POR_DEFECTO), mes: elegido, fecha_inicio: null })}
+            className="boton boton--primario"
+          >
+            Armar un viaje para {mes(elegido)}
+          </Enlace>
+          <p>
+            ¿Organizas una fiesta o una feria? <Enlace href={enlaces.publicar()}>Publícala aquí</Enlace>
+          </p>
+        </div>
+
+        <footer className="letra-chica">
+          <h2 className="letra-chica__titulo">Sobre estos datos</h2>
+          <p>
+            Una fecha aproximada no viene con su día en la ficha: se calcula (el santo del día, la Pascua) o
+            solo se conoce el mes. Conviene confirmarla antes de viajar.
+          </p>
+          <p>
+            La mayoría de las fiestas viene del inventario oficial de MINCETUR, y cada una enlaza a su ficha.
+            Las que dicen «Publicado por…» las anunció esa municipalidad o entidad, con sus fechas.
+          </p>
+        </footer>
+      </section>
+    </>
   );
 }
