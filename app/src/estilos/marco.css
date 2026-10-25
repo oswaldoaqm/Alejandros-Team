@@ -61,6 +61,103 @@
   background: rgb(255 255 255 / 18%);
 }
 
+.cabecera__acciones {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+/* ── Conmutador de tema claro / oscuro estilo ¿Y tú qué planes? ──────────────── */
+
+.conmutador-tema {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: var(--fuente);
+  font-size: var(--t-nota);
+  font-weight: 700;
+  color: #ffffff;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity var(--movimiento);
+  user-select: none;
+}
+
+.conmutador-tema:hover {
+  opacity: 0.9;
+}
+
+.conmutador-tema__etiqueta {
+  font-size: var(--t-nota);
+  font-weight: 700;
+  color: rgb(255 255 255 / 90%);
+  white-space: nowrap;
+  transition: color var(--movimiento);
+}
+
+.conmutador-tema:hover .conmutador-tema__etiqueta {
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .conmutador-tema__etiqueta {
+    display: none;
+  }
+}
+
+.conmutador-tema__pista {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 50px;
+  height: 26px;
+  padding: 2px 4px;
+  background: rgb(255 255 255 / 22%);
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  transition:
+    background-color var(--movimiento),
+    border-color var(--movimiento);
+}
+
+.conmutador-tema[aria-checked="true"] .conmutador-tema__pista {
+  background: rgb(0 0 0 / 40%);
+}
+
+.conmutador-tema__perilla {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 30%);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.conmutador-tema__perilla--dark {
+  transform: translateX(24px);
+}
+
+.conmutador-tema__icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.conmutador-tema__icono--sol {
+  margin-left: auto;
+}
+
+.conmutador-tema__icono--luna {
+  margin-right: auto;
+}
+
 .cabecera__nav a[aria-current="page"] {
   color: #ffffff;
   background: var(--lago-hundido);

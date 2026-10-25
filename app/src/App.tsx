@@ -6,6 +6,7 @@ import { clave } from "./consulta";
 import { ContextoApp, nombresDe } from "./estado/contexto";
 import { useNavegacion } from "./estado/navegacion";
 import { usePedido } from "./estado/pedido";
+import { BotonTema } from "./piezas/BotonTema";
 import { Enlace } from "./piezas/Enlace";
 import { MarcaFlor } from "./piezas/Flor";
 import { Icono } from "./piezas/Icono";
@@ -87,20 +88,23 @@ export function App() {
             <MarcaFlor />
             DreemGO
           </Enlace>
-          <nav aria-label="Secciones" className="cabecera__nav">
-            <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
-              Planear
-            </Enlace>
-            <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
-              Fiestas
-            </Enlace>
-            <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
-              Guardados
-            </Enlace>
-            <Enlace href={enlaces.acerca()} aria-current={en("acerca")}>
-              Cómo funciona
-            </Enlace>
-          </nav>
+          <div className="cabecera__acciones">
+            <nav aria-label="Secciones" className="cabecera__nav">
+              <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
+                Planear
+              </Enlace>
+              <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
+                Fiestas
+              </Enlace>
+              <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
+                Guardados
+              </Enlace>
+              <Enlace href={enlaces.acerca()} aria-current={en("acerca")}>
+                Cómo funciona
+              </Enlace>
+            </nav>
+            <BotonTema />
+          </div>
         </div>
       </header>
       <main id="contenido" tabIndex={-1}>
