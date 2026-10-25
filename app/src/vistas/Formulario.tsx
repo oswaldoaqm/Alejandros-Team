@@ -20,6 +20,7 @@ import { useApp } from "../estado/contexto";
 import { useDestinos } from "../estado/destinos";
 import { useTitulo } from "../estado/titulo";
 import { aIso, fecha, fechaLocal, MESES_CORTOS, mayuscula, mes, metros, plural, soles } from "../formato";
+import { CarruselHero } from "../piezas/CarruselHero";
 import { Cargando, ErrorVista } from "../piezas/Estados";
 import { Hoja } from "../piezas/Hoja";
 import { Icono, type NombreDeIcono } from "../piezas/Icono";
@@ -82,26 +83,34 @@ function acotar(valor: number, minimo: number, maximo: number): number {
 }
 
 export function Formulario({ inicial }: { inicial: Consulta | null }) {
-  const { opciones } = useApp();
+  const { opciones, navegar } = useApp();
   useTitulo(inicial ? "Cambiar el viaje" : null);
+
+  const elegirDestinoDirecto = (destinoId: number) => {
+    navegar(enlaces.resultados(consultaNueva({ destino: destinoId, sorpresa: false }), null, 1));
+  };
+
   return (
-    <section className="pagina inicio">
-      <div className="inicio__cabeza">
-        <h1 tabIndex={-1} className="inicio__titulo">
-          {inicial ? "Cambia tu viaje" : "¿A dónde te escapas?"}
-        </h1>
-        <p className="inicio__bajada">
-          Dinos desde dónde sales y cuándo. Te armamos tres viajes por el Perú, con su plan día por día.
-        </p>
-      </div>
-      {opciones.datos ? (
-        <Campos opciones={opciones.datos} inicial={inicial} />
-      ) : opciones.error ? (
-        <ErrorVista error={opciones.error} reintentar={opciones.reintentar} />
-      ) : (
-        <Cargando texto="Preparando el planificador…" />
-      )}
-    </section>
+    <>
+      {!inicial ? <CarruselHero onElegirDestino={elegirDestinoDirecto} /> : null}
+      <section className="pagina inicio">
+        <div className="inicio__cabeza">
+          <h1 tabIndex={-1} className="inicio__titulo">
+            {inicial ? "Cambia tu viaje" : "¿A dónde te escapas?"}
+          </h1>
+          <p className="inicio__bajada">
+            Dinos desde dónde sales y cuándo. Te armamos tres viajes por el Perú, con su plan día por día.
+          </p>
+        </div>
+        {opciones.datos ? (
+          <Campos opciones={opciones.datos} inicial={inicial} />
+        ) : opciones.error ? (
+          <ErrorVista error={opciones.error} reintentar={opciones.reintentar} />
+        ) : (
+          <Cargando texto="Preparando el planificador…" />
+        )}
+      </section>
+    </>
   );
 }
 

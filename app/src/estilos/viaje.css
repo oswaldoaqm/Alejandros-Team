@@ -681,7 +681,7 @@
 
 .lugar-hoja {
   display: grid;
-  gap: 18px;
+  gap: 16px;
   min-height: 0;
 }
 
@@ -694,43 +694,86 @@
 .lugar-hoja__clase {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  gap: 6px 12px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: var(--t-nota);
   color: var(--tinta-2);
 }
 
+.lugar-hoja__seccion {
+  display: grid;
+  gap: 8px;
+}
+
+.lugar-hoja__seccion-titulo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-nota);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--lago);
+  text-transform: uppercase;
+}
+
+.lugar-hoja__seccion-titulo .icono {
+  color: var(--lago);
+}
+
 .lugar-hoja__datos {
-  overflow: hidden;
-  background: var(--superficie-2);
-  border-radius: var(--r-control);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
 }
 
 .lugar-hoja__datos > div {
   display: flex;
-  gap: 16px;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 12px 14px;
-}
-
-.lugar-hoja__datos > div + div {
-  border-top: 1px solid color-mix(in srgb, var(--borde) 28%, transparent);
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  background: var(--superficie-2);
+  border-left: 3px solid var(--lago);
+  border-radius: 0 var(--r-chico) var(--r-chico) 0;
 }
 
 .lugar-hoja__datos dt {
-  color: var(--tinta-2);
+  font-size: var(--t-pie);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--tinta-3);
 }
 
 .lugar-hoja__datos dd {
-  font-weight: 600;
-  text-align: right;
+  margin: 0;
+  font-size: var(--t-nota);
+  font-weight: 700;
+  color: var(--tinta);
+  text-align: left;
+}
+
+.lugar-hoja__seccion--info {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--linea);
 }
 
 .lugar-hoja__descripcion {
-  line-height: 1.55;
-  color: var(--tinta-2);
+  margin: 0;
+  font-size: var(--t-cuerpo);
+  line-height: 1.6;
+  color: var(--tinta);
+  background: var(--superficie);
+  padding: 14px 16px;
+  border-radius: var(--r-control);
+  border: 1px solid var(--linea);
 }
 
 /* ── El costo, el clima y las fiestas: tarjetas blancas como el resto ───────────── */
