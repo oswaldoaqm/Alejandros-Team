@@ -288,6 +288,42 @@
   }
 }
 
+/* ── Crédito de la foto ──────────────────────────────────────────────────────── */
+
+/* En una pastilla oscura, como en las tarjetas de viaje: se lee sobre cualquier foto. */
+.carrusel-hero__credito {
+  position: absolute;
+  right: max(16px, calc((100% - var(--ancho)) / 2 + 16px));
+  bottom: 28px;
+  z-index: 4;
+  max-width: calc(50% - 150px);
+  margin: 0;
+  padding: 3px 10px;
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: #ffffff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgb(0 0 0 / 55%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+}
+
+.carrusel-hero__credito a {
+  color: inherit;
+}
+
+/* En pantallas angostas abajo solo caben los indicadores: el crédito sube a la esquina de arriba. */
+@media (max-width: 820px) {
+  .carrusel-hero__credito {
+    top: 12px;
+    right: 12px;
+    bottom: auto;
+    max-width: calc(100% - 24px);
+  }
+}
+
 /* ── Indicadores inferiores (Pills) ──────────────────────────────────────────── */
 
 .carrusel-hero__indicadores {

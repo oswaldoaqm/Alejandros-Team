@@ -1,8 +1,11 @@
-// Carrusel hero de destinos destacados, inspirado en «¿Y tú qué planes?» de PROMPERÚ.
-// Muestra fotos escénicas de los principales destinos peruanos con su lema, caligrafía
-// decorativa con íconos SVG vectoriales y botón de acción rápida para planear el viaje a esa zona.
+// Carrusel de la portada: cinco destinos del Perú con su foto, su lema, una caligrafía decorativa
+// y un botón que abre el viaje a esa zona. La forma (foto a todo el ancho, lema y botón) sigue a
+// las páginas de turismo del Perú, como ytuqueplanes.com; los textos son propios. Las fotos son de
+// Wikimedia Commons y cada una lleva su autor y su licencia, como en el resto de la app.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { type Foto, urlDeFoto } from "../fotos";
+import { CreditoDeFoto } from "./Foto";
 import { Icono } from "./Icono";
 
 export type IconoCaligrafiaTipo = "corazon" | "montana" | "volcan" | "ciudadela" | "balsa";
@@ -15,7 +18,7 @@ export interface DestinoCarrusel {
   caligrafia: string;
   icono: IconoCaligrafiaTipo;
   botonTexto: string;
-  fotoUrl: string;
+  foto: Foto;
   alt: string;
   lugar: string;
 }
@@ -29,8 +32,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Cusquito me encanta",
     icono: "corazon",
     botonTexto: "Explorar Cusco",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg/1280px-Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg",
+    foto: {
+      archivo: "Cusco, Sacsayhuamán - panoramio.jpg",
+      ruta: "5/53",
+      ancho: 4912,
+      alto: 1920,
+      autor: "gertrudis2010",
+      licencia: "CC BY-SA 3.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/3.0",
+      wikidata: "",
+    },
     alt: "Fortaleza ceremonial de Saqsaywamán en Cusco",
     lugar: "Cusco",
   },
@@ -42,8 +53,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Áncash te abraza",
     icono: "montana",
     botonTexto: "Explorar Huaraz",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Huascaran_Huandoy_Chopicalqui_seen_from_Huaraz.JPG/1280px-Huascaran_Huandoy_Chopicalqui_seen_from_Huaraz.JPG",
+    foto: {
+      archivo: "Huascaran Huandoy Chopicalqui seen from Huaraz.JPG",
+      ruta: "2/2f",
+      ancho: 3648,
+      alto: 2736,
+      autor: "Uwebart",
+      licencia: "CC BY-SA 3.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/3.0",
+      wikidata: "",
+    },
     alt: "Nevados Huascarán y Chopicalqui desde Huaraz",
     lugar: "Áncash",
   },
@@ -55,8 +74,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Arequipa bonita",
     icono: "volcan",
     botonTexto: "Visitar Arequipa",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Arequipa%2C_Plaza_de_Armas%2C_2023_%2810%29.jpg/1280px-Arequipa%2C_Plaza_de_Armas%2C_2023_%2810%29.jpg",
+    foto: {
+      archivo: "Arequipa, Plaza de Armas, 2023 (10).jpg",
+      ruta: "2/22",
+      ancho: 6960,
+      alto: 4640,
+      autor: "Draceane",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Plaza de Armas y volcán Misti en Arequipa",
     lugar: "Arequipa",
   },
@@ -68,8 +95,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Mágica ciudadela",
     icono: "ciudadela",
     botonTexto: "Ir a Machupicchu",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg/1280px-Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg",
+    foto: {
+      archivo: "Machu Picchu, Peru - Laslovarga (262).jpg",
+      ruta: "2/24",
+      ancho: 5184,
+      alto: 3456,
+      autor: "Laslovarga",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Santuario Histórico de Machupicchu",
     lugar: "Cusco",
   },
@@ -81,8 +116,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Titicaca legendario",
     icono: "balsa",
     botonTexto: "Descubrir Puno",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG/1280px-Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG",
+    foto: {
+      archivo: "Vista de Puno y el Titicaca, Perú, 2015-08-01, DD 53-54 PAN.JPG",
+      ruta: "4/42",
+      ancho: 10214,
+      alto: 4096,
+      autor: "Diego Delso",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Vista panorámica de Puno y el Lago Titicaca",
     lugar: "Puno",
   },
@@ -341,7 +384,7 @@ export function CarruselHero({ onElegirDestino }: Props) {
               aria-hidden={!visible}
             >
               <img
-                src={dest.fotoUrl}
+                src={urlDeFoto(dest.foto, 1280)}
                 alt={dest.alt}
                 className="carrusel-hero__fondo"
                 loading={i === 0 ? "eager" : "lazy"}
@@ -397,6 +440,10 @@ export function CarruselHero({ onElegirDestino }: Props) {
         >
           <Icono nombre="flecha" tamano={24} />
         </button>
+
+        <p className="carrusel-hero__credito">
+          <CreditoDeFoto foto={actual.foto} />
+        </p>
 
         {/* Indicadores de diapositiva (pills) */}
         <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
