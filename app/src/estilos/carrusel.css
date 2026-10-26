@@ -61,9 +61,14 @@
 }
 
 @media (max-width: 640px) {
+  .carrusel-hero {
+    margin-bottom: 12px;
+  }
+
+  /* Lo justo para la diapositiva más larga, medida de 360 a 412 px de ancho: así el formulario asoma antes. */
   .carrusel-hero__contenedor {
-    min-height: 400px;
-    height: clamp(400px, 72vh, 480px);
+    min-height: 420px;
+    height: clamp(420px, 56vh, 460px);
   }
 
   .carrusel-hero__degradado {
@@ -284,8 +289,9 @@
 }
 
 @media (max-width: 540px) {
+  /* Arriba, lo que ocupa el crédito de la foto; abajo, los mandos. */
   .carrusel-hero__contenido {
-    padding: 24px 48px 76px;
+    padding: 44px 48px 64px;
   }
 
   .carrusel-hero__flecha {
@@ -349,6 +355,23 @@
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+@media (max-width: 540px) {
+  .carrusel-hero__mandos {
+    bottom: 14px;
+  }
+}
+
+/* En los celulares más angostos el texto se achica un poco: si no, la diapositiva más larga no cabe. */
+@media (max-width: 380px) {
+  .carrusel-hero__titulo {
+    font-size: 1.5rem;
+  }
+
+  .carrusel-hero__subtitulo {
+    font-size: 0.9375rem;
+  }
 }
 
 .carrusel-hero__pausa {
