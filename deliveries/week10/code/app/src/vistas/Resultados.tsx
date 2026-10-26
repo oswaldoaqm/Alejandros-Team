@@ -326,73 +326,82 @@ export function Resultados({ consulta, version, elegida }: Props) {
         : "Tus viajes";
 
   return (
-    <section className="pagina resultados">
+    <div className="resultados-vista">
       <div className="resultados__consulta">
-        <div>
-          <p className="resultados__frase">{titulo(entendida, nombres, zona)}</p>
-          {demas ? <p className="resultados__demas">{demas}</p> : null}
+        <div className="resultados__consulta-ancho">
+          <div>
+            <p className="resultados__frase">{titulo(entendida, nombres, zona)}</p>
+            {demas ? <p className="resultados__demas">{demas}</p> : null}
+          </div>
+          <Enlace href={enlaces.editar(consulta, vigente)} className="boton boton--secundario">
+            <Icono nombre="editar" tamano={16} />
+            Cambiar
+          </Enlace>
         </div>
-        <Enlace href={enlaces.editar(consulta, vigente)} className="boton boton--secundario">
-          <Icono nombre="editar" tamano={16} />
-          Cambiar
-        </Enlace>
       </div>
 
-      <h1 tabIndex={-1} className="resultados__titulo">
-        {encabezado}
-      </h1>
-      <p className="resultados__estado" role="status">
-        {pedido.cargando
-          ? `Estamos ${conDestino ? "armando el viaje" : "revisando las zonas del país"}. La primera vez puede tardar unos segundos.`
-          : alDia && rutas.length > 1
-            ? `Del que más te conviene al que menos.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
-            : ""}
-      </p>
+      <section className="pagina resultados">
+        <div className="resultados__cabeza">
+          <span className="resultados__icono">
+            <Icono nombre="mochila" tamano={32} />
+          </span>
+          <h1 tabIndex={-1} className="resultados__titulo">
+            {encabezado}
+          </h1>
+          <p className="resultados__estado" role="status">
+            {pedido.cargando
+              ? `Estamos ${conDestino ? "armando el viaje" : "revisando las zonas del país"}. La primera vez puede tardar unos segundos.`
+              : alDia && rutas.length > 1
+                ? `Del que más te conviene al que menos.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
+                : ""}
+          </p>
+        </div>
 
-      {pedido.error ? (
-        <ErrorVista
-          error={pedido.error}
-          reintentar={() => {
-            // Si las opciones tampoco llegaron, se piden otra vez: de ahí salen los nombres.
-            if (opciones.error) opciones.reintentar();
-            pedido.reintentar();
-          }}
-        >
-          <Enlace href={enlaces.editar(consulta, version)} className="boton boton--secundario">
-            Revisar el viaje
-          </Enlace>
-        </ErrorVista>
-      ) : null}
+        {pedido.error ? (
+          <ErrorVista
+            error={pedido.error}
+            reintentar={() => {
+              // Si las opciones tampoco llegaron, se piden otra vez: de ahí salen los nombres.
+              if (opciones.error) opciones.reintentar();
+              pedido.reintentar();
+            }}
+          >
+            <Enlace href={enlaces.editar(consulta, version)} className="boton boton--secundario">
+              Revisar el viaje
+            </Enlace>
+          </ErrorVista>
+        ) : null}
 
-      {armando ? <Cargando texto={conDestino ? "Armando tu viaje…" : "Armando tus viajes…"} /> : null}
+        {armando ? <Cargando texto={conDestino ? "Armando tu viaje…" : "Armando tus viajes…"} /> : null}
 
-      {avisoDeVersion}
+        {avisoDeVersion}
 
-      {respuesta !== null && rutas.length === 0 && alDia ? (
-        <SinRutas respuesta={respuesta} consulta={consulta} />
-      ) : null}
+        {respuesta !== null && rutas.length === 0 && alDia ? (
+          <SinRutas respuesta={respuesta} consulta={consulta} />
+        ) : null}
 
-      {rutas.length > 0 ? (
-        <ol className={`viajes${pedido.cargando ? " viajes--espera" : ""}`} aria-label="Viajes propuestos">
-          {rutas.map((ruta, i) => (
-            <li key={ruta.polo.id}>
-              <TarjetaRuta
-                ruta={ruta}
-                enlace={enlaces.resultados(consulta, vigente, i + 1)}
-                marcarFueraDelCircuito={!todosFuera}
-                foto={fotos ? fotoDelViaje(ruta, fotos) : null}
-              />
-            </li>
-          ))}
-        </ol>
-      ) : null}
+        {rutas.length > 0 ? (
+          <ol className={`viajes${pedido.cargando ? " viajes--espera" : ""}`} aria-label="Viajes propuestos">
+            {rutas.map((ruta, i) => (
+              <li key={ruta.polo.id}>
+                <TarjetaRuta
+                  ruta={ruta}
+                  enlace={enlaces.resultados(consulta, vigente, i + 1)}
+                  marcarFueraDelCircuito={!todosFuera}
+                  foto={fotos ? fotoDelViaje(ruta, fotos) : null}
+                />
+              </li>
+            ))}
+          </ol>
+        ) : null}
 
-      {respuesta !== null && rutas.length > 0 ? (
-        <p className="resultados__nota">
-          Los precios y las horas son estimaciones con datos oficiales: DreemGO no vende ni reserva.{" "}
-          <Enlace href={enlaces.acerca()}>Cómo se calcula</Enlace>
-        </p>
-      ) : null}
-    </section>
+        {respuesta !== null && rutas.length > 0 ? (
+          <p className="resultados__nota">
+            Los precios y las horas son estimaciones con datos oficiales: DreemGO no vende ni reserva.{" "}
+            <Enlace href={enlaces.acerca()}>Cómo se calcula</Enlace>
+          </p>
+        ) : null}
+      </section>
+    </div>
   );
 }

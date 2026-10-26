@@ -12,11 +12,9 @@
   --luna-sombra: rgb(255 255 255 / 12%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --noche: #14223a;
-    --noche-hondo: #0e182b;
-  }
+:root[data-tema="dark"] {
+  --noche: #14223a;
+  --noche-hondo: #0e182b;
 }
 
 .noche {
@@ -114,7 +112,7 @@
 }
 
 .noche__lugar > a {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .noche__meta,

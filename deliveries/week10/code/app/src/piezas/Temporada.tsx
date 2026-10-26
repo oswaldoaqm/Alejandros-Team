@@ -15,10 +15,12 @@ export function Temporada({ estacionalidad: e }: { estacionalidad: Estacionalida
 
   return (
     <div className="temporada">
-      <p>
-        <Veredicto veredicto={e.veredicto} />
-      </p>
-      <p>{e.explicacion}</p>
+      <div className={`temporada__dictamen temporada__dictamen--${e.veredicto}`}>
+        <p>
+          <Veredicto veredicto={e.veredicto} />
+        </p>
+        <p className="temporada__explicacion">{e.explicacion}</p>
+      </div>
       <dl className="cifras">
         {cifras.map(([nombre, valor]) => (
           <div key={nombre}>

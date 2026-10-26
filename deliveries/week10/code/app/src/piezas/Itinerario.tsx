@@ -77,7 +77,10 @@ function TodosLosDias({ dias, elegirDia }: Pick<Props, "dias" | "elegirDia">) {
               {dia.tranquilo ? (
                 <>
                   {" "}
-                  <span className="dia-fila__tranquilo">{DIA_TRANQUILO}</span>
+                  <span className="dia-fila__tranquilo">
+                    <Icono nombre="montana" tamano={12} />
+                    <span>{DIA_TRANQUILO}</span>
+                  </span>
                 </>
               ) : null}
               {dia.noche ? (
