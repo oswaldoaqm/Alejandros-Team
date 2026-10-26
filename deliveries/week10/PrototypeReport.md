@@ -2,13 +2,13 @@
 
 **DreemGO — Inteligencia de rutas en Perú**
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
-Entrega: 21 de octubre de 2026 · Estado del prototipo al 20 de octubre: contrato 1.7 y datos `2026.10.8`
+Entrega: 21 de octubre de 2026 · Actualizado el 25 de octubre, con el frontend nuevo · Contrato 1.7 y datos `2026.10.8`
 
 ## 1 · Qué se puede demostrar hoy
 
 El flujo principal del producto funciona de punta a punta, con datos reales:
 
-1. **El viajero pregunta.** Dice desde cuál de 24 ciudades sale, cuántos días tiene, en qué mes o desde qué fecha viaja y, si quiere, qué le interesa, cuánto piensa gastar, hasta qué altura tolera, si prefiere ir solo por tierra y a qué zona quiere ir.
+1. **El viajero pregunta.** Dice desde cuál de 24 ciudades sale, cuántos días tiene, en qué mes o desde qué fecha viaja y, si quiere, qué le interesa, cuánto piensa gastar, hasta qué altura tolera, si prefiere ir solo por tierra y a qué zona quiere ir. O elige uno de los cinco destinos del carrusel del inicio, que lleva directo a su viaje.
 2. **DreemGO propone tres viajes**, cada uno a un polo turístico distinto, para comparar: su costo en una banda, cómo se llega (en bus, en bus de noche, en avión, en tren o en bote) y en cuántas horas, si el mes conviene y por qué ese polo. Si el viajero eligió una zona, arma solo ese viaje; si no cabe, dice qué lo impide y con qué cambio sale.
 3. **Cada viaje trae su itinerario día por día:** qué visitar, en qué orden y a qué hora se llega, dónde almorzar, qué hacer de noche y, en la altura, un primer día tranquilo; sobre un mapa, con el enlace de cada parada a su ficha oficial de MINCETUR y las fiestas que caen en esas fechas.
 4. **El viaje se comparte con un enlace.** No hay cuentas: la misma consulta con los mismos datos da siempre la misma respuesta.
@@ -17,6 +17,8 @@ El flujo principal del producto funciona de punta a punta, con datos reales:
 La app está publicada en <https://oswaldoaqm.github.io/Alejandros-Team/> y le pregunta al API desplegado en Render, <https://alejandros-team.onrender.com>. El mismo flujo corre en una computadora con los pasos del [`README.md`](./README.md).
 
 Desde el 10 de octubre se sumaron cinco cosas, cada una con su decisión: los vuelos ([0016](../../docs/decisiones/0016-vuelos.md)), «Quiero ir a…» ([0017](../../docs/decisiones/0017-quiero-ir-a.md)), la noche ([0018](../../docs/decisiones/0018-planes-de-noche.md)), un plan creíble, con el almuerzo y el bus de noche ([0019](../../docs/decisiones/0019-plan-creible.md)), y el primer día tranquilo en la altura ([0020](../../docs/decisiones/0020-primer-dia-tranquilo.md)). La evaluación de la semana 12 ya tiene su kit ([0021](../../docs/decisiones/0021-evaluacion-semana-12.md)).
+
+Después de la entrega del 21 de octubre, el equipo rehízo el frontend: el inicio lleva un carrusel de cinco destinos, el tema claro y oscuro tiene su botón, y cambiaron los estilos de cada pantalla. El motor, el API y los datos son los mismos. El 25 de octubre se corrigieron cuatro cosas del carrusel: el texto del Cusco, que repetía el de la portada de ytuqueplanes.com; el crédito de cada foto, que no estaba; el texto en el celular, donde el título no cabía en el ancho, y un botón para detenerlo. También pide una foto a la vez y no las cinco. Lo que cambió en esta carpeta está en [`ERRATA.md`](./ERRATA.md).
 
 ## 2 · Funciones implementadas
 
@@ -37,6 +39,7 @@ Lo que recibe y devuelve cada uno está en el [contrato](../../docs/CONTRATO.md)
 
 | Pantalla | Qué permite |
 |---|---|
+| Inicio | Un carrusel de cinco destinos, cada uno con su foto, su autor y su licencia, y un botón que arma el viaje a esa zona. Pasa solo, se detiene con su botón y arranca detenido si el sistema pide menos movimiento. Debajo va el formulario |
 | Formulario | Armar la consulta con las opciones que da el API, elegir una zona («A dónde»), ir solo por tierra o pedir una sorpresa |
 | Los tres viajes | Comparar tres tarjetas, cada una con su foto, su precio, cómo se llega y en cuántas horas, y el clima del mes, y abrir cualquiera |
 | Un viaje | Por qué conviene y qué saber antes de ir; el plan día por día, entero o un día a la vez, con la hora de cada lugar, el almuerzo, la noche y el día tranquilo; un mapa con un pétalo por día y sus lugares numerados; la banda de costo con su desglose; el veredicto del mes con los mejores meses, y las fiestas. Cada lugar abre una hoja con su foto, sus datos y su ficha oficial. Se guarda, se comparte y se imprime. Si el viaje a la zona elegida no cabe, qué cambiar para que salga |
@@ -46,7 +49,7 @@ Lo que recibe y devuelve cada uno está en el [contrato](../../docs/CONTRATO.md)
 | Publicar un evento | El formulario para municipios, con un mapa para marcar el lugar |
 | Cómo funciona | De dónde salen los datos y cómo decide el motor |
 
-Está pensada primero para celular, con tema claro y oscuro. Al abrir baja unos 122 kB; el mapa llega aparte, cuando se abre un viaje, y la lista de zonas, cuando se busca una. Las fotos son de Wikimedia Commons y cada una lleva su autor y su licencia. En la app, un polo se llama zona, y una ruta, viaje.
+Está pensada primero para celular. Arranca en tema claro; el oscuro se elige con su botón y queda guardado en el navegador. Al abrir baja unos 128 kB de la app, la letra de los títulos (98 kB, de Google Fonts) y la primera foto del carrusel (261 kB); mientras el carrusel pasa solo, pide también la siguiente. El mapa llega aparte, cuando se abre un viaje, y la lista de zonas, cuando se busca una. Las fotos son de Wikimedia Commons y cada una lleva su autor y su licencia. En la app, un polo se llama zona, y una ruta, viaje.
 
 ### Los datos
 
@@ -206,7 +209,7 @@ La app de hoy hace otra cosa, a propósito: el presupuesto se compara con el P50
 
 ## 7 · Cómo se prueba
 
-- **921 pruebas del motor, el API, el pipeline y la evaluación**, y **234 de la app**, en cada pull request.
+- **921 pruebas del motor, el API, el pipeline y la evaluación**, y **238 de la app**, en cada pull request.
 - **Catorce propiedades del contrato** sobre consultas generadas al azar: nada pasa la altitud pedida, ni las paradas ni la base; los días suman lo pedido; ninguna jornada con visitas pasa de 8 horas sin contar el almuerzo, ni un día de solo viaje de 9; toda parada enlaza a su ficha; un mes desaconsejado nunca sale sin aviso; el presupuesto ordena, elige y avisa; la misma consulta da la misma respuesta; la noche no cambia el día; el almuerzo va en su lugar; el bus de noche va cuando debe, y en la altura el primer día es tranquilo. Al cerrar cada etapa se corren con 1 000 consultas.
 - **42 pruebas de humo en un navegador**, en tamaño de celular y de escritorio, contra el API de verdad: planear un viaje, abrir el mapa, compartir, guardar, volar o ir solo por tierra, pedir una zona que no cabe, ir en bus de noche, cada tipo de noche y publicar un evento. Revisan también que ninguna pantalla se desborde y pasan un analizador de accesibilidad.
 - **Las imágenes del API** se construyen y se arrancan en cada pull request.
@@ -241,7 +244,9 @@ La app de hoy hace otra cosa, a propósito: el presupuesto se compara con el P50
 - **Publicar eventos** usa una sola clave compartida, sin moderación. Un evento se retira a mano, y su descripción se guarda pero no se muestra.
 - **«Guardados»** vive en el navegador: no pasa de un dispositivo a otro.
 - **Fotos:** solo una de cada nueve paradas tiene foto, y poco más de la mitad de los imperdibles. Se eligen por cercanía y por nombre, en Wikidata o por las coordenadas de la foto en Commons, y las 711 propuestas se revisaron a ojo, en miniatura: se quitaron 121. Un error de la fuente que no se vea en la miniatura se queda.
-- **La app** imprime sin el mapa, y le pide el fondo del mapa y las fotos a servicios externos: sin ellos sigue, con un mapa liso y sin fotos.
+- **La app** imprime sin el mapa, y le pide el fondo del mapa, las fotos y la letra de los títulos a servicios externos: sin ellos sigue, con un mapa liso, sin fotos y con la letra del sistema.
+- **El inicio pesa más desde el frontend nuevo.** Antes bajaba 122 kB; ahora suma la letra de los títulos y la foto del carrusel, que es la miniatura de 1 280 px de Wikimedia: de 261 a 510 kB según el destino. Para bajarlo hay que decidir si la app guarda una versión liviana de esas cinco fotos.
+- **En el frontend nuevo, el rojo de la marca es el mismo de los avisos críticos** (`#9e0a22`, en `--lago` y en `--critico`): un aviso crítico se distingue por su ícono y su texto, no por el color.
 - **No se ha probado con usuarios.** La prueba de usabilidad es de la semana 12, y su guion ya está escrito ([`docs/evaluacion/usabilidad.md`](../../docs/evaluacion/usabilidad.md)).
 
 ## 9 · Retos técnicos
@@ -266,7 +271,7 @@ La app de hoy hace otra cosa, a propósito: el presupuesto se compara con el P50
 | Lo que publica un municipio cambia los datos, y la misma consulta tiene que dar la misma respuesta | La versión de los datos lleva la huella de lo publicado, y lo publicado no entra al puntaje |
 | En la nube hay varios servidores a la vez, y quien publica tiene que ver su evento | Cada servidor pregunta cada dos segundos si otro publicó algo |
 | Desplegar sin presupuesto y sin cuenta | Una sola imagen para Lambda y para un host gratuito, y un ensayo contra un simulador que encontró dos errores en la guía |
-| Que abra en un celular con datos móviles | 122 kB al abrir, y el mapa y la lista de zonas aparte |
+| Que abra en un celular con datos móviles | 128 kB de la app al abrir, y el mapa y la lista de zonas aparte. El carrusel del inicio pedía sus cinco fotos de golpe, 1,8 MB: ahora pide la que se ve y, si pasa solo, la siguiente |
 | Mostrar los lugares sin fotos propias ni presupuesto para comprarlas | Wikidata dice qué foto de Wikimedia Commons corresponde a cada lugar y, donde no, las coordenadas de la foto. Solo entran las de licencia libre, con su autor a la vista, y cada una se revisó a ojo |
 
 ## 10 · Lo que falta
@@ -279,6 +284,7 @@ La app de hoy hace otra cosa, a propósito: el presupuesto se compara con el P50
 - Decidir si el presupuesto deja fuera lo que no cabe en P80, como en la copia de revisión del profesor: cambia la propiedad 7.
 - Viajes de varios polos.
 - Desplegar el API en AWS y medir su arranque en frío, y probar la app en un celular con datos móviles.
+- Del frontend nuevo: una versión liviana de las fotos del carrusel y un rojo propio para los avisos críticos.
 
 **Para la entrega final**
 
