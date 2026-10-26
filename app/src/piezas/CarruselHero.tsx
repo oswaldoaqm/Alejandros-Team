@@ -326,7 +326,11 @@ export function CarruselHero({ onElegirDestino }: Props) {
   // `pausado`: mientras el puntero o el foco están encima. `detenido`: lo pidió con el botón.
   const [pausado, ponerPausado] = useState(false);
   const [detenido, ponerDetenido] = useState(pideMenosMovimiento);
+  // Las fotos que ya se pidieron: la que se ve y, si pasa solo, la que sigue. No las cinco de golpe.
+  const [pedidas, ponerPedidas] = useState<ReadonlySet<number>>(() => new Set([0]));
   const inicioToque = useRef<number | null>(null);
+  const proxima = (activo + 1) % DESTINOS_HERO.length;
+  const pedir = (i: number) => i === activo || (i === proxima && !detenido) || pedidas.has(i);
 
   const siguiente = useCallback(() => {
     ponerActivo((actual) => (actual + 1) % DESTINOS_HERO.length);
@@ -346,6 +350,11 @@ export function CarruselHero({ onElegirDestino }: Props) {
     const temporizador = window.setInterval(siguiente, 6500);
     return () => window.clearInterval(temporizador);
   }, [pausado, detenido, siguiente]);
+
+  useEffect(() => {
+    const nuevas = detenido ? [activo] : [activo, proxima];
+    ponerPedidas((antes) => (nuevas.every((i) => antes.has(i)) ? antes : new Set([...antes, ...nuevas])));
+  }, [activo, proxima, detenido]);
 
   const alTocarInicio = (e: React.TouchEvent) => {
     inicioToque.current = e.touches[0]?.clientX ?? null;
@@ -386,13 +395,15 @@ export function CarruselHero({ onElegirDestino }: Props) {
               className={`carrusel-hero__diapositiva${visible ? " carrusel-hero__diapositiva--activa" : ""}`}
               aria-hidden={!visible}
             >
-              <img
-                src={urlDeFoto(dest.foto, 1280)}
-                alt={dest.alt}
-                className="carrusel-hero__fondo"
-                loading={i === 0 ? "eager" : "lazy"}
-                decoding="async"
-              />
+              {pedir(i) ? (
+                <img
+                  src={urlDeFoto(dest.foto, 1280)}
+                  alt={dest.alt}
+                  className="carrusel-hero__fondo"
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  decoding="async"
+                />
+              ) : null}
               <div className="carrusel-hero__degradado" aria-hidden="true" />
             </div>
           );
