@@ -314,9 +314,18 @@ interface Props {
   onElegirDestino?: (destinoId: number) => void;
 }
 
+/** Si la persona pidió menos movimiento: entonces el carrusel arranca detenido. */
+function pideMenosMovimiento(): boolean {
+  return (
+    typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+  );
+}
+
 export function CarruselHero({ onElegirDestino }: Props) {
   const [activo, ponerActivo] = useState(0);
+  // `pausado`: mientras el puntero o el foco están encima. `detenido`: lo pidió con el botón.
   const [pausado, ponerPausado] = useState(false);
+  const [detenido, ponerDetenido] = useState(pideMenosMovimiento);
   const inicioToque = useRef<number | null>(null);
 
   const siguiente = useCallback(() => {
@@ -331,18 +340,12 @@ export function CarruselHero({ onElegirDestino }: Props) {
     ponerActivo(indice);
   };
 
-  // Rotación automática cada 6 segundos
+  // Pasa solo cada 6,5 segundos, salvo que esté en pausa o detenido.
   useEffect(() => {
-    if (pausado) return;
-    const movimientoReducido =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (movimientoReducido) return;
-
+    if (pausado || detenido) return;
     const temporizador = window.setInterval(siguiente, 6500);
     return () => window.clearInterval(temporizador);
-  }, [pausado, siguiente]);
+  }, [pausado, detenido, siguiente]);
 
   const alTocarInicio = (e: React.TouchEvent) => {
     inicioToque.current = e.touches[0]?.clientX ?? null;
@@ -396,7 +399,8 @@ export function CarruselHero({ onElegirDestino }: Props) {
         })}
 
         <div className="carrusel-hero__contenido">
-          <div className="carrusel-hero__texto">
+          {/* Mientras pasa solo no se anuncia cada cambio; detenido o en pausa, sí. */}
+          <div className="carrusel-hero__texto" aria-live={pausado || detenido ? "polite" : "off"}>
             <span className="carrusel-hero__etiqueta">
               <Icono nombre="pin" tamano={14} />
               {actual.lugar} · Perú
@@ -445,19 +449,29 @@ export function CarruselHero({ onElegirDestino }: Props) {
           <CreditoDeFoto foto={actual.foto} />
         </p>
 
-        {/* Indicadores de diapositiva (pills) */}
-        <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
-          {DESTINOS_HERO.map((dest, i) => (
-            <button
-              key={dest.id}
-              type="button"
-              role="tab"
-              aria-selected={i === activo}
-              aria-label={`Ver diapositiva ${i + 1}: ${dest.lugar}`}
-              className={`carrusel-hero__indicador${i === activo ? " carrusel-hero__indicador--activo" : ""}`}
-              onClick={() => irA(i)}
-            />
-          ))}
+        <div className="carrusel-hero__mandos">
+          <button
+            type="button"
+            className="carrusel-hero__pausa"
+            onClick={() => ponerDetenido((antes) => !antes)}
+            aria-label={detenido ? "Reanudar el carrusel" : "Pausar el carrusel"}
+          >
+            <Icono nombre={detenido ? "reproducir" : "pausa"} tamano={16} />
+          </button>
+          {/* Indicadores de diapositiva (pills) */}
+          <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
+            {DESTINOS_HERO.map((dest, i) => (
+              <button
+                key={dest.id}
+                type="button"
+                role="tab"
+                aria-selected={i === activo}
+                aria-label={`Ver diapositiva ${i + 1}: ${dest.lugar}`}
+                className={`carrusel-hero__indicador${i === activo ? " carrusel-hero__indicador--activo" : ""}`}
+                onClick={() => irA(i)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -37,6 +37,9 @@ export const TRAZOS = {
   menos: ["M5 12h14"],
   flecha: ["m9 6 6 6-6 6"],
   atras: ["M19 12H5", "m11 6-6 6 6 6"],
+  // Los mandos del carrusel de la portada.
+  pausa: ["M9 5.5v13", "M15 5.5v13"],
+  reproducir: ["M8 5.5v13l10-6.5-10-6.5Z"],
   cerrar: ["m6 6 12 12", "m18 6-12 12"],
   editar: ["M4 20h4L19 9l-4-4L4 16v4Z", "m13.5 6.5 4 4"],
   cama: [
