@@ -1,8 +1,11 @@
-// Carrusel hero de destinos destacados, inspirado en «¿Y tú qué planes?» de PROMPERÚ.
-// Muestra fotos escénicas de los principales destinos peruanos con su lema, caligrafía
-// decorativa con íconos SVG vectoriales y botón de acción rápida para planear el viaje a esa zona.
+// Carrusel de la portada: cinco destinos del Perú con su foto, su lema, una caligrafía decorativa
+// y un botón que abre el viaje a esa zona. La forma (foto a todo el ancho, lema y botón) sigue a
+// las páginas de turismo del Perú, como ytuqueplanes.com; los textos son propios. Las fotos son de
+// Wikimedia Commons y cada una lleva su autor y su licencia, como en el resto de la app.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { type Foto, urlDeFoto } from "../fotos";
+import { CreditoDeFoto } from "./Foto";
 import { Icono } from "./Icono";
 
 export type IconoCaligrafiaTipo = "corazon" | "montana" | "volcan" | "ciudadela" | "balsa";
@@ -15,7 +18,7 @@ export interface DestinoCarrusel {
   caligrafia: string;
   icono: IconoCaligrafiaTipo;
   botonTexto: string;
-  fotoUrl: string;
+  foto: Foto;
   alt: string;
   lugar: string;
 }
@@ -24,13 +27,21 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
   {
     id: "cusco",
     destinoId: 36,
-    titulo: "Descubre una nueva forma de vivir Cusco",
-    subtitulo: "Experiencias de naturaleza, aventura y cultura andina más allá de Machupicchu.",
+    titulo: "Camina el Cusco a tu ritmo",
+    subtitulo: "Saqsaywamán, el barrio de San Blas y la ciudad inca, en un plan armado día por día.",
     caligrafia: "Cusquito me encanta",
     icono: "corazon",
-    botonTexto: "Descúbrelas",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg/1280px-Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg",
+    botonTexto: "Explorar Cusco",
+    foto: {
+      archivo: "Cusco, Sacsayhuamán - panoramio.jpg",
+      ruta: "5/53",
+      ancho: 4912,
+      alto: 1920,
+      autor: "gertrudis2010",
+      licencia: "CC BY-SA 3.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/3.0",
+      wikidata: "",
+    },
     alt: "Fortaleza ceremonial de Saqsaywamán en Cusco",
     lugar: "Cusco",
   },
@@ -42,8 +53,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Áncash te abraza",
     icono: "montana",
     botonTexto: "Explorar Huaraz",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Huascaran_Huandoy_Chopicalqui_seen_from_Huaraz.JPG/1280px-Huascaran_Huandoy_Chopicalqui_seen_from_Huaraz.JPG",
+    foto: {
+      archivo: "Huascaran Huandoy Chopicalqui seen from Huaraz.JPG",
+      ruta: "2/2f",
+      ancho: 3648,
+      alto: 2736,
+      autor: "Uwebart",
+      licencia: "CC BY-SA 3.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/3.0",
+      wikidata: "",
+    },
     alt: "Nevados Huascarán y Chopicalqui desde Huaraz",
     lugar: "Áncash",
   },
@@ -55,8 +74,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Arequipa bonita",
     icono: "volcan",
     botonTexto: "Visitar Arequipa",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Arequipa%2C_Plaza_de_Armas%2C_2023_%2810%29.jpg/1280px-Arequipa%2C_Plaza_de_Armas%2C_2023_%2810%29.jpg",
+    foto: {
+      archivo: "Arequipa, Plaza de Armas, 2023 (10).jpg",
+      ruta: "2/22",
+      ancho: 6960,
+      alto: 4640,
+      autor: "Draceane",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Plaza de Armas y volcán Misti en Arequipa",
     lugar: "Arequipa",
   },
@@ -68,8 +95,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Mágica ciudadela",
     icono: "ciudadela",
     botonTexto: "Ir a Machupicchu",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg/1280px-Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg",
+    foto: {
+      archivo: "Machu Picchu, Peru - Laslovarga (262).jpg",
+      ruta: "2/24",
+      ancho: 5184,
+      alto: 3456,
+      autor: "Laslovarga",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Santuario Histórico de Machupicchu",
     lugar: "Cusco",
   },
@@ -81,8 +116,16 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
     caligrafia: "Titicaca legendario",
     icono: "balsa",
     botonTexto: "Descubrir Puno",
-    fotoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG/1280px-Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG",
+    foto: {
+      archivo: "Vista de Puno y el Titicaca, Perú, 2015-08-01, DD 53-54 PAN.JPG",
+      ruta: "4/42",
+      ancho: 10214,
+      alto: 4096,
+      autor: "Diego Delso",
+      licencia: "CC BY-SA 4.0",
+      url_licencia: "https://creativecommons.org/licenses/by-sa/4.0",
+      wikidata: "",
+    },
     alt: "Vista panorámica de Puno y el Lago Titicaca",
     lugar: "Puno",
   },
@@ -271,10 +314,23 @@ interface Props {
   onElegirDestino?: (destinoId: number) => void;
 }
 
+/** Si la persona pidió menos movimiento: entonces el carrusel arranca detenido. */
+function pideMenosMovimiento(): boolean {
+  return (
+    typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+  );
+}
+
 export function CarruselHero({ onElegirDestino }: Props) {
   const [activo, ponerActivo] = useState(0);
+  // `pausado`: mientras el puntero o el foco están encima. `detenido`: lo pidió con el botón.
   const [pausado, ponerPausado] = useState(false);
+  const [detenido, ponerDetenido] = useState(pideMenosMovimiento);
+  // Las fotos que ya se pidieron: la que se ve y, si pasa solo, la que sigue. No las cinco de golpe.
+  const [pedidas, ponerPedidas] = useState<ReadonlySet<number>>(() => new Set([0]));
   const inicioToque = useRef<number | null>(null);
+  const proxima = (activo + 1) % DESTINOS_HERO.length;
+  const pedir = (i: number) => i === activo || (i === proxima && !detenido) || pedidas.has(i);
 
   const siguiente = useCallback(() => {
     ponerActivo((actual) => (actual + 1) % DESTINOS_HERO.length);
@@ -288,18 +344,17 @@ export function CarruselHero({ onElegirDestino }: Props) {
     ponerActivo(indice);
   };
 
-  // Rotación automática cada 6 segundos
+  // Pasa solo cada 6,5 segundos, salvo que esté en pausa o detenido.
   useEffect(() => {
-    if (pausado) return;
-    const movimientoReducido =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (movimientoReducido) return;
-
+    if (pausado || detenido) return;
     const temporizador = window.setInterval(siguiente, 6500);
     return () => window.clearInterval(temporizador);
-  }, [pausado, siguiente]);
+  }, [pausado, detenido, siguiente]);
+
+  useEffect(() => {
+    const nuevas = detenido ? [activo] : [activo, proxima];
+    ponerPedidas((antes) => (nuevas.every((i) => antes.has(i)) ? antes : new Set([...antes, ...nuevas])));
+  }, [activo, proxima, detenido]);
 
   const alTocarInicio = (e: React.TouchEvent) => {
     inicioToque.current = e.touches[0]?.clientX ?? null;
@@ -340,20 +395,23 @@ export function CarruselHero({ onElegirDestino }: Props) {
               className={`carrusel-hero__diapositiva${visible ? " carrusel-hero__diapositiva--activa" : ""}`}
               aria-hidden={!visible}
             >
-              <img
-                src={dest.fotoUrl}
-                alt={dest.alt}
-                className="carrusel-hero__fondo"
-                loading={i === 0 ? "eager" : "lazy"}
-                decoding="async"
-              />
+              {pedir(i) ? (
+                <img
+                  src={urlDeFoto(dest.foto, 1280)}
+                  alt={dest.alt}
+                  className="carrusel-hero__fondo"
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  decoding="async"
+                />
+              ) : null}
               <div className="carrusel-hero__degradado" aria-hidden="true" />
             </div>
           );
         })}
 
         <div className="carrusel-hero__contenido">
-          <div className="carrusel-hero__texto">
+          {/* Mientras pasa solo no se anuncia cada cambio; detenido o en pausa, sí. */}
+          <div className="carrusel-hero__texto" aria-live={pausado || detenido ? "polite" : "off"}>
             <span className="carrusel-hero__etiqueta">
               <Icono nombre="pin" tamano={14} />
               {actual.lugar} · Perú
@@ -398,19 +456,33 @@ export function CarruselHero({ onElegirDestino }: Props) {
           <Icono nombre="flecha" tamano={24} />
         </button>
 
-        {/* Indicadores de diapositiva (pills) */}
-        <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
-          {DESTINOS_HERO.map((dest, i) => (
-            <button
-              key={dest.id}
-              type="button"
-              role="tab"
-              aria-selected={i === activo}
-              aria-label={`Ver diapositiva ${i + 1}: ${dest.lugar}`}
-              className={`carrusel-hero__indicador${i === activo ? " carrusel-hero__indicador--activo" : ""}`}
-              onClick={() => irA(i)}
-            />
-          ))}
+        <p className="carrusel-hero__credito">
+          <CreditoDeFoto foto={actual.foto} />
+        </p>
+
+        <div className="carrusel-hero__mandos">
+          <button
+            type="button"
+            className="carrusel-hero__pausa"
+            onClick={() => ponerDetenido((antes) => !antes)}
+            aria-label={detenido ? "Reanudar el carrusel" : "Pausar el carrusel"}
+          >
+            <Icono nombre={detenido ? "reproducir" : "pausa"} tamano={16} />
+          </button>
+          {/* Indicadores de diapositiva (pills) */}
+          <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
+            {DESTINOS_HERO.map((dest, i) => (
+              <button
+                key={dest.id}
+                type="button"
+                role="tab"
+                aria-selected={i === activo}
+                aria-label={`Ver diapositiva ${i + 1}: ${dest.lugar}`}
+                className={`carrusel-hero__indicador${i === activo ? " carrusel-hero__indicador--activo" : ""}`}
+                onClick={() => irA(i)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,11 +1,57 @@
 /* Las pantallas que acompañan al viaje: Guardados, Fiestas, Cómo funciona, Publicar un evento
    y la página de cada zona. Comparten la cabecera: un título grande y una bajada. */
 
-.pagina__titulo {
-  font-size: var(--t-titulo);
-  font-weight: 800;
+/* Cabecera hero para las pantallas interiores (Fiestas, Guardados, Cómo funciona, Publicar) */
+.pagina-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px var(--margen) 44px;
+  color: #ffffff;
+  background: var(--lago-hundido);
+  border-bottom: 1px solid rgb(0 0 0 / 14%);
+}
+
+.pagina-hero__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.pagina-hero__titulo {
+  margin: 0 0 8px;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-display);
+  font-weight: 700;
   line-height: 1.1;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.pagina-hero__titulo:focus {
+  outline: none;
+}
+
+.pagina-hero__bajada {
+  max-width: 54ch;
+  margin: 0 auto;
+  font-size: var(--t-cuerpo);
+  line-height: 1.4;
+  color: rgb(255 255 255 / 90%);
+  text-wrap: pretty;
+}
+
+.pagina__titulo {
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .pagina__bajada {
@@ -239,10 +285,11 @@
 }
 
 .clima__lectura {
-  padding: 12px 14px;
-  background: var(--superficie-2);
-  border: 0;
-  border-radius: var(--r-control);
+  padding: 14px 18px;
+  background: var(--superficie);
+  border-left: 4px solid var(--lago);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 }
 
 .clima__lectura strong {

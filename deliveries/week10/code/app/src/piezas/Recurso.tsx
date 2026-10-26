@@ -70,7 +70,13 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
       {recurso ? (
         <div className="lugar-hoja">
           {foto ? (
-            <Foto foto={foto} alt={recurso.nombre} sizes="(min-width: 720px) 520px, 100vw" tope={960} />
+            <Foto
+              foto={foto}
+              alt={recurso.nombre}
+              sizes="(min-width: 720px) 520px, 100vw"
+              tope={960}
+              principal
+            />
           ) : null}
           <p className="lugar-hoja__clase">
             {esImperdible(recurso) ? (
@@ -78,30 +84,54 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
                 <Imperdible />{" "}
               </>
             ) : null}
+            {recurso.jerarquia && recurso.jerarquia >= 3 ? (
+              <span className={`insignia-jerarquia insignia-jerarquia--${recurso.jerarquia}`}>
+                <Icono nombre="escudo" tamano={12} />
+                Jerarquía {recurso.jerarquia} · MINCETUR
+              </span>
+            ) : null}
             <span>{claseDeRecurso(recurso)}</span>
           </p>
-          <dl className="lugar-hoja__datos">
-            {visita}
-            {recurso.altitud_m != null ? (
+          <section className="lugar-hoja__seccion" aria-label="Detalles importantes">
+            <h3 className="lugar-hoja__seccion-titulo">
+              <Icono nombre="info" tamano={17} />
+              Detalles importantes
+            </h3>
+            <dl className="lugar-hoja__datos">
+              {visita}
+              {recurso.altitud_m != null ? (
+                <div>
+                  <dt>Altura</dt>
+                  <dd>{metros(recurso.altitud_m)}</dd>
+                </div>
+              ) : null}
               <div>
-                <dt>Altura</dt>
-                <dd>{metros(recurso.altitud_m)}</dd>
+                <dt>Entrada</dt>
+                <dd>{precioDeEntrada(recurso)}</dd>
               </div>
-            ) : null}
-            <div>
-              <dt>Entrada</dt>
-              <dd>{precioDeEntrada(recurso)}</dd>
-            </div>
-            <div>
-              <dt>Importancia</dt>
-              <dd>
-                {recurso.jerarquia != null
-                  ? `${recurso.jerarquia} de 4, según MINCETUR`
-                  : "MINCETUR no la ha calificado"}
-              </dd>
-            </div>
-          </dl>
-          {recurso.descripcion ? <p className="lugar-hoja__descripcion">{recurso.descripcion}</p> : null}
+              <div>
+                <dt>Importancia</dt>
+                <dd>
+                  {recurso.jerarquia != null
+                    ? `${recurso.jerarquia} de 4, según MINCETUR`
+                    : "MINCETUR no la ha calificado"}
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          {recurso.descripcion ? (
+            <section
+              className="lugar-hoja__seccion lugar-hoja__seccion--info"
+              aria-label="Información del lugar"
+            >
+              <h3 className="lugar-hoja__seccion-titulo">
+                <Icono nombre="destino" tamano={17} />
+                Información del lugar
+              </h3>
+              <p className="lugar-hoja__descripcion">{recurso.descripcion}</p>
+            </section>
+          ) : null}
         </div>
       ) : null}
     </Hoja>

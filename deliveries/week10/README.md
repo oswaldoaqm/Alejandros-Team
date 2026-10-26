@@ -2,9 +2,9 @@
 
 **Primera versión funcional del producto**
 DS3022 · Desarrollo de Producto de Datos · UTEC · Prof. Carlos Abel Dominguez Bautista
-Entrega: 21 de octubre de 2026
+Entrega: 21 de octubre de 2026 · Actualizada el 25 de octubre, con el frontend nuevo
 
-El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, al 20 de octubre (contrato 1.7, datos `2026.10.8`), para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
+El prototipo es el producto que vive en este repositorio: un motor de itinerarios con su API, la app web que lo usa y el pipeline que arma sus datos. Esta carpeta guarda una copia congelada de su código, sus datos procesados y sus artefactos tal como se entregan, al 25 de octubre (contrato 1.7, datos `2026.10.8`), para que todo lo que pide el enunciado esté aquí. La copia es para consultarla: el producto se instala y se corre desde la raíz del repositorio, con los pasos de abajo. Dentro de la copia, los enlaces entre documentos siguen apuntando a la raíz, y algunos no abren desde aquí: el mismo documento está en la raíz.
 
 ## Qué pide el enunciado y dónde está
 
@@ -16,12 +16,12 @@ El prototipo es el producto que vive en este repositorio: un motor de itinerario
 | El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales (con vuelos, bus de noche y «Quiero ir a…») y mide las cifras del informe con el mismo código del API |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
 | Presentación | [`PresentationWeek10.pptx`](./PresentationWeek10.pptx) y su versión en [PDF](./PresentationWeek10.pdf). Usa Lexend y Quattrocento Sans, de Google Fonts, como la de la semana 7; el PDF las lleva dentro |
-| Capturas de la demostración | [`capturas/`](./capturas/): 23 pantallas en celular y en escritorio, con lo que muestra cada una |
+| Capturas de la demostración | [`capturas/`](./capturas/): 25 pantallas en celular y en escritorio, con el frontend nuevo, y lo que muestra cada una |
 | La revisión del profesor del 20 de octubre | [`revision_profesor/`](./revision_profesor/): la comparación de P50 y P80 con S/ 800 y la hoja de verificación de Huacho, con dos filas revisadas |
 | URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |
 
-Lo que se entrega queda congelado en la etiqueta `entrega/semana-10`, que se pone en el último commit de `main` antes de la fecha ([decisión 0005](../../docs/decisiones/0005-historial-y-erratas.md)).
+Lo entregado el 21 de octubre quedó congelado en la etiqueta `entrega/semana-10`, en el último commit de `main` antes de la fecha ([decisión 0005](../../docs/decisiones/0005-historial-y-erratas.md)). Lo que cambió después, con el frontend nuevo, está en [`ERRATA.md`](./ERRATA.md).
 
 ## Qué hace falta
 

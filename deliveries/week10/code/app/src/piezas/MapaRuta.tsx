@@ -20,8 +20,8 @@ import { sinMovimiento } from "../movimiento";
 import { boton, ESTILO, ESTILO_LISO, icono, PERU, TEXTOS } from "./maplibre";
 
 const FUENTE = "petalos";
-// El lago de la marca. El fondo del mapa es claro también en modo oscuro: va el tono de día.
-const LAGO = "#0b5c80";
+// El rojo de la marca (bandera peruana). El fondo del mapa es claro también en modo oscuro: va el tono de día.
+const LAGO = "#a00c22";
 const BLANCO = "#ffffff";
 
 export interface BaseDeMapa {
@@ -220,10 +220,17 @@ export default function MapaRuta({ base, puntos, dia, elegirDia, abrirLugar }: P
       const elemento = boton("pin-base", `${base.nombre}: aquí duermes.`);
       elemento.append(icono("cama", 16));
       const globo = document.createElement("div");
+      globo.className = "globo-base";
       const fuerte = document.createElement("strong");
       fuerte.textContent = base.nombre; // los nombres vienen de fuera: siempre como texto
+      fuerte.style.color = "#13202b";
+      fuerte.style.fontWeight = "800";
+      fuerte.style.display = "block";
       const detalle = document.createElement("span");
       detalle.textContent = "Aquí duermes";
+      detalle.style.color = "#4b5a66";
+      detalle.style.fontWeight = "600";
+      detalle.style.display = "block";
       globo.append(fuerte, detalle);
       marcaBase = new Marker({ element: elemento })
         .setLngLat([base.lon, base.lat])
