@@ -29,6 +29,8 @@
   --lago-tinta: #7d020d; /* tono más oscuro para texto/hover */
   --lago-hundido: #5c0009; /* presionado / activo */
   --lago-claro: #fde8eb; /* fondo tenue para selecciones y tags */
+  --lago-texto: var(--lago); /* el rojo de la marca como texto o ícono, sobre la superficie */
+  --foco-lago: color-mix(in srgb, var(--lago) 55%, transparent); /* el marco del foco de las opciones */
   --sobre-lago: #ffffff;
   --ichu: #ffc42e; /* oro del ichu: reservado para el precio y el botón principal */
   --ichu-tinta: #855800;
@@ -104,8 +106,12 @@
   --lago-tinta: #ff6b7e;
   --lago-hundido: #740718;
   --lago-claro: #330d12;
+  /* Sobre el fondo oscuro, el rojo de la marca como texto daba 2:1: los textos, los enlaces y el foco
+     de las opciones van con el rojo claro (6,3:1). Los botones y la cabecera siguen en el de la marca. */
+  --lago-texto: var(--lago-tinta);
+  --foco-lago: var(--lago-tinta);
   --sobre-lago: #ffffff;
-  --enlace: var(--lago);
+  --enlace: var(--lago-tinta);
   --ichu: #ffc42e;
   --ichu-claro: #33280a;
   --bien: #3fbf74;

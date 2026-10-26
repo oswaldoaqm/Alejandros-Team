@@ -196,7 +196,7 @@
 }
 
 .barra-inferior a[aria-current="page"] {
-  color: var(--lago);
+  color: var(--lago-texto);
 }
 
 .barra-inferior .icono {
