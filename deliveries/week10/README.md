@@ -16,7 +16,7 @@ El prototipo es el producto que vive en este repositorio: un motor de itinerario
 | El notebook | [`code/DreemGO_prototipo.ipynb`](./code/DreemGO_prototipo.ipynb), ya ejecutado: carga los artefactos, resuelve consultas reales (con vuelos, bus de noche y «Quiero ir a…») y mide las cifras del informe con el mismo código del API |
 | Informe del prototipo | [`PrototypeReport.md`](./PrototypeReport.md). Las cifras de lo que propone el motor salen de [`code/cobertura.py`](./code/cobertura.py) |
 | Presentación | [`PresentationWeek10.pptx`](./PresentationWeek10.pptx) y su versión en [PDF](./PresentationWeek10.pdf). Usa Lexend y Quattrocento Sans, de Google Fonts, como la de la semana 7; el PDF las lleva dentro |
-| Capturas de la demostración | [`capturas/`](./capturas/): 25 pantallas en celular y en escritorio, con el frontend nuevo, y lo que muestra cada una |
+| Capturas y video de la demostración | [`capturas/`](./capturas/): 25 pantallas en celular y en escritorio, con el frontend nuevo, y lo que muestra cada una. [`DemoWeek10.mp4`](./DemoWeek10.mp4): la demo del guion de la presentación en 3 minutos y 20 segundos, sin sonido y con un rótulo en cada paso |
 | La revisión del profesor del 20 de octubre | [`revision_profesor/`](./revision_profesor/): la comparación de P50 y P80 con S/ 800 y la hoja de verificación de Huacho, con dos filas revisadas |
 | URL del prototipo | La app: <https://oswaldoaqm.github.io/Alejandros-Team/>. El API que le responde: <https://alejandros-team.onrender.com>, con sus endpoints en [`/v1/docs`](https://alejandros-team.onrender.com/v1/docs) |
 | Instalación, ejecución, dependencias y despliegue | Este archivo |
