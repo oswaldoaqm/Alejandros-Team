@@ -23,3 +23,7 @@ El carrusel tenía cuatro problemas, y se corrigieron antes de copiar la app a e
 - Pasaba solo, y solo se detenía con el puntero o el foco encima: en un celular no había cómo detenerlo. Ahora tiene un botón para pausarlo y reanudarlo, y si el sistema pide menos movimiento arranca detenido (WCAG 2.2.2).
 
 Además, pedía sus cinco fotos al abrir, 1,8 MB en total, y ahora pide la que se ve y, si pasa solo, la siguiente. Y su caligrafía usaba la letra Caveat sin bajarla, así que cada sistema mostraba otra: ahora se baja de Google Fonts, como las otras dos letras de la app.
+
+## Lo que se sumó después
+
+`DemoWeek10.mp4` entró a esta carpeta el 25 de octubre, después de las correcciones: la demo del guion de la presentación en 3 minutos y 20 segundos, sin sonido y con un rótulo en cada paso. Se grabó en escritorio (1 440 × 900) con la app compilada igual que la publicada, contra el API local con los datos `2026.10.8`. El evento que se publica en el video es de prueba y quedó solo en ese API local.
