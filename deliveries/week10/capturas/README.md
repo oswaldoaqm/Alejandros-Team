@@ -1,10 +1,10 @@
 # Capturas de la demostración
 
-La app compilada igual que la publicada, contra el API con los datos `2026.10.8` y el contrato 1.7, el 20 de octubre de 2026. Las de celular son de 390 × 844 puntos y las de escritorio, de 1 440 × 900. Las fotos son de Wikimedia Commons, con su autor y su licencia a la vista.
+La app compilada igual que la publicada, con el frontend nuevo, contra el API con los datos `2026.10.8` y el contrato 1.7, el 25 de octubre de 2026. Las de celular son de 390 × 844 puntos y las de escritorio, de 1 440 × 900. Las fotos son de Wikimedia Commons, con su autor y su licencia a la vista.
 
 | Archivo | Qué muestra |
 |---|---|
-| `01_consulta_celular.png` | El formulario: desde Lima, 4 días en julio, naturaleza y caminatas, hasta S/ 1 000. Con «A dónde» y los vuelos |
+| `01_consulta_celular.png` | El formulario, debajo del carrusel del inicio: desde Lima, 4 días en julio, naturaleza y caminatas, hasta S/ 1 000. Con «A dónde» y los vuelos |
 | `02_tres_viajes_celular.png` | Los tres viajes de esa consulta: Íllimo y Huaraz, en bus de noche, y Huacho |
 | `03_viaje_huaraz_celular.png` | El viaje a Huaraz: su foto, su costo, las horas desde Lima en bus de noche, el clima de julio y por qué conviene |
 | `04_plan_y_mapa_celular.png` | El plan día por día con su mapa: un pétalo por día, y el día 1, tranquilo para acostumbrarse a la altura |
@@ -15,7 +15,7 @@ La app compilada igual que la publicada, contra el API con los datos `2026.10.8`
 | `09_a_donde_celular.png` | «A dónde»: buscar Machu Picchu entre las zonas |
 | `10_asi_no_cabe_celular.png` | Machu Picchu en 2 días no cabe: el motor dice por qué y con qué cambio sale |
 | `11_machu_picchu_celular.png` | Con 4 días, el viaje a Machupicchu Pueblo, en avión y en tren |
-| `12_tema_oscuro_celular.png` | El tema oscuro: desde Lima, 6 días en julio, con vuelo al Cusco |
+| `12_tema_oscuro_celular.png` | El tema oscuro, elegido con su botón: desde Lima, 6 días en julio, con vuelo al Cusco |
 | `13_como_funciona_celular.png` | «Cómo funciona»: de dónde salen los datos y cómo decide el motor |
 | `14_lima_julio_escritorio.png` | En escritorio, la consulta de julio |
 | `15_lima_febrero_escritorio.png` | La misma consulta en febrero: Huaraz ya no sale, porque es temporada de lluvias |
@@ -27,5 +27,7 @@ La app compilada igual que la publicada, contra el API con los datos `2026.10.8`
 | `21_fiestas_escritorio.png` | El calendario de fiestas de julio, con «Ir a esta fiesta» |
 | `22_publicar_escritorio.png` | Un municipio publica un evento, con su lugar marcado en el mapa |
 | `23_evento_publicado_escritorio.png` | El evento publicado, como lo ve el viajero |
+| `24_inicio_celular.png` | El inicio en el celular: el carrusel de destinos en el Cusco, con el crédito de su foto, y el comienzo del formulario |
+| `25_inicio_escritorio.png` | El inicio en escritorio: el carrusel, con su caligrafía, sus mandos y el crédito de la foto |
 
-El evento de las dos últimas es de prueba: se publicó en un API local, no en el publicado.
+El evento de la 22 y la 23 es de prueba: se publicó en un API local, no en el publicado. Las capturas se toman con el movimiento reducido, así que el carrusel sale detenido en su primera diapositiva, con el botón para reanudarlo.
