@@ -1,5 +1,5 @@
 // Interruptor de modo claro / modo oscuro, inspirado en «¿Y tú qué planes?».
-// Por defecto siempre inicia en modo claro.
+// Arranca con el tema del sistema; lo que la persona elige aquí queda guardado (src/estado/tema.ts).
 
 import { useTema } from "../estado/tema";
 

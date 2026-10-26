@@ -132,7 +132,7 @@
 
 .opcion[aria-pressed="true"] {
   font-weight: 650;
-  color: var(--lago);
+  color: var(--lago-texto);
 }
 
 .opciones-lista__vacia {
@@ -202,7 +202,7 @@
 }
 
 .gusto .icono {
-  color: var(--lago);
+  color: var(--lago-texto);
 }
 
 .gusto input:checked + span {
@@ -211,7 +211,7 @@
 }
 
 .gusto input:focus-visible + span {
-  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline: 3px solid var(--foco-lago);
   outline-offset: 2px;
 }
 
@@ -247,7 +247,7 @@
 }
 
 .mes-opcion input:focus-visible + span {
-  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline: 3px solid var(--foco-lago);
   outline-offset: 2px;
 }
 

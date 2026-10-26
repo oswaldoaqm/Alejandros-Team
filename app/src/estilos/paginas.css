@@ -98,7 +98,7 @@
 }
 
 .guardado__enlace:hover .guardado__titulo {
-  color: var(--lago);
+  color: var(--lago-texto);
 }
 
 .guardado__titulo {
@@ -201,7 +201,7 @@
 }
 
 .zona-lugar:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline: 3px solid var(--foco-lago);
   outline-offset: -3px;
 }
 
@@ -217,7 +217,7 @@
   width: 56px;
   height: 56px;
   overflow: hidden;
-  color: var(--lago);
+  color: var(--lago-texto);
   background: var(--lago-claro);
   border-radius: 12px;
 }
@@ -275,7 +275,7 @@
 }
 
 .clima__mes input:focus-visible ~ .clima__columna {
-  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline: 3px solid var(--foco-lago);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -370,7 +370,7 @@
 }
 
 .calendario__region select:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--lago) 55%, transparent);
+  outline: 3px solid var(--foco-lago);
 }
 
 .calendario__cuenta {

@@ -360,31 +360,46 @@ const PANTALLAS = [
   ["publicar un evento", "./#/publicar"],
 ] as const;
 
+async function revisarPantalla(page: Page, nombre: string, direccion: string) {
+  await page.goto(direccion);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator(".cargando")).toHaveCount(0);
+  // El mapa llega aparte: se espera a que esté o a que se sepa que no hay.
+  if (nombre === "un viaje" || nombre === "publicar un evento") {
+    await expect(page.locator(".maplibregl-canvas")).toBeVisible();
+  }
+
+  const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(desborde, "la página no debe desplazarse a lo ancho").toBeLessThanOrEqual(0);
+
+  // El mapa queda fuera de esta revisión: con muchas paradas juntas sus marcas se enciman, y
+  // lo que dice cada una está también en el itinerario, que es la alternativa accesible.
+  const informe = await new AxeBuilder({ page })
+    .withTags(PAUTAS)
+    .exclude(".maplibregl-canvas-container")
+    .exclude(".maplibregl-control-container")
+    .analyze();
+  expect(informe.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
+}
+
 for (const [nombre, direccion] of PANTALLAS) {
   test(`${nombre}: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte`, async ({
     page,
   }) => {
-    await page.goto(direccion);
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.locator(".cargando")).toHaveCount(0);
-    // El mapa llega aparte: se espera a que esté o a que se sepa que no hay.
-    if (nombre === "un viaje" || nombre === "publicar un evento") {
-      await expect(page.locator(".maplibregl-canvas")).toBeVisible();
-    }
-
-    const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(desborde, "la página no debe desplazarse a lo ancho").toBeLessThanOrEqual(0);
-
-    // El mapa queda fuera de esta revisión: con muchas paradas juntas sus marcas se enciman, y
-    // lo que dice cada una está también en el itinerario, que es la alternativa accesible.
-    const informe = await new AxeBuilder({ page })
-      .withTags(PAUTAS)
-      .exclude(".maplibregl-canvas-container")
-      .exclude(".maplibregl-control-container")
-      .analyze();
-    expect(informe.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
+    await revisarPantalla(page, nombre, direccion);
   });
 }
+
+// Con el sistema en oscuro y sin nada elegido, la app arranca en oscuro: cada pantalla, otra vez.
+test.describe("en tema oscuro", () => {
+  test.use({ colorScheme: "dark" });
+  for (const [nombre, direccion] of PANTALLAS) {
+    test(`${nombre}, en oscuro: sin fallas de accesibilidad que una máquina detecte`, async ({ page }) => {
+      await revisarPantalla(page, nombre, direccion);
+      await expect(page.locator("html")).toHaveAttribute("data-tema", "dark");
+    });
+  }
+});
 
 test("cada tipo de noche: sin fallas de accesibilidad que una máquina detecte", async ({ page }) => {
   await page.goto(

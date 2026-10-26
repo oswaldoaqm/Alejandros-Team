@@ -174,6 +174,7 @@ def test_desde_lima_al_cusco_se_vuela_y_la_respuesta_lo_dice():
         ("Lima", "Cusco", "LIM", "CUZ", 1.33)
     ]
     assert 4 < t.horas < 5 and t.dias_de_viaje == 2 and t.acceso == "terrestre"
+    assert viaje.textos.duracion(t.horas * 60) == "4 h 28"  # lo que muestra la tarjeta es lo que dice el día 1
     assert cusco.dias[0].nota.startswith(
         "Salida de Lima a las 07:00; 4 h 28 de puerta a puerta hasta Cuzco: con el vuelo Lima–Cusco de 1 h 20"
     )

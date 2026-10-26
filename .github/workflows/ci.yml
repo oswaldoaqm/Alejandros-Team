@@ -38,7 +38,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Construir
-        run: docker build -f infra/Dockerfile -t dreemgo-api:ci .
+        # ECR Public a veces responde 429 a los runners de GitHub: hasta tres intentos, con espera.
+        run: |
+          for intento in 1 2 3; do
+            docker build -f infra/Dockerfile -t dreemgo-api:ci . && exit 0
+            echo "Falló el intento $intento; si fue un 429 de ECR Public, espero y reintento."
+            sleep $((intento * 30))
+          done
+          exit 1
       - name: La imagen arranca y responde
         run: |
           docker run -d --name api -p 8080:8080 dreemgo-api:ci
