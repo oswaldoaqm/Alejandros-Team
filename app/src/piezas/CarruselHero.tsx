@@ -24,11 +24,11 @@ export const DESTINOS_HERO: DestinoCarrusel[] = [
   {
     id: "cusco",
     destinoId: 36,
-    titulo: "Descubre una nueva forma de vivir Cusco",
-    subtitulo: "Experiencias de naturaleza, aventura y cultura andina más allá de Machupicchu.",
+    titulo: "Camina el Cusco a tu ritmo",
+    subtitulo: "Saqsaywamán, el barrio de San Blas y la ciudad inca, en un plan armado día por día.",
     caligrafia: "Cusquito me encanta",
     icono: "corazon",
-    botonTexto: "Descúbrelas",
+    botonTexto: "Explorar Cusco",
     fotoUrl:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg/1280px-Cusco%2C_Sacsayhuam%C3%A1n_-_panoramio.jpg",
     alt: "Fortaleza ceremonial de Saqsaywamán en Cusco",
