@@ -619,11 +619,11 @@ a.fila:hover .fila__nombre {
 
 .aviso--critico {
   background: var(--critico-fondo);
-  border-left-color: var(--lago);
+  border-left-color: var(--critico);
 }
 
 .aviso--critico > .icono {
-  color: var(--lago);
+  color: var(--critico);
 }
 
 .aviso--bien {

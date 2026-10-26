@@ -41,9 +41,11 @@
   --aviso: #e0a100;
   --aviso-tinta: #7f5600;
   --aviso-fondo: #fff4d6;
-  --critico: #9e0a22;
-  --critico-tinta: #7d020d;
-  --critico-fondo: #fde8e6;
+  /* Lo crítico, en un rojo más vivo que el de la marca: si fuera el mismo, un aviso se perdería entre los
+     botones y la cabecera. 5,5:1 contra el blanco y 4,8:1 contra su fondo; su tinta, 7,8:1. */
+  --critico: #c62d1f;
+  --critico-tinta: #8f1d13;
+  --critico-fondo: #fdecea;
 
   /* Forma */
   --r-portada: 14px;

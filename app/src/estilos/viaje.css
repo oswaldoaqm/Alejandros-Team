@@ -887,7 +887,7 @@
 }
 
 .temporada__dictamen--desaconsejado {
-  border-left-color: var(--lago);
+  border-left-color: var(--critico);
   background: var(--critico-fondo);
 }
 
