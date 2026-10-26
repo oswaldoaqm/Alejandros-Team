@@ -16,13 +16,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
     <script>
+      // El tema antes de que cargue la app, con la misma cuenta que src/estado/tema.ts: el que la persona
+      // eligió y, si no eligió, el del sistema. De la clave vieja solo vale «dark».
       (() => {
+        let t = null;
         try {
-          const t = localStorage.getItem("dreemgo-tema");
-          document.documentElement.setAttribute("data-tema", t === "dark" ? "dark" : "light");
-        } catch (_) {
-          document.documentElement.setAttribute("data-tema", "light");
-        }
+          t = localStorage.getItem("dreemgo-tema-elegido");
+          if (t !== "dark" && t !== "light") t = localStorage.getItem("dreemgo-tema") === "dark" ? "dark" : null;
+        } catch (_) {}
+        if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.setAttribute("data-tema", t);
       })();
     </script>
   </head>
