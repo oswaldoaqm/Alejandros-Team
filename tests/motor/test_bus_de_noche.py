@@ -95,6 +95,13 @@ def test_a_huaraz_en_bus_de_noche():
     assert any(s.startswith("Bus de noche de ida y vuelta") for s in ruta.costo.supuestos)
     assert any(a.tipo == "acceso" and "bus de noche" in a.mensaje for a in ruta.avisos)
     assert any(m.endswith("de Lima en bus de noche") for m in ruta.motivos)
+    # La tarjeta de la app muestra las horas del traslado: la nota del día 1, el aviso y el motivo dicen lo mismo.
+    ida = viaje.textos.duracion(t.horas * 60)
+    assert ruta.dias[0].nota.endswith(f"a las {t.bus_de_noche.llega}: {ida} por carretera.")
+    assert any(
+        a.mensaje.startswith(f"La ida y la vuelta van en bus de noche, {ida} por carretera") for a in ruta.avisos
+    )
+    assert f"A {ida} de Lima en bus de noche" in ruta.motivos
 
 
 @con_datos

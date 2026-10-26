@@ -15,6 +15,15 @@ def test_valor_de_una_parada():
     assert viaje.valor(r, {"playa"}) == 24 * viaje.FACTOR_SIN_INTERES
 
 
+def test_las_horas_del_traslado_salen_de_los_minutos_enteros():
+    # El plan cuenta la ida en minutos enteros, hacia arriba: de 486,01 a 487 minutos son 487. Las horas del
+    # traslado llevan dos decimales, y vueltas a minutos dan otra vez esos 487, como en las notas del viaje.
+    for minutos in (486.01, 486.3, 486.5, 486.99, 487.0):
+        horas = viaje.horas_del_traslado(minutos)
+        assert viaje.minutos_de_la_ida(minutos) == 487 and round(horas * 60) == 487
+        assert viaje.textos.duracion(horas * 60) == viaje.textos.duracion(viaje.minutos_de_la_ida(minutos)) == "8 h 07"
+
+
 def test_visita_con_caminata_de_ida_y_vuelta():
     assert viaje.minutos_de_visita({"visita_min": 90, "caminata_min": 30}) == 150
     assert viaje.minutos_de_visita({"visita_min": None, "caminata_min": None}) == viaje.VISITA_POR_DEFECTO_MIN

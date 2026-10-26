@@ -9,6 +9,8 @@ Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el mod
 
 No quita nada de la 1.6. Suma una propiedad, la 14.
 
+Desde el 26 de octubre, `traslado.horas` sale de los minutos enteros de la ida, como los cuenta el plan, y lleva dos decimales. Así la duración que muestra la app es la misma que dicen la nota del día 1, el aviso del bus de noche y los motivos: antes, la tarjeta de Huaraz decía 8 h 06 y la nota del día, 8 h 07. Ningún campo cambia, así que la versión sigue en 1.7.
+
 La 1.6, del 19 de octubre, hizo creíble el plan ([decisión 0019](./decisiones/0019-plan-creible.md)):
 
 - **El almuerzo.** Cada día con visitas trae `almuerzo`: a qué hora, después de cuántas paradas, dónde y si cerca hay dónde comer. Es una hora que no cuenta en las 8 de la jornada, así que un día entero va de 8:00 a 17:00. Si se almuerza al llegar a una parada, su `llegada` es la hora de después del almuerzo.

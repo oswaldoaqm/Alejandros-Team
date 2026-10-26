@@ -678,7 +678,7 @@ def dias_del_viaje(it: Itinerario, consulta: Consulta, origen: Origen, datos: Da
                 sale, llega = (textos.hora(m) for m in plan.bus_de_noche)
                 nota = (
                     f"El bus de noche sale de {origen.nombre} a las {sale} de la noche anterior y llega a {base} "
-                    f"a las {llega}: {textos.duracion(it.minutos_ida)} por carretera."
+                    f"a las {llega}: {textos.duracion(minutos_de_la_ida(it.minutos_ida))} por carretera."
                 )
         elif n == plan.salida:
             tipo = "visita_y_vuelta" if paradas else "vuelta"
@@ -941,7 +941,7 @@ def motivos(
         salida.append("Fuera del circuito de Lima y Cusco")
     if it.plan.tipo_viaje == "estrella":
         por = "en bus de noche" if it.plan.bus_de_noche else textos.por_medios(medios_del_traslado(it))
-        salida.append(f"A {textos.duracion(it.minutos_ida)} de {origen.nombre} {por}")
+        salida.append(f"A {textos.duracion(minutos_de_la_ida(it.minutos_ida))} de {origen.nombre} {por}")
     return salida[:4]
 
 
@@ -1007,11 +1007,12 @@ def avisos(
         )
     if it.plan.bus_de_noche is not None:
         sale = textos.hora(it.plan.bus_de_noche[0])
+        ida = textos.duracion(minutos_de_la_ida(it.minutos_ida))
         salida.append(
             Aviso(
                 tipo="acceso",
                 nivel="info",
-                mensaje=f"La ida y la vuelta van en bus de noche, {textos.duracion(it.minutos_ida)} por carretera: "
+                mensaje=f"La ida y la vuelta van en bus de noche, {ida} por carretera: "
                 f"sales de {datos.origenes[consulta.origen].nombre} a las {sale} la noche antes del día 1 y vuelves "
                 f"la noche del día {consulta.dias}. Esas dos noches no cuentan en tus días ni en el hospedaje.",
             )
@@ -1332,7 +1333,7 @@ def _traslado(it: Itinerario, origen: Origen, datos: Datos) -> Traslado:
     acceso = "sin_acceso_terrestre" if "bote" in por_tierra else "terrestre"
     if it.plan.tipo_viaje == "excursion":
         primera = it.recorridos[0].visitas[0] if it.recorridos[0].visitas else None
-        horas = None if primera is None else round(primera.traslado / 60, 1)
+        horas = None if primera is None else horas_del_traslado(primera.traslado)
         return Traslado(
             desde=origen.nombre, horas=horas, dias_de_viaje=0, medios=medios_, acceso=acceso, fuente="red_vial"
         )
@@ -1342,7 +1343,7 @@ def _traslado(it: Itinerario, origen: Origen, datos: Datos) -> Traslado:
         bus = BusDeNoche(sale=sale, llega=llega, sale_vuelta=sale, llega_vuelta=llega)  # la vuelta, a las mismas horas
     return Traslado(
         desde=origen.nombre,
-        horas=round(it.minutos_ida / 60, 1),
+        horas=horas_del_traslado(it.minutos_ida),
         dias_de_viaje=len(it.plan.tramos),
         medios=medios_,
         acceso=acceso,
@@ -1455,6 +1456,19 @@ def _cambios_juntos(consulta: Consulta, con) -> str | None:
                 cuando = "sí cabe" if dias == consulta.dias else f"cabe en {dias} días"
                 return f"{texto[0].upper()}{texto[1:]}, {cuando}."
     return None
+
+
+def minutos_de_la_ida(minutos: float) -> int:
+    """Los minutos enteros de la ida, redondeados hacia arriba, como los cuenta el plan (``tramos_de_la_ida``
+    y ``bus_de_noche``). Las notas, los avisos y ``traslado.horas`` dicen todos estos mismos."""
+    return int(math.ceil(minutos))
+
+
+def horas_del_traslado(minutos: float) -> float:
+    """Las horas de un traslado, desde sus minutos enteros. Con un decimal, la tarjeta de Huaraz decía
+    «8 h 06» y la nota del día 1, «8 h 07». Desde minutos enteros, dos decimales alcanzan para que la app,
+    que las vuelve a minutos, llegue a los mismos."""
+    return round(minutos_de_la_ida(minutos) / 60, 2)
 
 
 def _horas(minutos: float) -> str:
