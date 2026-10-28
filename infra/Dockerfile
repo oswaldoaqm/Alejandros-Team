@@ -13,11 +13,8 @@
 
 FROM python:3.12-slim
 
-# El adaptador sale de donde lo publica su proyecto, la galería pública de AWS
-# (github.com/awslabs/aws-lambda-web-adapter), en la 1.0.1 con que se ensayó el despliegue. La cuenta de
-# Docker Hub de la que venía antes no figura en esa guía y no se actualiza desde hace dos años. Si la CI
-# recibe un 429 de ECR Public, el paso «Construir» de ci.yml reintenta.
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:1.0.1 /lambda-adapter /opt/extensions/lambda-adapter
+# El adaptador sale de Docker Hub para evitar el límite de peticiones anónimas (429) de ECR Public en la CI
+COPY --from=awsguru/aws-lambda-adapter:0.8.3-x86_64 /lambda-adapter /opt/extensions/lambda-adapter
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
