@@ -10,6 +10,7 @@ import { EnlaceExterno } from "./Enlace";
 import { Foto } from "./Foto";
 import { Hoja } from "./Hoja";
 import { Icono } from "./Icono";
+import { InsigniaJerarquia } from "./InsigniaJerarquia";
 
 /** Desde jerarquía 3, MINCETUR lo cuenta entre los lugares más importantes del país. */
 const IMPERDIBLE = 3;
@@ -85,10 +86,7 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
               </>
             ) : null}
             {recurso.jerarquia && recurso.jerarquia >= 3 ? (
-              <span className={`insignia-jerarquia insignia-jerarquia--${recurso.jerarquia}`}>
-                <Icono nombre="escudo" tamano={12} />
-                Jerarquía {recurso.jerarquia} · MINCETUR
-              </span>
+              <InsigniaJerarquia jerarquia={recurso.jerarquia} variante="insignia" contexto="lugar" />
             ) : null}
             <span>{claseDeRecurso(recurso)}</span>
           </p>
