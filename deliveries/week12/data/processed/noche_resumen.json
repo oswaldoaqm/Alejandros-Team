@@ -1,0 +1,22 @@
+{
+  "confianza_minima": 0.7,
+  "de_osm": 443,
+  "de_overture": 821,
+  "lugares": 1264,
+  "osm": {
+    "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+    "md5": "faea114a828e7a306a5010f985c1320b"
+  },
+  "overture": "2026-09-23.1",
+  "polos_con_5_o_mas": 50,
+  "polos_con_lugares": 92,
+  "por_tipo": {
+    "bar": 783,
+    "discoteca": 203,
+    "karaoke": 54,
+    "musica": 2,
+    "pena": 13,
+    "pub": 209
+  },
+  "radio_m": 1500
+}
