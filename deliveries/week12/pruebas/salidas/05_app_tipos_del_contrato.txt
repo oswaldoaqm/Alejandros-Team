@@ -1,0 +1,11 @@
+$ npm run tipos && git diff --exit-code -- src/api/esquema.d.ts && echo 'src/api/esquema.d.ts sigue igual al contrato'    # en app
+
+
+> dreemgo-app@0.1.0 tipos
+> openapi-typescript ../docs/openapi.json -o src/api/esquema.d.ts
+
+✨ openapi-typescript 7.13.0
+🚀 ../docs/openapi.json → src/api/esquema.d.ts [140ms]
+src/api/esquema.d.ts sigue igual al contrato
+
+[código de salida: 0]

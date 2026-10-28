@@ -1,0 +1,260 @@
+$ npx --no-install vitest run --reporter=verbose    # en app
+
+
+ RUN  v5.0.3 /home/claude/dg/w12/prueba_final2/Alejandros-Team/app
+
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > muestra los viajes para elegir, con lo que deciden: precio, tiempo de ida y clima 262ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > dice la consulta en una frase y lo demás que se pidió 81ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > marca los viajes que están fuera del circuito cuando no lo están todos 69ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si ninguno pasa por Lima ni por Cusco, lo dice una vez arriba y no en cada tarjeta 88ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > con dos viajes no dice «los tres» 56ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > un viaje solo lleva su etiqueta: no hay frase que lo diga por él 49ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > «Cambiar» lleva al formulario con la misma consulta 346ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > le pone a la URL la versión de datos con que se calculó 83ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si el enlace es de otra versión de datos, lo dice 172ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si solo cambiaron los eventos publicados (enlace con 2026.10.8), no avisa y pone la versión vigente 64ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si solo cambiaron los eventos publicados (enlace con 2026.10.8-e0000000), no avisa y pone la versión vigente 82ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si cambiaron los artefactos, avisa aunque el enlace traiga la huella de los eventos 61ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > sin viajes, dice por qué y ofrece lo que el motor sugiere 86ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > si la consulta no vale, muestra qué campo corregir 82ms
+ ✓ src/vistas/Resultados.test.tsx > los tres viajes > sin conexión lo dice, y al reintentar sigue 98ms
+ ✓ src/vistas/Resultados.test.tsx > el viaje a una zona elegida > se abre directo, porque es uno solo, y «Cambiar el viaje» vuelve al formulario 285ms
+ ✓ src/vistas/Resultados.test.tsx > el viaje a una zona elegida > si no cabe, dice por qué y qué cambiar: con el destino, el viaje se abre directo 122ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > al tocar un viaje se abre su plan, sin volver a pedir nada 146ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > un enlace con #/ruta/3 abre el tercero 171ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > «Tus viajes» vuelve a los tres 198ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > dice por qué te va a gustar sin repetir lo que ya está arriba 130ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > pone los avisos antes de ir, y el de los datos en la letra chica 163ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > un viaje con vuelo lo dice en su tarjeta, en sus datos y en su costo 157ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > un viaje en bus de noche lo dice en su tarjeta, en sus datos y antes de ir 175ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > el plan va de a un día, y el mapa sigue al día elegido 225ms
+ ✓ src/vistas/Resultados.test.tsx > un viaje abierto > al tocar un lugar se abre su hoja con la ficha oficial 206ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > guarda el viaje abierto en el navegador, y Guardados vuelve a ese viaje 390ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > guardar un viaje no da por guardados los otros dos 344ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > lo guardado cuando no se elegía un viaje sigue abriendo los tres 78ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > comparte el enlace completo: la consulta, la versión y el viaje abierto 166ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > si el navegador no deja copiar, muestra el enlace para copiarlo a mano 155ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > antes de imprimir abre lo plegado, que si no, no sale en el papel 166ms
+ ✓ src/vistas/Resultados.test.tsx > guardar, compartir e imprimir > en papel va el plan completo, todos los días 105ms
+ ✓ src/piezas/Itinerario.test.tsx > todo el viaje > lista los días con su fecha, lo que se hace y sus lugares, o su nota si no tiene 197ms
+ ✓ src/piezas/Itinerario.test.tsx > todo el viaje > al tocar un día, lo elige 84ms
+ ✓ src/piezas/Itinerario.test.tsx > la noche > en la lista, una línea bajo lo del día 30ms
+ ✓ src/piezas/Itinerario.test.tsx > la noche > en el día, después de sus lugares, con dónde salir 24ms
+ ✓ src/piezas/Itinerario.test.tsx > el primer día en la altura > en la lista, una línea bajo sus lugares; los otros días no la llevan 22ms
+ ✓ src/piezas/Itinerario.test.tsx > el primer día en la altura > en el día, después de cómo se llega 11ms
+ ✓ src/piezas/Itinerario.test.tsx > el primer día en la altura > los otros días, no 10ms
+ ✓ src/piezas/Itinerario.test.tsx > el primer día en la altura > y en el plan impreso, en su día 5ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > dice qué se hace, cuánto dura la jornada y cómo se llega 17ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > pone sus lugares en orden, numerados desde 1, con la hora de llegada y la visita 13ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > marca los imperdibles 19ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > al tocar un lugar, abre su hoja 35ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > anota en su día el evento corto; el que dura todo el mes no 7ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > el evento que publicó un municipio dice quién lo publicó 7ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > un día sin lugares muestra su nota 5ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > al final ofrece el día siguiente y, en el último, todo el viaje 41ms
+ ✓ src/piezas/Itinerario.test.tsx > un día > en el último día ofrece volver a todo el viaje 22ms
+ ✓ src/piezas/Itinerario.test.tsx > el almuerzo > va en la línea del día, después de los lugares que van antes, sin número y sin abrirse 17ms
+ ✓ src/piezas/Itinerario.test.tsx > el almuerzo > si cerca no hay registrado dónde comer, dice que lo lleves 12ms
+ ✓ src/piezas/Itinerario.test.tsx > el almuerzo > en la base, antes de salir 13ms
+ ✓ src/piezas/Itinerario.test.tsx > el selector de días > ofrece todo el viaje y cada día, y marca el elegido 53ms
+ ✓ src/piezas/Itinerario.test.tsx > la hoja de un lugar > dice cuándo se llega, cuánto dura la visita, desde dónde, la altura, la entrada y su importancia 71ms
+ ✓ src/piezas/Itinerario.test.tsx > la hoja de un lugar > enlaza la ficha oficial, y dice si MINCETUR no calificó el lugar 42ms
+ ✓ src/piezas/Itinerario.test.tsx > la hoja de un lugar > con foto, la muestra con su autor y su licencia 58ms
+ ✓ src/piezas/Itinerario.test.tsx > la hoja de un lugar > cerrada no muestra nada, y la cruz la cierra 35ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > se arma con lo que dice el API: orígenes, intereses y días 647ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > la vida nocturna va aparte, de noche, y viaja en la consulta como cualquier interés 426ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > propone el mes que viene, también en diciembre 108ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > en diciembre propone enero 87ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > los días no pasan de lo que permite el API 417ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > manda la consulta en la URL, que es el enlace del viaje 636ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > la ciudad se busca sin tildes, y Enter elige la primera que coincide sin buscar el viaje 282ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > «Sorpréndeme» pide solo viajes fuera de Lima y Cusco; «Ver mis viajes», no 438ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > «A dónde» propone tres viajes; sin nada escrito, sugiere zonas de imperdibles fuera de tu ciudad 148ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > con un destino, el viaje es a esa zona y se abre directo; no hay «Sorpréndeme» 443ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > Enter elige la primera zona que coincide, y «Te proponemos tres» quita el destino 282ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > al cambiar un viaje con destino, la fila nombra la zona 90ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > el presupuesto y la altura solo viajan si se bajan del extremo 669ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > vuela a lo lejano; con el interruptor apagado pide solo por tierra 554ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > con fecha de salida manda la fecha, y el mes la sigue 334ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > al cambiar el viaje, abre con la consulta que ya había 75ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > si la lista de zonas no llega, el formulario sigue y la hoja lo dice 136ms
+ ✓ src/vistas/Formulario.test.tsx > el formulario > si el servidor todavía no responde, lo dice y deja reintentar 100ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > muestra dónde se duerme, los lugares, el clima mes a mes y las fiestas 629ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > lista primero los lugares más importantes, deja ver todos y abre cada uno en su hoja 487ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > «Armar un viaje aquí» abre el formulario con esta zona, desde la consulta con que se llegó 320ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > sin consulta, el viaje que arma es uno nuevo: desde Lima, el mes que viene 191ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > cada fiesta de la zona ofrece armar el viaje para ir 149ms
+ ✓ src/vistas/Paginas.test.tsx > la zona de un viaje > si la zona no existe, lo dice 38ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > la ventana de un mes es su próxima vez, con su último día 2ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > pide los eventos del mes y deja cambiar de mes y de región 308ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > con una consulta abierta, abre en su mes y ofrece armar el viaje 100ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > «Ir a esta fiesta» arma el viaje a su zona; si no queda cerca de ninguna, no se ofrece 102ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > «#/calendario/11» abre en noviembre, y si el enlace pide otro mes, cambia 108ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > un evento publicado dice quién lo publicó, y enlaza a donde dijo esa entidad 136ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > lo que empezó el mes anterior va aparte, después de lo que empieza en el mes 47ms
+ ✓ src/vistas/Paginas.test.tsx > el calendario de fiestas > invita a publicar a quien organiza un evento 112ms
+ ✓ src/vistas/Paginas.test.tsx > moverse por la app > el pie lleva a publicar un evento 237ms
+ ✓ src/vistas/Paginas.test.tsx > moverse por la app > cada pantalla pone su título y recibe el foco, para que se note el cambio 227ms
+ ✓ src/vistas/Paginas.test.tsx > moverse por la app > «Saltar al contenido» lleva el foco al contenido sin cambiar de pantalla 45ms
+ ✓ src/vistas/Paginas.test.tsx > moverse por la app > «Tus viajes», desde la zona, retrocede: el viaje abierto sigue abierto 382ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > pide lo que pide el contrato, con las 25 regiones 435ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > manda el evento con la clave en su cabecera y muestra cómo lo verá el viajero 434ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > sin marcar el lugar ni la fecha de fin: un día, y solo en el calendario 181ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > al elegir la región, el mapa se acerca a su ciudad principal 47ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > la marca se puede quitar 101ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > después de publicar, el calendario se pide otra vez y ya trae el evento 474ms
+ ✓ src/vistas/Publicar.test.tsx > publicar un evento > «Publicar otro evento» no hace escribir de nuevo quién publica ni dónde 201ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > con la clave equivocada, lo dice arriba y en la casilla de la clave 148ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > si el servidor no acepta publicaciones, no le echa la culpa a la clave 142ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > cada error del contrato va a su casilla, y el que es de todo el evento, arriba 143ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > si solo hay errores de casillas, arriba dice dónde mirar 133ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > si no se pudo guardar, muestra lo que dice el servidor 134ms
+ ✓ src/vistas/Publicar.test.tsx > cuando no se publica > una clave con tildes o espacios ni se envía 158ms
+ ✓ src/vistas/Publicar.test.tsx > hasta cuándo se publica > el mes en curso y los once que siguen 1ms
+ ✓ src/textos.test.ts > el día > dice qué se hace, y un día de visitas sin paradas es un día libre 18ms
+ ✓ src/textos.test.ts > con qué se viaja > lo dice con las palabras del motor 2ms
+ ✓ src/textos.test.ts > cómo se va, si no es lo de siempre > con vuelo, en bus de noche o nada 1ms
+ ✓ src/textos.test.ts > dónde se almuerza > en la base; cerca de un lugar con dónde comer; en el lugar, si toca llevarlo 1ms
+ ✓ src/textos.test.ts > la entrada de un lugar > dice lo que la ficha publica y nada más 2ms
+ ✓ src/textos.test.ts > las sugerencias del motor cuando no hay rutas > cada una arma la consulta que propone 3ms
+ ✓ src/textos.test.ts > las sugerencias del motor cuando no hay rutas > una sugerencia que no se entiende no se ofrece 1ms
+ ✓ src/textos.test.ts > las sugerencias del motor cuando no hay rutas > se escriben como una acción 2ms
+ ✓ src/textos.test.ts > cómo se nombra y se resume un viaje > el nombre va en dos partes cuando el motor desambigua la zona 2ms
+ ✓ src/textos.test.ts > cómo se nombra y se resume un viaje > los imperdibles son los de jerarquía 3 o 4, de mayor a menor y sin repetir 1ms
+ ✓ src/textos.test.ts > cómo se nombra y se resume un viaje > de los motivos del motor, quedan los que la pantalla no dice ya en otro lado 1ms
+ ✓ src/textos.test.ts > cómo se nombra y se resume un viaje > una lista larga de lugares se acorta, pero no para dejar uno solo afuera 1ms
+ ✓ src/textos.test.ts > cómo se nombra y se resume un viaje > el clima del mes, en palabras de viajero 1ms
+ ✓ src/textos.test.ts > la noche > dice qué es cada lugar y cómo es el cielo con palabras 1ms
+ ✓ src/textos.test.ts > la noche > cuenta los lugares para salir de cada tipo, en el orden del motor 1ms
+ ✓ src/piezas/Noche.test.tsx > la noche de un día > para salir: los lugares, con su tipo, a cuánto quedan y dónde verificarlos 217ms
+ ✓ src/piezas/Noche.test.tsx > la noche de un día > para las estrellas: el cielo, la luna de esa noche y nada de bares 11ms
+ ✓ src/piezas/Noche.test.tsx > la luna > en luna nueva no hay parte iluminada; en cuarto, la mitad, sin curva 7ms
+ ✓ src/piezas/Noche.test.tsx > la luna > en el sur, la creciente se ilumina por la izquierda y la menguante por la derecha 7ms
+ ✓ src/piezas/Noche.test.tsx > la noche de una zona > dónde salir y cuántas noches salen despejadas cada mes 63ms
+ ✓ src/piezas/Noche.test.tsx > la noche de una zona > un mirador cuyo nombre no lo dice se presenta como mirador 33ms
+ ✓ src/piezas/Noche.test.tsx > la noche de una zona > sin dato de nubes lo dice 6ms
+ ✓ src/consulta.test.ts > la consulta y la URL > escribe los parámetros que recibe GET /v1/viajes, en orden fijo 11ms
+ ✓ src/consulta.test.ts > la consulta y la URL > con fecha de inicio no manda el mes: basta la fecha 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > vuelve de la URL a la misma consulta 2ms
+ ✓ src/consulta.test.ts > la consulta y la URL > por defecto se puede volar: «solo por tierra» va en la URL solo si se pide 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > con un destino lo manda después del origen, y sin sorpresa: el API no acepta los dos 2ms
+ ✓ src/consulta.test.ts > la consulta y la URL > sin mes ni fecha no hay consulta 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > completa con los valores por defecto y no repite intereses 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > deja pasar un valor fuera de rango: el API es quien lo rechaza y dice por qué 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > el enlace para compartir lleva la versión de datos 1ms
+ ✓ src/consulta.test.ts > la consulta y la URL > dos consultas con los mismos intereses en otro orden son la misma 1ms
+ ✓ src/consulta.test.ts > la consulta en palabras > en una frase: desde dónde, cuántos días y cuándo 1ms
+ ✓ src/consulta.test.ts > la consulta en palabras > con un destino y su nombre, de dónde a dónde 0ms
+ ✓ src/consulta.test.ts > la consulta en palabras > antes de que lleguen los nombres, el origen sale de su identificador 0ms
+ ✓ src/consulta.test.ts > la consulta en palabras > lo demás que pidió, solo si pidió algo 0ms
+ ✓ src/destinos.test.ts > cómo se comparan los nombres > junta las grafías del quechua y del castellano, como el pipeline 11ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > primero por el nombre de la zona, sin tildes ni mayúsculas y con cualquier grafía 3ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > por un lugar de la zona, primero el más importante, y dice cuál 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > desde el comienzo de una palabra: «ica» es Ica, no «Basílica» 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > con dos letras busca en los nombres y las regiones, no en los lugares 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > sin nada escrito, o sin nada que coincida, no hay zonas 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > sin nada escrito, propone las de algún imperdible de jerarquía 4, menos las de su ciudad 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > debajo de su nombre dice por qué salió, o su lugar más importante 1ms
+ ✓ src/destinos.test.ts > buscar a dónde ir > nombra la zona elegida si la lista llegó y la tiene 1ms
+ ✓ src/destinos.test.ts > con la lista publicada > encuentra lo que más se busca 75ms
+ ✓ src/destinos.test.ts > con la lista publicada > propone, sin nada escrito, ocho zonas de imperdibles, y desde Lima ninguna de Lima 3ms
+ ✓ src/fotos.test.ts > las direcciones de una foto > pide la miniatura del ancho justo, con el nombre como lo escribe Commons 11ms
+ ✓ src/fotos.test.ts > las direcciones de una foto > escapa lo que no puede ir en una dirección 1ms
+ ✓ src/fotos.test.ts > las direcciones de una foto > si la original es más chica que lo pedido, va la original 1ms
+ ✓ src/fotos.test.ts > las direcciones de una foto > ofrece al navegador solo los anchos que Wikimedia sirve, hasta el tope 1ms
+ ✓ src/fotos.test.ts > el crédito de una foto > lleva su autor y su licencia 1ms
+ ✓ src/fotos.test.ts > el crédito de una foto > una de dominio público lo dice en castellano, y sin autor no inventa uno 1ms
+ ✓ src/fotos.test.ts > el crédito de una foto > la licencia que solo pide nombrar al autor también va en castellano 1ms
+ ✓ src/fotos.test.ts > la foto de un viaje > es la de su imperdible más importante, aunque no sea el primero del viaje 1ms
+ ✓ src/fotos.test.ts > la foto de un viaje > entre los imperdibles prefiere una apaisada: en la tarjeta, una vertical se recorta demasiado 1ms
+ ✓ src/fotos.test.ts > la foto de un viaje > si ningún imperdible tiene foto, va la del pueblo donde se duerme; después, la de cualquier lugar 1ms
+ ✓ src/fotos.test.ts > la foto de un viaje > la de una zona sigue el mismo orden 0ms
+ ✓ src/eventos.test.ts > cuánto dura un evento > cuenta los días, con el primero y el último 12ms
+ ✓ src/eventos.test.ts > en qué día del viaje cae > cae entre su inicio y su fin 1ms
+ ✓ src/eventos.test.ts > en qué día del viaje cae > en el día se anotan los eventos cortos; el que dura todo el mes va aparte 2ms
+ ✓ src/eventos.test.ts > ir a un evento > va a su zona, saliendo la víspera, y lo demás queda como estaba 1ms
+ ✓ src/eventos.test.ts > ir a un evento > en un viaje de un día sale el mismo día, y nunca antes de hoy 1ms
+ ✓ src/eventos.test.ts > ir a un evento > a lo que dura más de una semana o está por confirmar se va en su mes, sin fecha 1ms
+ ✓ src/eventos.test.ts > ir a un evento > a lo largo que ya empezó se va en este mes, no en el suyo 1ms
+ ✓ src/eventos.test.ts > ir a un evento > si ya terminó o no queda cerca de ninguna zona, no hay viaje 1ms
+ ✓ src/piezas/ElegirLugar.test.tsx > las coordenadas, escritas > se escriben con coma y con el signo menos de imprenta 11ms
+ ✓ src/piezas/ElegirLugar.test.tsx > las coordenadas, escritas > se leen con coma o con punto, y con cualquiera de los dos signos 1ms
+ ✓ src/piezas/ElegirLugar.test.tsx > elegir el lugar de un evento > lo que se marca en el mapa se ve en la lectura y en las casillas 474ms
+ ✓ src/piezas/ElegirLugar.test.tsx > elegir el lugar de un evento > escribir las dos coordenadas pone la marca, sin cambiarle el texto a quien escribe 22ms
+ ✓ src/piezas/ElegirLugar.test.tsx > elegir el lugar de un evento > un punto fuera del Perú no se marca, y dice entre qué valores va 13ms
+ ✓ src/piezas/ElegirLugar.test.tsx > elegir el lugar de un evento > quitar la marca vacía las casillas 50ms
+ ✓ src/flor.test.ts > la flor del viaje > mide en línea recta: un grado de latitud son unos 111 km 11ms
+ ✓ src/flor.test.ts > la flor del viaje > resume cada día con lugares: cuántos visita y hasta dónde llega desde donde se duerme 2ms
+ ✓ src/flor.test.ts > la flor del viaje > un pétalo por día, más largo el día que va más lejos 2ms
+ ✓ src/flor.test.ts > la flor del viaje > con la ida, un tallo que crece con las horas, hasta siete 1ms
+ ✓ src/flor.test.ts > el pétalo de un día en el mapa > la envolvente deja afuera lo que queda adentro 2ms
+ ✓ src/flor.test.ts > el pétalo de un día en el mapa > contiene la base y todos los lugares del día, y es un anillo cerrado 1ms
+ ✓ src/flor.test.ts > el pétalo de un día en el mapa > con un solo lugar y sin base, es un círculo chico alrededor de él 1ms
+ ✓ src/flor.test.ts > el pétalo de un día en el mapa > un día sin lugares no tiene pétalo 0ms
+ ✓ src/formato.test.ts > números > separa los miles con un espacio que no parte la línea 11ms
+ ✓ src/formato.test.ts > números > usa la coma decimal y no escribe ceros de más 1ms
+ ✓ src/formato.test.ts > números > escribe los km con un decimal solo cuando son pocos 1ms
+ ✓ src/formato.test.ts > números > concuerda el plural 1ms
+ ✓ src/formato.test.ts > duraciones > las escribe como el motor 1ms
+ ✓ src/formato.test.ts > fechas > lee AAAA-MM-DD como día local, sin correrse por la zona horaria 1ms
+ ✓ src/formato.test.ts > fechas > escribe un día, un rango dentro del mes y un rango entre meses 1ms
+ ✓ src/formato.test.ts > fechas > nombra los meses como el motor: setiembre 1ms
+ ✓ src/formato.test.ts > listas y letras > une con comas y una conjunción 1ms
+ ✓ src/formato.test.ts > listas y letras > nombra las rutas A, B y C 1ms
+ ✓ src/formato.test.ts > lo que se añadió para la app > no redondea una tarifa 0ms
+ ✓ src/formato.test.ts > lo que se añadió para la app > deja los decimales fijos cuando se comparan en columna 0ms
+ ✓ src/formato.test.ts > lo que se añadió para la app > dice los meses como tramos del calendario, lleguen en el orden que lleguen 1ms
+ ✓ src/itinerario.test.ts > las paradas numeradas > se numeran desde 1 en cada día, en el orden de visita 13ms
+ ✓ src/itinerario.test.ts > las paradas numeradas > el mapa recibe las mismas paradas, con su día, su número y su código 2ms
+ ✓ src/itinerario.test.ts > las paradas numeradas > un viaje de un día no tiene base 1ms
+ ✓ src/itinerario.test.ts > el almuerzo entre los lugares del día > va después de los lugares que van antes, y un día sin almuerzo tiene solo sus lugares 2ms
+ ✓ src/itinerario.test.ts > el almuerzo entre los lugares del día > si el número no cabe, va al final; y sin lugares no hay almuerzo que mostrar 1ms
+ ✓ src/itinerario.test.ts > los marcadores que se tapan > los que están lejos no se mueven 1ms
+ ✓ src/itinerario.test.ts > los marcadores que se tapan > dos juntos se abren medio paso a cada lado, y tres, uno entero 1ms
+ ✓ src/itinerario.test.ts > los marcadores que se tapan > la base no se mueve: lo que se le encima se abre hacia su derecha 1ms
+ ✓ src/ruta.test.ts > de la URL a la pantalla > sin consulta, el formulario 11ms
+ ✓ src/ruta.test.ts > de la URL a la pantalla > con mes o fecha, los tres viajes, con la versión del enlace; con #/ruta/N, ese viaje abierto 2ms
+ ✓ src/ruta.test.ts > de la URL a la pantalla > las demás pantallas van en el fragmento y conservan la consulta 1ms
+ ✓ src/ruta.test.ts > de la URL a la pantalla > el calendario se puede abrir en un mes 1ms
+ ✓ src/ruta.test.ts > de la URL a la pantalla > un fragmento que no conoce no rompe nada 1ms
+ ✓ src/ruta.test.ts > de la pantalla a la URL > arma enlaces que vuelven a la misma pantalla 2ms
+ ✓ src/almacen.test.ts > guardados > guarda, lista del más reciente al más antiguo y borra 13ms
+ ✓ src/almacen.test.ts > guardados > no repite un viaje: lo sube al principio con sus datos nuevos 1ms
+ ✓ src/almacen.test.ts > guardados > guarda el viaje que se abrió, no la consulta: dos viajes de la misma consulta son dos guardados 1ms
+ ✓ src/almacen.test.ts > guardados > a lo que guardó una versión anterior, sin vuelos ni destino, le valen los de siempre 1ms
+ ✓ src/almacen.test.ts > guardados > lo guardado cuando los tres viajes iban en una pantalla se lee como la consulta entera 1ms
+ ✓ src/almacen.test.ts > guardados > si lo guardado está roto, empieza de cero en vez de fallar 1ms
+ ✓ src/almacen.test.ts > guardados > no guarda más de treinta 6ms
+ ✓ src/piezas/BandaCosto.test.tsx > la escala de la banda > ordena los tres percentiles dentro de la barra, con aire a los lados 12ms
+ ✓ src/piezas/BandaCosto.test.tsx > la escala de la banda > dibuja el presupuesto si queda cerca, por debajo o por encima 1ms
+ ✓ src/piezas/BandaCosto.test.tsx > la escala de la banda > un presupuesto muy por encima no se dibuja: aplastaría la banda 1ms
+ ✓ src/piezas/BandaCosto.test.tsx > la banda de costo > muestra el centro, la banda y en qué se va 161ms
+ ✓ src/piezas/BandaCosto.test.tsx > la banda de costo > dice si el costo central entra en el presupuesto o por cuánto lo pasa 11ms
+ ✓ src/piezas/CarruselHero.test.tsx > el carrusel de la portada > pasa solo cada 6,5 segundos, y con su botón se detiene y se reanuda 231ms
+ ✓ src/piezas/CarruselHero.test.tsx > el carrusel de la portada > si se pidió menos movimiento, arranca detenido y pide solo la foto que se ve 29ms
+ ✓ src/piezas/CarruselHero.test.tsx > el carrusel de la portada > mientras pasa sola pide la foto que se ve y la que sigue, no las cinco, y nombra a su autor 68ms
+ ✓ src/piezas/CarruselHero.test.tsx > el carrusel de la portada > su botón abre el viaje a la zona de la diapositiva 35ms
+ ✓ src/estado/tema.test.ts > el tema > si la persona no eligió, sigue al del sistema 15ms
+ ✓ src/estado/tema.test.ts > el tema > lo que la persona eligió manda sobre el sistema 1ms
+ ✓ src/estado/tema.test.ts > el tema > de la versión anterior vale el oscuro, que salía del botón, y no el claro, que se guardaba solo 1ms
+ ✓ src/estado/tema.test.ts > el tema > al abrir no guarda nada; al usar el botón guarda lo elegido y borra la clave vieja 17ms
+ ✓ src/estado/tema.test.ts > el tema > si el sistema cambia con la app abierta, cambia con él, salvo que la persona haya elegido 5ms
+ ✓ src/piezas/ClimaAnual.test.tsx > el clima de un polo, mes a mes > abre en el mes pedido y deja elegir otro para leer su explicación 342ms
+ ✓ src/piezas/ClimaAnual.test.tsx > el clima de un polo, mes a mes > dice lo mismo en una tabla, con el veredicto en palabras 31ms
+ ✓ src/App.test.tsx > si una pantalla falla, el marco sigue en pie y las demás siguen andando 280ms
+ ✓ src/version.test.ts > la versión de datos > separa la parte de los artefactos de la huella de lo publicado 11ms
+ ✓ src/version.test.ts > la versión de datos > dice si entre el enlace y lo vigente cambiaron los datos o solo los eventos publicados 1ms
+ ✓ src/piezas/Estados.test.tsx > la espera > al principio solo dice qué está haciendo 160ms
+ ✓ src/piezas/Estados.test.tsx > la espera > si tarda, avisa que el servidor puede estar despertando 16ms
+
+ Test Files  24 passed (24)
+      Tests  243 passed (243)
+   Start at  00:05:37
+   Duration  46.80s (tests 48%, environment 41%, setup 7%, transform 3%, import 2%)
+
+Environment  jsdom was created 24 times · 17.75s total, 41% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+[código de salida: 0]
