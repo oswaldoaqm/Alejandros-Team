@@ -63,7 +63,7 @@
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 6.0,
+        "horas": 6.05,
         "dias_de_viaje": 2,
         "medios": [
           "carretera"
@@ -642,7 +642,7 @@
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 11.1,
+        "horas": 11.08,
         "dias_de_viaje": 0,
         "medios": [
           "carretera"
@@ -1325,7 +1325,7 @@
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 8.0,
+        "horas": 8.03,
         "dias_de_viaje": 0,
         "medios": [
           "carretera"
