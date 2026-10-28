@@ -1,0 +1,30 @@
+﻿origen;destino;zona;motor_min;empresa_min;empresa_max;donde;razon;motor_km;empresa_km;razon_km;de_noche;sale;llega_motor;llega_bus;atraso_min;atraso_max;fuente
+Lima;Abancay;Abancay;1092;975;1100;dentro;1.053;898;912;0.985;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-abancay/
+Lima;Arequipa;Arequipa;1138;1035;1200;dentro;1.019;1004;1009;0.995;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-arequipa/
+Lima;Ayacucho;Ayacucho;675;585;725;dentro;1.03;545;555;0.982;sí;19:00;06:15;04:45 a 07:05;-90;50;https://www.cruzdelsur.com.pe/pasajes/lima-a-ayacucho/
+Lima;Chiclayo;Chiclayo;896;815;980;dentro;0.998;754;770;0.979;sí;19:00;10:00;08:35 a 11:20;-81;84;https://www.cruzdelsur.com.pe/pasajes/lima-a-chiclayo/
+Lima;Chimbote;Nuevo Chimbote;502;410;495;encima;1.109;412;430;0.958;sí;21:30;05:55;04:20 a 05:45;-92;-7;https://www.cruzdelsur.com.pe/pasajes/lima-a-chimbote/
+Lima;Cusco;Cuzco;1348;1290;1425;dentro;0.993;1068;1102;0.969;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-cusco/
+Lima;Huancayo;Huancayo;363;450;535;debajo;0.737;302;300;1.007;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-huancayo/
+Lima;Huaraz;Huaraz;487;445;510;dentro;1.021;396;400;0.991;sí;21:45;05:55;05:10 a 06:15;-43;22;https://www.cruzdelsur.com.pe/pasajes/lima-a-huaraz/
+Lima;Ica;Ica;355;220;365;dentro;1.214;302;303;0.996;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-ica/
+Lima;Jauja;Jauja;321;395;455;debajo;0.755;262;255;1.026;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-jauja/
+Lima;La Merced;La Merced;377;510;605;debajo;0.677;303;300;1.009;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-la-merced/
+Lima;Marcona;San Juan de Marcona;591;500;585;encima;1.089;520;530;0.981;sí;20:00;05:55;04:20 a 05:45;-91;-6;https://www.cruzdelsur.com.pe/pasajes/lima-a-marcona/
+Lima;Nasca;Nasca;507;400;550;dentro;1.067;441;444;0.994;sí;21:30;06:00;04:10 a 06:40;-107;43;https://www.cruzdelsur.com.pe/pasajes/lima-a-nasca/
+Lima;Oxapampa;Oxapampa;482;630;720;debajo;0.714;379;390;0.973;sí;21:45;05:50;08:15 a 09:45;148;238;https://www.cruzdelsur.com.pe/pasajes/lima-a-oxapampa/
+Lima;Pacasmayo;Pacasmayo;788;635;810;dentro;1.091;659;680;0.969;sí;19:00;08:10;05:35 a 08:30;-154;21;https://www.cruzdelsur.com.pe/pasajes/lima-a-pacasmayo/
+Lima;Paracas;Paracas;297;180;285;encima;1.278;244;261;0.933;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-paracas/
+Lima;Piura;Piura;1120;1020;1170;dentro;1.023;967;973;0.994;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-piura/
+Lima;Trujillo;Trujillo;665;565;680;dentro;1.068;551;561;0.982;sí;19:00;06:05;04:25 a 06:20;-100;15;https://www.cruzdelsur.com.pe/pasajes/lima-a-trujillo/
+Abancay;Lima;Lima;1093;970;995;encima;1.112;898;912;0.985;;;;;;;https://www.cruzdelsur.com.pe/pasajes/abancay-a-lima/
+Arequipa;Lima;Lima;1139;995;1130;encima;1.072;1005;1009;0.996;;;;;;;https://www.cruzdelsur.com.pe/pasajes/arequipa-a-lima/
+Ayacucho;Lima;Lima;676;655;720;dentro;0.983;546;555;0.983;sí;19:00;06:20;05:55 a 07:00;-22;43;https://www.cruzdelsur.com.pe/pasajes/ayacucho-a-lima/
+Chiclayo;Lima;Lima;896;805;945;dentro;1.024;754;770;0.979;sí;19:00;10:00;08:25 a 10:45;-92;48;https://www.cruzdelsur.com.pe/pasajes/chiclayo-a-lima/
+Cusco;Lima;Lima;1351;1280;1310;encima;1.043;1070;1102;0.971;;;;;;;https://www.cruzdelsur.com.pe/pasajes/cusco-a-lima/
+Huancayo;Lima;Lima;364;445;535;debajo;0.743;303;300;1.009;;;;;;;https://www.cruzdelsur.com.pe/pasajes/huancayo-a-lima/
+Huaraz;Lima;Lima;487;440;590;dentro;0.946;397;400;0.992;sí;21:45;05:55;05:05 a 07:35;-48;102;https://www.cruzdelsur.com.pe/pasajes/huaraz-a-lima/
+Ica;Lima;Lima;356;235;320;encima;1.283;302;303;0.998;;;;;;;https://www.cruzdelsur.com.pe/pasajes/ica-a-lima/
+Piura;Lima;Lima;1121;1015;1165;dentro;1.028;967;973;0.994;;;;;;;https://www.cruzdelsur.com.pe/pasajes/piura-a-lima/
+Trujillo;Lima;Lima;664;550;740;dentro;1.03;551;561;0.982;sí;19:00;06:05;04:10 a 07:20;-115;75;https://www.cruzdelsur.com.pe/pasajes/trujillo-a-lima/
+Arequipa;Cusco;Cuzco;583;600;640;debajo;0.94;493;521;0.946;sí;20:15;06:00;06:15 a 06:55;17;57;https://www.cruzdelsur.com.pe/pasajes/arequipa-a-cusco/

@@ -26,5 +26,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0020](./0020-primer-dia-tranquilo.md) | Un primer día tranquilo en la altura | Vigente |
 | [0021](./0021-evaluacion-semana-12.md) | Cómo se evalúa lo que propone el motor: 40 consultas, una guía como línea de base y una variante | Vigente |
 | [0022](./0022-presupuesto-con-margen.md) | El presupuesto avisa cuando el escenario caro lo pasa, y no deja fuera ningún viaje | Vigente |
+| [0023](./0023-ta01-v3-horas-reales.md) | TA-01 v3: los grupos de lugares con las horas de la red | Propuesta, para la semana 14 |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.

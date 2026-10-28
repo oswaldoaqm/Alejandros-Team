@@ -14,7 +14,7 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 | **La app** | <https://oswaldoaqm.github.io/Alejandros-Team/> |
 | **El API** | <https://alejandros-team.onrender.com/v1/docs>, en un host gratuito que se duerme sin uso: la primera consulta después tarda cerca de un minuto |
 | **Correrlo en tu máquina** | [Probarlo](#probarlo), más abajo |
-| **La entrega en curso** | [`deliveries/week10/`](./deliveries/week10/): el prototipo funcional y su [informe](./deliveries/week10/PrototypeReport.md) |
+| **La entrega más reciente** | [`deliveries/week12/`](./deliveries/week12/): el prototipo refinado, su [informe de evaluación](./deliveries/week12/EvaluationReport.md) y el [plan de las tres semanas que quedan](./deliveries/week12/PlanFinal.md) |
 | **Qué recibe y qué devuelve el API** | [`docs/CONTRATO.md`](./docs/CONTRATO.md) |
 | **El plan, con fechas y estado** | [`docs/PLAN.md`](./docs/PLAN.md) |
 | **Por qué cada cosa es como es** | [`docs/decisiones/`](./docs/decisiones/) |
@@ -116,7 +116,8 @@ Alejandros-Team/
     ├── week05/                     propuesta, Data Product Canvas y requerimientos
     ├── week06/                     análisis exploratorio y selección de modelo
     ├── week07/                     Delivery 1: definición integrada del proyecto
-    └── week10/                     prototipo funcional: el informe y dónde está cada cosa
+    ├── week10/                     prototipo funcional: el informe y dónde está cada cosa
+    └── week12/                     prototipo refinado y evaluación: el informe, las pruebas y el plan final
 ```
 
 El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); las piezas, cómo viaja una consulta, cómo trabaja el equipo y la interfaz, en [`docs/ARQUITECTURA.md`](./docs/ARQUITECTURA.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
@@ -206,8 +207,8 @@ mismo pueblo, como los cuatro de Huaraz, son un solo lugar al que ir y se juntan
 | 5 | 9 sep 2026 | Propuesta, Data Product Canvas y requisitos | [`week05/`](./deliveries/week05/) | Entregado |
 | 6 | 16 sep 2026 | Análisis exploratorio y selección de modelo | [`week06/`](./deliveries/week06/) | Entregado |
 | 7 | 23 sep 2026 | **Delivery 1** — definición integrada del proyecto | [`week07/`](./deliveries/week07/) | Entregado |
-| 10 | 21 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | En curso |
-| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | | En curso |
+| 10 | 21 oct 2026 | Prototipo funcional | [`week10/`](./deliveries/week10/) | Entregado |
+| 12 | 28 oct 2026 | Prototipo refinado, evaluación y casos de estudio | [`week12/`](./deliveries/week12/) | Entregado |
 | 15 | 18 nov 2026 | Presentación final y **Delivery 2** | | Pendiente |
 
 Los documentos de cada una:
@@ -223,6 +224,8 @@ Los documentos de cada una:
 | Diccionario de datos | [`week06/docs/Data_Dictionary.md`](./deliveries/week06/docs/Data_Dictionary.md) |
 | Presentación de la Delivery 1 | [`week07/PresentationWeek07.pdf`](./deliveries/week07/PresentationWeek07.pdf) |
 | Informe del prototipo | [`week10/PrototypeReport.md`](./deliveries/week10/PrototypeReport.md) |
+| Informe de evaluación | [`week12/EvaluationReport.md`](./deliveries/week12/EvaluationReport.md) |
+| Plan de las tres semanas finales | [`week12/PlanFinal.md`](./deliveries/week12/PlanFinal.md) |
 
 ---
 
@@ -294,4 +297,6 @@ python -m evaluacion.optimo       # la heurística del itinerario contra el ópt
 python -m evaluacion.buses        # los tiempos por tierra contra los de Cruz del Sur
 python -m evaluacion.presupuesto  # qué cambia si el presupuesto deja fuera lo que no cabe, unos 5 minutos
 python -m evaluacion.usabilidad   # el SUS y las tareas de la prueba de usabilidad
+python -m evaluacion.zonas        # qué zonas propone cada sistema y en cuántas coinciden
+python -m evaluacion.polos_en_horas  # TA-01 con las horas de la red, con la red de pipeline.tiempos, unos 4 minutos
 ```

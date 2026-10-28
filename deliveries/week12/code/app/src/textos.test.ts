@@ -1,0 +1,209 @@
+import { describe, expect, it } from "vitest";
+import type { Dia } from "./api/tipos";
+import { POR_DEFECTO } from "./consulta";
+import { plano } from "./pruebas/texto";
+import {
+  aplicarSugerencia,
+  claseDelCielo,
+  climaCorto,
+  comoSeVa,
+  conQueSeViaja,
+  cuantosLugaresDeNoche,
+  dondeSeAlmuerza,
+  entrada,
+  imperdibles,
+  nombreDelViaje,
+  razonesQueFaltan,
+  resumenDeLugares,
+  textoDeSugerencia,
+  tipoDeDia,
+  tipoDeLugarDeNoche,
+} from "./textos";
+
+const NOMBRES = {
+  origenes: { cusco: "Cusco" },
+  intereses: { playa: "Playa", historia: "Historia y arqueología" },
+};
+const JULIO = { ...POR_DEFECTO, mes: 7, altitud_max: 3000, intereses: ["playa"] };
+
+describe("el día", () => {
+  it("dice qué se hace, y un día de visitas sin paradas es un día libre", () => {
+    expect(tipoDeDia({ tipo: "ida_y_visita", paradas: [] })).toBe("Ida y visitas");
+    expect(tipoDeDia({ tipo: "ida_visita_y_vuelta" })).toBe("Ida, visitas y vuelta");
+    expect(tipoDeDia({ tipo: "visita", paradas: [] })).toBe("Día libre");
+    expect(tipoDeDia({ tipo: "vuelta", paradas: [] })).toBe("Vuelta");
+  });
+});
+
+describe("con qué se viaja", () => {
+  it("lo dice con las palabras del motor", () => {
+    expect(conQueSeViaja(["carretera"])).toBe("por carretera");
+    expect(conQueSeViaja(["carretera", "bote"])).toBe("por carretera y en bote");
+    expect(conQueSeViaja(["carretera", "tren", "bote"])).toBe("por carretera, en tren y en bote");
+    expect(conQueSeViaja(["avion", "carretera"])).toBe("en avión y por carretera");
+    expect(conQueSeViaja(undefined)).toBe("por carretera");
+  });
+});
+
+describe("cómo se va, si no es lo de siempre", () => {
+  const BUS = { sale: "21:45", llega: "05:55", sale_vuelta: "21:45", llega_vuelta: "05:55" };
+  it("con vuelo, en bus de noche o nada", () => {
+    expect(comoSeVa({ vuelos: [], bus_de_noche: BUS })).toBe("en bus de noche");
+    expect(comoSeVa({ vuelos: [], bus_de_noche: null })).toBeNull();
+    expect(
+      comoSeVa({
+        vuelos: [{ desde: "Lima", hasta: "Cusco", codigo_desde: "LIM", codigo_hasta: "CUZ", horas: 1.3 }],
+      }),
+    ).toBe("con vuelo");
+  });
+});
+
+describe("dónde se almuerza", () => {
+  it("en la base; cerca de un lugar con dónde comer; en el lugar, si toca llevarlo", () => {
+    expect(dondeSeAlmuerza({ lugar: "Huaraz", en_la_base: true, hay_donde_comer: null })).toBe("En Huaraz");
+    expect(
+      dondeSeAlmuerza({ lugar: "Mirador de Rataquenua", en_la_base: false, hay_donde_comer: true }),
+    ).toBe("Cerca de Mirador de Rataquenua");
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: false })).toBe(
+      "En Laguna Churup",
+    );
+    // Con datos de antes de la 2026.10.7 no se sabe: como si hubiera.
+    expect(dondeSeAlmuerza({ lugar: "Laguna Churup", en_la_base: false, hay_donde_comer: null })).toBe(
+      "Cerca de Laguna Churup",
+    );
+  });
+});
+
+describe("la entrada de un lugar", () => {
+  it("dice lo que la ficha publica y nada más", () => {
+    expect(entrada({ ingreso: "libre", tarifa_soles: 0 })).toBe("Entrada libre");
+    expect(plano(entrada({ ingreso: "pagado", tarifa_soles: 2.5 }))).toBe("Entrada S/ 2,50");
+    expect(entrada({ ingreso: "pagado", tarifa_soles: null })).toBe("Entrada pagada, sin tarifa publicada");
+    expect(entrada({ ingreso: "desconocido" })).toBe("La ficha no dice si se paga");
+  });
+});
+
+describe("las sugerencias del motor cuando no hay rutas", () => {
+  it("cada una arma la consulta que propone", () => {
+    expect(aplicarSugerencia(JULIO, { campo: "dias", valor: 8, efecto: "" })).toMatchObject({
+      dias: 8,
+      mes: 7,
+    });
+    expect(
+      aplicarSugerencia(JULIO, { campo: "altitud_max", valor: null, efecto: "" })?.altitud_max,
+    ).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "intereses", valor: [], efecto: "" })?.intereses).toEqual([]);
+    expect(aplicarSugerencia(JULIO, { campo: "presupuesto", valor: 900, efecto: "" })?.presupuesto).toBe(900);
+    expect(aplicarSugerencia(JULIO, { campo: "origen", valor: "cusco", efecto: "" })?.origen).toBe("cusco");
+    expect(
+      aplicarSugerencia({ ...JULIO, fecha_inicio: "2027-07-20" }, { campo: "mes", valor: 8, efecto: "" }),
+    ).toMatchObject({ mes: 8, fecha_inicio: null });
+    expect(
+      aplicarSugerencia(
+        { ...JULIO, solo_por_tierra: true },
+        { campo: "solo_por_tierra", valor: false, efecto: "" },
+      )?.solo_por_tierra,
+    ).toBe(false);
+    // Buscar en todas las zonas quita el destino; ir a otra lo cambia, y sin sorpresa.
+    expect(
+      aplicarSugerencia({ ...JULIO, destino: 36 }, { campo: "destino", valor: null, efecto: "" })?.destino,
+    ).toBeNull();
+    expect(
+      aplicarSugerencia({ ...JULIO, sorpresa: true }, { campo: "destino", valor: 4, efecto: "" }),
+    ).toMatchObject({ destino: 4, sorpresa: false });
+  });
+
+  it("una sugerencia que no se entiende no se ofrece", () => {
+    expect(aplicarSugerencia(JULIO, { campo: "dias", valor: "muchos", efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "origen", valor: 3, efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "solo_por_tierra", valor: "no", efecto: "" })).toBeNull();
+    expect(aplicarSugerencia(JULIO, { campo: "destino", valor: "cusco", efecto: "" })).toBeNull();
+  });
+
+  it("se escriben como una acción", () => {
+    const texto = (
+      campo: Parameters<typeof textoDeSugerencia>[0]["campo"],
+      valor: number | string | string[] | boolean | null,
+    ) => plano(textoDeSugerencia({ campo, valor, efecto: "" }, NOMBRES));
+    expect(texto("dias", 8)).toBe("Probar con 8 días");
+    expect(texto("altitud_max", null)).toBe("Quitar el límite de altitud");
+    expect(texto("altitud_max", 4200)).toBe("Subir el límite de altitud a 4 200 m");
+    expect(texto("intereses", [])).toBe("Buscar sin filtrar por intereses");
+    expect(texto("intereses", ["playa", "historia"])).toBe("Buscar solo playa y historia y arqueología");
+    expect(texto("presupuesto", null)).toBe("Quitar el tope de presupuesto");
+    expect(texto("mes", 8)).toBe("Probar en agosto");
+    expect(texto("origen", "cusco")).toBe("Salir desde Cusco");
+    expect(texto("solo_por_tierra", false)).toBe("Buscar también con vuelos");
+    expect(texto("destino", null)).toBe("Ver viajes a otras zonas");
+  });
+});
+
+describe("cómo se nombra y se resume un viaje", () => {
+  it("el nombre va en dos partes cuando el motor desambigua la zona", () => {
+    expect(nombreDelViaje("Huancayo")).toEqual({ titulo: "Huancayo", subtitulo: null });
+    expect(nombreDelViaje("Cusco · Machu Picchu")).toEqual({ titulo: "Cusco", subtitulo: "Machu Picchu" });
+  });
+
+  it("los imperdibles son los de jerarquía 3 o 4, de mayor a menor y sin repetir", () => {
+    const parada = (nombre: string, jerarquia: number | null) => ({ recurso: { nombre, jerarquia } });
+    const dias = [
+      { paradas: [parada("Capilla", 2), parada("Convento", 3)] },
+      { paradas: [parada("Santuario", 4), parada("Convento", 3)] },
+      { paradas: null },
+    ] as unknown as Dia[];
+    expect(imperdibles(dias)).toEqual(["Santuario", "Convento"]);
+  });
+
+  it("de los motivos del motor, quedan los que la pantalla no dice ya en otro lado", () => {
+    expect(
+      razonesQueFaltan([
+        "2 lugares de jerarquía 3 o 4: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa",
+        "Todas sus paradas son de historia y arqueología o naturaleza",
+        "Julio es temporada seca aquí",
+        "Fuera del circuito de Lima y Cusco",
+        "A 6 h de Lima por carretera",
+      ]),
+    ).toEqual([
+      "Todas sus paradas son de historia y arqueología o naturaleza",
+      "Fuera del circuito de Lima y Cusco",
+    ]);
+  });
+
+  it("una lista larga de lugares se acorta, pero no para dejar uno solo afuera", () => {
+    expect(resumenDeLugares(["A", "B", "C"])).toBe("A, B y C");
+    expect(resumenDeLugares(["A", "B", "C", "D"])).toBe("A, B y 2 lugares más");
+    expect(resumenDeLugares(["A", "B", "C", "D"], 3)).toBe("A, B, C y D");
+  });
+
+  it("el clima del mes, en palabras de viajero", () => {
+    expect(climaCorto("viable", 7)).toBe("Buen clima en julio");
+    expect(climaCorto("advertencia", 3)).toBe("Puede llover en marzo");
+    expect(climaCorto("desaconsejado", 2)).toBe("Temporada de lluvias en febrero");
+  });
+});
+
+describe("la noche", () => {
+  it("dice qué es cada lugar y cómo es el cielo con palabras", () => {
+    expect(tipoDeLugarDeNoche("pena")).toBe("peña");
+    expect(tipoDeLugarDeNoche("musica")).toBe("música en vivo");
+    expect([claseDelCielo("muy_oscuro"), claseDelCielo("oscuro"), claseDelCielo("con_luz")]).toEqual([
+      "Cielo muy oscuro",
+      "Cielo oscuro",
+      "Cielo con luz",
+    ]);
+  });
+
+  it("cuenta los lugares para salir de cada tipo, en el orden del motor", () => {
+    const lugares = [
+      { tipo: "pena" },
+      { tipo: "bar" },
+      { tipo: "discoteca" },
+      { tipo: "bar" },
+      { tipo: "musica" },
+    ] as const;
+    expect(plano(cuantosLugaresDeNoche([...lugares]))).toBe(
+      "2 bares, 1 discoteca, 1 peña y 1 local con música en vivo",
+    );
+    expect(cuantosLugaresDeNoche([])).toBe("");
+  });
+});

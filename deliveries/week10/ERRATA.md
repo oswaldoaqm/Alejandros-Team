@@ -27,3 +27,12 @@ Además, pedía sus cinco fotos al abrir, 1,8 MB en total, y ahora pide la que s
 ## Lo que se sumó después
 
 `DemoWeek10.mp4` entró a esta carpeta el 25 de octubre, después de las correcciones: la demo del guion de la presentación en 3 minutos y 20 segundos, sin sonido y con un rótulo en cada paso. Se grabó en escritorio (1 440 × 900) con la app compilada igual que la publicada, contra el API local con los datos `2026.10.8`. El evento que se publica en el video es de prueba y quedó solo en ese API local.
+
+## Después del 25 de octubre
+
+La copia de `code/`, `data/processed/` y `artifacts/` es la del 25 de octubre, y así se queda. La raíz del repositorio siguió cambiando, y la copia del 28 de octubre está en la entrega de la semana 12 ([`deliveries/week12/`](../week12/)). Dos cosas que muestra esta carpeta se corrigieron el 26 de octubre:
+
+- La captura 03 dice «8 h 06 desde Lima» en la tarjeta de Huaraz, y la 05, «8 h 07 por carretera» en la nota del día 1. La tarjeta tomaba las horas de la ida redondeadas a un decimal (8,1 h son 8 h 06), y el plan contaba los minutos enteros. Desde el 26, las dos salen de los mismos minutos y dicen lo mismo.
+- El informe pone entre sus límites que el rojo de la marca era el mismo de los avisos críticos. Desde el 26, los avisos críticos tienen su propio rojo, y en el tema oscuro los textos rojos pasan la revisión de contraste.
+
+La pregunta que el informe dejó para la semana 12, si el presupuesto debe dejar fuera lo que no cabe en el P80, se decidió el 27 de octubre: no deja fuera ningún viaje, y avisa cuando el costo central entra y el P80 no ([decisión 0022](../../docs/decisiones/0022-presupuesto-con-margen.md)).

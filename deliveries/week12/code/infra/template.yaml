@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  DreemGO · API del motor de itinerarios. Una función Lambda con la imagen del
+  contenedor detrás de una HTTP API, y una tabla DynamoDB para los eventos que
+  publican los municipios. Todo cabe en la capa gratuita con el tráfico del curso.
+
+Parameters:
+  OrigenesCors:
+    Type: String
+    Default: "https://oswaldoaqm.github.io"
+    Description: Orígenes que pueden llamar a la API desde el navegador, separados por comas.
+  ClavePublicador:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Clave que exige POST /v1/eventos (cabecera X-Clave-Publicador). Vacía, nadie publica.
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 1024
+
+Resources:
+  Api:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 20
+        ThrottlingRateLimit: 10
+
+  Motor:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures: [x86_64]
+      Environment:
+        Variables:
+          DREEMGO_CORS: !Ref OrigenesCors
+          DREEMGO_TABLA_EVENTOS: !Ref TablaEventos
+          DREEMGO_CLAVE_PUBLICADOR: !Ref ClavePublicador
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TablaEventos
+      Events:
+        Todo:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Api
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      Dockerfile: infra/Dockerfile
+      DockerContext: ..
+      DockerTag: v1
+
+  # Los eventos publicados. La clave es el id del evento: publicarlo otra vez lo reemplaza.
+  # Cada servidor despierto mira el ítem «#marca» cada dos segundos, mientras atiende pedidos,
+  # y lee la tabla entera cuando cambió; si no cambia, una vez por minuto.
+  TablaEventos:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1
+      # DynamoDB borra sola los eventos que ya pasaron: «expira» lo pone el API al guardar.
+      TimeToLiveSpecification:
+        AttributeName: expira
+        Enabled: true
+
+Outputs:
+  UrlApi:
+    Description: URL base de la API; la app la recibe en VITE_API_URL.
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
+  TablaEventos:
+    Description: Tabla de eventos publicados.
+    Value: !Ref TablaEventos

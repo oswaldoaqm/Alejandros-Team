@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#151c22" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="DreemGO arma tres viajes por el Perú, día por día: qué visitar, en qué orden, cuánto cuesta y si el mes conviene. Con datos oficiales de MINCETUR."
+    />
+    <title>DreemGO · Tres viajes por el Perú, día por día</title>
+    <link rel="icon" href="./favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
+    <script>
+      // El tema antes de que cargue la app, con la misma cuenta que src/estado/tema.ts: el que la persona
+      // eligió y, si no eligió, el del sistema. De la clave vieja solo vale «dark».
+      (() => {
+        let t = null;
+        try {
+          t = localStorage.getItem("dreemgo-tema-elegido");
+          if (t !== "dark" && t !== "light") t = localStorage.getItem("dreemgo-tema") === "dark" ? "dark" : null;
+        } catch (_) {}
+        if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.setAttribute("data-tema", t);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="raiz"></div>
+    <noscript>DreemGO necesita JavaScript para armar tu viaje.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

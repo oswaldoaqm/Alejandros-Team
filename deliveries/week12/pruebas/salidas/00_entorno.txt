@@ -1,0 +1,5 @@
+Árbol:   cbcdfd94f70cb12968c70742171fb11270a4add7, el del commit «docs(week10): las erratas despues del 25 de octubre»
+Fecha:   2026-10-27 23:39 (Lima)
+Sistema: Linux x86_64
+Python:  Python 3.12.3 · ruff 0.16.10 · pytest 9.1.1 · hypothesis 6.168.5
+Node:    v22.22.0 · npm 10.9.4 · Version 1.56.1

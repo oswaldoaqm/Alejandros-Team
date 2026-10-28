@@ -1,0 +1,320 @@
+/* Inicio: una pregunta grande y la tarjeta con las filas del viaje. */
+
+.inicio {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-top: 12px;
+}
+
+.inicio__cabeza {
+  margin: 12px 0 24px;
+  text-align: center;
+}
+
+.inicio__titulo {
+  margin: 0 0 12px;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.5rem, 6.5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.inicio__bajada {
+  max-width: 44ch;
+  margin: 0 auto;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+.inicio__formulario {
+  display: grid;
+  gap: 20px;
+}
+
+.inicio__grupo {
+  box-shadow: var(--sombra-baja);
+}
+
+.inicio__acciones {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.inicio__acciones .boton--primario {
+  min-height: 54px;
+  padding: 14px 28px;
+  font-family: var(--fuente);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #14212b;
+  background: var(--ichu);
+  box-shadow: 0 4px 14px rgb(255 196 46 / 45%);
+  border-radius: var(--r-control);
+  transition:
+    background-color var(--movimiento),
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.inicio__acciones .boton--primario:hover {
+  background: #e6ac22;
+  box-shadow: 0 6px 20px rgb(255 196 46 / 55%);
+  transform: translateY(-1px);
+}
+
+.inicio__acciones .boton--primario:active {
+  background: #d49c18;
+  transform: scale(0.98);
+}
+
+/* Lo que va dentro de las hojas */
+
+.hoja__ayuda {
+  margin-bottom: 14px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+/* «De noche», en la hoja de los gustos: separa lo de la noche de lo del día. */
+.hoja__subtitulo {
+  margin: 22px 0 4px;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+}
+
+.buscador {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 0 14px;
+  color: var(--tinta-3);
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta);
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.opciones-lista li + li {
+  border-top: 1px solid var(--linea);
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 4px;
+  font-size: var(--t-cuerpo);
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.opcion[aria-pressed="true"] {
+  font-weight: 650;
+  color: var(--lago-texto);
+}
+
+.opciones-lista__vacia {
+  padding: 16px 4px;
+  color: var(--tinta-2);
+}
+
+/* «A dónde»: el nombre de la zona y, debajo, por qué salió o su lugar más importante. */
+.opcion__texto {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.opcion__nota {
+  overflow: hidden;
+  font-size: var(--t-nota);
+  font-weight: 400;
+  color: var(--tinta-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opciones-lista .opciones-lista__titulo {
+  padding: 18px 4px 6px;
+  font-size: var(--t-nota);
+  font-weight: 650;
+  color: var(--tinta-2);
+  border-top: 0;
+}
+
+.opciones-lista .opciones-lista__titulo + li {
+  border-top: 0;
+}
+
+.gustos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gusto {
+  position: relative;
+  cursor: pointer;
+}
+
+.gusto input {
+  position: absolute;
+  opacity: 0;
+}
+
+.gusto span {
+  display: grid;
+  gap: 10px;
+  align-content: space-between;
+  min-height: 104px;
+  padding: 14px;
+  font-size: var(--t-nota);
+  font-weight: 650;
+  line-height: 1.25;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+  box-shadow: inset 0 0 0 1.5px transparent;
+  transition:
+    background-color var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.gusto .icono {
+  color: var(--lago-texto);
+}
+
+.gusto input:checked + span {
+  background: var(--lago-claro);
+  box-shadow: inset 0 0 0 2px var(--lago);
+}
+
+.gusto input:focus-visible + span {
+  outline: 3px solid var(--foco-lago);
+  outline-offset: 2px;
+}
+
+.meses-grilla {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mes-opcion {
+  position: relative;
+  cursor: pointer;
+}
+
+.mes-opcion input {
+  position: absolute;
+  opacity: 0;
+}
+
+.mes-opcion span {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.mes-opcion input:checked + span {
+  color: var(--sobre-lago);
+  background: var(--lago);
+}
+
+.mes-opcion input:focus-visible + span {
+  outline: 3px solid var(--foco-lago);
+  outline-offset: 2px;
+}
+
+.fecha-exacta {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.fecha-exacta label {
+  font-weight: 650;
+}
+
+.fecha-exacta input,
+.filtros-hoja input[type="range"] {
+  width: 100%;
+}
+
+.fecha-exacta input {
+  min-height: 48px;
+  padding: 10px 14px;
+  background: var(--superficie-2);
+  border: 0;
+  border-radius: var(--r-control);
+}
+
+.filtros-hoja {
+  display: grid;
+  gap: 28px;
+}
+
+.deslizador__cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.deslizador__cabeza label {
+  font-weight: 650;
+}
+
+.deslizador__cabeza output {
+  font-size: var(--t-titular);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.deslizador input[type="range"] {
+  accent-color: var(--lago);
+  height: 28px;
+}
+
+.deslizador .hoja__ayuda {
+  margin: 8px 0 0;
+}
+
+@media (min-width: 960px) {
+  .inicio {
+    padding-top: 72px;
+  }
+
+  .inicio__cabeza {
+    margin-bottom: 32px;
+  }
+
+  .inicio__bajada {
+    max-width: 44ch;
+  }
+}
