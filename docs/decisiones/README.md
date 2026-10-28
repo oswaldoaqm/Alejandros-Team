@@ -25,5 +25,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0019](./0019-plan-creible.md) | Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre | Vigente |
 | [0020](./0020-primer-dia-tranquilo.md) | Un primer día tranquilo en la altura | Vigente |
 | [0021](./0021-evaluacion-semana-12.md) | Cómo se evalúa lo que propone el motor: 40 consultas, una guía como línea de base y una variante | Vigente |
+| [0022](./0022-presupuesto-con-margen.md) | El presupuesto avisa cuando el escenario caro lo pasa, y no deja fuera ningún viaje | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
