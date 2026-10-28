@@ -1,0 +1,376 @@
+{
+  "aeropuertos": {
+    "ANS": {
+      "ciudad": "Andahuaylas",
+      "minutos_a_lima": 70
+    },
+    "AQP": {
+      "ciudad": "Arequipa",
+      "minutos_a_lima": 90
+    },
+    "ATA": {
+      "ciudad": "Huaraz",
+      "minutos_a_lima": 60
+    },
+    "AYP": {
+      "ciudad": "Ayacucho",
+      "minutos_a_lima": 60
+    },
+    "CHH": {
+      "ciudad": "Chachapoyas",
+      "minutos_a_lima": 90
+    },
+    "CIX": {
+      "ciudad": "Chiclayo",
+      "minutos_a_lima": 95
+    },
+    "CJA": {
+      "ciudad": "Cajamarca",
+      "minutos_a_lima": 85
+    },
+    "CUZ": {
+      "ciudad": "Cusco",
+      "minutos_a_lima": 80
+    },
+    "HUU": {
+      "ciudad": "Huánuco",
+      "minutos_a_lima": 45
+    },
+    "IQT": {
+      "ciudad": "Iquitos",
+      "minutos_a_lima": 110
+    },
+    "JAU": {
+      "ciudad": "Jauja",
+      "minutos_a_lima": 55
+    },
+    "JUL": {
+      "ciudad": "Juliaca",
+      "minutos_a_lima": 90
+    },
+    "LIM": {
+      "ciudad": "Lima",
+      "minutos_a_lima": 0
+    },
+    "MZA": {
+      "ciudad": "Mazamari",
+      "minutos_a_lima": 65
+    },
+    "PCL": {
+      "ciudad": "Pucallpa",
+      "minutos_a_lima": 70
+    },
+    "PEM": {
+      "ciudad": "Puerto Maldonado",
+      "minutos_a_lima": 100
+    },
+    "PIU": {
+      "ciudad": "Piura",
+      "minutos_a_lima": 105
+    },
+    "TBP": {
+      "ciudad": "Tumbes",
+      "minutos_a_lima": 115
+    },
+    "TCQ": {
+      "ciudad": "Tacna",
+      "minutos_a_lima": 110
+    },
+    "TGI": {
+      "ciudad": "Tingo María",
+      "minutos_a_lima": 60
+    },
+    "TPP": {
+      "ciudad": "Tarapoto",
+      "minutos_a_lima": 85
+    },
+    "TRU": {
+      "ciudad": "Trujillo",
+      "minutos_a_lima": 75
+    },
+    "TYL": {
+      "ciudad": "Talara",
+      "minutos_a_lima": 110
+    }
+  },
+  "archivos": {
+    "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
+    "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
+    "origenes.json.gz": "c377e7a28578ab20244637c4c02fb3d9614cb841e8d7f08fa2588ea7eef68161",
+    "polos.json.gz": "27504b0c4daeb160c4978129224f9d8438a370ce3c56817c0085bd458f784cdc",
+    "recursos.json.gz": "c318bc17082e03ef9e4e6e8bec69ce8b51c3908c85ef25b93d1bd773f4f947df"
+  },
+  "atribucion": [
+    "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
+    "Clima: Open-Meteo.com, sobre ERA5 y ERA5-Land de Copernicus · CC BY 4.0",
+    "Red de vías, trenes y botes, pueblos, hospedajes y lugares de noche: © colaboradores de OpenStreetMap · ODbL 1.0",
+    "Altura del terreno: Terrain Tiles, en el registro de datos abiertos de AWS; SRTM y GMTED2010, cortesía del U.S. Geological Survey",
+    "Lugares para salir y para comer: Overture Maps Foundation, con datos de Meta y Microsoft · CDLA Permissive 2.0",
+    "Luces nocturnas: VIIRS, Earth Observation Group, Colorado School of Mines · dominio público; copia «Light Every Night» del Banco Mundial",
+    "Nubes de noche: GOES-16 y METAR de los aeropuertos, NOAA"
+  ],
+  "fuentes": {
+    "altura": {
+      "bases": 194,
+      "completadas": 13,
+      "diferencia_m": {
+        "osm": {
+          "bases": 170,
+          "mas_de_100": 0,
+          "mas_de_300": 0,
+          "max": 26.0,
+          "mediana": 1.0,
+          "p90": 4.0
+        },
+        "recursos_a_2_km": {
+          "bases": 11,
+          "mas_de_100": 1,
+          "mas_de_300": 0,
+          "max": 137.0,
+          "mediana": 28.0,
+          "p90": 92.0
+        }
+      },
+      "fuente": "Terrain Tiles (registro de datos abiertos de AWS), formato skadi: SRTM a un segundo de arco",
+      "las_que_mas_difieren": [
+        {
+          "altitud_dem_m": 2993,
+          "altitud_m": 2856,
+          "base": "Picoy",
+          "fuente": "recursos_a_2_km",
+          "polo": 5
+        },
+        {
+          "altitud_dem_m": 3616,
+          "altitud_m": 3524,
+          "base": "San Miguel de Coroise",
+          "fuente": "recursos_a_2_km",
+          "polo": 26
+        },
+        {
+          "altitud_dem_m": 3774,
+          "altitud_m": 3865,
+          "base": "Tinki",
+          "fuente": "recursos_a_2_km",
+          "polo": 137
+        },
+        {
+          "altitud_dem_m": 3739,
+          "altitud_m": 3676,
+          "base": "Imperial",
+          "fuente": "recursos_a_2_km",
+          "polo": 226
+        },
+        {
+          "altitud_dem_m": 3169,
+          "altitud_m": 3200,
+          "base": "Sausacocha",
+          "fuente": "recursos_a_2_km",
+          "polo": 193
+        }
+      ],
+      "radio_puntos": 2,
+      "reemplazadas": 11,
+      "sin_altura": 0
+    },
+    "cielo": {
+      "goes16": {
+        "anios": [
+          2022,
+          2023,
+          2024
+        ],
+        "horas_utc": [
+          2,
+          6
+        ],
+        "imagenes": 2188
+      },
+      "goes_contra_metar": {
+        "en_la_costa": {
+          "Chiclayo": {
+            "diferencia_media": 25.1,
+            "r": 0.1
+          },
+          "Lima": {
+            "diferencia_media": 36.8,
+            "r": -0.81
+          },
+          "Pisco": {
+            "diferencia_media": 32.3,
+            "r": -0.52
+          },
+          "Piura": {
+            "diferencia_media": 36.6,
+            "r": 0.15
+          },
+          "Tacna": {
+            "diferencia_media": 44.9,
+            "r": -0.67
+          },
+          "Talara": {
+            "diferencia_media": 20.1,
+            "r": 0.71
+          },
+          "Trujillo": {
+            "diferencia_media": 18.6,
+            "r": -0.13
+          },
+          "Tumbes": {
+            "diferencia_media": 18.6,
+            "r": 0.71
+          }
+        },
+        "fuera_de_la_costa": {
+          "Arequipa": {
+            "diferencia_media": 14.9,
+            "r": 0.96
+          },
+          "Cusco": {
+            "diferencia_media": 7.9,
+            "r": 0.98
+          },
+          "Iquitos": {
+            "diferencia_media": 11.9,
+            "r": 0.53
+          },
+          "Pucallpa": {
+            "diferencia_media": 16.9,
+            "r": 0.94
+          },
+          "Tarapoto": {
+            "diferencia_media": 24.0,
+            "r": 0.92
+          }
+        }
+      },
+      "metar": {
+        "aeropuertos": 13,
+        "en_la_costa": 8
+      },
+      "polos": {
+        "con_luz": 57,
+        "con_observatorio": 12,
+        "muy_oscuro": 48,
+        "nubes_de_goes": 151,
+        "nubes_de_metar": 32,
+        "oscuro": 89,
+        "sin_nubes": 11
+      },
+      "viirs": {
+        "meses": [
+          "2024-01",
+          "2024-02",
+          "2024-03",
+          "2024-04",
+          "2024-05",
+          "2024-06",
+          "2024-07",
+          "2024-08",
+          "2024-09",
+          "2024-11",
+          "2024-12",
+          "2025-01",
+          "2025-02",
+          "2025-03",
+          "2025-04",
+          "2025-05",
+          "2025-06"
+        ]
+      }
+    },
+    "clima": {
+      "polos_con_clima_regional": 0,
+      "polos_con_su_clima": 194
+    },
+    "comida": {
+      "bases": 194,
+      "bases_con_comida": 154,
+      "osm": {
+        "lugares": 16648,
+        "md5": "faea114a828e7a306a5010f985c1320b"
+      },
+      "overture": {
+        "lugares": 27005,
+        "version": "2026-09-23.1"
+      },
+      "radio_m": 1500,
+      "recursos": 6225,
+      "recursos_con_comida": 2954
+    },
+    "inventario": {
+      "fecha_corte": "2026-09-29"
+    },
+    "noche": {
+      "confianza_minima": 0.7,
+      "de_osm": 443,
+      "de_overture": 821,
+      "lugares": 1264,
+      "osm": {
+        "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+        "md5": "faea114a828e7a306a5010f985c1320b"
+      },
+      "overture": "2026-09-23.1",
+      "polos_con_5_o_mas": 50,
+      "polos_con_lugares": 92,
+      "por_tipo": {
+        "bar": 783,
+        "discoteca": 203,
+        "karaoke": 54,
+        "musica": 2,
+        "pena": 13,
+        "pub": 209
+      },
+      "radio_m": 1500
+    },
+    "osm": {
+      "datos": "Wed, 30 Sep 2026 00:42:58 GMT",
+      "md5": "faea114a828e7a306a5010f985c1320b"
+    },
+    "vuelos": {
+      "consultadas": "2026-10-15",
+      "rutas": 22
+    }
+  },
+  "intereses": {
+    "arquitectura": {
+      "etiqueta": "Arquitectura urbana",
+      "paradas": 1059
+    },
+    "aventura": {
+      "etiqueta": "Aventura",
+      "paradas": 487
+    },
+    "caminatas": {
+      "etiqueta": "Caminatas",
+      "paradas": 1915
+    },
+    "fiestas": {
+      "etiqueta": "Fiestas y cultura viva",
+      "paradas": 1393
+    },
+    "gastronomia": {
+      "etiqueta": "Gastronomía",
+      "paradas": 534
+    },
+    "historia": {
+      "etiqueta": "Historia y arqueología",
+      "paradas": 956
+    },
+    "naturaleza": {
+      "etiqueta": "Naturaleza",
+      "paradas": 2562
+    },
+    "playa": {
+      "etiqueta": "Playa",
+      "paradas": 214
+    },
+    "vida_nocturna": {
+      "de_noche": true,
+      "etiqueta": "Vida nocturna",
+      "lugares": 1264,
+      "paradas": 0
+    }
+  },
+  "version_datos": "2026.10.8"
+}
