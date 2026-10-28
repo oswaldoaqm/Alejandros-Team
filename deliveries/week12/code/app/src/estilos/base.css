@@ -1,0 +1,284 @@
+/* Las bases: los tokens del diseño (claro y oscuro), el reinicio y la escala de texto. */
+
+:root {
+  color-scheme: light;
+
+  /* Paleta */
+  --acento-rojo: #9e0a22;
+  --acento-rojo-oscuro: #7d020d;
+  --acento-azul: #0056ac;
+  --acento-azul-hover: #184397;
+  --acento-azul-suave: #eef3fb;
+  --foco-accesible: #ffd147;
+
+  /* Superficies */
+  --fondo: #f4f6f7;
+  --superficie: #ffffff;
+  --superficie-2: #eef2f4; /* hundido: pistas, segmentos, filas tocadas */
+  --cristal: rgb(255 255 255 / 88%); /* barras que flotan sobre el contenido */
+
+  /* Tinta */
+  --tinta: #14212b; /* gris carbón de alto contraste: nunca negro puro */
+  --tinta-2: #4b5a66;
+  --tinta-3: #5f6c78;
+  --linea: #d8dee4;
+  --borde: #8795a1; /* borde de controles: 3:1 contra la superficie */
+
+  /* Marca: Rojo peruano profundo */
+  --lago: #9e0a22; /* rojo profundo: acción principal, recorrido y selección */
+  --lago-tinta: #7d020d; /* tono más oscuro para texto/hover */
+  --lago-hundido: #5c0009; /* presionado / activo */
+  --lago-claro: #fde8eb; /* fondo tenue para selecciones y tags */
+  --lago-texto: var(--lago); /* el rojo de la marca como texto o ícono, sobre la superficie */
+  --foco-lago: color-mix(in srgb, var(--lago) 55%, transparent); /* el marco del foco de las opciones */
+  --sobre-lago: #ffffff;
+  --ichu: #ffc42e; /* oro del ichu: reservado para el precio y el botón principal */
+  --ichu-tinta: #855800;
+  --ichu-claro: #fff4d1;
+
+  /* Estados: siempre con ícono y palabra, nunca solo el color */
+  --bien: #1f8f4e;
+  --bien-tinta: #17683a;
+  --bien-fondo: #e5f4ea;
+  --aviso: #e0a100;
+  --aviso-tinta: #7f5600;
+  --aviso-fondo: #fff4d6;
+  /* Lo crítico, en un rojo más vivo que el de la marca: si fuera el mismo, un aviso se perdería entre los
+     botones y la cabecera. 5,5:1 contra el blanco y 4,8:1 contra su fondo; su tinta, 7,8:1. */
+  --critico: #c62d1f;
+  --critico-tinta: #8f1d13;
+  --critico-fondo: #fdecea;
+
+  /* Forma */
+  --r-portada: 14px;
+  --r-tarjeta: 10px;
+  --r-control: 8px;
+  --r-chico: 6px;
+  --sombra-flota: 0 1px 3px rgb(38 41 46 / 8%), 0 12px 28px rgb(38 41 46 / 10%);
+  --sombra-baja: 0 1px 3px rgb(38 41 46 / 6%);
+
+  /* Texto: Serif editorial (Merriweather / Lora) para titulares; sans-serif limpio en cuerpo */
+  --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fuente-titular: "Merriweather", "Lora", "Charter", Georgia, "Times New Roman", serif;
+  --t-display: 2.5rem;
+  --t-titulo: 1.75rem;
+  --t-titular: 1.25rem;
+  --t-cuerpo: 1.0625rem;
+  --t-nota: 0.9375rem;
+  --t-pie: 0.8125rem;
+
+  /* Medidas */
+  --ancho: 1180px;
+  --margen: 20px;
+  --barra-inferior: 64px;
+  --alto-cabecera: 57px;
+  --movimiento: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Los nombres del primer diseño, para lo que todavía los usa */
+  --pagina: var(--fondo);
+  --hundido: var(--superficie-2);
+  --enlace: var(--lago);
+  --azul: var(--lago);
+  --azul-fondo: var(--lago-claro);
+  --radio: var(--r-chico);
+  --sombra: var(--sombra-baja);
+}
+
+:root[data-tema="dark"] {
+  color-scheme: dark;
+  --acento-rojo: #9e0a22;
+  --acento-rojo-oscuro: #7d020d;
+  --acento-azul: #4da3ff;
+  --acento-azul-hover: #7dbdff;
+  --acento-azul-suave: #0d2238;
+  --foco-accesible: #ffd147;
+
+  --fondo: #0d1216;
+  --superficie: #151c22;
+  --superficie-2: #1d262e;
+  --cristal: rgb(21 28 34 / 90%);
+  --tinta: #e9eef2;
+  --tinta-2: #a9b6c1;
+  --tinta-3: #8a97a2;
+  --linea: #26313a;
+  --borde: #5d6b77;
+  --lago: #9e0a22;
+  --lago-tinta: #ff6b7e;
+  --lago-hundido: #740718;
+  --lago-claro: #330d12;
+  /* Sobre el fondo oscuro, el rojo de la marca como texto daba 2:1: los textos, los enlaces y el foco
+     de las opciones van con el rojo claro (6,3:1). Los botones y la cabecera siguen en el de la marca. */
+  --lago-texto: var(--lago-tinta);
+  --foco-lago: var(--lago-tinta);
+  --sobre-lago: #ffffff;
+  --enlace: var(--lago-tinta);
+  --ichu: #ffc42e;
+  --ichu-claro: #33280a;
+  --bien: #3fbf74;
+  --bien-tinta: #7fd9a3;
+  --bien-fondo: #10291c;
+  --aviso: #f2bf3d;
+  --aviso-tinta: #f5cf6b;
+  --aviso-fondo: #2e2508;
+  --critico: #f07070;
+  --critico-tinta: #f5a3a3;
+  --critico-fondo: #331414;
+  --sombra-flota: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px rgb(0 0 0 / 45%);
+  --sombra-baja: 0 1px 2px rgb(0 0 0 / 40%);
+}
+
+@media (min-width: 960px) {
+  :root {
+    --t-display: 3.5rem;
+    --t-titulo: 2.125rem;
+    --t-titular: 1.375rem;
+    --t-cuerpo: 1rem;
+    --margen: 32px;
+    --alto-cabecera: 65px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  font-size: var(--t-cuerpo);
+  line-height: 1.47;
+  color: var(--tinta);
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+fieldset,
+legend,
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titular);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+fieldset {
+  min-width: 0;
+  border: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  font-weight: 700;
+  color: var(--enlace);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco-accesible, #ffd147);
+  outline-offset: 2px;
+}
+
+/* El foco que pone la app al cambiar de pantalla no necesita marco: no es un control. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.icono {
+  flex: none;
+  vertical-align: -3px;
+}
+
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.saltar {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 50;
+  padding: 10px 14px;
+  color: var(--sobre-lago);
+  background: var(--lago);
+  border-radius: var(--r-chico);
+  transform: translateY(-200%);
+}
+
+.saltar:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

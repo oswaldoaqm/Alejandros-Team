@@ -1,0 +1,653 @@
+/* Los controles que comparten todas las pantallas: botones, segmentos, grupos de filas, el
+   contador, hojas, insignias, fotos, esperas y avisos. Mandan sobre los del primer diseño, que
+   tienen los mismos nombres. */
+
+/* ── Botones ─────────────────────────────────────────────────────────────────── */
+
+.boton {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: var(--t-nota);
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  transition:
+    background-color var(--movimiento),
+    transform var(--movimiento);
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton:disabled {
+  cursor: default;
+  opacity: 0.45;
+  transform: none;
+}
+
+.boton--primario {
+  color: var(--sobre-lago);
+  background: var(--lago);
+}
+
+.boton--primario:hover {
+  background: var(--lago-hundido);
+}
+
+.boton--secundario {
+  color: var(--lago-tinta);
+  background: var(--lago-claro);
+  border: 0;
+}
+
+.boton--secundario:hover {
+  background: color-mix(in srgb, var(--lago-claro) 80%, var(--lago) 20%);
+}
+
+.boton--secundario[aria-pressed="true"] {
+  color: var(--sobre-lago);
+  background: var(--lago);
+}
+
+.boton--secundario[aria-pressed="true"] .icono {
+  color: inherit;
+}
+
+.boton--grande {
+  min-height: 54px;
+  padding: 14px 24px;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  border-radius: var(--r-control);
+}
+
+.boton--ancho {
+  width: 100%;
+}
+
+.boton--texto {
+  min-height: 44px;
+  padding: 8px 4px;
+  color: var(--lago-texto);
+  background: none;
+}
+
+.boton--icono {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--tinta);
+  background: var(--superficie-2);
+}
+
+/* Sobre una foto o una portada: un círculo de cristal. */
+.boton--flotante {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--tinta);
+  background: var(--cristal);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  box-shadow: var(--sombra-baja);
+}
+
+/* ── Segmentos: elegir uno de pocos, como los días del viaje ─────────────────── */
+
+.segmentos {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  overflow-x: auto;
+  background: var(--superficie-2);
+  border-radius: 999px;
+  scrollbar-width: none;
+}
+
+.segmentos::-webkit-scrollbar {
+  display: none;
+}
+
+.segmentos label {
+  position: relative;
+  flex: 1 0 auto;
+  cursor: pointer;
+}
+
+.segmentos input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmentos span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+  white-space: nowrap;
+  border-radius: 999px;
+  transition:
+    background-color var(--movimiento),
+    color var(--movimiento);
+}
+
+.segmentos input:checked + span {
+  color: var(--tinta);
+  background: var(--superficie);
+  box-shadow: var(--sombra-baja);
+}
+
+.segmentos input:focus-visible + span {
+  outline: 3px solid var(--foco-lago);
+}
+
+/* ── Grupos de filas, como en Ajustes ───────────────────────────────────────── */
+
+.grupo {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+}
+
+.fila {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 16px;
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  transition:
+    background-color 160ms ease,
+    transform 120ms ease;
+}
+
+.fila + .fila,
+.grupo > * + * > .fila {
+  border-top: 1px solid var(--linea);
+}
+
+button.fila,
+a.fila,
+.fila--interruptor {
+  cursor: pointer;
+}
+
+button.fila:hover,
+a.fila:hover,
+.fila--interruptor:hover {
+  background: color-mix(in srgb, var(--lago-claro) 40%, var(--superficie));
+}
+
+button.fila:active,
+a.fila:active,
+.fila--interruptor:active {
+  background: color-mix(in srgb, var(--lago-claro) 70%, var(--superficie));
+  transform: scale(0.995);
+}
+
+button.fila:hover .fila__icono,
+a.fila:hover .fila__icono,
+.fila--interruptor:hover .fila__icono {
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--lago) 25%, transparent);
+}
+
+button.fila:active .fila__icono,
+a.fila:active .fila__icono,
+.fila--interruptor:active .fila__icono {
+  transform: scale(0.96);
+}
+
+button.fila:hover .fila__fin,
+a.fila:hover .fila__fin {
+  transform: translateX(3px);
+  color: var(--lago-texto);
+}
+
+.fila__icono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--lago-texto);
+  background: var(--lago-claro);
+  border-radius: 10px;
+  transition:
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 200ms ease,
+    background-color var(--movimiento),
+    color var(--movimiento);
+}
+
+.fila__texto {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.fila__nombre {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--tinta-3);
+  transition: color var(--movimiento);
+}
+
+button.fila:hover .fila__nombre,
+a.fila:hover .fila__nombre {
+  color: var(--tinta-2);
+}
+
+.fila__valor {
+  overflow: hidden;
+  font-size: var(--t-cuerpo);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fila__fin {
+  flex: none;
+  color: var(--tinta-3);
+  transition:
+    transform 180ms ease,
+    color var(--movimiento);
+}
+
+/* ── Interruptor: un sí o no, como en Ajustes. La fila entera lo cambia ──────── */
+
+.fila--interruptor {
+  cursor: pointer;
+}
+
+.fila--interruptor:hover {
+  background: var(--superficie-2);
+}
+
+.interruptor {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 32px;
+}
+
+.interruptor input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.interruptor__pista {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--borde);
+  border-radius: 999px;
+  transition: background-color var(--movimiento);
+}
+
+.interruptor__pista::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  content: "";
+  background: var(--superficie);
+  border-radius: 50%;
+  box-shadow: var(--sombra-baja);
+  transition: transform var(--movimiento);
+}
+
+.interruptor input:checked + .interruptor__pista {
+  background: var(--lago);
+}
+
+.interruptor input:checked + .interruptor__pista::after {
+  transform: translateX(20px);
+}
+
+.interruptor input:focus-visible + .interruptor__pista {
+  outline: 3px solid var(--foco-lago);
+  outline-offset: 2px;
+}
+
+/* ── El contador de días ─────────────────────────────────────────────────────── */
+
+.paso {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px;
+  background: var(--superficie-2);
+  border-radius: 999px;
+}
+
+.paso button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: var(--sombra-baja);
+}
+
+.paso button:disabled {
+  color: var(--tinta-3);
+  cursor: default;
+  opacity: 0.5;
+}
+
+.paso output {
+  min-width: 2ch;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Hojas: lo que se abre encima, desde abajo en celular y al centro en pantalla ancha ── */
+
+.hoja {
+  width: 100%;
+  max-width: 100%;
+  height: fit-content;
+  max-height: min(88vh, 760px);
+  margin: auto 0 0;
+  padding: 0;
+  overflow: hidden;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 0;
+  border-radius: var(--r-portada) var(--r-portada) 0 0;
+  box-shadow: var(--sombra-flota);
+}
+
+.hoja[open] {
+  display: flex;
+  flex-direction: column;
+  animation: hoja-sube var(--movimiento);
+}
+
+.hoja::backdrop {
+  background: rgb(9 15 20 / 42%);
+  animation: velo var(--movimiento);
+}
+
+.hoja__cabeza {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px 4px;
+  flex-shrink: 0;
+}
+
+.hoja__cabeza::before {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 36px;
+  height: 5px;
+  content: "";
+  background: var(--linea);
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+
+.hoja__titulo {
+  grid-column: 2;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  text-align: center;
+}
+
+.hoja__cerrar {
+  grid-column: 3;
+}
+
+.hoja__cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 20px 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hoja__pie {
+  padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--linea);
+  flex-shrink: 0;
+}
+
+@keyframes hoja-sube {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
+@keyframes velo {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 720px) {
+  .hoja {
+    width: min(560px, calc(100% - 48px));
+    margin: auto;
+    border-radius: var(--r-portada);
+  }
+
+  .hoja__cabeza::before {
+    display: none;
+  }
+
+  .hoja__pie {
+    padding-bottom: 16px;
+  }
+}
+
+/* ── Insignias ───────────────────────────────────────────────────────────────── */
+
+.insignia {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: var(--t-pie);
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.imperdible {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font-size: var(--t-pie);
+  font-weight: 650;
+  color: var(--tinta);
+}
+
+.imperdible .icono {
+  color: var(--ichu);
+}
+
+.insignia-jerarquia {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: var(--t-pie);
+  font-weight: 700;
+  border-radius: var(--r-chico);
+}
+
+.insignia-jerarquia--4 {
+  color: #ffffff;
+  background: var(--lago);
+}
+
+.insignia-jerarquia--3 {
+  color: #ffffff;
+  background: #0056ac;
+}
+
+/* ── Fotos (piezas/Foto.tsx) ─────────────────────────────────────────────────── */
+
+.foto {
+  position: relative;
+  margin: 0;
+}
+
+.foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--superficie-2);
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.foto--lista img {
+  opacity: 1;
+}
+
+.foto__credito {
+  margin-top: 6px;
+  font-size: var(--t-pie);
+  line-height: 1.35;
+  color: var(--tinta-3);
+}
+
+.foto__credito a {
+  color: inherit;
+}
+
+/* Mientras la foto no llega, tampoco su crédito. */
+.foto:not(.foto--lista) .foto__credito {
+  visibility: hidden;
+}
+
+/* La flor del viaje como sello sobre su foto: un círculo de cristal. */
+.sello-flor {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 7px;
+  background: var(--cristal);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-radius: 50%;
+  box-shadow: var(--sombra-baja);
+}
+
+.sello-flor .flor {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Esperas y avisos (piezas/Estados.tsx y los avisos de cada pantalla) ─────────
+   Patrón oficial de directivas técnicas Gob.pe: borde lateral sólido de 4px,
+   fondo tenue y contraste accesible. */
+
+.cargando__punto {
+  background: var(--lago);
+}
+
+.aviso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px 18px;
+  font-size: var(--t-nota);
+  line-height: 1.5;
+  border: 0;
+  border-left: 4px solid var(--linea);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+}
+
+.aviso > .icono {
+  margin-top: 2px;
+}
+
+.aviso--info {
+  background: var(--azul-fondo);
+  border-left-color: #0056ac;
+}
+
+.aviso--info > .icono {
+  color: #0056ac;
+}
+
+.aviso--critico {
+  background: var(--critico-fondo);
+  border-left-color: var(--critico);
+}
+
+.aviso--critico > .icono {
+  color: var(--critico);
+}
+
+.aviso--bien {
+  background: var(--bien-fondo);
+  border-left-color: var(--bien);
+}
+
+.aviso--bien > .icono {
+  color: var(--bien);
+}
+
+.aviso--advertencia {
+  background: var(--aviso-fondo);
+  border-left-color: var(--aviso);
+}
+
+.aviso--advertencia > .icono {
+  color: var(--aviso-tinta);
+}
+
+.aviso__titulo {
+  font-weight: 700;
+}
+
+.aviso__acciones {
+  margin-top: 12px;
+}
