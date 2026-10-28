@@ -271,7 +271,8 @@ def test_las_propiedades(consulta):
         assert (ruta.costo, ruta.traslado) == (del_dia.costo, del_dia.traslado)
 
     # 7. El presupuesto ordena, elige y avisa. Con él salen tantas rutas como sin él; una que
-    #    entra en el presupuesto y salía sin él sigue saliendo; y la que lo pasa lleva su aviso.
+    #    entra en el presupuesto y salía sin él sigue saliendo; la que lo pasa lleva su aviso, y la que
+    #    entra en el costo central pero no en el escenario caro, el suyo (decisión 0022).
     if consulta.presupuesto is not None:
         sin_presupuesto = resolver(consulta.model_copy(update={"presupuesto": None}), datos)
         assert len(polos) == len(sin_presupuesto.rutas)
@@ -279,8 +280,13 @@ def test_las_propiedades(consulta):
             if ruta.costo.p50 <= consulta.presupuesto:
                 assert ruta.polo.id in polos
         for ruta in respuesta.rutas:
+            del_presupuesto = [a.nivel for a in ruta.avisos if a.tipo == "presupuesto"]
             if ruta.costo.exceso:
-                assert any(a.tipo == "presupuesto" for a in ruta.avisos)
+                assert del_presupuesto == ["advertencia"]
+            elif ruta.costo.p80 > consulta.presupuesto:
+                assert del_presupuesto == ["info"]
+            else:
+                assert del_presupuesto == []
 
 
 # ─────────────────────────────── con eventos publicados ───────────────────────────────
