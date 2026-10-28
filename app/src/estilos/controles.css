@@ -525,6 +525,212 @@ a.fila:hover .fila__nombre {
   background: #0056ac;
 }
 
+.insignia-jerarquia-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.insignia-jerarquia-wrap .insignia-jerarquia,
+.insignia-jerarquia-wrap .viaje-tarjeta__sello {
+  cursor: pointer;
+  user-select: none;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.insignia-jerarquia-wrap .insignia-jerarquia:hover,
+.insignia-jerarquia-wrap .viaje-tarjeta__sello:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.insignia-jerarquia-wrap .insignia-jerarquia:focus-visible,
+.insignia-jerarquia-wrap .viaje-tarjeta__sello:focus-visible {
+  outline: 2px solid var(--tinta);
+  outline-offset: 2px;
+}
+
+.insignia-jerarquia-wrap--abierto {
+  z-index: 50;
+}
+
+/* ── Globo / Tooltip explicativo de Jerarquías MINCETUR ────────────────────────── */
+
+.globo-jerarquia {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 285px;
+  max-width: min(285px, calc(100vw - 32px));
+  padding: 12px 14px;
+  background: var(--superficie);
+  color: var(--tinta);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-tarjeta);
+  box-shadow:
+    0 12px 32px rgb(0 0 0 / 22%),
+    0 2px 6px rgb(0 0 0 / 8%);
+  z-index: 100;
+  font-family: var(--fuente);
+  font-size: var(--t-pie);
+  line-height: 1.4;
+  text-align: left;
+  animation: anim-globo-jerarquia 0.15s ease-out;
+}
+
+@keyframes anim-globo-jerarquia {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.globo-jerarquia::before {
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  content: "";
+  background: var(--superficie);
+  border-top: 1px solid var(--linea);
+  border-left: 1px solid var(--linea);
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+.globo-jerarquia__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.globo-jerarquia__titulo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lago);
+}
+
+.globo-jerarquia--j3 .globo-jerarquia__titulo-wrap {
+  color: #0056ac;
+}
+
+.globo-jerarquia__titulo {
+  font-family: var(--fuente-titular);
+  font-size: var(--t-nota);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+.globo-jerarquia__boton-cerrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  color: var(--tinta-3);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.globo-jerarquia__boton-cerrar:hover {
+  background: var(--superficie-2);
+  color: var(--tinta);
+}
+
+.globo-jerarquia__etiqueta-fila {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.globo-jerarquia__pill {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border-radius: 999px;
+  color: #ffffff;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.globo-jerarquia__pill--j4 {
+  background: var(--lago);
+}
+
+.globo-jerarquia__pill--j3 {
+  background: #0056ac;
+}
+
+.globo-jerarquia__pill--j2 {
+  background: #9c6225;
+}
+
+.globo-jerarquia__pill--j1 {
+  background: #717d8a;
+}
+
+.globo-jerarquia__resumen {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.globo-jerarquia__descripcion {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+.globo-jerarquia__ejemplos {
+  margin: 0 0 8px;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--tinta-3);
+  font-style: italic;
+}
+
+.globo-jerarquia__ejemplos strong {
+  font-style: normal;
+  color: var(--tinta-2);
+}
+
+.globo-jerarquia__pie {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--linea);
+}
+
+.globo-jerarquia__pie p {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--tinta-3);
+}
+
 /* ── Fotos (piezas/Foto.tsx) ─────────────────────────────────────────────────── */
 
 .foto {

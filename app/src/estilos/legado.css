@@ -791,8 +791,9 @@ input[type="range"] {
 }
 
 .clima__clave .clima__estado {
-  display: inline-block;
-  vertical-align: -3px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: -1px;
 }
 
 .clima__mes--viable .clima__estado,

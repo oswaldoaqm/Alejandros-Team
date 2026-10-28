@@ -19,6 +19,7 @@ import { Enlace } from "./Enlace";
 import { DibujoFlor } from "./Flor";
 import { Foto } from "./Foto";
 import { Icono, iconoDeLaIda, type NombreDeIcono } from "./Icono";
+import { InsigniaJerarquia } from "./InsigniaJerarquia";
 
 interface Props {
   ruta: Ruta;
@@ -81,17 +82,7 @@ export function TarjetaRuta({ ruta, enlace, marcarFueraDelCircuito, foto = null 
             <span className="viaje-tarjeta__sello">Fuera del circuito</span>
           ) : null}
           {maxJerarquia >= 3 ? (
-            <span
-              className={`viaje-tarjeta__sello viaje-tarjeta__sello--j${maxJerarquia}`}
-              title={
-                maxJerarquia === 4
-                  ? "Atractivo de jerarquía 4 (Significación internacional según MINCETUR)"
-                  : "Atractivo de jerarquía 3 (Significación nacional según MINCETUR)"
-              }
-            >
-              <Icono nombre="escudo" tamano={12} />
-              Jerarquía {maxJerarquia} · MINCETUR
-            </span>
+            <InsigniaJerarquia jerarquia={maxJerarquia} variante="sello" contexto="ruta" />
           ) : null}
         </div>
       </div>

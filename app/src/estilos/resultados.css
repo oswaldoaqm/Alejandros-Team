@@ -142,6 +142,11 @@
   transform: translateY(-2px);
 }
 
+.viaje-tarjeta:has(.insignia-jerarquia-wrap--abierto) {
+  overflow: visible;
+  z-index: 30;
+}
+
 .viaje-tarjeta:active {
   transform: scale(0.99);
 }
@@ -218,7 +223,11 @@
   flex-direction: column;
   gap: 6px;
   align-items: flex-start;
-  z-index: 2;
+  z-index: 5;
+}
+
+.viaje-tarjeta__sellos:has(.insignia-jerarquia-wrap--abierto) {
+  z-index: 35;
 }
 
 .viaje-tarjeta__sello {

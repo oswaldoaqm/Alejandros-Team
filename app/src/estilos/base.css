@@ -103,15 +103,13 @@
   --linea: #26313a;
   --borde: #5d6b77;
   --lago: #9e0a22;
-  --lago-tinta: #ff6b7e;
+  --lago-tinta: #9e0a22;
   --lago-hundido: #740718;
   --lago-claro: #330d12;
-  /* Sobre el fondo oscuro, el rojo de la marca como texto daba 2:1: los textos, los enlaces y el foco
-     de las opciones van con el rojo claro (6,3:1). Los botones y la cabecera siguen en el de la marca. */
-  --lago-texto: var(--lago-tinta);
-  --foco-lago: var(--lago-tinta);
+  --lago-texto: #9e0a22;
+  --foco-lago: #9e0a22;
   --sobre-lago: #ffffff;
-  --enlace: var(--lago-tinta);
+  --enlace: #9e0a22;
   --ichu: #ffc42e;
   --ichu-claro: #33280a;
   --bien: #3fbf74;
