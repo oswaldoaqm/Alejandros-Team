@@ -294,4 +294,6 @@ python -m evaluacion.optimo       # la heurística del itinerario contra el ópt
 python -m evaluacion.buses        # los tiempos por tierra contra los de Cruz del Sur
 python -m evaluacion.presupuesto  # qué cambia si el presupuesto deja fuera lo que no cabe, unos 5 minutos
 python -m evaluacion.usabilidad   # el SUS y las tareas de la prueba de usabilidad
+python -m evaluacion.zonas        # qué zonas propone cada sistema y en cuántas coinciden
+python -m evaluacion.polos_en_horas  # TA-01 con las horas de la red, con la red de pipeline.tiempos, unos 4 minutos
 ```

@@ -13,8 +13,10 @@ Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide s
 | `resultados/buses.csv` y `buses.json` | Los tiempos por tierra del motor contra los de Cruz del Sur, en 29 rutas | `python -m evaluacion.buses` |
 | `resultados/presupuesto.csv` y `presupuesto.json` | Qué cambia si el presupuesto deja fuera lo que no cabe en el P50 o en el P80 | `python -m evaluacion.presupuesto`, unos 5 minutos |
 | `resultados/usabilidad.json` | El SUS y las tareas de la prueba de usabilidad | `python -m evaluacion.usabilidad` |
+| `resultados/zonas.json` | Qué zonas propone cada sistema en las 40 consultas y en cuántas coinciden | `python -m evaluacion.zonas` |
+| `resultados/polos_en_horas.json`, `polos_v2_horas.csv` y `polos_v3.csv` | TA-01 con las horas de la red: cuánto mide cada grupo de la v2 y la v3 con cada umbral, contra la v2 | `python -m evaluacion.polos_en_horas`, unos 4 minutos, con la red que arma `pipeline.tiempos` |
 | `usabilidad/` | Lo que se anota en la prueba de usabilidad: participantes, tareas, el SUS y los comentarios, con un código por persona | A mano ([`usabilidad.md`](../../docs/evaluacion/usabilidad.md)) |
 
 El kit es de los datos `2026.10.8` y del contrato 1.7, y su huella está en `clave.csv`: si el motor o los datos cambian, `python -m evaluacion.kit` da otro kit, y las calificaciones de este siguen valiendo para esta versión. Cómo se califica está en [`anotar.md`](../../docs/evaluacion/anotar.md).
 
-Lo que no depende de las calificaciones sale de los datos `2026.10.8` y se rehace igual, salvo los segundos que tarda cada búsqueda exacta, que cambian de una corrida a otra.
+Lo que no depende de las calificaciones sale de los datos `2026.10.8` y se rehace igual, salvo los segundos que tarda cada búsqueda exacta, que cambian de una corrida a otra. Los grupos en horas dependen además de la red vial armada del extracto de OpenStreetMap del 30 de septiembre, que queda fuera de git.
