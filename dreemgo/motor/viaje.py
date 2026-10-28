@@ -996,6 +996,17 @@ def avisos(
                 f"por {textos.soles(costo.exceso)}.",
             )
         )
+    elif consulta.presupuesto is not None and costo.p80 > consulta.presupuesto:
+        # Decisión 0022: el presupuesto no deja fuera lo que no cabe en el P80, pero lo dice.
+        salida.append(
+            Aviso(
+                tipo="presupuesto",
+                nivel="info",
+                mensaje=f"El costo central ({textos.soles(costo.p50)}) entra en tu presupuesto, pero si los "
+                f"precios salen altos el viaje llega a {textos.soles(costo.p80)}: "
+                f"{textos.soles(costo.p80 - consulta.presupuesto)} más. Lleva un margen.",
+            )
+        )
     if it.vuelo is not None:
         salida.append(
             Aviso(

@@ -11,6 +11,8 @@ No quita nada de la 1.6. Suma una propiedad, la 14.
 
 Desde el 26 de octubre, `traslado.horas` sale de los minutos enteros de la ida, como los cuenta el plan, y lleva dos decimales. Así la duración que muestra la app es la misma que dicen la nota del día 1, el aviso del bus de noche y los motivos: antes, la tarjeta de Huaraz decía 8 h 06 y la nota del día, 8 h 07. Ningún campo cambia, así que la versión sigue en 1.7.
 
+Desde el 27 de octubre, el presupuesto avisa también cuando el costo central entra y el escenario caro, el P80, no: la ruta sale igual, con un aviso de `tipo` `presupuesto` y `nivel` `info` que dice cuánto pasaría ([decisión 0022](./decisiones/0022-presupuesto-con-margen.md)). Es la propiedad 7. Tampoco cambia ningún campo.
+
 La 1.6, del 19 de octubre, hizo creíble el plan ([decisión 0019](./decisiones/0019-plan-creible.md)):
 
 - **El almuerzo.** Cada día con visitas trae `almuerzo`: a qué hora, después de cuántas paradas, dónde y si cerca hay dónde comer. Es una hora que no cuenta en las 8 de la jornada, así que un día entero va de 8:00 a 17:00. Si se almuerza al llegar a una parada, su `llegada` es la hora de después del almuerzo.
@@ -130,7 +132,7 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 4. Toda parada enlaza a su ficha oficial de MINCETUR (RNF-01).
 5. Un mes desaconsejado nunca aparece sin aviso, y si se descarta hay una alternativa (RF-01).
 6. Un evento solo aparece si cae dentro de las fechas o del mes del viaje (RF-03).
-7. El presupuesto ordena, elige y avisa. Con presupuesto salen tantas rutas como sin él; una que entra en el presupuesto y salía sin él sigue saliendo; y una que lo pasa sale con su aviso. Hasta la 1.2 el presupuesto solo ordenaba: las tres rutas eran las mismas con o sin él. Con vuelos, eso dejaba tres viajes en avión fuera del presupuesto donde había uno en bus que entraba ([decisión 0016](./decisiones/0016-vuelos.md)).
+7. El presupuesto ordena, elige y avisa. Con presupuesto salen tantas rutas como sin él; una que entra en el presupuesto y salía sin él sigue saliendo; y una que lo pasa sale con su aviso. Hasta la 1.2 el presupuesto solo ordenaba: las tres rutas eran las mismas con o sin él. Con vuelos, eso dejaba tres viajes en avión fuera del presupuesto donde había uno en bus que entraba ([decisión 0016](./decisiones/0016-vuelos.md)). Desde el 27 de octubre, una ruta cuyo costo central entra en el presupuesto y cuyo P80 no, sale con un aviso de presupuesto de nivel `info`; el presupuesto sigue sin dejar fuera ninguna ruta ([decisión 0022](./decisiones/0022-presupuesto-con-margen.md)).
 8. La misma consulta con la misma `version_datos` devuelve exactamente la misma respuesta. Los eventos publicados también son datos: la versión lleva su huella (§6).
 9. Las rutas son de polos distintos. Con `destino` hay una como mucho, y es la de esa zona: la misma que el motor arma cuando la elige él, salvo el puntaje (desde 1.4) y salvo que puede volar donde él iría por tierra (desde 1.6).
 10. Un dato que la fuente no trae viaja como `null`, nunca como un número inventado: la jerarquía que MINCETUR no asignó, la tarifa que la ficha no publica, las noches despejadas donde no hay de dónde sacarlas.
