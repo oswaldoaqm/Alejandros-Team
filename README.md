@@ -109,8 +109,8 @@ Alejandros-Team/
 ├── infra/                          imagen del API y cómo desplegarlo: en AWS con SAM, con la tabla de eventos
 │                                   publicados, o gratis en Render
 ├── tests/                          pruebas del contrato, del API, del pipeline y de la evaluación
-├── docs/                           plan, contrato de la API (con su esquema OpenAPI), registro de decisiones
-│                                   y cómo se califica y se prueba la app (docs/evaluacion/)
+├── docs/                           plan, arquitectura, contrato de la API (con su esquema OpenAPI), registro
+│                                   de decisiones y cómo se califica y se prueba la app (docs/evaluacion/)
 └── deliveries/                     lo que pide cada hito del curso, una carpeta por semana
     ├── week04/                     tema, equipo y selección de dataset
     ├── week05/                     propuesta, Data Product Canvas y requerimientos
@@ -119,7 +119,7 @@ Alejandros-Team/
     └── week10/                     prototipo funcional: el informe y dónde está cada cosa
 ```
 
-El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
+El plan del producto, con fechas y criterios de terminado, está en [`docs/PLAN.md`](./docs/PLAN.md); las piezas, cómo viaja una consulta, cómo trabaja el equipo y la interfaz, en [`docs/ARQUITECTURA.md`](./docs/ARQUITECTURA.md); lo que recibe y devuelve el API, en [`docs/CONTRATO.md`](./docs/CONTRATO.md); y el porqué de cada decisión, en [`docs/decisiones/`](./docs/decisiones/).
 
 Cada hito del curso vive en su propia carpeta bajo `deliveries/weekXX/`, y el `README.md` de cada una dice qué trae. Lo entregado en cada fecha queda intacto en las etiquetas `entrega/semana-XX`, y lo que se corrigió después está en el `ERRATA.md` de cada carpeta.
 
