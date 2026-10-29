@@ -6,18 +6,19 @@ const titulo = () => screen.getByRole("heading", { level: 2 }).textContent;
 const fotos = (raiz: HTMLElement) => raiz.querySelectorAll("img.carrusel-hero__fondo").length;
 
 describe("el carrusel de la portada", () => {
-  it("pasa solo cada 6,5 segundos, y con su botón se detiene y se reanuda", () => {
+  it("pasa solo cada 6,5 segundos, y se pausa al pasar el puntero o interactuar", () => {
     vi.useFakeTimers();
-    render(<CarruselHero />);
+    const { container } = render(<CarruselHero />);
     expect(titulo()).toBe(DESTINOS_HERO[0]?.titulo);
     act(() => vi.advanceTimersByTime(6500));
     expect(titulo()).toBe(DESTINOS_HERO[1]?.titulo);
 
-    fireEvent.click(screen.getByRole("button", { name: "Pausar el carrusel" }));
+    const seccion = container.querySelector(".carrusel-hero");
+    if (seccion) fireEvent.mouseEnter(seccion);
     act(() => vi.advanceTimersByTime(20000));
     expect(titulo()).toBe(DESTINOS_HERO[1]?.titulo);
 
-    fireEvent.click(screen.getByRole("button", { name: "Reanudar el carrusel" }));
+    if (seccion) fireEvent.mouseLeave(seccion);
     act(() => vi.advanceTimersByTime(6500));
     expect(titulo()).toBe(DESTINOS_HERO[2]?.titulo);
   });
@@ -29,7 +30,6 @@ describe("el carrusel de la portada", () => {
       media: consulta,
     }));
     const { container } = render(<CarruselHero />);
-    expect(screen.getByRole("button", { name: "Reanudar el carrusel" })).toBeTruthy();
     expect(fotos(container)).toBe(1);
     act(() => vi.advanceTimersByTime(20000));
     expect(titulo()).toBe(DESTINOS_HERO[0]?.titulo);
