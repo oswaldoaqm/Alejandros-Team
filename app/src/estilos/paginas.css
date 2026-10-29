@@ -405,3 +405,613 @@
 .calendario > .letra-chica {
   margin-top: 40px;
 }
+
+/* ── Cómo funciona (Interactivo) ────────────────────────────────────────────── */
+
+.acerca-contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.acerca-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acerca-seccion__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.acerca-seccion__etiqueta {
+  font-size: var(--t-pie);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lago-texto);
+}
+
+.acerca-seccion__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.acerca-seccion__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  width: 100%;
+  max-width: none;
+  line-height: 1.55;
+}
+
+/* ── Reproductor de Historias (Estilo Instagram Stories) ─────────────────────── */
+
+.stories-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Ventana estilo macOS para el Stories player ───────────────────────────── */
+
+.stories-ventana {
+  background: #000000;
+  border: 1.5px solid var(--linea);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    var(--sombra-flota),
+    0 20px 40px -15px rgb(0 0 0 / 25%);
+}
+
+.stories-ventana__barra {
+  background: var(--superficie-2);
+  border-bottom: 1px solid var(--linea);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stories-ventana__botones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stories-ventana__boton {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stories-ventana__boton--rojo {
+  background: #ff5f56;
+}
+
+.stories-ventana__boton--amarillo {
+  background: #ffbd2e;
+}
+
+.stories-ventana__boton--verde {
+  background: #27c93f;
+}
+
+.stories-ventana__titulo-barra {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tinta);
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 6px;
+}
+
+.stories-ventana__contador {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--lago-texto);
+  background: var(--lago-claro);
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ── Visor de Stories (Pantalla 16:10 con overlays) ────────────────────────── */
+
+.stories-visor {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.stories-visor__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000000;
+  display: block;
+}
+
+/* Capa superior: Barritas de progreso y datos de cuenta */
+.stories-visor__arriba {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 85%) 0%, rgb(0 0 0 / 40%) 65%, transparent 100%);
+  padding: 10px 14px 24px;
+}
+
+/* Las 8 barritas horizontales segmentadas */
+.stories-barras {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+.stories-barra {
+  flex: 1;
+  height: 3.5px;
+  background: rgb(255 255 255 / 35%);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.stories-barra:hover {
+  transform: scaleY(1.8);
+  background: rgb(255 255 255 / 55%);
+}
+
+.stories-barra__relleno {
+  height: 100%;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: width 100ms linear;
+}
+
+.stories-barra--activa .stories-barra__relleno {
+  box-shadow: 0 0 6px rgb(255 255 255 / 90%);
+}
+
+/* Cabecera del Story (Usuario + Título + Botón de play/pausa) */
+.stories-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stories-perfil__usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stories-perfil__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  box-shadow: 0 0 14px rgb(220 39 67 / 45%);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.stories-perfil__icono {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #9e0a22;
+  border: 2px solid #000000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.stories-perfil__flor {
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
+  display: block;
+}
+
+.stories-perfil__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 70%);
+}
+
+.stories-perfil__nombre-fila {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.84rem;
+}
+
+.stories-perfil__nombre {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stories-perfil__verificado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3897f0;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* Botones flotantes de navegación lateral */
+.stories-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 25%);
+  background: rgb(0 0 0 / 55%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  opacity: 0.75;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.stories-nav-btn:hover {
+  opacity: 1;
+  background: rgb(0 0 0 / 85%);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.stories-nav-btn--izq {
+  left: 14px;
+}
+
+.stories-nav-btn--der {
+  right: 14px;
+}
+
+/* Zonas táctiles invisibles (Tap Left 30%, Tap Center 40%, Tap Right 30%) */
+.stories-tap-zonas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 2;
+}
+
+.stories-tap-zona {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.stories-tap-zona--izq {
+  width: 30%;
+}
+
+.stories-tap-zona--centro {
+  width: 40%;
+}
+
+.stories-tap-zona--der {
+  width: 30%;
+}
+
+/* Overlay de Play gigante cuando está en pausa */
+.stories-play-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.stories-play-circle {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 65%);
+  border: 2.5px solid rgb(255 255 255 / 90%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 25px rgb(0 0 0 / 40%);
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.stories-play-overlay:hover .stories-play-circle {
+  transform: scale(1.1);
+  background: var(--lago);
+  border-color: #ffffff;
+}
+
+/* ── Historias destacadas (Highlights por encima de la ventanita) ─────────────── */
+
+.stories-destacadas-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stories-destacadas-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 8px;
+}
+
+.stories-destacadas-titulo {
+  font-size: var(--t-nota);
+  font-weight: 700;
+  color: var(--lago-texto);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stories-destacadas-sub {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--tinta-3);
+}
+
+.stories-destacadas {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 4px;
+  scrollbar-width: thin;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .stories-destacadas {
+    justify-content: space-between;
+  }
+}
+
+.stories-destacada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  min-width: 72px;
+  max-width: 96px;
+  text-align: center;
+  color: var(--tinta-2);
+  transition: transform 0.15s ease;
+}
+
+.stories-destacada:hover {
+  transform: translateY(-2px);
+}
+
+.stories-destacada__aro {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: var(--linea);
+  display: grid;
+  place-items: center;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.stories-destacada--activo .stories-destacada__aro {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  box-shadow: 0 0 12px rgb(220 39 67 / 40%);
+}
+
+.stories-destacada__circulo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--superficie);
+  border: 2px solid var(--superficie);
+  display: grid;
+  place-items: center;
+  color: var(--tinta-2);
+  transition: color 0.15s ease;
+}
+
+.stories-destacada--activo .stories-destacada__circulo {
+  color: var(--lago-texto);
+}
+
+.stories-destacada__numero {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--tinta-3);
+  text-transform: uppercase;
+}
+
+.stories-destacada--activo .stories-destacada__numero {
+  color: var(--lago-texto);
+}
+
+.stories-destacada__etiqueta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stories-destacada--activo .stories-destacada__etiqueta {
+  color: var(--lago-texto);
+  font-weight: 700;
+}
+
+.acerca-acordeones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.acerca-acordeon {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-tarjeta);
+  overflow: hidden;
+  transition: border-color var(--movimiento);
+}
+
+.acerca-acordeon summary {
+  padding: 16px 20px;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  color: var(--tinta);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: color var(--movimiento);
+}
+
+.acerca-acordeon summary:hover {
+  color: var(--lago-texto);
+}
+
+.acerca-acordeon summary .icono {
+  color: var(--tinta-3);
+  transition: transform var(--movimiento);
+}
+
+.acerca-acordeon[open] summary .icono {
+  transform: rotate(180deg);
+}
+
+.acerca-acordeon[open] summary {
+  border-bottom: 1px solid var(--linea);
+}
+
+.acerca-acordeon__contenido {
+  padding: 18px 20px;
+  font-size: var(--t-nota);
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.acerca-acordeon__contenido p {
+  margin: 0 0 12px;
+}
+
+.acerca-acordeon__contenido p:last-child {
+  margin-bottom: 0;
+}
+
+.acerca-acordeon__contenido ul {
+  margin: 0 0 12px;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.acerca-acordeon__contenido li {
+  display: list-item;
+  margin-bottom: 8px;
+}
+
+.acerca-acordeon__contenido li:last-child {
+  margin-bottom: 0;
+}
+
+.acerca-pie-seccion {
+  text-align: center;
+  max-width: 62ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.acerca-pie-seccion h2 {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.acerca-pie-seccion p {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.acerca-cta {
+  margin-top: 16px;
+}
