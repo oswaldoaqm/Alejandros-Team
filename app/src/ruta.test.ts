@@ -25,7 +25,10 @@ describe("de la URL a la pantalla", () => {
   });
 
   it("las demás pantallas van en el fragmento y conservan la consulta", () => {
-    expect(vista("?mes=7#/editar")).toEqual({ tipo: "inicio", consulta: JULIO });
+    expect(vista("?mes=7#/editar")).toEqual({ tipo: "planear", consulta: JULIO });
+    expect(vista("#/planear")).toEqual({ tipo: "planear", consulta: null });
+    expect(vista("#/blog")).toEqual({ tipo: "blog", slug: null });
+    expect(vista("#/blog/postres")).toEqual({ tipo: "blog", slug: "postres" });
     expect(vista("?mes=7#/polo/33")).toEqual({ tipo: "polo", id: 33, consulta: JULIO });
     expect(vista("#/polo/0")).toEqual({ tipo: "polo", id: 0, consulta: null });
     expect(vista("#/calendario")).toEqual({ tipo: "calendario", consulta: null, mes: null });
@@ -59,7 +62,10 @@ describe("de la pantalla a la URL", () => {
       ruta: null,
     });
     expect(vista(enlaces.resultados(JULIO, "2026.10.2", 2))).toMatchObject({ tipo: "resultados", ruta: 2 });
-    expect(vista(enlaces.editar(JULIO))).toEqual({ tipo: "inicio", consulta: JULIO });
+    expect(vista(enlaces.editar(JULIO))).toEqual({ tipo: "planear", consulta: JULIO });
+    expect(vista(enlaces.planear())).toEqual({ tipo: "planear", consulta: null });
+    expect(vista(enlaces.blog())).toEqual({ tipo: "blog", slug: null });
+    expect(vista(enlaces.blog("postres"))).toEqual({ tipo: "blog", slug: "postres" });
     expect(vista(enlaces.polo(33, JULIO, "2026.10.2"))).toEqual({ tipo: "polo", id: 33, consulta: JULIO });
     expect(vista(enlaces.polo(33))).toEqual({ tipo: "polo", id: 33, consulta: null });
     expect(vista(enlaces.calendario())).toEqual({ tipo: "calendario", consulta: null, mes: null });

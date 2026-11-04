@@ -5,6 +5,7 @@ import { aEnlace, type Consulta, deParametros } from "./consulta";
 
 export type Vista =
   | { tipo: "inicio"; consulta: Consulta | null }
+  | { tipo: "planear"; consulta: Consulta | null }
   | {
       tipo: "resultados";
       consulta: Consulta;
@@ -14,6 +15,7 @@ export type Vista =
     }
   | { tipo: "polo"; id: number; consulta: Consulta | null }
   | { tipo: "calendario"; consulta: Consulta | null; mes: number | null }
+  | { tipo: "blog"; slug: string | null }
   | { tipo: "mis-viajes" }
   | { tipo: "acerca" }
   | { tipo: "publicar" };
@@ -24,8 +26,11 @@ export function vistaDe(url: URL): Vista {
   const fragmento = url.hash.replace(/^#\/?/, "");
   const [pagina = "", argumento = ""] = fragmento.split("/");
   switch (pagina) {
+    case "planear":
     case "editar":
-      return { tipo: "inicio", consulta };
+      return { tipo: "planear", consulta };
+    case "blog":
+      return { tipo: "blog", slug: argumento || null };
     case "polo": {
       const id = Number(argumento);
       if (argumento !== "" && Number.isInteger(id) && id >= 0) return { tipo: "polo", id, consulta };
@@ -57,6 +62,7 @@ export function vistaDe(url: URL): Vista {
 /** El enlace relativo de una pantalla. Con `consulta`, la conserva para poder volver. */
 export const enlaces = {
   inicio: () => "./",
+  planear: (c?: Consulta | null, version?: string | null) => `${c ? aEnlace(c, version) : "./"}#/planear`,
   editar: (c: Consulta, version?: string | null) => `${aEnlace(c, version)}#/editar`,
   /** Sin `ruta`, la lista de los tres viajes; con `ruta`, ese viaje abierto. */
   resultados: (c: Consulta, version?: string | null, ruta?: number | null) =>
@@ -65,6 +71,7 @@ export const enlaces = {
     `${c ? aEnlace(c, version) : "./"}#/polo/${id}`,
   calendario: (c?: Consulta | null, version?: string | null, mes?: number | null) =>
     `${c ? aEnlace(c, version) : "./"}#/calendario${mes ? `/${mes}` : ""}`,
+  blog: (slug?: string | null) => `./#/blog${slug ? `/${slug}` : ""}`,
   misViajes: () => "./#/mis-viajes",
   acerca: () => "./#/acerca",
   publicar: () => "./#/publicar",

@@ -52,7 +52,7 @@ export function MisViajes() {
           <div className="vacio-viajes">
             <h2>Todavía no guardaste ningún viaje</h2>
             <p>Abre uno de tus viajes y toca «Guardar»: queda aquí para volver a él.</p>
-            <Enlace href={enlaces.inicio()} className="boton boton--primario">
+            <Enlace href={enlaces.planear()} className="boton boton--primario">
               Armar un viaje
             </Enlace>
           </div>

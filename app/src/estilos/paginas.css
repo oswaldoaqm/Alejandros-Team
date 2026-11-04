@@ -1015,3 +1015,1323 @@
 .acerca-cta {
   margin-top: 16px;
 }
+
+/* ── Página de Inicio: Portada, Fiestas y Blog Viajero (Estilo ¿Y tú qué planes?) ── */
+
+.pagina-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+/* ── Banner de Acceso Rápido al Planificador ──────────────────────────────── */
+
+.inicio-cta-planear {
+  max-width: 1200px;
+  width: 100%;
+  margin: -24px auto 32px;
+  padding: 0 var(--margen);
+  position: relative;
+  z-index: 10;
+}
+
+.inicio-cta-planear__caja {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: var(--sombra-flota);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@media (min-width: 860px) {
+  .inicio-cta-planear__caja {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(36px, 5vw, 64px);
+    padding: 30px 44px;
+  }
+}
+
+.inicio-cta-planear__texto {
+  flex: 0 1 580px;
+}
+
+.inicio-cta-planear__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lago-texto);
+  margin-bottom: 6px;
+}
+
+.inicio-cta-planear__titulo {
+  margin: 0 0 6px;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.inicio-cta-planear__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  max-width: 65ch;
+}
+
+.inicio-cta-planear__acciones {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .inicio-cta-planear__acciones {
+    width: auto;
+    min-width: 220px;
+  }
+}
+
+.inicio-cta-planear__acciones .boton {
+  width: 100%;
+  justify-content: center;
+}
+
+.inicio-cta-planear__llamado {
+  margin: 2px 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+/* ── Secciones genéricas de la página de inicio ────────────────────────────── */
+
+.inicio-seccion {
+  padding: 48px var(--margen) 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+}
+
+.inicio-seccion__cabeza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 720px;
+  gap: 8px;
+}
+
+.inicio-seccion__icono-adorno {
+  color: var(--lago-texto);
+  margin-bottom: 4px;
+}
+
+.inicio-seccion__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.6rem, 4vw, 2.35rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.inicio-seccion__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.inicio-seccion__pie-boton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ── Sección de Fiestas y Eventos del Mes ─────────────────────────────────── */
+
+.inicio-fiestas {
+  background: color-mix(in srgb, var(--superficie-2) 65%, transparent);
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+}
+
+.festividades-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 600px) {
+  .festividades-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1020px) {
+  .festividades-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.festividad-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.festividad-tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.festividad-tarjeta__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000000;
+}
+
+.festividad-tarjeta__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.festividad-tarjeta:hover .festividad-tarjeta__img {
+  transform: scale(1.05);
+}
+
+.festividad-tarjeta__badge-fecha {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffc42e;
+  color: #14212b;
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+}
+
+.festividad-tarjeta__badge-dias {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.festividad-tarjeta__badge-meses {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.festividad-tarjeta__badge-cat {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+}
+
+.festividad-tarjeta__cuerpo {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.festividad-tarjeta__titulo {
+  margin: 0 0 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.festividad-tarjeta__extracto {
+  margin: 0 0 14px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.festividad-tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--linea);
+  margin-top: auto;
+}
+
+.festividad-tarjeta__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.festividad-tarjeta__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: color var(--movimiento);
+}
+
+.festividad-tarjeta__enlace:hover {
+  color: var(--lago-texto);
+}
+
+.festividad-tarjeta__boton-ver {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ── Hoja de detalle de festividad ────────────────────────────────────────── */
+
+.hoja-festividad {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hoja-festividad__portada {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.hoja-festividad__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hoja-festividad__badge-fecha {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffc42e;
+  color: #14212b;
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+}
+
+.hoja-festividad__badge-dias {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hoja-festividad__badge-meses {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hoja-festividad__badge-cat {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+}
+
+.hoja-festividad__metas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hoja-festividad__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+}
+
+.hoja-festividad__extracto {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta);
+  padding: 10px 14px;
+  background: var(--superficie-2);
+  border-left: 3px solid #ffc42e;
+  border-radius: 4px 8px 8px 4px;
+}
+
+.hoja-festividad__descripcion {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--tinta);
+}
+
+.hoja-festividad__seccion {
+  background: var(--superficie-2);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.hoja-festividad__subtitulo {
+  margin: 0 0 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.hoja-festividad__lista {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hoja-festividad__lista li {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.hoja-festividad__nota-fuente {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--tinta-3);
+  margin-top: 4px;
+}
+
+.hoja-festividad__pie-acciones {
+  width: 100%;
+}
+
+/* ── Botones estilizados estilo ¿Y tú qué planes? ─────────────────────────── */
+
+.boton--amarillo-ytqp {
+  background: #ffc42e;
+  color: #14212b;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(255 196 46 / 40%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton--amarillo-ytqp:hover {
+  background: #f5b91b;
+  color: #14212b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(255 196 46 / 50%);
+}
+
+.boton--vino-ytqp {
+  background: var(--lago);
+  color: #ffffff;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(158 10 34 / 35%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton--vino-ytqp:hover {
+  background: var(--lago-hundido);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(158 10 34 / 50%);
+}
+
+/* ── Sección de Blog Viajero en Inicio (Layout 2 columnas) ─────────────────── */
+
+.inicio-blog {
+  background: var(--fondo);
+}
+
+.inicio-blog__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 900px) {
+  .inicio-blog__layout {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+}
+
+.inicio-blog__destacado {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.inicio-blog__destacado:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.inicio-blog__destacado-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000000;
+}
+
+.inicio-blog__destacado-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.inicio-blog__destacado:hover .inicio-blog__destacado-img {
+  transform: scale(1.05);
+}
+
+.inicio-blog__cat-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 4px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+}
+
+.inicio-blog__destacado-cuerpo {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.inicio-blog__destacado-titulo {
+  margin: 0 0 10px;
+  font-family: var(--fuente-titular);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+
+.inicio-blog__destacado-extracto {
+  margin: 0 0 16px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.inicio-blog__destacado-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+
+.inicio-blog__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.inicio-blog__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: color var(--movimiento);
+}
+
+.inicio-blog__enlace:hover {
+  color: var(--lago-texto);
+}
+
+.inicio-blog__secundarios {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.inicio-blog__fila-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+  flex: 1;
+}
+
+@media (min-width: 600px) {
+  .inicio-blog__fila-tarjeta {
+    grid-template-columns: 160px 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inicio-blog__fila-tarjeta {
+    grid-template-columns: 180px 1fr;
+  }
+}
+
+.inicio-blog__fila-tarjeta:hover {
+  transform: translateX(4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.inicio-blog__fila-media {
+  position: relative;
+  height: 100%;
+  min-height: 120px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.inicio-blog__fila-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.inicio-blog__fila-tarjeta:hover .inicio-blog__fila-img {
+  transform: scale(1.08);
+}
+
+.inicio-blog__fila-cuerpo {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inicio-blog__fila-cat {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--lago-texto);
+}
+
+.inicio-blog__fila-titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.inicio-blog__fila-extracto {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.inicio-blog__fila-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--linea);
+}
+
+/* ── Pantalla Completa: Blog Viajero (PaginaBlog.tsx) ─────────────────────── */
+
+.pagina-blog {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.blog-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0 8px;
+  gap: 8px;
+}
+
+.blog-hero__icono {
+  color: var(--lago-texto);
+  margin-bottom: 4px;
+}
+
+.blog-hero__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.blog-hero__bajada {
+  margin: 0;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta-2);
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
+/* Sección: Lo más reciente */
+.blog-seccion--reciente {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-seccion__cabeza-simple {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 8px;
+}
+
+.blog-seccion__titulo-simple {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.blog-recientes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .blog-recientes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .blog-recientes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.blog-reciente-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.blog-reciente-tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-flota);
+}
+
+.blog-reciente-tarjeta__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000000;
+}
+
+.blog-reciente-tarjeta__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.blog-reciente-tarjeta:hover .blog-reciente-tarjeta__img {
+  transform: scale(1.06);
+}
+
+.blog-reciente-tarjeta__cuerpo {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.blog-reciente-tarjeta__titulo {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-reciente-tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--linea);
+}
+
+.blog-reciente-tarjeta__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.blog-reciente-tarjeta__enlace {
+  color: var(--tinta-2);
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--movimiento);
+}
+
+.blog-reciente-tarjeta__enlace:hover {
+  color: var(--lago-texto);
+}
+
+/* Filtros por Categoría y Buscador */
+.blog-filtros-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+@media (min-width: 860px) {
+  .blog-filtros-seccion {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.blog-filtros {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.blog-filtro-pill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--tinta-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--movimiento),
+    color var(--movimiento),
+    border-color var(--movimiento);
+}
+
+.blog-filtro-pill:hover {
+  border-color: var(--borde);
+  color: var(--tinta);
+}
+
+.blog-filtro-pill--activo {
+  background: var(--lago);
+  color: #ffffff;
+  border-color: var(--lago);
+  font-weight: 700;
+}
+
+.blog-filtro-pill--activo:hover {
+  background: var(--lago-hundido);
+  color: #ffffff;
+}
+
+.blog-buscador {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.blog-buscador .icono {
+  position: absolute;
+  left: 12px;
+  color: var(--tinta-3);
+  pointer-events: none;
+}
+
+.blog-buscador__input {
+  width: 100%;
+  padding: 8px 32px 8px 36px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--tinta);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color var(--movimiento);
+}
+
+.blog-buscador__input:focus {
+  border-color: var(--lago);
+}
+
+.blog-buscador__limpiar {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--tinta-3);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* Feed vertical de artículos */
+.blog-feed__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.blog-feed__vacio {
+  text-align: center;
+  padding: 48px 16px;
+  background: var(--superficie-2);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.blog-feed-item {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+@media (min-width: 680px) {
+  .blog-feed-item {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.blog-feed-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-flota);
+}
+
+.blog-feed-item__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000000;
+}
+
+@media (min-width: 680px) {
+  .blog-feed-item__media {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+}
+
+.blog-feed-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.blog-feed-item:hover .blog-feed-item__img {
+  transform: scale(1.05);
+}
+
+.blog-feed-item__cuerpo {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.blog-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--superficie-2);
+  color: var(--lago-texto);
+  border: 1px solid var(--linea);
+}
+
+.blog-tag--destacado {
+  background: var(--lago);
+  color: #ffffff;
+  border: 0;
+}
+
+.blog-feed-item__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+
+.blog-feed-item__titulo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-feed-item__titulo a:hover {
+  color: var(--lago-texto);
+}
+
+.blog-feed-item__extracto {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.blog-feed-item__pie {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+
+.blog-feed-item__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.blog-feed-item__fecha {
+  font-size: 0.8125rem;
+  color: var(--tinta-3);
+  margin-right: auto;
+}
+
+.blog-feed-item__leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.blog-feed-item__leer-mas:hover {
+  color: var(--lago-texto);
+}
+
+/* ── Vista de Lectura Completa de Artículo ────────────────────────────────── */
+
+.blog-articulo-vista {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.blog-articulo-vista__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.blog-articulo-vista__volver {
+  align-self: flex-start;
+}
+
+.blog-articulo-vista__metas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-vista__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.blog-articulo-vista__extracto {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-vista__portada {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.blog-articulo-vista__img {
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-articulo-vista__pie-foto {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: var(--tinta-3);
+  background: var(--superficie-2);
+}
+
+.blog-articulo-vista__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.blog-articulo-vista__parrafos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-articulo-vista__parrafos p {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--tinta);
+}
+
+.blog-articulo-vista__seccion-bloque {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  padding: 22px 24px;
+}
+
+.blog-articulo-vista__seccion-bloque h2 {
+  margin: 0 0 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.blog-lista-puntos {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: disc;
+}
+
+.blog-lista-puntos li {
+  font-size: var(--t-nota);
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-cta {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--lago) 12%, var(--superficie)) 0%,
+    var(--superficie) 100%
+  );
+  border: 1.5px solid var(--lago);
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .blog-articulo-cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.blog-articulo-cta__texto h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.blog-articulo-cta__texto p {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  max-width: 48ch;
+}

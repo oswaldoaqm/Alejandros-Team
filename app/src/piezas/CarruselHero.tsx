@@ -414,7 +414,7 @@ export function CarruselHero({ onElegirDestino }: Props) {
           <div className="carrusel-hero__texto" aria-live={pausado || detenido ? "polite" : "off"}>
             <span className="carrusel-hero__etiqueta">
               <Icono nombre="pin" tamano={14} />
-              {actual.lugar} · Perú
+              {actual.lugar}
             </span>
             <h2 className="carrusel-hero__titulo">{actual.titulo}</h2>
             <p className="carrusel-hero__subtitulo">{actual.subtitulo}</p>
