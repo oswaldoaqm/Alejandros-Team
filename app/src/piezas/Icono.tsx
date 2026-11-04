@@ -160,6 +160,20 @@ export const TRAZOS = {
     "M10 16h4",
   ],
   escudo: ["M12 2 4 5v6.5C4 17.5 7.4 21 12 22c4.6-1 8-4.5 8-10.5V5l-8-3Z"],
+  // Máscara tradicional de danzas y festividades patronales del Perú (inspirada en la diablada)
+  mascara_festiva: [
+    "M12 2.5v3M9.5 3.5 11 5.5M14.5 3.5 13 5.5",
+    "M7.5 5.5 9 7.5M16.5 5.5 15 7.5",
+    "M6 7.5c1.8-1.5 4-2 6-2s4.2.5 6 2",
+    "M5.5 8C3.5 8.5 2.5 10.5 3 12c.5 1.5 2 2 3.5 1.5",
+    "M18.5 8c2 .5 3 2.5 2.5 4-.5 1.5-2 2-3.5 1.5",
+    "M6 10v4c0 3.8 2.7 6.8 6 7.5 3.3-.7 6-3.7 6-7.5v-4",
+    "M8 11.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z",
+    "M13 11.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z",
+    "M12 12.5v2.2l-.9.8h1.8",
+    "M8.5 17.2c1.5 1.3 5.5 1.3 7 0",
+    "M10 17.5v1.2M14 17.5v1.2M12 17.8v1.2",
+  ],
 } as const;
 
 export type NombreDeIcono = keyof typeof TRAZOS;

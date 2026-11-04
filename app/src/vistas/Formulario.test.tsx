@@ -1,11 +1,15 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App";
 import { irA, OPCIONES, pedidosA, ponerApi, VERSION } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
 
 vi.mock("../piezas/MapaRuta", () => ({ default: () => <div data-testid="mapa" /> }));
+
+beforeEach(() => {
+  irA("./#/planear");
+});
 
 async function abrir(rutas: Parameters<typeof ponerApi>[0] = {}) {
   const api = ponerApi(rutas);
@@ -308,6 +312,7 @@ describe("el formulario", () => {
           : { cuerpo: OPCIONES };
       },
     });
+    irA("./#/planear");
     render(<App />);
     const alerta = await screen.findByRole("alert");
     expect(alerta.textContent).toContain("El servidor está arrancando");

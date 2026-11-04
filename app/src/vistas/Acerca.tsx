@@ -414,7 +414,7 @@ export function Acerca() {
           )}
 
           <div className="acerca-cta">
-            <Enlace href={enlaces.inicio()} className="boton boton--primario boton--grande">
+            <Enlace href={enlaces.planear()} className="boton boton--primario boton--grande">
               Armar un viaje ahora
             </Enlace>
           </div>

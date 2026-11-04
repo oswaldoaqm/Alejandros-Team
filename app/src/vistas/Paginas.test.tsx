@@ -248,7 +248,7 @@ describe("el calendario de fiestas", () => {
 describe("moverse por la app", () => {
   it("el pie lleva a publicar un evento", async () => {
     await abrir("/");
-    await screen.findByRole("button", { name: /^Desde/ });
+    await screen.findByRole("region", { name: "Destinos destacados del Perú" });
     await userEvent.click(screen.getByRole("link", { name: "Publica un evento" }));
     const titulo = await screen.findByRole("heading", { level: 1, name: "Publicar un evento" });
     expect(document.activeElement).toBe(titulo);
@@ -257,7 +257,7 @@ describe("moverse por la app", () => {
 
   it("cada pantalla pone su título y recibe el foco, para que se note el cambio", async () => {
     await abrir("/");
-    await screen.findByRole("button", { name: /^Desde/ });
+    await screen.findByRole("region", { name: "Destinos destacados del Perú" });
     expect(document.title).toBe("DreemGO · Tres viajes por el Perú, día por día");
 
     // Las secciones están dos veces: en la cabecera y, para el celular, en la barra de abajo.

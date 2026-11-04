@@ -15,7 +15,9 @@ import { enlaces, type Vista } from "./ruta";
 import { Acerca } from "./vistas/Acerca";
 import { Formulario } from "./vistas/Formulario";
 import { MisViajes } from "./vistas/MisViajes";
+import { PaginaBlog } from "./vistas/PaginaBlog";
 import { PaginaCalendario } from "./vistas/PaginaCalendario";
+import { PaginaInicio } from "./vistas/PaginaInicio";
 import { PaginaPolo } from "./vistas/PaginaPolo";
 import { Publicar } from "./vistas/Publicar";
 import { Resultados } from "./vistas/Resultados";
@@ -27,14 +29,19 @@ import { Resultados } from "./vistas/Resultados";
 function pagina(vista: Vista): string {
   if (vista.tipo === "polo") return `polo/${vista.id}`;
   if (vista.tipo === "resultados" && vista.ruta !== null) return `viaje/${vista.ruta}`;
+  if (vista.tipo === "blog" && vista.slug !== null) return `blog/${vista.slug}`;
   return vista.tipo;
 }
 
 function Pantalla({ vista }: { vista: Vista }) {
   switch (vista.tipo) {
     case "inicio":
+      return <PaginaInicio />;
+    case "planear":
       // La llave rehace el formulario cuando cambia la consulta que se edita.
       return <Formulario key={vista.consulta ? clave(vista.consulta) : "nuevo"} inicial={vista.consulta} />;
+    case "blog":
+      return <PaginaBlog slug={vista.slug} />;
     case "resultados":
       return <Resultados consulta={vista.consulta} version={vista.version} elegida={vista.ruta} />;
     case "polo":
@@ -72,7 +79,7 @@ export function App() {
   }, [actual]);
 
   const en = (tipo: Vista["tipo"]) => (vista.tipo === tipo ? "page" : undefined);
-  const planeando = vista.tipo === "inicio" || vista.tipo === "resultados" || vista.tipo === "polo";
+  const planeando = vista.tipo === "planear" || vista.tipo === "resultados" || vista.tipo === "polo";
   // Con una consulta abierta, el calendario se abre en su mes y ofrece volver a las rutas.
   const consulta = "consulta" in vista ? vista.consulta : null;
 
@@ -90,11 +97,11 @@ export function App() {
           </Enlace>
           <div className="cabecera__acciones">
             <nav aria-label="Secciones" className="cabecera__nav">
-              <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
-                Planear
+              <Enlace href={enlaces.inicio()} aria-current={en("inicio")}>
+                Inicio
               </Enlace>
-              <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
-                Fiestas
+              <Enlace href={enlaces.planear(consulta)} aria-current={planeando ? "page" : undefined}>
+                Planear
               </Enlace>
               <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
                 Guardados
@@ -137,17 +144,21 @@ export function App() {
       </footer>
       {/* En celular, las secciones van abajo, al alcance del pulgar. */}
       <nav aria-label="Secciones" className="barra-inferior">
-        <Enlace href={enlaces.inicio()} aria-current={planeando ? "page" : undefined}>
-          <Icono nombre="flor" tamano={24} />
+        <Enlace href={enlaces.inicio()} aria-current={en("inicio")}>
+          <Icono nombre="flor" tamano={22} />
+          Inicio
+        </Enlace>
+        <Enlace href={enlaces.planear(consulta)} aria-current={planeando ? "page" : undefined}>
+          <Icono nombre="mapa" tamano={22} />
           Planear
         </Enlace>
-        <Enlace href={enlaces.calendario(consulta)} aria-current={en("calendario")}>
-          <Icono nombre="calendario" tamano={24} />
-          Fiestas
-        </Enlace>
         <Enlace href={enlaces.misViajes()} aria-current={en("mis-viajes")}>
-          <Icono nombre="guardar" tamano={24} />
+          <Icono nombre="guardar" tamano={22} />
           Guardados
+        </Enlace>
+        <Enlace href={enlaces.acerca()} aria-current={en("acerca")}>
+          <Icono nombre="ayuda" tamano={22} />
+          Cómo funciona
         </Enlace>
       </nav>
     </ContextoApp.Provider>
