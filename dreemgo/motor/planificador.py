@@ -11,6 +11,12 @@ la decisión 0019). Antes, un día podía empezar a las 18:00 en un teatro y ter
 Y no se espera más de una hora en la puerta de un lugar a que abra, sin contar el almuerzo:
 antes, un día podía llegar a las 8:53 a una casa museo que abre a las 15:00.
 
+Por un lugar menor no se maneja hora y media (decisión 0024): una parada de jerarquía 1 o 2, o
+sin jerarquía, no va a más de 90 minutos de la anterior, de la siguiente ni del depósito. Antes,
+en nueve días en Íllimo, un día iba 1 h 41 a un reservorio y 2 h 42 más a una cascada, los dos de
+jerarquía 1: 5 h 34 de camino para 1 h 50 de visita. Si no queda nada cerca que valga el camino,
+el día queda libre, y la respuesta lo avisa.
+
 El almuerzo (decisión 0019) es una hora que no cuenta en el tope, pero corre el reloj: los
 horarios de los lugares se miran con la hora real. Se almuerza en el primer momento que toca:
 
@@ -65,6 +71,7 @@ ALMUERZO_DESDE = 12 * 60 + 30  # al terminar una visita desde esta hora, se almu
 ALMUERZO_TEMPRANO = 11 * 60 + 30  # antes de un traslado que llega después de las 14:00, desde esta hora
 ALMUERZO_HASTA = 14 * 60  # si un traslado llega después de esta hora sin almorzar, se almuerza al llegar
 ESPERA_MAX = 60  # lo más que se espera a que un lugar abra, fuera del almuerzo
+TRAMO_MENOR_MAX = 90  # minutos: por un lugar menor no se va más lejos, ni se sigue desde él (decisión 0024)
 
 
 @dataclass(frozen=True)
@@ -81,6 +88,7 @@ class Candidata:
     comida: bool = False  # si hay dónde comer cerca (pipeline/comida.py)
     altura: int | None = None  # metros sobre el mar
     exigente: bool = False  # una caminata de acceso larga o una visita larga (aclimatacion.exigente)
+    menor: bool = False  # jerarquía 1 o 2, o sin jerarquía: no se va lejos por ella (TRAMO_MENOR_MAX)
 
 
 @dataclass(frozen=True)
@@ -181,6 +189,8 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
         traslado = t(anterior, c.i)
         if not np.isfinite(traslado):
             return None
+        if traslado > TRAMO_MENOR_MAX and (c.menor or (k > 0 and ruta[k - 1].menor)):
+            return None
         if c.dias is not None and jornada.dia_semana is not None and jornada.dia_semana not in c.dias:
             return None
         llegada = ahora + int(round(traslado))
@@ -222,7 +232,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
             if almuerzo is not None:
                 ahora += ALMUERZO_MIN
     regreso = t(anterior, -1)
-    if not np.isfinite(regreso):
+    if not np.isfinite(regreso) or (regreso > TRAMO_MENOR_MAX and ruta[-1].menor):
         return None
     vuelta = ahora + int(round(regreso))
     if almuerzo is None and vuelta >= ALMUERZO_DESDE:  # se vuelve sin almorzar: en el depósito

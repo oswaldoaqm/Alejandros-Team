@@ -5,6 +5,7 @@ import numpy as np
 from dreemgo.motor.planificador import (
     ESPERA_MAX,
     PARADAS_POR_DIA,
+    TRAMO_MENOR_MAX,
     Candidata,
     Jornada,
     Tiempos,
@@ -124,3 +125,27 @@ def test_no_se_espera_mas_de_una_hora_en_la_puerta():
     assert horario([temprano, tarde], Jornada(8 * 60, OCHO), t) is None
     (r,) = planificar([temprano, tarde], [Jornada(8 * 60, OCHO)], t)
     assert len(r.visitas) == 1 and all(v.espera <= ESPERA_MAX for v in r.visitas)
+
+
+def test_por_un_lugar_menor_no_se_va_lejos():
+    # A 100 minutos de la base: uno de jerarquía 3 sí se programa; uno menor, de jerarquía 1 o 2, no.
+    t = Tiempos(np.array([100.0]), np.array([[0.0]]))
+    assert horario([Candidata(0, valor=6.0, visita=60)], Jornada(480, OCHO), t) is not None
+    assert horario([Candidata(0, valor=2.0, visita=60, menor=True)], Jornada(480, OCHO), t) is None
+    # Y a 90, el tope, sí.
+    t = Tiempos(np.array([float(TRAMO_MENOR_MAX)]), np.array([[0.0]]))
+    assert horario([Candidata(0, valor=2.0, visita=60, menor=True)], Jornada(480, OCHO), t) is not None
+
+
+def test_ni_se_sigue_lejos_desde_un_lugar_menor():
+    # En fila: el menor a 10 minutos de la base y el otro 100 más allá. Con el menor, ningún orden sirve
+    # (100 minutos de él al otro, o del otro a él), así que sale solo el que vale más.
+    t = Tiempos(np.array([10.0, 110.0]), np.array([[0.0, 100.0], [100.0, 0.0]]))
+    menor, otro = Candidata(0, valor=2.0, visita=60, menor=True), Candidata(1, valor=6.0, visita=60)
+    assert horario([menor, otro], Jornada(480, OCHO), t) is None
+    assert horario([otro, menor], Jornada(480, OCHO), t) is None
+    (r,) = planificar([menor, otro], [Jornada(480, OCHO)], t)
+    assert [v.candidata.i for v in r.visitas] == [1]
+    # Si los dos valen lo mismo y ninguno es menor, entran los dos: 10 + 60 + 100 + 60 + 110.
+    (r,) = planificar([Candidata(0, valor=2.0, visita=60), otro], [Jornada(480, OCHO)], t)
+    assert sorted(v.candidata.i for v in r.visitas) == [0, 1] and r.minutos == 340

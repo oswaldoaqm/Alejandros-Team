@@ -140,10 +140,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 12. Cada almuerzo va en su lugar: solo en un día con paradas, desde las 11:30, después de la parada que va antes y una hora antes de la que va después. Si no hay dónde comer registrado, es en una parada, nunca en la base. Y un día con paradas que no lo trae termina sus visitas antes de las 12:30 (desde 1.6).
 13. El bus de noche va cuando debe: solo por carretera, de 7 a 16 horas, en un viaje de dos días o más, y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches; y lo que cumple todo eso va en él. Sale a las 19:00 o después, ningún día lleva horas de camino, el día 1 es de ida y el último de vuelta, y el día 1 se visita desde una hora después de llegar (desde 1.6).
 14. El primer día en la altura es tranquilo. Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, un día y solo uno trae `tranquilo`, y es el primero en la base: sus visitas y traslados no pasan de 4 horas, ninguna parada sube más de 500 m sobre la base, ninguna tiene una caminata de acceso de más de 30 minutos ni una visita de más de 2 horas, y después de un bus de noche se sale desde las 9:00; el aviso de aclimatación dice qué día es. Si no, ningún día lo trae. Y no hay noche de descanso donde la altura no pesa (desde 1.7).
+15. Por un lugar menor no se va lejos. Una parada de jerarquía 1 o 2, o sin jerarquía, queda a 90 minutos o menos de la parada anterior, o de la base si es la primera del día, y de la que sigue. Si en la zona no queda nada cerca que valga el camino, el día queda libre y la respuesta lo avisa ([decisión 0024](./decisiones/0024-lugares-menores-cerca.md)).
 
 Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
-Con eventos publicados valen las catorce, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
+Con eventos publicados valen las quince, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 

@@ -30,6 +30,7 @@ from dreemgo.contrato import (
     Interes,
 )
 from dreemgo.motor import datos as artefactos
+from dreemgo.motor.planificador import TRAMO_MENOR_MAX
 from dreemgo.motor.viaje import resolver, ventana
 from dreemgo.publicados import RADIO_KM, Instantanea, Publicado
 
@@ -175,6 +176,17 @@ def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
         assert d.numero == 1 and sale >= 9 * 60
 
 
+def _los_lugares_menores_cerca(ruta) -> None:
+    """15. Por un lugar menor no se va lejos (decisión 0024): una parada de jerarquía 1 o 2, o sin jerarquía, queda
+    a TRAMO_MENOR_MAX minutos o menos de la anterior, o de la base si es la primera, y de la que sigue."""
+    for d in ruta.dias:
+        for k, p in enumerate(d.paradas):
+            if p.recurso.jerarquia in (None, 1, 2):
+                assert p.minutos_traslado <= TRAMO_MENOR_MAX
+                if k + 1 < len(d.paradas):
+                    assert d.paradas[k + 1].minutos_traslado <= TRAMO_MENOR_MAX
+
+
 @settings(
     max_examples=CONSULTAS,
     deadline=None,
@@ -229,6 +241,7 @@ def test_las_propiedades(consulta):
         _el_almuerzo(consulta, ruta)
         _el_bus_de_noche(consulta, ruta)
         _el_dia_tranquilo(consulta, ruta, datos)
+        _los_lugares_menores_cerca(ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
