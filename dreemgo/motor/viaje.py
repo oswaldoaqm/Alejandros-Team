@@ -164,6 +164,7 @@ def _candidata(i: int, recurso: dict, intereses: set[str]) -> Candidata:
         dias=dias or None,
         altura=recurso["altitud_m"],
         exigente=aclimatacion.exigente(recurso),
+        menor=recurso["jerarquia"] in (None, 1, 2),
     )
 
 
