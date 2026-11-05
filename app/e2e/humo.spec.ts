@@ -349,6 +349,7 @@ test("sin la clave correcta no se publica, y lo dice en la casilla de la clave",
 const PAUTAS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 const PANTALLAS = [
+  ["el inicio", "./"],
   ["el formulario", "./#/planear"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
   ["un viaje", "./?origen=lima&mes=7&dias=6#/ruta/1"],
@@ -356,6 +357,7 @@ const PANTALLAS = [
   ["la zona de un viaje", "./#/polo/33"],
   ["el calendario", "./#/calendario"],
   ["cómo funciona", "./#/acerca"],
+  ["el blog", "./#/blog"],
   ["guardados", "./#/mis-viajes"],
   ["publicar un evento", "./#/publicar"],
 ] as const;
