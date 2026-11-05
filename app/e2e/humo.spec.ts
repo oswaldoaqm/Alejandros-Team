@@ -36,7 +36,7 @@ async function elegir(pagina: Page, fila: RegExp, accion: () => Promise<void>, l
 }
 
 test("de la consulta al viaje, con su mapa, sus días y la ficha de cada lugar", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#/planear");
   await elegir(page, /^Qué te gusta/, () =>
     page.getByRole("checkbox", { name: "Historia y arqueología" }).check(),
   );
@@ -110,7 +110,7 @@ test("desde Lima con seis días al Cusco se vuela, y con «Solo por tierra» no 
 test("«A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y con eso sale", async ({
   page,
 }) => {
-  await page.goto("./");
+  await page.goto("./#/planear");
   await elegir(page, /^Cuándo/, () => page.getByRole("radio", { name: "Julio" }).check({ force: true }));
   await elegir(
     page,
@@ -262,8 +262,8 @@ test("la zona de un viaje y el calendario cargan del API", async ({ page }) => {
   await page.getByRole("link", { name: "Tus viajes" }).click();
   await expect(titulo(page)).toHaveText(nombre);
 
-  // Exacto: el viaje también enlaza «Ver todas las fiestas de julio».
-  await page.getByRole("link", { name: "Fiestas", exact: true }).click();
+  // El menú ya no lleva al calendario: se llega desde el viaje, en el mes de la consulta.
+  await page.getByRole("link", { name: /^Ver todas las fiestas de julio/ }).click();
   await expect(page.getByRole("status").filter({ hasText: /eventos? en julio de \d{4}/ })).toBeVisible();
   await expect(page.locator(".evento").first()).toBeVisible();
 });
@@ -349,7 +349,7 @@ test("sin la clave correcta no se publica, y lo dice en la casilla de la clave",
 const PAUTAS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 const PANTALLAS = [
-  ["el formulario", "./"],
+  ["el formulario", "./#/planear"],
   ["los resultados", "./?origen=lima&mes=7&dias=6&intereses=historia&presupuesto=1500&altitud_max=3800"],
   ["un viaje", "./?origen=lima&mes=7&dias=6#/ruta/1"],
   ["un viaje a una zona que no cabe", "./?origen=lima&destino=4&mes=7&dias=2#/ruta/1"],
