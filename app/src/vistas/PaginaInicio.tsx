@@ -31,6 +31,8 @@ export function PaginaInicio() {
 
   return (
     <div className="pagina-inicio">
+      {/* El título de la página, para los lectores de pantalla: el carrusel cambia de título a cada rato. */}
+      <h1 className="solo-lector">DreemGO: viajes por el Perú</h1>
       {/* ── 1. Carrusel Hero a pantalla completa ──────────────────────────── */}
       <CarruselHero onElegirDestino={elegirDestinoDirecto} />
 
