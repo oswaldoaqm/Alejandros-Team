@@ -87,7 +87,7 @@ sequenceDiagram
     A-->>V: el plan día por día, el mapa y la hoja de cada lugar
 ```
 
-Los pasos son los de `resolver` en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), y el itinerario, los de [`planificador.py`](../dreemgo/motor/planificador.py). Lo que garantiza cada respuesta son las catorce propiedades del [contrato §3](./CONTRATO.md), que las pruebas verifican sobre consultas al azar. Con «A dónde», el paso 1 es una sola zona, y si no cabe, el motor dice qué lo impide y qué cambiar.
+Los pasos son los de `resolver` en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), y el itinerario, los de [`planificador.py`](../dreemgo/motor/planificador.py). Lo que garantiza cada respuesta son las quince propiedades del [contrato §3](./CONTRATO.md), que las pruebas verifican sobre consultas al azar. Con «A dónde», el paso 1 es una sola zona, y si no cabe, el motor dice qué lo impide y qué cambiar.
 
 Un municipio sigue otro camino: escribe su evento en la página «Publicar un evento», con su clave, y el API lo guarda. Desde ese momento sale en el calendario y en los viajes que pasan cerca en esas fechas, sin cambiar ninguno ([decisión 0011](./decisiones/0011-eventos-publicados.md)).
 
