@@ -18,6 +18,7 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 | **Qué recibe y qué devuelve el API** | [`docs/CONTRATO.md`](./docs/CONTRATO.md) |
 | **El plan, con fechas y estado** | [`docs/PLAN.md`](./docs/PLAN.md) |
 | **Por qué cada cosa es como es** | [`docs/decisiones/`](./docs/decisiones/) |
+| **Lo que un jurado podría objetar, con su prueba** | [`docs/AUDITORIA.md`](./docs/AUDITORIA.md) |
 
 ---
 
