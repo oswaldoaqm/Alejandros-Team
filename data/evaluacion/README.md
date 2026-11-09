@@ -1,4 +1,4 @@
-# La evaluación de la semana 12
+# La evaluación
 
 Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide sin ellas ([decisión 0021](../../docs/decisiones/0021-evaluacion-semana-12.md)). Todo lo de aquí se arma con un script y no lleva datos de nadie: ni nombres, ni correos, ni teléfonos.
 
@@ -14,6 +14,7 @@ Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide s
 | `resultados/presupuesto.csv` y `presupuesto.json` | Qué cambia si el presupuesto deja fuera lo que no cabe en el P50 o en el P80 | `python -m evaluacion.presupuesto`, unos 5 minutos |
 | `resultados/usabilidad.json` | El SUS y las tareas de la prueba de usabilidad | `python -m evaluacion.usabilidad` |
 | `resultados/zonas.json` | Qué zonas propone cada sistema en las 40 consultas y en cuántas coinciden | `python -m evaluacion.zonas` |
+| `resultados/auditoria.json`, `auditoria_2026.10.8.json` y `auditoria_variante.json` | La auditoría del motor sobre la rejilla de la semana 10, 1 152 consultas: los tramos en las ciudades contra TomTom, qué tan llenos van los días, el orden de las paradas, los tiempos de visita, lo que se ve de noche puesto de día y la concentración en pocas zonas. Con los datos de ahora, con los anteriores y con la variante del kit ([`docs/AUDITORIA.md`](../../docs/AUDITORIA.md)) | `python -m evaluacion.auditoria`, unos 10 minutos, con la red que arma `pipeline.tiempos`; la de los datos anteriores, con `--datos`, y la de la variante, con `--variante` |
 | `resultados/polos_en_horas.json`, `polos_v2_horas.csv` y `polos_v3.csv` | TA-01 con las horas de la red: cuánto mide cada grupo de la v2 y la v3 con cada umbral, contra la v2 | `python -m evaluacion.polos_en_horas`, unos 4 minutos, con la red que arma `pipeline.tiempos` |
 | `usabilidad/` | Lo que se anota en la prueba de usabilidad: participantes, tareas, el SUS y los comentarios, con un código por persona | A mano ([`usabilidad.md`](../../docs/evaluacion/usabilidad.md)) |
 
