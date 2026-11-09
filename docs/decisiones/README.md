@@ -29,5 +29,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0023](./0023-ta01-v3-horas-reales.md) | TA-01 v3: los grupos de lugares con las horas de la red | Propuesta, para la semana 14 |
 | [0024](./0024-lugares-menores-cerca.md) | Por un lugar menor no se va lejos | Vigente |
 | [0025](./0025-trafico-de-las-ciudades.md) | El tráfico de las ciudades | Vigente |
+| [0026](./0026-ida-en-bus.md) | La ida a la base va en bus | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
