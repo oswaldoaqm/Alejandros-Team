@@ -397,7 +397,8 @@ def main() -> None:
 
     pares, cuentas = calibracion.pares_de_calibracion(maestro, osm.capitales, osm.lugares)
     parametros, recorridos = calibracion.calibrar(red, pares)
-    informe = calibracion.informe(recorridos, parametros, cuentas)
+    ciudades = calibracion.ritmos_en_ciudades(red, parametros, calibracion.trafico())
+    informe = calibracion.informe(recorridos, parametros, cuentas, ciudades)
     informe = {"osm": {"datos": manifiesto["datos_last_modified"], "md5": manifiesto["md5"]}, **informe}
     (a.salida / "red_calibracion.json").write_text(
         json.dumps(informe, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

@@ -16,7 +16,9 @@ calibrada) por rutas sobre las vías reales. Ver docs/decisiones/0007-red-vial-p
    su ruta; los que quedan cerca de una vía se unen a ella por un trasbordo que cuesta
    minutos fijos.
 2. Las velocidades por clase se calibran con los recorridos de acceso que publican las
-   fichas oficiales (``pipeline/red_calibracion.py``).
+   fichas oficiales (``pipeline/red_calibracion.py``). En las ciudades, además, se va más
+   lento (decisión 0025): ``manchas_urbanas`` las reconoce en la misma red, por la densidad
+   de cruces de calles, y ``minutos_por_arista`` les aplica su ritmo.
 3. Con la red calibrada se calculan los tiempos que usa el motor: de cada ciudad de
    origen a cada parada y a la base de cada polo, y entre las paradas de cada polo y su
    base (``pipeline/tiempos.py``).
@@ -28,6 +30,7 @@ La red y las tablas que salen de ella son obra derivada de OpenStreetMap (ODbL 1
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cached_property
 from pathlib import Path
 
 import numpy as np
@@ -140,6 +143,11 @@ class Red:
             embarque=np.zeros(self.vertices, dtype=bool) if self.embarque is None else self.embarque,
             fecha_osm=np.array(self.fecha_osm),
         )
+
+    @cached_property
+    def bandas(self) -> np.ndarray:
+        """La banda urbana de cada arista (índice en ``BANDAS``), calculada una vez por red: ver ``bandas_urbanas``."""
+        return bandas_urbanas(self)
 
     def vial(self) -> Red:
         """Solo las vías, sin el tren, los botes ni sus trasbordos (para calibrar)."""
@@ -541,6 +549,52 @@ def leer_hospedajes(pbf: Path, indice: str = "flex_mem"):
     return pd.DataFrame(filas, columns=["tipo", "lat", "lon"])
 
 
+# --- Las ciudades (decisión 0025) -----------------------------------------------------
+
+CELDA_GRADOS = 0.005  # unos 550 m de lado
+CRUCES_URBANOS = 40.0  # cruces de calles por km², con las 8 celdas vecinas: desde aquí es ciudad
+BANDAS = ("fuera", "mediana", "grande", "metropoli")
+KM2_BANDAS = (20.0, 100.0, 500.0)  # desde dónde una mancha es mediana, grande o metrópoli; menos de 20 km², pueblo
+
+
+def manchas_urbanas(red: Red) -> tuple[np.ndarray, np.ndarray]:
+    """(mancha de cada vértice, km² de cada mancha), con la mancha 0 para lo que está fuera de toda ciudad.
+
+    Una ciudad se reconoce en la red por sus cruces: se cuentan los vértices donde se juntan tres vías o más en
+    celdas de ``CELDA_GRADOS``, se promedia cada celda con sus ocho vecinas, y las celdas con ``CRUCES_URBANOS`` o
+    más por km² se unen con las que tocan, también en diagonal. Con eso Lima y Callao son una sola mancha de unos
+    1 040 km², Arequipa una de 300 y el Cusco una de 70; una carretera de la sierra, con un cruce cada tantos km,
+    no llega ni a 15. Solo cuentan las vías: el tren, los botes y la balsa no hacen ciudad. La grilla sale de
+    múltiplos de ``CELDA_GRADOS``, así que no se corre si la red crece."""
+    from scipy import ndimage
+
+    calles = red.clase < CODIGO["balsa"]
+    pares = np.unique(np.sort(np.stack([red.desde[calles], red.hasta[calles]], axis=1), axis=1), axis=0)
+    cruce = np.bincount(pares.ravel(), minlength=red.vertices) >= 3
+    fila_abs = np.floor(red.lat / CELDA_GRADOS).astype(np.int64)
+    columna_abs = np.floor(red.lon / CELDA_GRADOS).astype(np.int64)
+    fila, columna = fila_abs - fila_abs.min(), columna_abs - columna_abs.min()
+    cuenta = np.zeros((fila.max() + 1, columna.max() + 1))
+    np.add.at(cuenta, (fila[cruce], columna[cruce]), 1)
+    latitud = (np.arange(cuenta.shape[0]) + fila_abs.min() + 0.5) * CELDA_GRADOS
+    km2_celda = (CELDA_GRADOS * 111.32) ** 2 * np.cos(np.radians(latitud))[:, None]
+    densidad = ndimage.uniform_filter(cuenta / km2_celda, size=3, mode="constant")
+    etiqueta, _ = ndimage.label(densidad >= CRUCES_URBANOS, structure=np.ones((3, 3)))
+    km2 = np.bincount(etiqueta.ravel(), weights=np.broadcast_to(km2_celda, cuenta.shape).ravel())
+    km2[0] = 0.0
+    return etiqueta[fila, columna], km2
+
+
+def bandas_urbanas(red: Red, km2_bandas: tuple[float, ...] | None = None) -> np.ndarray:
+    """La banda de cada arista (índice en ``BANDAS``), por la mancha de su vértice de salida: 0 fuera de las
+    ciudades, en un pueblo de menos de ``km2_bandas[0]`` (``KM2_BANDAS`` si no se da) y en el tren, los botes, la
+    balsa y los trasbordos."""
+    mancha, km2 = manchas_urbanas(red)
+    banda = np.searchsorted(KM2_BANDAS if km2_bandas is None else km2_bandas, km2, side="right")
+    banda[0] = 0
+    return np.where(red.clase < CODIGO["balsa"], banda[mancha[red.desde]], 0)
+
+
 # --- Tiempo de cada arista ------------------------------------------------------------
 
 CURVAS_TOPE = 1_000.0  # grados de giro por km; más que eso es ruido del trazado
@@ -550,13 +604,24 @@ def minutos_por_arista(red: Red, ritmos: dict[str, float]) -> np.ndarray:
     """Minutos para recorrer cada arista: km × (ritmo de su clase + recargo si no está
     asfaltada + recargo por sus curvas). Los recargos son de las vías; el tren y el bote
     van a su ritmo, y cada trasbordo suma además ``ritmos["transbordo_min"]``. Los ritmos de
-    las vías salen de pipeline/red_calibracion.py; los demás, de pipeline/referencia/ritmos_fijos.csv."""
+    las vías salen de pipeline/red_calibracion.py; los demás, de pipeline/referencia/ritmos_fijos.csv.
+
+    En las ciudades (decisión 0025), si ``ritmos`` los trae: una arista de la banda ``b`` no va más rápido que
+    ``piso_<b>_rapidas`` minutos por km si es autopista, ni que ``piso_<b>_calles`` si es otra vía; y a cada km
+    se le suma ``recargo_<b>``. Sin esas claves, la red es la de antes."""
     ritmo = np.array([ritmos.get(c, np.inf) for c in CLASES])[red.clase]
     km = red.metros.astype(np.float64) / 1000
     curvas = np.minimum(red.curvas, CURVAS_TOPE) / 100
     vial = (red.clase < len(VIALES)).astype(np.float64)  # multiplicar por 1 no cambia ni un bit
     minutos = km * (ritmo + ritmos["sin_asfaltar"] * red.sin_asfaltar * vial + ritmos["curvas"] * curvas * vial)
-    return minutos + ritmos.get("transbordo_min", 0.0) * (red.clase == CODIGO["transbordo"])
+    minutos = minutos + ritmos.get("transbordo_min", 0.0) * (red.clase == CODIGO["transbordo"])
+    if not any(k.startswith(("piso_", "recargo_")) for k in ritmos):
+        return minutos
+    banda = red.bandas
+    rapida = (red.clase == CODIGO["autopista"]).astype(np.int64)
+    piso = np.array([[ritmos.get(f"piso_{b}_calles", 0.0), ritmos.get(f"piso_{b}_rapidas", 0.0)] for b in BANDAS])
+    recargo = np.array([ritmos.get(f"recargo_{b}", 0.0) for b in BANDAS])
+    return np.maximum(minutos, km * piso[banda, rapida]) + km * recargo[banda]
 
 
 # --- Rutas ------------------------------------------------------------------------------

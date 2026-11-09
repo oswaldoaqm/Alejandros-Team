@@ -1,0 +1,4 @@
+ciudad;banda;uso;lat;lon;min_10km_10h;min_10km_12h;min_10km_14h;min_10km_16h;autopista_kmh;fuente;consultado
+Lima;metropoli;ajuste;-12.046;-77.030;38.17;37.33;36.33;38.50;33.5;https://www.tomtom.com/traffic-index/city/lima/;2026-11-05
+Arequipa;grande;ajuste;-16.399;-71.537;35.33;35.50;33.67;35.50;33.2;https://www.tomtom.com/traffic-index/city/arequipa;2026-11-05
+Trujillo;grande;validacion;-8.112;-79.029;35.33;36.67;34.33;36.33;;https://www.tomtom.com/traffic-index/city/trujillo;2026-11-05
