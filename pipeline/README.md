@@ -109,7 +109,7 @@ La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas 
 
 Sobre las vías van dos capas ([decisión 0010](../docs/decisiones/0010-tren-y-botes.md)):
 
-- **Tren:** 1 042 km de rieles con 87 estaciones. Son las rutas de tren de pasajeros de OpenStreetMap, sin los ramales mineros, más los rieles de uso turístico que no tienen ruta, como el tramo de Machu Picchu a la Hidroeléctrica.
+- **Tren:** 1 042 km de rieles con 87 estaciones. Son las rutas de tren de pasajeros de OpenStreetMap, sin los ramales mineros, más los rieles de uso turístico que no tienen ruta, como el tramo de Machu Picchu a la Hidroeléctrica. Desde la versión `2026.11.1` la red no usa el Ferrocarril Central, de Lima a La Oroya y Huancayo: OpenStreetMap lo trae como ruta de pasajeros, pero no tiene servicio regular, y con el tráfico de Lima la ida a la sierra central salía de la ciudad en ese tren ([`referencia/trenes_sin_servicio.csv`](./referencia/trenes_sin_servicio.csv)). Quedan 713 km.
 - **Bote:** 2 426 km de rutas: el Titicaca, las Ballestas, las islas frente al Callao y los ríos de la Amazonía. Son los ferris de más de 3 km; los más cortos son balsas y van con las vías.
 
 Cómo se viaja por ellas:

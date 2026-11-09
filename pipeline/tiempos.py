@@ -77,6 +77,7 @@ EN_BOTE = {"Bote", "Deslizador", "Lancha", "Canoa", "Barco"}
 EN_TREN = {"Ferrocarril"}
 A_PIE = {"A pie", "A caballo", "Acémila"}
 KM = ("km", "km_tren", "km_bote")  # los km de cada camino y cuántos de ellos van en tren y en bote
+TRENES_SIN_SERVICIO = REFERENCIA / "trenes_sin_servicio.csv"  # las líneas que la red no usa
 
 
 @dataclass
@@ -112,7 +113,14 @@ def red_en_cache(pbf: Path, indice: str) -> tuple[Red, Osm, dict]:
         if not ruta(nombre, "csv").exists():
             leer(pbf).to_csv(ruta(nombre, "csv"), index=False)
         tablas[nombre] = pd.read_csv(ruta(nombre, "csv"))
-    return Red.cargar(ruta("red_vial", "npz")), Osm(**tablas), manifiesto
+    return Red.cargar(ruta("red_vial", "npz")).sin_trenes_en(trenes_sin_servicio()), Osm(**tablas), manifiesto
+
+
+def trenes_sin_servicio() -> list[tuple[float, float, float, float]]:
+    """Las cajas (lat_min, lat_max, lon_min, lon_max) de las líneas de tren que OpenStreetMap trae como rutas de
+    pasajeros y no tienen servicio regular (``TRENES_SIN_SERVICIO``): la red no las usa."""
+    tabla = pd.read_csv(TRENES_SIN_SERVICIO, sep=";")
+    return list(tabla[["lat_min", "lat_max", "lon_min", "lon_max"]].itertuples(index=False, name=None))
 
 
 def ritmos_fijos() -> dict[str, float]:

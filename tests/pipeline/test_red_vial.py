@@ -150,6 +150,20 @@ def test_al_paradero_lejano_se_llega_en_tren(red):
     assert km_tren[0, 0] == pytest.approx(riel, rel=1e-4) and km_bote[0, 0] == pytest.approx(0.0, abs=1e-6)
 
 
+def test_un_tren_sin_servicio_sale_de_la_red(red):
+    # La caja tapa la ruta de tren y su estación junto al cruce, pero no el riel turístico de la latitud -12.03.
+    sin = red.sin_trenes_en([(-12.02, -12.0001, -76.99, -76.97)])
+    tren = sin.clase == CODIGO["tren"]
+    assert tren.sum() == (red.clase == CODIGO["tren"]).sum() - 2  # del cruce al paradero, cortado cada km
+    assert (sin.clase == CODIGO["transbordo"]).sum() == (red.clase == CODIGO["transbordo"]).sum() - 1
+    assert (red.lat[sin.desde[tren]] == -12.03).all() and (red.lat[sin.hasta[tren]] == -12.03).all()
+    # Al paradero lejano ya no se llega en tren: queda en la vía más cercana, a más de 3 km, lejos de la red.
+    ruteador = Ruteador(sin, minutos_por_arista(sin, CON_CAPAS), vertices_minimos=4)
+    (lejano,), metros, (capa,) = ruteador.ubicar([-12.0302], [-76.982])
+    assert CAPAS[capa] == "vial" and metros[0] > 3_000
+    assert red.sin_trenes_en([]) is red and red.sin_trenes_en([(0.0, 1.0, 0.0, 1.0)]) is red
+
+
 def test_junto_a_una_via_se_ubica_en_la_via_aunque_el_riel_este_mas_cerca(red):
     ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
     (vertice,), _, _ = ruteador.ubicar([-12.0004], [-76.982])  # a 11 m de la estación y 44 m del cruce

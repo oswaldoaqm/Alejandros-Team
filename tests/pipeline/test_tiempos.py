@@ -226,3 +226,16 @@ def test_las_coordenadas_se_escriben_con_seis_decimales(tmp_path):
     leida = pd.read_csv(tmp_path / "t.csv", sep=";", encoding="utf-8-sig")
     assert (leida.at[0, "lat"], leida.at[0, "lon"]) == (-9.295432, -75.998123)
     assert leida.at[0, "minutos"] == 12.3
+
+
+def test_los_trenes_sin_servicio():
+    cajas = tiempos.trenes_sin_servicio()
+    assert cajas and all(-18.5 < a < b < 0 and -81.5 < c < d < -68.5 for a, b, c, d in cajas)
+
+    def fuera_de_servicio(lat, lon):
+        return any(a <= lat <= b and c <= lon <= d for a, b, c, d in cajas)
+
+    # El Ferrocarril Central, de la estación de Desamparados a la de Huancayo, sí; el Tren Macho, que sale de
+    # Chilca hacia Huancavelica, y el tren a Machu Picchu, no.
+    assert fuera_de_servicio(-12.0440, -77.0287) and fuera_de_servicio(-12.0675, -75.2057)
+    assert not fuera_de_servicio(-12.0801, -75.2085) and not fuera_de_servicio(-13.1547, -72.5254)

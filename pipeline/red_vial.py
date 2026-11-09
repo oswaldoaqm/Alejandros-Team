@@ -167,6 +167,32 @@ class Red:
             fecha_osm=self.fecha_osm,
         )
 
+    def sin_trenes_en(self, cajas) -> Red:
+        """La red sin los tramos de tren que caen dentro de alguna caja (lat_min, lat_max, lon_min, lon_max), ni los
+        trasbordos a sus estaciones: las líneas sin servicio regular de pasajeros. Los vértices quedan, sueltos."""
+        if self.capa is None or not len(cajas):
+            return self
+        dentro = np.zeros(self.vertices, dtype=bool)
+        for lat_min, lat_max, lon_min, lon_max in cajas:
+            dentro |= (self.lat >= lat_min) & (self.lat <= lat_max) & (self.lon >= lon_min) & (self.lon <= lon_max)
+        sin_servicio = dentro & (self.capa == CAPAS.index("tren"))
+        e = ~(sin_servicio[self.desde] | sin_servicio[self.hasta])
+        if e.all():
+            return self
+        return Red(
+            lat=self.lat,
+            lon=self.lon,
+            desde=self.desde[e],
+            hasta=self.hasta[e],
+            metros=self.metros[e],
+            clase=self.clase[e],
+            sin_asfaltar=self.sin_asfaltar[e],
+            curvas=self.curvas[e],
+            capa=self.capa,
+            embarque=self.embarque,
+            fecha_osm=self.fecha_osm,
+        )
+
     @classmethod
     def cargar(cls, ruta: Path) -> Red:
         with np.load(ruta) as z:

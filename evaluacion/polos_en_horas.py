@@ -53,7 +53,7 @@ import pandas as pd
 from pipeline import red_calibracion as calibracion
 from pipeline.maestro import EXTERNOS, PROCESADOS
 from pipeline.red_vial import Red, Ruteador, minutos_por_arista
-from pipeline.tiempos import CACHE, LEJOS_DE_LA_RED_M, paradas_de, ritmos_fijos
+from pipeline.tiempos import CACHE, LEJOS_DE_LA_RED_M, paradas_de, ritmos_fijos, trenes_sin_servicio
 
 RAIZ = Path(__file__).resolve().parents[1]
 SALIDA = RAIZ / "data" / "evaluacion" / "resultados"
@@ -81,7 +81,7 @@ def cargar_red(osm: Path = OSM) -> tuple[Red, pd.DataFrame, pd.DataFrame, dict]:
     faltan = [str(r) for r in archivos.values() if not r.exists()]
     if faltan:
         raise SystemExit("Falta la red armada (corre primero python -m pipeline.tiempos): " + ", ".join(faltan))
-    red = Red.cargar(archivos["red_vial"])
+    red = Red.cargar(archivos["red_vial"]).sin_trenes_en(trenes_sin_servicio())
     return red, pd.read_csv(archivos["capitales"]), pd.read_csv(archivos["lugares"]), manifiesto
 
 
