@@ -34,3 +34,7 @@ TA-01 agrupa los lugares en las zonas a las que se va a dormir. La v2 usa enlace
 - 246 paradas que la v2 tenía en un grupo quedan sin él, y 49 que no lo tenían lo ganan: quedan fuera las que no tienen cuatro paradas más a cuatro horas.
 - Cambian las zonas, sus bases, sus tiempos y su clima: hay que bajar el clima de las zonas nuevas, rehacer los artefactos y volver a correr las propiedades y la evaluación.
 - Las horas de la v3 son las de la red, con su error: 22 % en recorridos cortos, y en la Carretera Central, más rápido que los buses.
+
+## Con las horas de los datos `2026.11.1` (5 de noviembre)
+
+Con el tráfico de las ciudades ([0025](./0025-trafico-de-las-ciudades.md)) y la red sin el Ferrocarril Central, las horas cambian, y con ellas los grupos. `polos_en_horas` da ahora 205 grupos con el 92,6 % de las paradas, cuando el 28 de octubre daba 203 con el 93,2 %; 83 grupos de la v2 pasan de las cuatro horas, y el más largo llega a 10,5. Con tres horas salen 237 grupos y con cinco, 176. La decisión no cambia: los grupos que entran en la semana 14 son los de esta corrida (`data/evaluacion/resultados/polos_v3.csv`). La ida en bus de la [0026](./0026-ida-en-bus.md) no entra aquí, porque dentro de un grupo se va en auto.
