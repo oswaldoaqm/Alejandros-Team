@@ -1,16 +1,18 @@
 """
-Una variante del motor para la evaluación (semana 12, decisión 0021): lo que se pidió pesa más.
+Una variante del motor para la evaluación (decisión 0021): menos de lo mismo.
 
-Hoy, si la consulta trae intereses, un lugar que no atiende ninguno vale la cuarta parte (CONTRATO.md,
-«Cómo decide el motor»). Con la escala 1, 2, 6 y 24, un lugar de jerarquía 4 que no es de lo que se pidió
-vale 6, lo mismo que uno de jerarquía 3 que sí lo es, y el triple que una playa de jerarquía 2. Por eso,
-para un fin de semana de playa desde Lima, el motor propone Nasca, que no tiene playas. La variante lo
-baja a la décima parte: así vale 2,4, casi lo mismo que un lugar de jerarquía 2 que sí es de lo pedido.
+El puntaje de cada zona suma su calidad, el valor que alcanza a visitarse frente a la mejor zona de la consulta, y
+su novedad, con pesos 0,7 y 0,3. Con la escala 1, 2, 6 y 24, la calidad separa mucho a las zonas grandes de las
+demás, y la novedad casi nunca alcanza: en la rejilla de 1 152 consultas de la semana 10, los diez polos más
+propuestos se llevaban el 80 % de los viajes. La variante usa la raíz cuadrada de la calidad: una zona con la mitad
+del valor de la mejor pasa de 0,5 a 0,71, y la novedad pesa más en el desempate.
 
-No está desplegada: entra al kit para que las calificaciones digan si conviene el cambio. Aquí solo
-cambia qué zonas se proponen y en qué orden; el viaje a cada zona es el del motor desplegado, igual para
-todas las opciones (``linea_base.viaje_a``). Lo que la variante cambiaría dentro de cada viaje se mide
-aparte, sin calificaciones.
+No está desplegada: entra al kit para que las calificaciones digan si conviene el cambio. Aquí solo cambia qué
+zonas se proponen y en qué orden; el viaje a cada zona es el del motor desplegado, igual para todas las opciones
+(``linea_base.viaje_a``).
+
+Hasta el 5 de noviembre la variante era otra: la décima parte, en vez de la cuarta, para lo que no es de lo pedido.
+Coincidía con el motor en 110 de sus 120 propuestas, así que las calificaciones no iban a decir casi nada de ella.
 """
 
 from __future__ import annotations
@@ -22,21 +24,21 @@ from dreemgo.contrato import Consulta
 from dreemgo.motor import viaje
 from dreemgo.motor.datos import Datos
 
-FACTOR_SIN_INTERES = 0.1
+CONCAVIDAD = 0.5
 
 
 @contextmanager
-def con_factor(factor: float = FACTOR_SIN_INTERES) -> Iterator[None]:
-    """El motor con otro valor para lo que no es de lo que se pidió, mientras dure el bloque."""
-    antes = viaje.FACTOR_SIN_INTERES
-    viaje.FACTOR_SIN_INTERES = factor
+def con_concavidad(concavidad: float = CONCAVIDAD) -> Iterator[None]:
+    """El motor con la calidad elevada a ``concavidad`` en el puntaje, mientras dure el bloque."""
+    antes = viaje.CONCAVIDAD
+    viaje.CONCAVIDAD = concavidad
     try:
         yield
     finally:
-        viaje.FACTOR_SIN_INTERES = antes
+        viaje.CONCAVIDAD = antes
 
 
 def zonas(consulta: Consulta, datos: Datos) -> list[int]:
     """Las zonas que propondría el motor con la variante, en su orden."""
-    with con_factor():
+    with con_concavidad():
         return [r.polo.id for r in viaje.resolver(consulta, datos, sugerir=False).rutas]

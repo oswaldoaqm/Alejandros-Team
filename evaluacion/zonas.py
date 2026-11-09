@@ -2,7 +2,7 @@
 Qué zonas propone cada sistema en las 40 consultas de la evaluación, y en cuántas coinciden (semana 12).
 
 Los tres sistemas son los del kit (decisión 0021): el motor desplegado, la guía por intereses, que es la línea de
-base, y la variante del motor con la décima parte para lo que no se pidió. La clave del kit
+base, y la variante del motor con la raíz de la calidad en el puntaje. La clave del kit
 (data/evaluacion/clave.csv) dice qué zonas propone cada uno para cada consulta y en qué puesto. De ahí salen, sin
 juzgar ningún viaje:
 

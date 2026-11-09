@@ -150,6 +150,20 @@ def test_dos_grupos_que_duermen_en_el_mismo_pueblo_son_un_solo_polo(un_solo_pueb
     assert elegidas_antes["base"].iloc[0] == polo["base"]
 
 
+def test_con_las_bases_de_antes_no_se_vuelven_a_elegir(un_solo_pueblo, mundo):
+    """Decisión 0025: con su base de antes, el grupo 2 se queda en Otro Pueblo aunque el Pueblo del Este le quede
+    más cerca, y sigue junto con el 1."""
+    ruteador, candidatos, *_ = mundo
+    previas = un_solo_pueblo[3]
+    otro = int(candidatos.index[candidatos["nombre"] == "Otro Pueblo"][0])
+    fijas = bases.fijas(previas, candidatos)
+    assert fijas == {1: otro, 2: otro}
+    _, elegidas, _ = tiempos.recorrer_polos(ruteador, PARAMETROS, PARADAS, candidatos, fijas)
+    assert elegidas[["polo", "grupos", "base"]].to_numpy().tolist() == [[1, "1|2", "Otro Pueblo"]]
+    # Una base que ya no es candidata no se fija: ese grupo vuelve a elegir.
+    assert bases.fijas(previas.assign(lat=-11.5), candidatos) == {}
+
+
 def test_de_que_polo_es_cada_grupo(un_solo_pueblo, mundo):
     assert bases.polo_de_cada_grupo(un_solo_pueblo[3]) == {1: 1, 2: 1}
     assert bases.polo_de_cada_grupo(mundo[3]) == {1: 1, 2: 2}
@@ -212,3 +226,76 @@ def test_las_coordenadas_se_escriben_con_seis_decimales(tmp_path):
     leida = pd.read_csv(tmp_path / "t.csv", sep=";", encoding="utf-8-sig")
     assert (leida.at[0, "lat"], leida.at[0, "lon"]) == (-9.295432, -75.998123)
     assert leida.at[0, "minutos"] == 12.3
+
+
+def test_los_trenes_sin_servicio():
+    cajas = tiempos.trenes_sin_servicio()
+    assert cajas and all(-18.5 < a < b < 0 and -81.5 < c < d < -68.5 for a, b, c, d in cajas)
+
+    def fuera_de_servicio(lat, lon):
+        return any(a <= lat <= b and c <= lon <= d for a, b, c, d in cajas)
+
+    # El Ferrocarril Central, de la estación de Desamparados a la de Huancayo, sí; el Tren Macho, que sale de
+    # Chilca hacia Huancavelica, y el tren a Machu Picchu, no.
+    assert fuera_de_servicio(-12.0440, -77.0287) and fuera_de_servicio(-12.0675, -75.2057)
+    assert not fuera_de_servicio(-12.0801, -75.2085) and not fuera_de_servicio(-13.1547, -72.5254)
+
+
+# --- La ida en bus (decisión 0026) ----------------------------------------------------------
+
+
+def test_el_ajuste_del_bus_recupera_sus_dos_ritmos():
+    rng = np.random.default_rng(4)
+    rutas = pd.DataFrame(
+        {
+            "minutos_auto": rng.uniform(300, 900, 30),
+            "km_autopista": rng.uniform(0, 400, 30) * (rng.random(30) < 0.6),
+            "min_lento": rng.uniform(0, 200, 30) * (rng.random(30) < 0.3),
+        }
+    )
+    verdad = {"autopista": 0.95, "carretera_central": 1.6}
+    medio = rutas["minutos_auto"] + tiempos.correccion_del_bus(
+        verdad, PARAMETROS, rutas["km_autopista"], rutas["min_lento"]
+    )
+    rutas = rutas.assign(empresa_min=medio - 30, empresa_max=medio + 30)
+    assert tiempos.ajustar_el_bus(rutas, PARAMETROS) == pytest.approx(verdad)
+
+
+def test_los_modelos_simples_del_bus_recuperan_lo_que_se_les_pone():
+    rng = np.random.default_rng(5)
+    rutas = pd.DataFrame(
+        {
+            "minutos_auto": rng.uniform(300, 900, 30),
+            "km_autopista": rng.uniform(0, 400, 30),
+            "min_lento": rng.uniform(0, 200, 30) * (rng.random(30) < 0.3),
+        }
+    )
+    modelos = tiempos.modelos_del_bus(PARAMETROS)
+    for nombre, verdad, minutos in (
+        ("un_solo_factor", 1.12, 1.12 * rutas["minutos_auto"]),
+        ("solo_carretera_central", 1.45, rutas["minutos_auto"] + 0.45 * rutas["min_lento"]),
+    ):
+        con_rango = rutas.assign(empresa_min=minutos - 20, empresa_max=minutos + 20)
+        ajustar, predecir = modelos[nombre]
+        assert ajustar(con_rango) == pytest.approx(verdad)
+        assert predecir(verdad, con_rango) == pytest.approx(minutos.to_numpy())
+    ajustar, predecir = modelos["en_auto"]
+    assert ajustar(rutas) is None
+    assert (predecir(None, rutas) == rutas["minutos_auto"].to_numpy()).all()
+
+
+def test_la_ida_a_la_base_va_en_bus_y_la_ida_a_una_parada_no(mundo, monkeypatch):
+    ruteador, _, _, elegidas, _ = mundo
+    origenes = pd.DataFrame({"id": ["prueba"], "lat": [-12.0], "lon": [-76.99]})
+    # La «Carretera Central» de juguete: un tramo de la primaria entre el origen y la base del polo 2.
+    monkeypatch.setattr(tiempos, "CARRETERA_CENTRAL", ((-12.0, -76.985), (-12.0, -76.965)))
+    bus = {"autopista": PARAMETROS["autopista"], "carretera_central": 2.0}  # en el tramo, el doble que un auto
+    en_auto = tiempos.tiempos_desde_origenes(ruteador, PARAMETROS, origenes, PARADAS, elegidas)
+    en_bus = tiempos.tiempos_desde_origenes(ruteador, PARAMETROS, origenes, PARADAS, elegidas, bus)
+    pd.testing.assert_frame_equal(en_auto[0], en_bus[0])  # a una parada se va en auto: el viaje de un día
+    v_o = ruteador.ubicar([-12.0], [-76.99])[0]
+    v_b = ruteador.ubicar(elegidas["lat"].to_numpy(), elegidas["lon"].to_numpy())[0]
+    _, lento = tiempos.rasgos_del_bus(ruteador, minutos_por_arista(ruteador.red, PARAMETROS), v_o, v_b)
+    mas = (en_bus[1]["minutos"] - en_auto[1]["minutos"]).to_numpy()
+    assert np.allclose(mas[np.isfinite(mas)], lento.ravel()[np.isfinite(mas)])
+    assert (lento > 0).any()  # el camino a alguna base pasa por el tramo

@@ -174,11 +174,11 @@ def test_desde_lima_al_cusco_se_vuela_y_la_respuesta_lo_dice():
         ("Lima", "Cusco", "LIM", "CUZ", 1.33)
     ]
     assert 4 < t.horas < 5 and t.dias_de_viaje == 2 and t.acceso == "terrestre"
-    assert viaje.textos.duracion(t.horas * 60) == "4 h 28"  # lo que muestra la tarjeta es lo que dice el día 1
+    assert viaje.textos.duracion(t.horas * 60) == "4 h 47"  # lo que muestra la tarjeta es lo que dice el día 1
     assert cusco.dias[0].nota.startswith(
-        "Salida de Lima a las 07:00; 4 h 28 de puerta a puerta hasta Cuzco: con el vuelo Lima–Cusco de 1 h 20"
+        "Salida de Lima a las 07:00; 4 h 47 de puerta a puerta hasta Cuzco: con el vuelo Lima–Cusco de 1 h 20"
     )
-    assert cusco.dias[-1].nota.endswith("Vuelta a Lima: 4 h 28 de puerta a puerta, con el vuelo Cusco–Lima de 1 h 20.")
+    assert cusco.dias[-1].nota.endswith("Vuelta a Lima: 4 h 47 de puerta a puerta, con el vuelo Cusco–Lima de 1 h 20.")
     assert list(cusco.costo.desglose)[:2] == ["transporte", "vuelos"]
     assert any(s.startswith("Vuelo Lima–Cusco, de ida y de vuelta: entre S/") for s in cusco.costo.supuestos)
     avisos = [a.mensaje for a in cusco.avisos]
@@ -208,15 +208,15 @@ def test_a_iquitos_se_vuela_pero_por_tierra_sigue_sin_acceso():
 @con_datos
 def test_si_hay_que_dormir_junto_a_un_aeropuerto_las_notas_lo_dicen():
     it, consulta, datos = _itinerario("ica", "Iquitos", 9)
-    assert viaje.dias_en_avion(it.vuelo)[0] == [("antes", 368)]
+    assert viaje.dias_en_avion(it.vuelo)[0] == [("antes", 334)]
     dias = viaje.dias_del_viaje(it, consulta, datos.origenes["ica"], datos)
     notas = {d.numero: d.nota for d in dias}
     assert notas[1] == (
-        "Salida de Ica a las 07:00: 6 h 08 por tierra hacia Lima, de donde sale el vuelo; se duerme en Lima."
+        "Salida de Ica a las 07:00: 5 h 34 por tierra hacia Lima, de donde sale el vuelo; se duerme en Lima."
     )
-    assert notas[2].startswith("Del aeropuerto de Lima hasta Iquitos: 4 h 41, con el vuelo Lima–Iquitos de 1 h 50")
-    assert notas[8].startswith("Se deja Iquitos: 4 h 41 hasta Lima, con el vuelo Iquitos–Lima de 1 h 50; se duerme")
-    assert notas[9] == "Vuelta a Ica: 6 h 08 por tierra desde Lima."
+    assert notas[2].startswith("Del aeropuerto de Lima hasta Iquitos: 4 h 44, con el vuelo Lima–Iquitos de 1 h 50")
+    assert notas[8].startswith("Se deja Iquitos: 4 h 44 hasta Lima, con el vuelo Iquitos–Lima de 1 h 50; se duerme")
+    assert notas[9] == "Vuelta a Ica: 5 h 34 por tierra desde Lima."
     # El día que se va al aeropuerto lleva sus km, y el del vuelo, solo los de tierra al llegar.
     assert dias[0].km == pytest.approx(it.vuelo.km_hasta_aeropuerto, abs=0.1)
     assert dias[1].km < 50

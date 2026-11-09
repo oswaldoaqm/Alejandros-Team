@@ -18,6 +18,7 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 | **Qué recibe y qué devuelve el API** | [`docs/CONTRATO.md`](./docs/CONTRATO.md) |
 | **El plan, con fechas y estado** | [`docs/PLAN.md`](./docs/PLAN.md) |
 | **Por qué cada cosa es como es** | [`docs/decisiones/`](./docs/decisiones/) |
+| **Lo que un jurado podría objetar, con su prueba** | [`docs/AUDITORIA.md`](./docs/AUDITORIA.md) |
 
 ---
 
@@ -150,7 +151,7 @@ La fase 1 rehace los datos sobre el corte del 29 de septiembre. [`pipeline/`](./
 oficiales y deja en [`data/procesados/`](./data/procesados/) el **maestro v3**, una fila por recurso con la
 fuente de cada campo; el **calendario de los 758 acontecimientos**, con la regla de su fecha y una precisión
 medida sobre una muestra anotada a mano; los **tiempos de viaje** sobre la red vial de OpenStreetMap,
-calibrada con los recorridos de las fichas (22 % de error medio), con el tren a Machu Picchu y los botes del
+calibrada con los recorridos de las fichas (22 % de error medio) y con el tráfico de las ciudades que mide TomTom, con el tren a Machu Picchu y los botes del
 Titicaca, las Ballestas y la Amazonía; los **vuelos** de las 22 rutas que salen de Lima, de puerta a puerta;
 **dónde se duerme en cada polo**, el **clima de cada polo mes a mes**, **su noche** (dónde salir a pie de la
 base y cuántas noches salen despejadas cada mes para ver las estrellas), **dónde comer** cerca de cada lugar,
@@ -279,7 +280,7 @@ python pipeline/adquisicion/descargar_metar.py         # METAR de los aeropuerto
 python -m pipeline.noche       # dónde salir cerca de cada base
 python -m pipeline.cielo       # el cielo de cada base, unos 3 minutos
 python -m pipeline.comida      # dónde comer cerca de cada lugar y de cada base, unos 2 minutos
-python -m pipeline.artefactos --version 2026.10.8   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.11.1   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»

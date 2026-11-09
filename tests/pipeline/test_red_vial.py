@@ -7,17 +7,20 @@ import pandas as pd
 import pytest
 
 from pipeline.red_vial import (
+    BANDAS,
     CAPAS,
     CLASES,
     CODIGO,
     Red,
     Ruteador,
     _estaciones_al_lado,
+    bandas_urbanas,
     haversine_m,
     leer_capitales,
     leer_hospedajes,
     leer_lugares,
     leer_red,
+    manchas_urbanas,
     minutos_por_arista,
 )
 
@@ -147,6 +150,20 @@ def test_al_paradero_lejano_se_llega_en_tren(red):
     assert km_tren[0, 0] == pytest.approx(riel, rel=1e-4) and km_bote[0, 0] == pytest.approx(0.0, abs=1e-6)
 
 
+def test_un_tren_sin_servicio_sale_de_la_red(red):
+    # La caja tapa la ruta de tren y su estación junto al cruce, pero no el riel turístico de la latitud -12.03.
+    sin = red.sin_trenes_en([(-12.02, -12.0001, -76.99, -76.97)])
+    tren = sin.clase == CODIGO["tren"]
+    assert tren.sum() == (red.clase == CODIGO["tren"]).sum() - 2  # del cruce al paradero, cortado cada km
+    assert (sin.clase == CODIGO["transbordo"]).sum() == (red.clase == CODIGO["transbordo"]).sum() - 1
+    assert (red.lat[sin.desde[tren]] == -12.03).all() and (red.lat[sin.hasta[tren]] == -12.03).all()
+    # Al paradero lejano ya no se llega en tren: queda en la vía más cercana, a más de 3 km, lejos de la red.
+    ruteador = Ruteador(sin, minutos_por_arista(sin, CON_CAPAS), vertices_minimos=4)
+    (lejano,), metros, (capa,) = ruteador.ubicar([-12.0302], [-76.982])
+    assert CAPAS[capa] == "vial" and metros[0] > 3_000
+    assert red.sin_trenes_en([]) is red and red.sin_trenes_en([(0.0, 1.0, 0.0, 1.0)]) is red
+
+
 def test_junto_a_una_via_se_ubica_en_la_via_aunque_el_riel_este_mas_cerca(red):
     ruteador = Ruteador(red, minutos_por_arista(red, CON_CAPAS), vertices_minimos=4)
     (vertice,), _, _ = ruteador.ubicar([-12.0004], [-76.982])  # a 11 m de la estación y 44 m del cruce
@@ -248,3 +265,73 @@ def test_los_destinos_de_paso_no_agrandan_ni_repiten_la_busqueda(red, monkeypatc
     # Si es obligatorio, el rectángulo lo incluye y el resultado es el de toda la red.
     minutos, km = ruteador.entre([inicio], [cerca, pasando_la_balsa], margen=0.01)
     assert np.allclose(minutos, en_toda_la_red[0]) and np.allclose(km, en_toda_la_red[1])
+
+
+# --- Las ciudades (decisión 0025) ---------------------------------------------------------
+
+
+def _grilla_con_ruta(n: int = 31, paso_km: float = 0.1, ruta_km: int = 20) -> Red:
+    """Una cuadrícula de calles de n × n cruces cada ``paso_km`` (una ciudad), con una carretera recta que sale de
+    su esquina y sigue ``ruta_km`` km, con un vértice por km (el campo)."""
+    lat0, lon0 = -12.0, -77.0
+    grados = paso_km / 111.32
+    i, j = np.meshgrid(np.arange(n), np.arange(n), indexing="ij")
+    lat = list((lat0 + i * grados).ravel())
+    lon = list((lon0 + j * grados).ravel())
+    desde, hasta, clase = [], [], []
+    for a in range(n):
+        for b in range(n):
+            v = a * n + b
+            if b + 1 < n:
+                desde.append(v), hasta.append(v + 1), clase.append(CODIGO["local"])
+            if a + 1 < n:
+                desde.append(v), hasta.append(v + n), clase.append(CODIGO["local"])
+    anterior = n * n - 1  # la esquina de la ciudad
+    for k in range(1, ruta_km + 1):
+        lat.append(lat[n * n - 1] + k / 111.32)
+        lon.append(lon[n * n - 1])
+        desde.append(anterior), hasta.append(len(lat) - 1), clase.append(CODIGO["primaria"])
+        anterior = len(lat) - 1
+    lat, lon = np.array(lat), np.array(lon)
+    desde, hasta = np.array(desde, dtype=np.int32), np.array(hasta, dtype=np.int32)
+    metros = haversine_m(lat[desde], lon[desde], lat[hasta], lon[hasta]).astype(np.float32)
+    return Red(
+        lat=lat,
+        lon=lon,
+        desde=desde,
+        hasta=hasta,
+        metros=metros,
+        clase=np.array(clase, dtype=np.int8),
+        sin_asfaltar=np.zeros(len(desde), dtype=bool),
+        curvas=np.zeros(len(desde), dtype=np.float32),
+    )
+
+
+def test_las_manchas_urbanas_salen_de_las_calles_densas():
+    red = _grilla_con_ruta()
+    mancha, km2 = manchas_urbanas(red)
+    i, j = np.divmod(np.arange(31 * 31), 31)
+    adentro = mancha[: 31 * 31][(i >= 6) & (i <= 24) & (j >= 6) & (j <= 24)]  # a más de 600 m del borde
+    assert (adentro > 0).all() and len(set(mancha[: 31 * 31].tolist()) - {0}) == 1  # una sola mancha
+    assert 6 <= km2[adentro[0]] <= 12  # unos 3 × 3 km: en el borde, la densidad baja al promediar con el campo
+    assert (mancha[31 * 31 + 3 :] == 0).all()  # la carretera, lejos de la ciudad, no es ciudad
+    banda = bandas_urbanas(red, km2_bandas=(1.0, 5.0, 50.0))
+    en_el_centro = (red.desde == 15 * 31 + 15) & (red.clase == CODIGO["local"])
+    assert (np.array(BANDAS)[banda[en_el_centro]] == "grande").all() and banda[-1] == 0
+    assert (bandas_urbanas(red) == 0).all()  # con las bandas de verdad, 3 × 3 km es un pueblo
+
+
+def test_en_la_ciudad_ninguna_via_va_mas_rapido_que_su_piso():
+    red = _grilla_con_ruta()
+    red.__dict__["bandas"] = bandas_urbanas(red, km2_bandas=(1.0, 5.0, 50.0))  # la cuadrícula, ciudad grande
+    sin = minutos_por_arista(red, RITMOS)
+    con = minutos_por_arista(red, {**RITMOS, "piso_grande_calles": 4.0, "piso_grande_rapidas": 2.0})
+    km = red.metros / 1000
+    en_ciudad = red.bandas == BANDAS.index("grande")
+    assert en_ciudad.sum() > 1000
+    assert np.allclose(con[en_ciudad], 4.0 * km[en_ciudad])  # la calle local iba a 2,4 min/km: ahora a 4
+    assert np.array_equal(con[~en_ciudad], sin[~en_ciudad])  # el campo no cambia
+    lenta = minutos_por_arista(red, {**RITMOS, "piso_grande_calles": 1.0})  # un piso más rápido que la vía no la apura
+    assert np.array_equal(lenta, sin)
+    recargo = minutos_por_arista(red, {**RITMOS, "recargo_grande": 0.5})
+    assert np.allclose(recargo[en_ciudad], sin[en_ciudad] + 0.5 * km[en_ciudad])

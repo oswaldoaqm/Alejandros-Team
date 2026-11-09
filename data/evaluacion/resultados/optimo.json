@@ -1,62 +1,62 @@
 {
-  "version_datos": "2026.10.8",
+  "version_datos": "2026.11.1",
   "plazo_s": 120.0,
   "por_tamano": {
     "10": {
       "viajes": 120,
-      "visita_todas": 80,
-      "con_que_elegir": 40,
-      "heuristica_optima": 30,
-      "mejorables": 10,
+      "visita_todas": 82,
+      "con_que_elegir": 38,
+      "heuristica_optima": 29,
+      "mejorables": 9,
       "sin_resolver": 0,
       "brecha_con_que_elegir": {
-        "media": 0.011822275,
+        "media": 0.006400710526315789,
         "mediana": 0.0,
-        "p90": 0.031407,
-        "maxima": 0.170213
+        "p90": 0.025,
+        "maxima": 0.055172
       },
-      "valor_que_junta_la_heuristica": 0.997368758789086,
+      "valor_que_junta_la_heuristica": 0.9983340258129584,
       "segundos": {
-        "mediana": 0.1,
-        "maximo": 0.7
+        "mediana": 0.165,
+        "maximo": 1.57
       }
     },
     "12": {
       "viajes": 120,
-      "visita_todas": 70,
-      "con_que_elegir": 50,
-      "heuristica_optima": 24,
-      "mejorables": 26,
+      "visita_todas": 69,
+      "con_que_elegir": 51,
+      "heuristica_optima": 30,
+      "mejorables": 21,
       "sin_resolver": 0,
       "brecha_con_que_elegir": {
-        "media": 0.01503236,
-        "mediana": 0.000561,
-        "p90": 0.04,
-        "maxima": 0.170213
+        "media": 0.010438235294117647,
+        "mediana": 0.0,
+        "p90": 0.034063,
+        "maxima": 0.091425
       },
-      "valor_que_junta_la_heuristica": 0.9957358130296082,
+      "valor_que_junta_la_heuristica": 0.9967608057142029,
       "segundos": {
-        "mediana": 0.405,
-        "maximo": 3.54
+        "mediana": 1.05,
+        "maximo": 7.11
       }
     },
     "15": {
       "viajes": 120,
-      "visita_todas": 46,
-      "con_que_elegir": 74,
-      "heuristica_optima": 27,
-      "mejorables": 47,
+      "visita_todas": 44,
+      "con_que_elegir": 76,
+      "heuristica_optima": 32,
+      "mejorables": 44,
       "sin_resolver": 0,
       "brecha_con_que_elegir": {
-        "media": 0.017375013513513515,
-        "mediana": 0.010525,
-        "p90": 0.043051,
-        "maxima": 0.170213
+        "media": 0.01709938157894737,
+        "mediana": 0.0117785,
+        "p90": 0.046326,
+        "maxima": 0.102553
       },
-      "valor_que_junta_la_heuristica": 0.9911017702257574,
+      "valor_que_junta_la_heuristica": 0.9904406412132868,
       "segundos": {
-        "mediana": 3.5700000000000003,
-        "maximo": 56.04
+        "mediana": 3.23,
+        "maximo": 64.86
       }
     }
   }

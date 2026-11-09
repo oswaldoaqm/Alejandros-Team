@@ -2,7 +2,7 @@
 
 Con estas calificaciones medimos si DreemGO propone buenos viajes: si le gana a una guía de viajes y si un cambio que estamos pensando lo mejoraría ([decisión 0021](../decisiones/0021-evaluacion-semana-12.md)). Lo que importa es tu juicio honesto, como alguien que conoce el Perú y que le recomendaría un viaje a otra persona.
 
-Son **40 personas** con un viaje en mente, escritas a mano para cubrir lo que el producto promete: de dónde salen, cuántos días tienen, cuándo, qué les gusta y, si lo dijeron, cuánto pueden gastar o hasta qué altura pueden subir. Para cada una hay **de 3 a 6 viajes**, 185 en total. Salen del motor y de otras maneras de elegir zonas; no se dice cuál es cuál, y el orden está mezclado, para que no influya.
+Son **40 personas** con un viaje en mente, escritas a mano para cubrir lo que el producto promete: de dónde salen, cuántos días tienen, cuándo, qué les gusta y, si lo dijeron, cuánto pueden gastar o hasta qué altura pueden subir. Para cada una hay **de 3 a 7 viajes**, 196 en total. Salen del motor y de otras maneras de elegir zonas; no se dice cuál es cuál, y el orden está mezclado, para que no influya.
 
 ## Lo que hay que hacer
 

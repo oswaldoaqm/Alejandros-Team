@@ -29,7 +29,7 @@ Un polo es lo que se visita desde una base. El maestro y los eventos traen el gr
 de cada recurso; los grupos que duermen en el mismo pueblo son un solo polo, y aquí cada
 recurso y cada evento pasa a llevar el número de su polo (``grupos`` de polos_bases.csv).
 
-Uso:  python -m pipeline.artefactos --version 2026.10.8
+Uso:  python -m pipeline.artefactos --version 2026.11.1
       (después de maestro, eventos, tiempos, vuelos, clima, noche, cielo, comida y elevacion)
 """
 
@@ -53,7 +53,7 @@ from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
-VERSION_DATOS = "2026.10.8"
+VERSION_DATOS = "2026.11.1"
 SATURADAS = ("Lima", "Cusco")  # el circuito habitual: decide `fuera_del_circuito` y la novedad
 EXCURSION_MAX_MIN = 240  # una parada más lejos que esto del origen no cabe en un viaje de un día
 MEDIOS_KM = ("km", "km_tren", "km_bote")  # los km de cada camino, y cuántos van en tren y en bote

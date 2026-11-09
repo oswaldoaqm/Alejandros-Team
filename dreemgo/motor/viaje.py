@@ -100,6 +100,9 @@ VALOR_SIN_JERARQUIA = 2.0  # como una de jerarquía 2: ni se premia ni se castig
 FACTOR_SIN_INTERES = 0.25
 FACTOR_TEMPORADA = {"viable": 1.0, "advertencia": 0.75, "desaconsejado": 0.4}
 LAMBDA, LAMBDA_SORPRESA = 0.3, 0.5
+# La calidad de un polo (su valor frente al mejor) entra al puntaje elevada a esto. En 1, como siempre; la variante
+# de la evaluación (decisión 0021) prueba 0,5: acorta la distancia entre los mejores polos frente a la novedad.
+CONCAVIDAD = 1.0
 CASA_MIN = 30  # una base más cerca que esto del origen es la misma ciudad
 POLOS_A_PLANIFICAR = 12  # como mínimo; se sigue hasta tener tres bases distintas
 POLOS_A_PLANIFICAR_MAX = 30
@@ -1203,6 +1206,11 @@ def ida(polo: PoloDatos, consulta: Consulta, origen: Origen) -> tuple[float, flo
     return minutos, km, km_tren, km_bote, None
 
 
+def _concava(fraccion: float) -> float:
+    """La fracción elevada a ``CONCAVIDAD``; en 1, la misma, sin pasar por la potencia."""
+    return fraccion if CONCAVIDAD == 1.0 else fraccion**CONCAVIDAD
+
+
 def resolver(
     consulta: Consulta, datos: Datos, publicados: Instantanea = SIN_PUBLICADOS, sugerir: bool = True
 ) -> Respuesta:
@@ -1221,7 +1229,7 @@ def resolver(
         tope = max(p.cota for p in preparados) or 1.0
         preparados.sort(
             key=lambda p: (
-                -((1 - lam) * p.temporada * p.noche * p.bus * p.cota / tope + lam * p.polo.novedad),
+                -((1 - lam) * p.temporada * p.noche * p.bus * _concava(p.cota / tope) + lam * p.polo.novedad),
                 p.polo.id,
             )
         )
@@ -1243,7 +1251,7 @@ def resolver(
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
-        calidad = it.valor / mejor * ocupacion * p.temporada * p.noche * p.bus
+        calidad = _concava(it.valor / mejor) * ocupacion * p.temporada * p.noche * p.bus
         dias = costo = None
         if consulta.presupuesto is not None:
             dias = dias_del_viaje(it, consulta, origen, datos)

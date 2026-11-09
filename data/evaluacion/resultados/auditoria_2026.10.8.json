@@ -1,0 +1,155 @@
+{
+  "version_datos": "2026.10.8",
+  "con": "el motor",
+  "consultas": 1152,
+  "viajes": 3444,
+  "tramos_en_ciudad": {
+    "metropoli": {
+      "tramos": 10184,
+      "km_mediana": 4.1,
+      "minutos_mediana": 12.0,
+      "kmh_mediana": 20.5,
+      "tomtom_kmh": 16.0,
+      "mas_rapidos_que_tomtom": 0.686
+    },
+    "grande": {
+      "tramos": 7554,
+      "km_mediana": 3.0,
+      "minutos_mediana": 12.0,
+      "kmh_mediana": 15.0,
+      "tomtom_kmh": 17.1,
+      "mas_rapidos_que_tomtom": 0.455
+    }
+  },
+  "dias": {
+    "de_visita": 10844,
+    "con_7_5_horas_o_mas": 0.278,
+    "con_7_horas_o_mas": 0.414,
+    "con_6_paradas": 0.664,
+    "paradas_por_dia": {
+      "1": 46,
+      "2": 401,
+      "3": 893,
+      "4": 898,
+      "5": 1406,
+      "6": 7200
+    },
+    "en_lima": {
+      "dias": 1997,
+      "paradas_mediana": 6,
+      "con_6_paradas": 0.936,
+      "paradas_por_dia": {
+        "1": 15,
+        "2": 69,
+        "3": 21,
+        "5": 23,
+        "6": 1869
+      }
+    }
+  },
+  "orden": {
+    "dias": 10397,
+    "el_mejor": 0.556,
+    "a_mas_de_5_por_ciento": 0.011
+  },
+  "visitas_por_jerarquia": {
+    "4": {
+      "paradas": 1527,
+      "minutos_mediana": 90,
+      "de_30_o_menos": 0.267,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Templo de San Pedro Apóstol de Andahuaylillas",
+          394
+        ],
+        [
+          "Líneas y Geoglifos de Nasca y Palpa",
+          13
+        ]
+      ]
+    },
+    "3": {
+      "paradas": 11729,
+      "minutos_mediana": 66,
+      "de_30_o_menos": 0.213,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Zona Arqueologica de Moray",
+          449
+        ],
+        [
+          "Templo de la Compañía de Jesús",
+          412
+        ],
+        [
+          "Centro Histórico de Trujillo",
+          406
+        ],
+        [
+          "Templo San Juan Bautista de Huaro",
+          394
+        ],
+        [
+          "Parque de la Reserva - Circuito Mágico del Agua",
+          314
+        ],
+        [
+          "Cerrito Huajsapata",
+          264
+        ]
+      ]
+    }
+  },
+  "de_noche_en_el_dia": {
+    "paradas": 314,
+    "las_mas_frecuentes": [
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "14:52",
+        219
+      ],
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "11:27",
+        48
+      ],
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "10:40",
+        39
+      ],
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "13:50",
+        8
+      ]
+    ]
+  },
+  "concentracion": {
+    "zonas_distintas": 55,
+    "las_5_mas_propuestas": [
+      [
+        "Miraflores",
+        0.181
+      ],
+      [
+        "Trujillo",
+        0.162
+      ],
+      [
+        "Cuzco",
+        0.136
+      ],
+      [
+        "Puno",
+        0.082
+      ],
+      [
+        "Arequipa",
+        0.08
+      ]
+    ],
+    "las_10_mas_propuestas": 0.802,
+    "con_base_en_ciudad_grande_o_lima": 0.46
+  }
+}

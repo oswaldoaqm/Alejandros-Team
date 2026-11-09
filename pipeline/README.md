@@ -14,14 +14,14 @@ python -m pipeline.clima     # después de elevacion, unos segundos
 python -m pipeline.noche     # después de tiempos y de descargar_overture.py, unos 10 segundos
 python -m pipeline.cielo     # después de noche y de las descargas del cielo, unos 3 minutos
 python -m pipeline.comida    # después de bases y de descargar_overture.py, unos 2 minutos
-python -m pipeline.artefactos --version 2026.10.8   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.11.1   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.10.8` suma la altura de las bases según un modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base ([más abajo](#la-altura-de-las-bases)). La `2026.10.7` sumó dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)), la `2026.10.6`, la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.11.1` suma el tráfico de las ciudades y la ida en bus ([más abajo](#qué-tan-bien-estima-los-tiempos-de-viaje), decisiones [0025](../docs/decisiones/0025-trafico-de-las-ciudades.md) y [0026](../docs/decisiones/0026-ida-en-bus.md)), y la red deja de usar el Ferrocarril Central; las bases de los polos son las de antes. La `2026.10.8` sumó la altura de las bases según un modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base ([más abajo](#la-altura-de-las-bases)). La `2026.10.7` sumó dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)), la `2026.10.6`, la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -86,22 +86,23 @@ El error de la red contra el tiempo de la ficha se mide por validación cruzada 
 
 | Distancia | Recorridos | Error medio | Error mediano | Minutos de error (mediana) |
 |---|---:|---:|---:|---:|
-| Hasta 10 km | 291 | 31 % | 25 % | 4 |
-| 10 a 30 km | 427 | 27 % | 23 % | 8 |
-| 30 a 100 km | 560 | 21 % | 16 % | 13 |
-| 100 a 300 km | 434 | 15 % | 13 % | 28 |
-| Más de 300 km | 68 | 15 % | 12 % | 64 |
-| **Todos** | **1 780** | **22 %** | **17 %** | **11** |
+| Hasta 10 km | 286 | 31 % | 22 % | 3 |
+| 10 a 30 km | 426 | 27 % | 21 % | 7 |
+| 30 a 100 km | 564 | 22 % | 17 % | 14 |
+| 100 a 300 km | 435 | 15 % | 12 % | 25 |
+| Más de 300 km | 68 | 16 % | 10 % | 45 |
+| **Todos** | **1 779** | **22 %** | **17 %** | **11** |
 
 Con los mismos recorridos, la fórmula de la semana 6 (línea recta × 1,6 a 32,5 km/h) se equivoca en 48 % en promedio. En los viajes cortos el error relativo es mayor porque las fichas redondean a 5 o 10 minutos, pero en minutos es poco.
 
 Lo calibrado, en [`data/procesados/red_calibracion.json`](../data/procesados/red_calibracion.json):
 
-- **Velocidad por clase de vía:** troncal 58 km/h, primaria 52, secundaria 53, terciaria 38, local 30 y trocha 32. La autopista sale en 48 porque son las vías expresas de Lima, con su tráfico.
-- **Recargos:** 0,3 minutos más por km sin asfaltar y 0,1 por km por cada 100° de giro por km, que es lo que frena en la sierra.
-- **Tiempo fijo:** 7 minutos por traslado, para salir del pueblo, estacionar o subir al bus.
+- **Velocidad por clase de vía, fuera de las ciudades:** autopista 87 km/h, troncal 63, primaria 66, secundaria 60, terciaria 40, local 30 y trocha 25.
+- **Recargos:** 0,4 minutos más por km sin asfaltar y 0,15 por km por cada 100° de giro por km, que es lo que frena en la sierra.
+- **Tiempo fijo:** 4 minutos por traslado, para salir del pueblo, estacionar o subir al bus.
+- **En las ciudades** ([decisión 0025](../docs/decisiones/0025-trafico-de-las-ciudades.md)): la red reconoce 31 ciudades de 20 km² o más por la densidad de sus cruces de calles. En Lima y Callao ninguna calle va a más de 15,3 km/h, ni la autopista a más de 33,5; en las ciudades de 100 a 500 km², como Arequipa, Trujillo, Huancayo, Chiclayo o Piura, 17,1 y 33,2. Salen de lo que mide TomTom de día: con ellos, 10 km por la ciudad toman 37,3 minutos en Lima (TomTom: 37,6) y 35,0 en Arequipa (35,0). Trujillo, que no entra en el ajuste, da 35,0 contra 35,7. En las de 20 a 100 km², como el Cusco, Puno o Ayacucho, cada km suma 1 minuto, ajustado con las fichas.
 
-Sin las curvas, el error medio sube a 23,5 %, y sin los minutos fijos, a 25 %: los viajes cortos quedan muy por debajo. Un solo ritmo para todas las vías, o quitar el recargo por km sin asfaltar, casi no cambia el error sobre rutas ya elegidas (22,4 %). Pero las clases hacen falta para elegir la ruta: con un solo ritmo, el camino más rápido sería casi siempre el más corto, aunque fuera una trocha.
+Las fichas no ven todo el tráfico: con él, los 168 recorridos que salen de la provincia de Lima quedan, en la mediana, 10 % más largos que lo que dicen sus fichas, cuando antes quedaban 20 % más cortos; y el error de toda la calibración queda en 22,5 %, cuando sin las ciudades era 22,3 %. Se prefiere lo que mide TomTom: las fichas de Lima van casi todas por la Panamericana, y sus pocos recorridos cortos son cifras redondas. Sin las curvas, el error medio sube a 25 %, y sin los minutos fijos, a 23 %: los viajes cortos quedan muy por debajo. Un solo ritmo para todas las vías, o quitar el recargo por km sin asfaltar, casi no cambia el error sobre rutas ya elegidas (23,1 y 22,8 %). Pero las clases hacen falta para elegir la ruta: con un solo ritmo, el camino más rápido sería casi siempre el más corto, aunque fuera una trocha.
 
 La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas de un mismo polo, el camino es más de 2,7 veces la distancia en línea recta, y 4 842 pares (2 %) no se unen ni con el tren y los botes. El caso extremo son las lagunas Jahuacocha y Viconga, a los dos lados de la cordillera Huayhuash: 23 km en línea recta, y 224 km y casi 10 horas por carretera.
 
@@ -109,7 +110,7 @@ La red muestra lo que la línea recta no ve. En el 10 % de los pares de paradas 
 
 Sobre las vías van dos capas ([decisión 0010](../docs/decisiones/0010-tren-y-botes.md)):
 
-- **Tren:** 1 042 km de rieles con 87 estaciones. Son las rutas de tren de pasajeros de OpenStreetMap, sin los ramales mineros, más los rieles de uso turístico que no tienen ruta, como el tramo de Machu Picchu a la Hidroeléctrica.
+- **Tren:** 1 042 km de rieles con 87 estaciones. Son las rutas de tren de pasajeros de OpenStreetMap, sin los ramales mineros, más los rieles de uso turístico que no tienen ruta, como el tramo de Machu Picchu a la Hidroeléctrica. Desde la versión `2026.11.1` la red no usa el Ferrocarril Central, de Lima a La Oroya y Huancayo: OpenStreetMap lo trae como ruta de pasajeros, pero no tiene servicio regular, y con el tráfico de Lima la ida a la sierra central salía de la ciudad en ese tren ([`referencia/trenes_sin_servicio.csv`](./referencia/trenes_sin_servicio.csv)). Quedan 713 km.
 - **Bote:** 2 426 km de rutas: el Titicaca, las Ballestas, las islas frente al Callao y los ríos de la Amazonía. Son los ferris de más de 3 km; los más cortos son balsas y van con las vías.
 
 Cómo se viaja por ellas:

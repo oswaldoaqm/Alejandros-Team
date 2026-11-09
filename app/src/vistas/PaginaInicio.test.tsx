@@ -1,12 +1,19 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
 import { obtenerFestividadesVivas } from "../datos/festividades";
 import { irA, ponerApi } from "../pruebas/api";
 
+// Las festividades de la portada dependen del día: estas pruebas van al 3 de noviembre de 2026.
+function el3DeNoviembre() {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date(2026, 10, 3, 12));
+}
+
 describe("página de inicio", () => {
   it("muestra el carrusel hero, el CTA a Planear, festividades del mes y el blog viajero", async () => {
+    el3DeNoviembre();
     irA("./");
     ponerApi();
     render(<App />);
@@ -96,6 +103,7 @@ describe("página de inicio", () => {
   });
 
   it("al presionar «Ver más» en una festividad se abre su hoja de detalle con botón para planear viaje", async () => {
+    el3DeNoviembre();
     irA("./");
     ponerApi();
     render(<App />);

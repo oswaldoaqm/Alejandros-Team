@@ -162,17 +162,17 @@ describe("el formulario", () => {
     const api = await abrir();
     await abrirFila(/^A dónde/);
     const buscador = screen.getByRole("searchbox", { name: "Buscar una zona o un lugar" });
-    await userEvent.type(buscador, "ocopa");
+    await userEvent.type(buscador, "huanchaco");
     const hoja = screen.getByRole("dialog");
-    const [huancayo] = within(hoja).getAllByRole("button", { pressed: false });
-    expect(plano(huancayo?.textContent)).toBe("HuancayoPor Convento de Santa Rosa de Ocopa");
-    await userEvent.click(huancayo as HTMLElement);
+    const [trujillo] = within(hoja).getAllByRole("button", { pressed: false });
+    expect(plano(trujillo?.textContent)).toBe("TrujilloPor Balneario de Huanchaco");
+    await userEvent.click(trujillo as HTMLElement);
 
-    expect(fila(/^A dónde/)).toBe("A dónde Huancayo");
+    expect(fila(/^A dónde/)).toBe("A dónde Trujillo");
     expect(screen.queryByRole("button", { name: /Sorpréndeme/ })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: "Ver mi viaje" }));
-    await screen.findByRole("heading", { level: 1, name: "Huancayo" });
-    expect(consultaPedida(api)).toMatch(/^\/v1\/viajes\?origen=lima&destino=33&mes=\d+&dias=6$/);
+    await screen.findByRole("heading", { level: 1, name: "Trujillo" });
+    expect(consultaPedida(api)).toMatch(/^\/v1\/viajes\?origen=lima&destino=139&mes=\d+&dias=6$/);
     expect(window.location.hash).toBe("#/ruta/1");
   });
 

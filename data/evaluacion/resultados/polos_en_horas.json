@@ -5,7 +5,7 @@
   },
   "contra_los_tiempos_del_motor": {
     "pares": 210722,
-    "con_camino_aqui": 208776,
+    "con_camino_aqui": 208528,
     "a_menos_de_un_minuto": 1.0,
     "mas_cortos_aqui_por_mas_de_5_min": 0,
     "diferencia_mediana_min": 0.0
@@ -18,9 +18,9 @@
     "cobertura": 0.9753,
     "paradas_por_grupo_mediana": 14.0,
     "diametro_h": {
-      "mediana": 3.37,
-      "p90": 6.23,
-      "maximo": 9.77
+      "mediana": 3.39,
+      "p90": 6.4,
+      "maximo": 10.51
     },
     "desnivel_m": {
       "mediana": 674.0,
@@ -28,23 +28,23 @@
     },
     "con_pares_sin_camino": 43,
     "pasan_de": {
-      "3_h": 129,
-      "4_h": 82,
-      "5_h": 48,
-      "6_h": 29,
+      "3_h": 136,
+      "4_h": 83,
+      "5_h": 51,
+      "6_h": 33,
       "8_h": 5
     }
   },
   "v3": {
     "180": {
-      "grupos": 235,
-      "paradas": 4134,
-      "cobertura": 0.903,
+      "grupos": 237,
+      "paradas": 4147,
+      "cobertura": 0.9059,
       "paradas_por_grupo_mediana": 11.0,
       "diametro_h": {
-        "mediana": 2.12,
-        "p90": 2.76,
-        "maximo": 2.93
+        "mediana": 2.16,
+        "p90": 2.81,
+        "maximo": 2.99
       },
       "desnivel_m": {
         "mediana": 947.0,
@@ -53,33 +53,33 @@
       "con_pares_sin_camino": 0
     },
     "240": {
-      "grupos": 203,
-      "paradas": 4268,
-      "cobertura": 0.9323,
+      "grupos": 205,
+      "paradas": 4241,
+      "cobertura": 0.9264,
       "paradas_por_grupo_mediana": 12.0,
       "diametro_h": {
-        "mediana": 2.78,
-        "p90": 3.78,
+        "mediana": 2.7,
+        "p90": 3.65,
         "maximo": 4.0
       },
       "desnivel_m": {
-        "mediana": 1026.0,
+        "mediana": 1012.0,
         "maximo": 1300.0
       },
       "con_pares_sin_camino": 0
     },
     "300": {
-      "grupos": 180,
-      "paradas": 4316,
-      "cobertura": 0.9428,
-      "paradas_por_grupo_mediana": 14.0,
+      "grupos": 176,
+      "paradas": 4310,
+      "cobertura": 0.9415,
+      "paradas_por_grupo_mediana": 13.0,
       "diametro_h": {
-        "mediana": 3.3,
-        "p90": 4.57,
-        "maximo": 4.98
+        "mediana": 3.35,
+        "p90": 4.6,
+        "maximo": 5.0
       },
       "desnivel_m": {
-        "mediana": 1078.5,
+        "mediana": 1083.0,
         "maximo": 1300.0
       },
       "con_pares_sin_camino": 0
@@ -88,29 +88,29 @@
   "elegido": {
     "umbral_min": 240,
     "desnivel_max_m": 1300,
-    "paradas_en_las_dos": 4219,
-    "ari": 0.745,
-    "pares_juntos_en_la_v2_que_siguen_juntos": 0.831,
-    "pares_juntos_en_la_v3_que_ya_lo_estaban": 0.68,
-    "grupos_de_la_v2_que_se_parten": 127,
-    "grupos_de_la_v3_que_juntan_dos_o_mas": 155,
-    "en_la_v2_y_sin_grupo_en_la_v3": 246,
-    "sin_grupo_en_la_v2_y_en_la_v3": 49
+    "paradas_en_las_dos": 4190,
+    "ari": 0.712,
+    "pares_juntos_en_la_v2_que_siguen_juntos": 0.735,
+    "pares_juntos_en_la_v3_que_ya_lo_estaban": 0.696,
+    "grupos_de_la_v2_que_se_parten": 124,
+    "grupos_de_la_v3_que_juntan_dos_o_mas": 154,
+    "en_la_v2_y_sin_grupo_en_la_v3": 275,
+    "sin_grupo_en_la_v2_y_en_la_v3": 51
   },
   "v3_sin_tope_de_desnivel": {
     "240": {
-      "grupos": 161,
-      "paradas": 4346,
-      "cobertura": 0.9493,
-      "paradas_por_grupo_mediana": 18.0,
+      "grupos": 164,
+      "paradas": 4353,
+      "cobertura": 0.9509,
+      "paradas_por_grupo_mediana": 19.0,
       "diametro_h": {
-        "mediana": 3.11,
-        "p90": 3.82,
-        "maximo": 3.96
+        "mediana": 3.14,
+        "p90": 3.83,
+        "maximo": 3.97
       },
       "desnivel_m": {
-        "mediana": 1421.0,
-        "maximo": 4017.0
+        "mediana": 1409.0,
+        "maximo": 4307.0
       },
       "con_pares_sin_camino": 0
     }

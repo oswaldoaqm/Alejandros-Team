@@ -1,0 +1,140 @@
+{
+  "version_datos": "2026.11.1",
+  "con": "la variante del kit",
+  "consultas": 1152,
+  "viajes": 3444,
+  "tramos_en_ciudad": {
+    "metropoli": {
+      "tramos": 5188,
+      "km_mediana": 4.1,
+      "minutos_mediana": 16.0,
+      "kmh_mediana": 14.4,
+      "tomtom_kmh": 16.0,
+      "mas_rapidos_que_tomtom": 0.312
+    },
+    "grande": {
+      "tramos": 7307,
+      "km_mediana": 2.3,
+      "minutos_mediana": 12,
+      "kmh_mediana": 11.5,
+      "tomtom_kmh": 17.1,
+      "mas_rapidos_que_tomtom": 0.116
+    }
+  },
+  "dias": {
+    "de_visita": 10456,
+    "con_7_5_horas_o_mas": 0.321,
+    "con_7_horas_o_mas": 0.489,
+    "con_6_paradas": 0.606,
+    "paradas_por_dia": {
+      "1": 88,
+      "2": 544,
+      "3": 904,
+      "4": 877,
+      "5": 1707,
+      "6": 6336
+    },
+    "en_lima": {
+      "dias": 1035,
+      "paradas_mediana": 6,
+      "con_6_paradas": 0.662,
+      "paradas_por_dia": {
+        "1": 3,
+        "2": 53,
+        "3": 9,
+        "5": 285,
+        "6": 685
+      }
+    }
+  },
+  "orden": {
+    "dias": 9824,
+    "el_mejor": 0.564,
+    "a_mas_de_5_por_ciento": 0.01
+  },
+  "visitas_por_jerarquia": {
+    "4": {
+      "paradas": 1499,
+      "minutos_mediana": 90,
+      "de_30_o_menos": 0.211,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Templo de San Pedro Apóstol de Andahuaylillas",
+          283
+        ],
+        [
+          "Líneas y Geoglifos de Nasca y Palpa",
+          33
+        ]
+      ]
+    },
+    "3": {
+      "paradas": 9458,
+      "minutos_mediana": 66.0,
+      "de_30_o_menos": 0.232,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Centro Histórico de Trujillo",
+          354
+        ],
+        [
+          "Zona Arqueologica de Moray",
+          299
+        ],
+        [
+          "Templo de la Compañía de Jesús",
+          291
+        ],
+        [
+          "Templo San Juan Bautista de Huaro",
+          283
+        ],
+        [
+          "Biblioteca Municipal Manuel Beingolea",
+          273
+        ],
+        [
+          "Cerrito Huajsapata",
+          270
+        ]
+      ]
+    }
+  },
+  "de_noche_en_el_dia": {
+    "paradas": 257,
+    "las_mas_frecuentes": [
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "10:51",
+        257
+      ]
+    ]
+  },
+  "concentracion": {
+    "zonas_distintas": 66,
+    "las_5_mas_propuestas": [
+      [
+        "Trujillo",
+        0.153
+      ],
+      [
+        "Miraflores",
+        0.112
+      ],
+      [
+        "Puno",
+        0.091
+      ],
+      [
+        "Arequipa",
+        0.09
+      ],
+      [
+        "Cuzco",
+        0.089
+      ]
+    ],
+    "las_10_mas_propuestas": 0.758,
+    "con_base_en_ciudad_grande_o_lima": 0.408
+  }
+}

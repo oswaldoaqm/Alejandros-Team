@@ -126,12 +126,12 @@ SIN_VIAJE = [
         id="los lugares muy altos",
     ),
     pytest.param(
-        "arequipa",
+        "lima",
         2,
-        "Sangalle",
+        "Ollantaytambo",
         {},
-        "En 2 días, el camino a Sangalle deja muy poco tiempo allá: por carretera, solo la ida toma unas 6 horas.",
-        [("dias", 3, "sale el viaje, sin volar")],
+        "En 2 días, el camino a Ollantaytambo deja muy poco tiempo allá: en avión, solo la ida toma unas 6 horas.",
+        [("dias", 3, "sale el viaje, con vuelo")],
         id="poco tiempo alla",
     ),
     pytest.param(
@@ -139,16 +139,16 @@ SIN_VIAJE = [
         2,
         "Iquitos",
         {"solo_por_tierra": True},
-        "En 2 días no da para ir de Lima a Iquitos y volver: por carretera y en bote, solo la ida toma unas 53 horas.",
+        "En 2 días no da para ir de Lima a Iquitos y volver: por carretera y en bote, solo la ida toma unas 54 horas.",
         [("solo_por_tierra", False, "sale el viaje, con vuelo")],
         id="con destino se vuela en dos dias",
     ),
     pytest.param(
         "lima",
         2,
-        "Macusani",
+        "Iñapari",
         {"solo_por_tierra": True},
-        "En 2 días no da para ir de Lima a Macusani y volver: por carretera, solo la ida toma unas 28 horas. "
+        "En 2 días no da para ir de Lima a Iñapari y volver: por carretera, solo la ida toma unas 36 horas. "
         "Volando, cabe en 4 días.",
         [],
         id="volar y mas dias, juntos",
@@ -183,14 +183,16 @@ def test_si_no_cabe_dice_por_que_y_que_cambiar(origen, dias, zona, extra, motivo
     respuesta = viaje.resolver(consulta, datos)
     assert respuesta.rutas == []
     assert respuesta.sin_resultado.motivo == motivo
-    # Y siempre, al final, buscar en todas las zonas, si eso da algo.
+    # Y siempre, al final, buscar en todas las zonas, si eso da algo: lo que dice es cuántos viajes salen.
+    en_todas = len(viaje.resolver(consulta.model_copy(update={"destino": None}), datos).rutas)
+    efecto = "aparece 1 viaje" if en_todas == 1 else f"aparecen {en_todas} viajes"
     sugerencias = [(s.campo, s.valor, s.efecto) for s in respuesta.sin_resultado.sugerencias]
-    assert sugerencias == [*cambios, ("destino", None, "aparecen 3 viajes")]
+    assert en_todas >= 1 and sugerencias == [*cambios, ("destino", None, efecto)]
     # Cada cambio, solo, hace salir el viaje: a esa zona, o los que dice en todas.
     for s in respuesta.sin_resultado.sugerencias:
         rutas = viaje.resolver(consulta.model_copy(update={s.campo: s.valor}), datos).rutas
         if s.campo == "destino":
-            assert len(rutas) == 3
+            assert len(rutas) == en_todas
         else:
             assert [r.polo.id for r in rutas] == [consulta.destino]
             assert ("avion" in rutas[0].traslado.medios) == s.efecto.endswith("con vuelo")

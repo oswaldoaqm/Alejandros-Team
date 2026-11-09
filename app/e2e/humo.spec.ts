@@ -141,7 +141,7 @@ test("«A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y 
   await expect(page.getByRole("button", { name: /^A dónde/ })).toContainText("Machupicchu Pueblo");
 });
 
-test("a Huaraz en bus de noche: los tres días son allá, cada uno con su almuerzo, y el primero, tranquilo", async ({
+test("a Huaraz en bus de noche: los tres días son allá, el primero tranquilo y el almuerzo en su día", async ({
   page,
 }) => {
   await page.goto("./?origen=lima&destino=14&mes=7&dias=3#/ruta/1");
@@ -168,13 +168,16 @@ test("a Huaraz en bus de noche: los tres días son allá, cada uno con su almuer
     elDia.getByText(/^El bus de noche sale de Lima a las \d\d:\d\d de la noche anterior/),
   ).toBeVisible();
   await expect(elDia.getByText("Día tranquilo para acostumbrarte a la altura.")).toBeVisible();
+  const delUno = await new AxeBuilder({ page }).withTags(PAUTAS).include(".un-dia").analyze();
+  expect(delUno.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
+
+  // El día 1 termina sus visitas antes de las 12:30 y no trae almuerzo (garantía 12); el 2 es entero.
+  await page.getByRole("radio", { name: "Día 2" }).check({ force: true });
   const almuerzo = page.locator(".lugares__almuerzo");
   await expect(almuerzo).toHaveCount(1);
   await expect(almuerzo).toContainText(/^\d\d:\d\d Almuerzo/);
   // La hora del almuerzo no es un lugar: no se abre.
   await expect(almuerzo.getByRole("button")).toHaveCount(0);
-  const delUno = await new AxeBuilder({ page }).withTags(PAUTAS).include(".un-dia").analyze();
-  expect(delUno.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
 
   await page.getByRole("radio", { name: "Día 3" }).check({ force: true });
   await expect(elDia.getByText(/^En la noche, el bus de vuelta: sale de Huaraz a las/)).toBeVisible();

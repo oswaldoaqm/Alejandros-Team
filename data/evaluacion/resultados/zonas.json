@@ -1,46 +1,46 @@
 {
-  "version_datos": "2026.10.8",
+  "version_datos": "2026.11.1",
   "consultas": 40,
   "cobertura": {
     "motor": {
       "viajes": 120,
-      "zonas_distintas": 30,
+      "zonas_distintas": 29,
       "de": 194,
       "fuera_del_circuito": 0.75,
-      "novedad_media": 0.4147
+      "novedad_media": 0.427
     },
     "guia": {
       "viajes": 120,
-      "zonas_distintas": 35,
+      "zonas_distintas": 36,
       "de": 194,
-      "fuera_del_circuito": 0.5833,
-      "novedad_media": 0.3573
+      "fuera_del_circuito": 0.6,
+      "novedad_media": 0.3732
     },
     "variante": {
       "viajes": 120,
       "zonas_distintas": 33,
       "de": 194,
-      "fuera_del_circuito": 0.7417,
-      "novedad_media": 0.4111
+      "fuera_del_circuito": 0.8,
+      "novedad_media": 0.4597
     }
   },
   "coinciden": {
     "motor_y_guia": {
       "propuestas_en_comun": 60,
       "de": 120,
-      "consultas_con_las_mismas_zonas": 2,
+      "consultas_con_las_mismas_zonas": 4,
       "consultas": 40
     },
     "motor_y_variante": {
-      "propuestas_en_comun": 110,
+      "propuestas_en_comun": 100,
       "de": 120,
-      "consultas_con_las_mismas_zonas": 30,
+      "consultas_con_las_mismas_zonas": 22,
       "consultas": 40
     },
     "guia_y_variante": {
-      "propuestas_en_comun": 63,
+      "propuestas_en_comun": 54,
       "de": 120,
-      "consultas_con_las_mismas_zonas": 3,
+      "consultas_con_las_mismas_zonas": 1,
       "consultas": 40
     }
   }

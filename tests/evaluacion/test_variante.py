@@ -1,5 +1,5 @@
-"""La variante de la evaluación (decisión 0021): cambia el valor de lo no pedido mientras dura el bloque, y
-después deja el motor como estaba."""
+"""La variante de la evaluación (decisión 0021): la raíz de la calidad en el puntaje mientras dura el bloque, y
+después el motor como estaba."""
 
 import pytest
 
@@ -10,22 +10,27 @@ from evaluacion import variante
 
 
 def test_la_variante_deja_el_motor_como_estaba_aunque_algo_falle():
-    antes = viaje.FACTOR_SIN_INTERES
-    with pytest.raises(RuntimeError), variante.con_factor():
-        assert viaje.FACTOR_SIN_INTERES == variante.FACTOR_SIN_INTERES
+    antes = viaje.CONCAVIDAD
+    with pytest.raises(RuntimeError), variante.con_concavidad():
+        assert viaje.CONCAVIDAD == variante.CONCAVIDAD == 0.5
+        assert viaje._concava(0.25) == pytest.approx(0.5)
         raise RuntimeError
-    assert viaje.FACTOR_SIN_INTERES == antes
+    assert viaje.CONCAVIDAD == antes == 1.0
+    assert viaje._concava(0.25) == 0.25
 
 
 @pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
-def test_para_un_fin_de_semana_de_playa_la_variante_no_propone_una_zona_sin_playas():
-    """El caso que la motivó: desde Lima, un fin de semana de enero de playa (la consulta 15)."""
+def test_la_variante_reparte_mas_los_viajes():
+    """Lo que la motivó: el motor propone casi siempre las mismas zonas. En una rejilla chica, la variante
+    propone más zonas distintas, y deja el motor como estaba."""
     datos = artefactos.cargar()
-    consulta = Consulta(origen="lima", mes=1, dias=2, intereses=["playa"])
-
-    def sin_playas(polo: int) -> bool:
-        return not any("playa" in datos.recursos[c]["intereses"] for c in datos.polos[polo].paradas)
-
-    assert any(sin_playas(r.polo.id) for r in viaje.resolver(consulta, datos).rutas)
-    assert not any(sin_playas(z) for z in variante.zonas(consulta, datos))
-    assert viaje.FACTOR_SIN_INTERES == 0.25
+    consultas = [
+        Consulta(origen=o, mes=m, dias=d)
+        for o in ("lima", "arequipa", "cusco", "trujillo", "piura", "huancayo")
+        for m in (2, 7)
+        for d in (4, 6)
+    ]
+    motor = {r.polo.id for c in consultas for r in viaje.resolver(c, datos, sugerir=False).rutas}
+    con_la_variante = {z for c in consultas for z in variante.zonas(c, datos)}
+    assert len(con_la_variante) > len(motor)
+    assert viaje.CONCAVIDAD == 1.0

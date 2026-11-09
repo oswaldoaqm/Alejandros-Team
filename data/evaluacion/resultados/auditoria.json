@@ -1,0 +1,141 @@
+{
+  "version_datos": "2026.11.1",
+  "con": "el motor",
+  "consultas": 1152,
+  "viajes": 3444,
+  "tramos_en_ciudad": {
+    "metropoli": {
+      "tramos": 9959,
+      "km_mediana": 4.0,
+      "minutos_mediana": 16,
+      "kmh_mediana": 14.4,
+      "tomtom_kmh": 16.0,
+      "mas_rapidos_que_tomtom": 0.303
+    },
+    "grande": {
+      "tramos": 6594,
+      "km_mediana": 3.0,
+      "minutos_mediana": 14.0,
+      "kmh_mediana": 12.9,
+      "tomtom_kmh": 17.1,
+      "mas_rapidos_que_tomtom": 0.131
+    }
+  },
+  "dias": {
+    "de_visita": 10702,
+    "con_7_5_horas_o_mas": 0.3,
+    "con_7_horas_o_mas": 0.456,
+    "con_6_paradas": 0.633,
+    "paradas_por_dia": {
+      "1": 96,
+      "2": 577,
+      "3": 786,
+      "4": 662,
+      "5": 1804,
+      "6": 6777
+    },
+    "en_lima": {
+      "dias": 2156,
+      "paradas_mediana": 6.0,
+      "con_6_paradas": 0.688,
+      "paradas_por_dia": {
+        "1": 17,
+        "2": 126,
+        "3": 52,
+        "4": 2,
+        "5": 475,
+        "6": 1484
+      }
+    }
+  },
+  "orden": {
+    "dias": 10029,
+    "el_mejor": 0.553,
+    "a_mas_de_5_por_ciento": 0.011
+  },
+  "visitas_por_jerarquia": {
+    "4": {
+      "paradas": 1555,
+      "minutos_mediana": 90,
+      "de_30_o_menos": 0.244,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Templo de San Pedro Apóstol de Andahuaylillas",
+          368
+        ],
+        [
+          "Líneas y Geoglifos de Nasca y Palpa",
+          11
+        ]
+      ]
+    },
+    "3": {
+      "paradas": 11284,
+      "minutos_mediana": 66.0,
+      "de_30_o_menos": 0.233,
+      "las_mas_frecuentes_de_30_o_menos": [
+        [
+          "Biblioteca Municipal Manuel Beingolea",
+          417
+        ],
+        [
+          "Zona Arqueologica de Moray",
+          405
+        ],
+        [
+          "Parque de la Reserva - Circuito Mágico del Agua",
+          390
+        ],
+        [
+          "Templo de la Compañía de Jesús",
+          386
+        ],
+        [
+          "Templo San Juan Bautista de Huaro",
+          368
+        ],
+        [
+          "Centro Histórico de Trujillo",
+          330
+        ]
+      ]
+    }
+  },
+  "de_noche_en_el_dia": {
+    "paradas": 390,
+    "las_mas_frecuentes": [
+      [
+        "Parque de la Reserva - Circuito Mágico del Agua",
+        "10:51",
+        390
+      ]
+    ]
+  },
+  "concentracion": {
+    "zonas_distintas": 56,
+    "las_5_mas_propuestas": [
+      [
+        "Miraflores",
+        0.187
+      ],
+      [
+        "Trujillo",
+        0.161
+      ],
+      [
+        "Cuzco",
+        0.123
+      ],
+      [
+        "Puno",
+        0.08
+      ],
+      [
+        "Arequipa",
+        0.067
+      ]
+    ],
+    "las_10_mas_propuestas": 0.805,
+    "con_base_en_ciudad_grande_o_lima": 0.452
+  }
+}

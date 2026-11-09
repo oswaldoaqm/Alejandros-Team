@@ -1,6 +1,6 @@
 # Arquitectura, flujos e interfaz
 
-Estado al 27 de octubre de 2026, con el [contrato 1.7](./CONTRATO.md) y los datos `2026.10.8`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
+Estado al 5 de noviembre de 2026, con el [contrato 1.7](./CONTRATO.md) y los datos `2026.11.1`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
 
 DreemGO tiene cuatro partes. El pipeline baja fuentes abiertas y las convierte en archivos con versión. El motor carga esos archivos al arrancar y responde desde memoria, detrás de un API. La app web le pregunta al API y muestra los viajes. Y la evaluación mide lo que propone el motor con el mismo código que responde al API.
 
@@ -14,6 +14,7 @@ flowchart LR
         clima["Open-Meteo, GOES-16 y METAR<br/>lluvia y noches despejadas"]
         cielo["VIIRS y Terrain Tiles<br/>luz del cielo y altura"]
         vuelos["Rutas aéreas<br/>las 22 que salen de Lima"]
+        trafico["TomTom y Cruz del Sur<br/>tráfico de ciudad y buses"]
         commons["Wikidata y Wikimedia Commons<br/>fotos de licencia libre"]
     end
     subgraph pipeline["pipeline/ · lo corre el equipo"]
@@ -27,6 +28,7 @@ flowchart LR
     clima --> procesados
     cielo --> procesados
     vuelos --> procesados
+    trafico --> procesados
     commons --> publico
     subgraph usuarios["Quién lo usa"]
         app["Viajero<br/>app/ · React en GitHub Pages"]
@@ -38,7 +40,7 @@ flowchart LR
         publicados --> motor
     end
     subgraph evaluacion["evaluacion/ · lo corre el equipo"]
-        kit["Kit y calificaciones<br/>40 consultas, 185 viajes"]
+        kit["Kit y calificaciones<br/>40 consultas, 196 viajes"]
         cifras["Cifras<br/>acuerdo, métricas, óptimo,<br/>buses, presupuesto, SUS"]
         kit --> cifras
     end
@@ -98,7 +100,7 @@ flowchart TD
     a["pipeline/adquisicion/<br/>descargas, fuera de git"] --> b["pipeline.maestro y pipeline.eventos<br/>las fichas leídas campo por campo"]
     b --> c["pipeline.tiempos y pipeline.vuelos<br/>la red vial, el tren, los botes y el avión"]
     c --> d["pipeline.elevacion, clima, noche, cielo y comida"]
-    d --> e["pipeline.artefactos --version 2026.10.8<br/>dreemgo/datos/"]
+    d --> e["pipeline.artefactos --version 2026.11.1<br/>dreemgo/datos/"]
     e --> f["pytest: las propiedades sobre<br/>1 000 consultas al azar"]
     a --> g["pipeline.fotos y pipeline.destinos<br/>app/public/"]
 ```

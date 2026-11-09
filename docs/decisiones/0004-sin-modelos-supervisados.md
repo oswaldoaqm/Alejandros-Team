@@ -23,3 +23,7 @@ El detalle está en [`week06/ModelSelection.md` §12](../../deliveries/week06/Mo
 - El enunciado lo permite de forma explícita: no se exige un modelo complejo cuando un método más simple es el adecuado.
 - La evaluación no puede apoyarse en métricas de clasificación. Se evalúa con cobertura del valor, brecha contra el óptimo exacto, un conjunto de consultas anotado por el equipo con acuerdo medido (kappa de Fleiss) y pruebas de usabilidad (semana 12).
 - Si el prototipo genera uso real, una capa supervisada de ordenamiento sobre itinerarios aceptados queda como trabajo futuro, con datos reales.
+
+## El modelo de tiempos (9 de noviembre)
+
+Desde la [0008](./0008-calibrar-con-las-fichas.md), el modelo de tiempos sí es supervisado: una regresión ajustada con los tiempos de las fichas y medida con validación cruzada por distrito. La [0026](./0026-ida-en-bus.md) le suma la ida en bus, ajustada con 29 rutas de Cruz del Sur. Lo que esta decisión descartó sigue descartado, el clasificador de clima y el recomendador de comercio, y el título queda como el de entonces. El detalle está en la [auditoría](../AUDITORIA.md), en «Sobre el aprendizaje automático».
