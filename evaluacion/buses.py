@@ -8,10 +8,16 @@ lugares. Aquí se miden los largos contra un bus de verdad.
 
 ``buses.csv`` trae las 29 rutas de Cruz del Sur que unen un origen del motor con la base de una zona, de las 42
 de su página de pasajes, con lo que dice la página de cada ruta, consultada el 26 de octubre de 2026: entre
-cuántos minutos y cuántos toma el viaje, de su servicio más rápido al más lento, y sus kilómetros. Chimbote va
-con Nuevo Chimbote, la base vecina. Son tiempos de terminal a terminal, con las paradas del bus; el motor mide
-de centro a centro por el camino más rápido. Una ruta cae **dentro** si el tiempo del motor está en el rango de
-la empresa, **debajo** si es más rápido que su bus más rápido, y **encima** si es más lento que el más lento.
+cuántos minutos y cuántos toma el viaje, de su servicio más rápido al más lento, y sus kilómetros. Cada ruta
+dice a qué pueblo llega (``llega_a``, con su coordenada), y la zona es la que tiene ahí su base: así no depende
+de cómo se numeren las zonas en cada versión de los datos. Chimbote va con Nuevo Chimbote, la base vecina. Son
+tiempos de terminal a terminal, con las paradas del bus; el motor mide de centro a centro por el camino más
+rápido. Una ruta cae **dentro** si el tiempo del motor está en el rango de la empresa, **debajo** si es más
+rápido que su bus más rápido, y **encima** si es más lento que el más lento.
+
+Desde la decisión 0026, estas rutas también ajustan los dos ritmos de la ida en bus (``pipeline/tiempos.py``):
+lo que da aquí con todas es dentro de la muestra. La cifra que no sale de los mismos datos es la que el pipeline
+mide dejando fuera cada corredor, en ``data/procesados/ida_en_bus.json``.
 
 Para las rutas de 7 a 16 horas, las que el motor hace en bus de noche, se calcula también a qué hora se
 llegaría: el motor fija la salida para llegar a eso de las 6:00 (``viaje.bus_de_noche``), y con los tiempos de
@@ -46,6 +52,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 ARCHIVO = Path(__file__).with_name("buses.csv")
 SALIDA = RAIZ / "data" / "evaluacion" / "resultados"
 ATRASO_QUE_PESA = 60  # minutos: con una hora más, el primer día ya no empieza como dice el plan
+MISMA_BASE_KM = 5.0  # la base de la zona tiene que estar a menos de esto del pueblo al que llega el bus
 
 
 @dataclass(frozen=True)
@@ -53,7 +60,9 @@ class Ruta:
     origen: str
     destino: str
     origen_motor: str
-    polo: int
+    llega_a: str  # el pueblo donde para el bus, que es la base de una zona
+    lat: float
+    lon: float
     empresa_min: int
     empresa_max: int
     empresa_km: int
@@ -68,7 +77,9 @@ def leer(ruta: Path = ARCHIVO) -> list[Ruta]:
             f["origen"],
             f["destino"],
             f["origen_motor"],
-            int(f["polo"]),
+            f["llega_a"],
+            float(f["lat"]),
+            float(f["lon"]),
             int(f["empresa_min"]),
             int(f["empresa_max"]),
             int(f["empresa_km"]),
@@ -88,15 +99,32 @@ def _hora(minuto: int) -> str:
     return f"{m // 60:02d}:{m % 60:02d}"
 
 
+def _km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    a = (
+        math.sin(math.radians(lat2 - lat1) / 2) ** 2
+        + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    )
+    return 2 * 6371.0088 * math.asin(math.sqrt(a))
+
+
+def zona_de(r: Ruta, datos: Datos) -> int:
+    """La zona cuya base está en el pueblo al que llega el bus: la más cercana, a menos de ``MISMA_BASE_KM``."""
+    km, polo = min((_km(r.lat, r.lon, p.base["lat"], p.base["lon"]), p.id) for p in datos.polos.values())
+    if km > MISMA_BASE_KM:
+        raise ValueError(f"{r.origen} → {r.destino}: ninguna zona duerme en {r.llega_a}; la más cerca, a {km:.0f} km")
+    return polo
+
+
 def comparar(r: Ruta, datos: Datos) -> dict:
-    minutos, km = datos.origenes[r.origen_motor].a_base.get(r.polo, (math.nan, math.nan))
+    polo = zona_de(r, datos)
+    minutos, km = datos.origenes[r.origen_motor].a_base.get(polo, (math.nan, math.nan))
     if not math.isfinite(minutos):
-        raise ValueError(f"{r.origen} → {r.destino}: el motor no tiene camino de {r.origen_motor} a la zona {r.polo}")
+        raise ValueError(f"{r.origen} → {r.destino}: el motor no tiene camino de {r.origen_motor} a la zona {polo}")
     mitad = (r.empresa_min + r.empresa_max) / 2
     fila = {
         "origen": r.origen,
         "destino": r.destino,
-        "zona": datos.polos[r.polo].nombre,
+        "zona": datos.polos[polo].nombre,
         "motor_min": round(minutos),
         "empresa_min": r.empresa_min,
         "empresa_max": r.empresa_max,

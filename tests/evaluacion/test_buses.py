@@ -13,6 +13,7 @@ def test_las_rutas_de_la_empresa():
     assert all(r.fuente.startswith("https://www.cruzdelsur.com.pe/pasajes/") for r in rutas)
     assert all(0 < r.empresa_min <= r.empresa_max for r in rutas)
     assert len({(r.origen, r.destino) for r in rutas}) == len(rutas)
+    assert all(-18.5 < r.lat < 0 and -81.5 < r.lon < -68.5 for r in rutas)  # cada pueblo de llegada, en el Perú
 
 
 @pytest.mark.parametrize(("minutos", "esperado"), [(400, "debajo"), (445, "dentro"), (510, "dentro"), (511, "encima")])
@@ -30,3 +31,5 @@ def test_cada_ruta_tiene_camino_y_los_kilometros_son_los_de_la_empresa():
     assert all(0.9 <= f["razon_km"] <= 1.1 for f in filas)
     de_noche = [f for f in filas if f["de_noche"]]
     assert de_noche and all(f["atraso_max"] >= f["atraso_min"] for f in de_noche)
+    # Cada ruta llega a una zona que duerme en ese pueblo, aunque las zonas cambien de número entre versiones.
+    assert {datos.polos[buses.zona_de(r, datos)].base["nombre"] for r in buses.leer()} >= {"Lima", "Arequipa", "Cuzco"}

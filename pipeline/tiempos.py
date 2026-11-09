@@ -14,6 +14,10 @@ Tiempos de viaje que usa el motor, sobre la red de OpenStreetMap: vías, tren y 
    Los grupos que eligen el mismo pueblo son un solo polo: se juntan y se busca otra vez
    entre todas sus paradas. De ahí en adelante, «polo» es el ya junto.
 4. Calcula los tiempos de cada una de las 24 ciudades de origen a cada parada y a cada base.
+   La ida a la base es en bus (decisión 0026): la red se calibra con autos, y el bus va más
+   lento que un auto por la autopista, y mucho más por la Carretera Central entre Chosica y
+   La Oroya. Esos dos ritmos se ajustan con las 29 rutas de Cruz del Sur
+   (``evaluacion/buses.csv``) sobre el camino que elige la red, y se aplican a cada ida.
 
 Cada tiempo es de puerta a puerta: el camino más rápido por la red (vías, tren y botes),
 lo que falta de cada punta a la red y los minutos fijos de cada traslado, más los de
@@ -29,7 +33,9 @@ Escribe en data/procesados/:
   tiempos_polo.csv                 parada → parada dentro de cada polo
   polos_bases.csv                  la base de cada polo y los grupos de TA-01 que junta
   tiempos_base.csv                 base → cada parada de su polo
-  tiempos_origen_base.csv          origen → base de cada polo
+  tiempos_origen_base.csv          origen → base de cada polo, en bus
+  ida_en_bus.json                  los dos ritmos del bus, con su error dejando fuera cada corredor,
+                                   y el de los modelos más simples con que se compara
   red_paradas.csv                  a cuántos metros de la red queda cada parada y en qué capa
 
 Todo lo que sale de la red es obra derivada de OpenStreetMap: ODbL 1.0, © colaboradores de
@@ -58,7 +64,9 @@ from pipeline import bases as bases_
 from pipeline import red_calibracion as calibracion
 from pipeline.maestro import EXTERNOS, PROCESADOS, REFERENCIA
 from pipeline.red_vial import (
+    BANDAS,
     CAPAS,
+    CODIGO,
     Red,
     Ruteador,
     leer_capitales,
@@ -78,6 +86,12 @@ EN_TREN = {"Ferrocarril"}
 A_PIE = {"A pie", "A caballo", "Acémila"}
 KM = ("km", "km_tren", "km_bote")  # los km de cada camino y cuántos de ellos van en tren y en bote
 TRENES_SIN_SERVICIO = REFERENCIA / "trenes_sin_servicio.csv"  # las líneas que la red no usa
+# La ida en bus (decisión 0026)
+BUSES = Path(__file__).resolve().parents[1] / "evaluacion" / "buses.csv"  # las 29 rutas de Cruz del Sur
+CARRETERA_CENTRAL = ((-11.9364, -76.6979), (-11.5189, -75.8994))  # de Chosica a La Oroya
+RITMOS_DEL_BUS = np.round(np.arange(0.600, 1.3001, 0.005), 3)  # min/km del bus en la autopista: lo que se prueba
+FACTORES_DEL_BUS = np.round(np.arange(1.00, 2.5001, 0.01), 2)  # y cuántas veces el auto tarda en la Carretera Central
+FACTORES_DE_TODO = np.round(np.arange(0.80, 1.6001, 0.005), 3)  # un solo factor para todo el bus, para comparar
 
 
 @dataclass
@@ -337,9 +351,13 @@ def recorrer_polos(
     return pares, pd.DataFrame([r.base for r in recorridos]), desde_base
 
 
-def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tuple[pd.DataFrame, pd.DataFrame]:
+def tiempos_desde_origenes(
+    ruteador, parametros, origenes, paradas, bases, bus: dict[str, float] | None = None
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(origen → cada parada, origen → la base de cada polo): minutos y km de puerta a puerta,
-    vacíos si no hay camino. Una búsqueda en toda la red por ciudad de origen."""
+    vacíos si no hay camino. Una búsqueda en toda la red por ciudad de origen. Con ``bus``, la
+    ida a la base es en bus (``correccion_del_bus``); la ida a una parada sigue en auto: es el
+    viaje de un día."""
     v_origen, m_origen, c_origen = ruteador.ubicar(origenes["lat"].to_numpy(), origenes["lon"].to_numpy())
     v_parada, m_parada, c_parada = ruteador.ubicar(
         paradas["lat"].to_numpy(), paradas["lon"].to_numpy(), _medios(paradas)
@@ -380,8 +398,164 @@ def tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases) -> tu
     a_paradas = pd.concat(a_paradas, ignore_index=True)
     a_paradas = _sin_ruta_a_nan(a_paradas, np.tile(m_parada > LEJOS_DE_LA_RED_M, len(origenes)))
     a_bases = pd.concat(a_bases, ignore_index=True)
+    if bus is not None:
+        km_autopista, min_lento = rasgos_del_bus(
+            ruteador, minutos_por_arista(ruteador.red, parametros), v_origen, v_base
+        )
+        mas = correccion_del_bus(bus, parametros, km_autopista, min_lento).ravel()
+        a_bases["minutos"] = a_bases["minutos"].to_numpy() + np.where(np.isfinite(mas), mas, 0.0)
     sin_camino = np.tile((bases["criterio"] != "carretera").to_numpy(), len(origenes))
     return a_paradas, _sin_ruta_a_nan(a_bases, sin_camino)
+
+
+def rasgos_del_bus(ruteador: Ruteador, minutos: np.ndarray, v_origenes, v_destinos) -> tuple[np.ndarray, np.ndarray]:
+    """Del camino más rápido de cada origen a cada destino, lo que cambia en bus: los km por autopista fuera de las
+    ciudades con piso (en ellas manda el tráfico) y los minutos por la Carretera Central entre Chosica y La Oroya,
+    con ``minutos`` por arista. Matrices de orígenes × destinos; nan si no hay camino."""
+    red = ruteador.red
+    (v_chosica, v_oroya), _, _ = ruteador.ubicar(
+        [CARRETERA_CENTRAL[0][0], CARRETERA_CENTRAL[1][0]], [CARRETERA_CENTRAL[0][1], CARRETERA_CENTRAL[1][1]]
+    )
+    _, predecesor = ruteador.minutos_desde([int(v_chosica)], predecesores=True)
+    lento = np.zeros(red.aristas, dtype=bool)
+    lento[ruteador.aristas_del_camino(predecesor[0], int(v_oroya))] = True
+    con_piso = np.isin(red.bandas, [BANDAS.index(b) for b in calibracion.CON_PISO])
+    autopista = (red.clase == CODIGO["autopista"]) & ~con_piso
+    km = red.metros.astype(np.float64) / 1000
+    km_autopista = np.full((len(v_origenes), len(v_destinos)), np.nan)
+    min_lento = np.full((len(v_origenes), len(v_destinos)), np.nan)
+    for i, origen in enumerate(v_origenes):
+        _, predecesor = ruteador.minutos_desde([int(origen)], predecesores=True)
+        for j, destino in enumerate(v_destinos):
+            if destino != origen and predecesor[0][destino] < 0:
+                continue
+            aristas = ruteador.aristas_del_camino(predecesor[0], int(destino))
+            km_autopista[i, j] = km[aristas][autopista[aristas]].sum()
+            min_lento[i, j] = minutos[aristas][lento[aristas]].sum()
+    return km_autopista, min_lento
+
+
+def correccion_del_bus(bus: dict[str, float], parametros: dict, km_autopista, min_lento) -> np.ndarray:
+    """Los minutos que el bus suma (o resta) a la ida de un auto por el mismo camino."""
+    return km_autopista * (bus["autopista"] - parametros["autopista"]) + (bus["carretera_central"] - 1) * min_lento
+
+
+def _perdida(t: np.ndarray, rutas: pd.DataFrame) -> np.ndarray:
+    """Mínimos cuadrados en escala logarítmica contra la mitad del rango de la empresa, sobre el último eje."""
+    medio = (rutas["empresa_min"].to_numpy() + rutas["empresa_max"].to_numpy()) / 2
+    return (np.log(np.maximum(t, 1.0) / medio) ** 2).sum(axis=-1)
+
+
+def ajustar_el_bus(rutas: pd.DataFrame, parametros: dict) -> dict[str, float]:
+    """Los dos ritmos del bus que mejor explican ``rutas`` (``minutos_auto``, ``km_autopista``, ``min_lento`` y el
+    rango de la empresa): mínimos cuadrados en escala logarítmica contra la mitad del rango, en una grilla."""
+    r = RITMOS_DEL_BUS[:, None, None]
+    k = FACTORES_DEL_BUS[None, :, None]
+    t = (
+        rutas["minutos_auto"].to_numpy()
+        + rutas["km_autopista"].to_numpy() * (r - parametros["autopista"])
+        + (k - 1) * rutas["min_lento"].to_numpy()
+    )
+    perdida = _perdida(t, rutas)
+    i, j = np.unravel_index(np.argmin(perdida), perdida.shape)
+    return {"autopista": float(RITMOS_DEL_BUS[i]), "carretera_central": float(FACTORES_DEL_BUS[j])}
+
+
+def modelos_del_bus(parametros: dict) -> dict:
+    """Los modelos de la ida en bus que se comparan (decisión 0026), cada uno como (ajustar, predecir): el elegido,
+    con la autopista y la Carretera Central, y los más simples, con la misma pérdida. ``ajustar(rutas)`` da sus
+    parámetros y ``predecir(parámetros, rutas)``, los minutos de cada ruta."""
+
+    def auto(r):
+        return r["minutos_auto"].to_numpy()
+
+    def lento(r):
+        return r["min_lento"].to_numpy()
+
+    def uno(grilla, tiempo):
+        return lambda r: float(grilla[np.argmin(_perdida(tiempo(grilla[:, None], r), r))])
+
+    def solo_factor(f, r):
+        return f * auto(r)
+
+    def solo_central(k, r):
+        return auto(r) + (k - 1) * lento(r)
+
+    return {
+        "autopista_y_carretera_central": (
+            lambda r: ajustar_el_bus(r, parametros),
+            lambda b, r: auto(r) + correccion_del_bus(b, parametros, r["km_autopista"].to_numpy(), lento(r)),
+        ),
+        "solo_carretera_central": (uno(FACTORES_DEL_BUS, solo_central), solo_central),
+        "un_solo_factor": (uno(FACTORES_DE_TODO, solo_factor), solo_factor),
+        "en_auto": (lambda r: None, lambda _, r: auto(r)),
+    }
+
+
+def ida_en_bus(ruteador: Ruteador, parametros: dict, origenes: pd.DataFrame) -> tuple[dict, dict]:
+    """(los dos ritmos del bus, su informe). Ajusta con las rutas de Cruz del Sur de ``BUSES`` y mide el error
+    dejando fuera cada corredor (la ida y la vuelta entre dos ciudades salen juntas), así la cifra no sale de las
+    mismas rutas del ajuste. Lo mismo mide para los modelos más simples (``modelos_del_bus``)."""
+    rutas = pd.read_csv(BUSES, sep=";")
+    o = origenes.set_index("id").loc[rutas["origen_motor"]]
+    v_o, m_o, _ = ruteador.ubicar(o["lat"].to_numpy(), o["lon"].to_numpy())
+    v_b, m_b, _ = ruteador.ubicar(rutas["lat"].to_numpy(), rutas["lon"].to_numpy())  # el pueblo donde para el bus
+    minutos_arista = minutos_por_arista(ruteador.red, parametros)
+    unicos, cual = np.unique(v_o, return_inverse=True)
+    km_autopista, min_lento = rasgos_del_bus(ruteador, minutos_arista, unicos, v_b)
+    en_red = np.array([ruteador.minutos_desde([int(unicos[c])])[0][v] for c, v in zip(cual, v_b, strict=True)])
+    puerta, _ = _puerta_a_puerta(en_red, np.zeros(len(rutas)), m_o + m_b, parametros)
+    rutas = rutas.assign(
+        minutos_auto=puerta,
+        km_autopista=km_autopista[cual, np.arange(len(rutas))],
+        min_lento=min_lento[cual, np.arange(len(rutas))],
+    )
+    corredor = rutas[["origen", "destino"]].apply(lambda f: "–".join(sorted(f)), axis=1).to_numpy()
+    desde, hasta = rutas["empresa_min"].to_numpy(), rutas["empresa_max"].to_numpy()
+
+    def cifras(t) -> dict:
+        t = np.asarray(t, dtype=float)
+        fuera_del_rango = np.where(t < desde, (desde - t) / desde, np.where(t > hasta, (t - hasta) / hasta, 0.0))
+        return {
+            "dentro_del_rango": int(((t >= desde) & (t <= hasta)).sum()),
+            "debajo": int((t < desde).sum()),
+            "encima": int((t > hasta).sum()),
+            "error_medio_contra_la_mitad": round(float(np.mean(np.abs(t / ((desde + hasta) / 2) - 1))), 3),
+            "distancia_media_al_rango": round(float(fuera_del_rango.mean()), 4),
+        }
+
+    medidos = {}
+    for nombre, (ajustar, predecir) in modelos_del_bus(parametros).items():
+        fuera, ajustes = np.empty(len(rutas)), []
+        for c in dict.fromkeys(corredor):
+            deja = corredor == c
+            ajustes.append(ajustar(rutas[~deja]))
+            fuera[deja] = predecir(ajustes[-1], rutas[deja])
+        con_todas = ajustar(rutas)
+        medidos[nombre] = {
+            "parametros": con_todas,
+            "parametros_dejando_fuera_cada_corredor": ajustes if con_todas is not None else None,
+            "con_todas": cifras(predecir(con_todas, rutas)),
+            "dejando_fuera_cada_corredor": cifras(fuera),
+        }
+    elegido = medidos["autopista_y_carretera_central"]
+    bus = elegido["parametros"]
+    informe = {
+        "rutas": len(rutas),
+        "corredores": len(set(corredor)),
+        "ritmo_autopista_min_por_km": bus["autopista"],
+        "velocidad_autopista_kmh": round(60 / bus["autopista"], 1),
+        "factor_carretera_central": bus["carretera_central"],
+        "en_auto": medidos["en_auto"]["con_todas"],
+        "en_bus_con_todas": elegido["con_todas"],
+        "en_bus_dejando_fuera_cada_corredor": elegido["dejando_fuera_cada_corredor"],
+        "alternativas": {n: m for n, m in medidos.items() if n != "autopista_y_carretera_central"},
+        "ritmo_autopista_dejando_fuera_cada_corredor": [
+            min(a["autopista"] for a in elegido["parametros_dejando_fuera_cada_corredor"]),
+            max(a["autopista"] for a in elegido["parametros_dejando_fuera_cada_corredor"]),
+        ],
+    }
+    return bus, informe
 
 
 def red_paradas(ruteador: Ruteador, paradas: pd.DataFrame) -> pd.DataFrame:
@@ -465,7 +639,17 @@ def main() -> None:
     paradas = paradas.assign(polo=paradas["polo"].map(lambda grupo: a_polo.get(grupo, grupo)))
     bases["altitud_m"], bases["altitud_fuente"] = bases_.altitud(bases, maestro)
     origenes = pd.read_csv(REFERENCIA / "origenes.csv", sep=";")
-    a_paradas, a_bases = tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases)
+    bus, informe_bus = ida_en_bus(ruteador, parametros, origenes)
+    (a.salida / "ida_en_bus.json").write_text(
+        json.dumps(informe_bus, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    fuera = informe_bus["en_bus_dejando_fuera_cada_corredor"]
+    print(
+        f"Ida en bus: autopista a {informe_bus['velocidad_autopista_kmh']} km/h, Carretera Central × "
+        f"{bus['carretera_central']} · dejando fuera cada corredor, {fuera['dentro_del_rango']} de "
+        f"{informe_bus['rutas']} rutas en el rango de Cruz del Sur"
+    )
+    a_paradas, a_bases = tiempos_desde_origenes(ruteador, parametros, origenes, paradas, bases, bus)
 
     _escribir(a_paradas, a.salida / "tiempos_origen.csv")
     _escribir(pares, a.salida / "tiempos_polo.csv")
