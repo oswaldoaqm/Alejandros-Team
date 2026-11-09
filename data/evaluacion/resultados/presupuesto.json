@@ -1,5 +1,5 @@
 {
-  "version_datos": "2026.10.8",
+  "version_datos": "2026.11.1",
   "montos": [
     500,
     800,
@@ -11,15 +11,15 @@
       "consultas": 8,
       "viajes_hoy": 24,
       "hoy_pasan_en_p50": 6,
-      "hoy_pasan_en_p80": 8,
-      "hoy_solo_en_p80": 2,
+      "hoy_pasan_en_p80": 9,
+      "hoy_solo_en_p80": 3,
       "filtro_p50": {
         "cambian": 2,
         "menos_viajes": 2,
         "ninguno": 2
       },
       "filtro_p80": {
-        "cambian": 3,
+        "cambian": 4,
         "menos_viajes": 2,
         "ninguno": 2
       }
@@ -27,16 +27,16 @@
     "monto_500": {
       "consultas": 40,
       "viajes_hoy": 120,
-      "hoy_pasan_en_p50": 95,
-      "hoy_pasan_en_p80": 105,
-      "hoy_solo_en_p80": 10,
+      "hoy_pasan_en_p50": 97,
+      "hoy_pasan_en_p80": 104,
+      "hoy_solo_en_p80": 7,
       "filtro_p50": {
-        "cambian": 35,
-        "menos_viajes": 31,
+        "cambian": 36,
+        "menos_viajes": 32,
         "ninguno": 27
       },
       "filtro_p80": {
-        "cambian": 37,
+        "cambian": 36,
         "menos_viajes": 34,
         "ninguno": 34
       }
@@ -44,50 +44,50 @@
     "monto_800": {
       "consultas": 40,
       "viajes_hoy": 120,
-      "hoy_pasan_en_p50": 51,
-      "hoy_pasan_en_p80": 72,
-      "hoy_solo_en_p80": 21,
+      "hoy_pasan_en_p50": 52,
+      "hoy_pasan_en_p80": 68,
+      "hoy_solo_en_p80": 16,
       "filtro_p50": {
-        "cambian": 22,
-        "menos_viajes": 15,
+        "cambian": 21,
+        "menos_viajes": 16,
         "ninguno": 13
       },
       "filtro_p80": {
-        "cambian": 27,
-        "menos_viajes": 20,
-        "ninguno": 18
+        "cambian": 26,
+        "menos_viajes": 21,
+        "ninguno": 17
       }
     },
     "monto_1200": {
       "consultas": 40,
       "viajes_hoy": 120,
-      "hoy_pasan_en_p50": 18,
-      "hoy_pasan_en_p80": 34,
-      "hoy_solo_en_p80": 16,
+      "hoy_pasan_en_p50": 19,
+      "hoy_pasan_en_p80": 31,
+      "hoy_solo_en_p80": 12,
       "filtro_p50": {
-        "cambian": 10,
-        "menos_viajes": 5,
+        "cambian": 9,
+        "menos_viajes": 6,
         "ninguno": 3
       },
       "filtro_p80": {
-        "cambian": 16,
-        "menos_viajes": 8,
+        "cambian": 14,
+        "menos_viajes": 7,
         "ninguno": 6
       }
     },
     "monto_2000": {
       "consultas": 40,
       "viajes_hoy": 120,
-      "hoy_pasan_en_p50": 6,
+      "hoy_pasan_en_p50": 5,
       "hoy_pasan_en_p80": 11,
-      "hoy_solo_en_p80": 5,
+      "hoy_solo_en_p80": 6,
       "filtro_p50": {
-        "cambian": 4,
+        "cambian": 3,
         "menos_viajes": 1,
         "ninguno": 0
       },
       "filtro_p80": {
-        "cambian": 6,
+        "cambian": 5,
         "menos_viajes": 1,
         "ninguno": 1
       }

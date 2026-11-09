@@ -40,7 +40,7 @@ flowchart LR
         publicados --> motor
     end
     subgraph evaluacion["evaluacion/ · lo corre el equipo"]
-        kit["Kit y calificaciones<br/>40 consultas, 185 viajes"]
+        kit["Kit y calificaciones<br/>40 consultas, 196 viajes"]
         cifras["Cifras<br/>acuerdo, métricas, óptimo,<br/>buses, presupuesto, SUS"]
         kit --> cifras
     end
