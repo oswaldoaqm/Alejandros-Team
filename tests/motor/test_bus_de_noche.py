@@ -80,12 +80,12 @@ def test_a_huaraz_en_bus_de_noche():
     assert (t.medios, t.dias_de_viaje, t.bus_de_noche.sale, t.bus_de_noche.sale_vuelta) == (
         ["carretera"],
         0,
-        "21:45",
-        "21:45",
+        "21:30",
+        "21:30",
     )
     assert [d.tipo for d in ruta.dias] == ["ida_y_visita", "visita", "visita_y_vuelta"]
     assert ruta.dias[0].fecha == date(2026, 7, 24)  # el día 1 es el día en que se llega
-    assert ruta.dias[0].nota.startswith("El bus de noche sale de Lima a las 21:45 de la noche anterior")
+    assert ruta.dias[0].nota.startswith("El bus de noche sale de Lima a las 21:30 de la noche anterior")
     assert ruta.dias[-1].nota.startswith("En la noche, el bus de vuelta")
     # Ningún día lleva las horas del bus; los km del bus van en el total.
     assert all(d.horas <= 8 for d in ruta.dias)
@@ -110,6 +110,13 @@ def test_cada_dia_con_visitas_almuerza_a_su_hora():
     [huaraz] = [p.id for p in datos.polos.values() if p.base["nombre"] == "Huaraz"]
     [ruta] = viaje.resolver(Consulta(origen="lima", mes=7, dias=4, destino=huaraz), datos).rutas
     for d in ruta.dias:
-        assert d.almuerzo is not None
+        if d.almuerzo is None:
+            # Como dice el contrato: no almuerza el día que termina antes de la hora. Su última visita acaba
+            # antes de las 12:30 (con los datos 2026.11.1, el primer día, tranquilo, termina a las 12:21).
+            ultima = d.paradas[-1]
+            h, m = (int(x) for x in ultima.llegada.split(":"))
+            assert h * H + m + ultima.minutos_visita < 12 * H + 30
+            continue
         h, m = (int(x) for x in d.almuerzo.hora.split(":"))
         assert 11 * H + 30 <= h * H + m <= 15 * H + 30
+    assert sum(d.almuerzo is not None for d in ruta.dias) >= len(ruta.dias) - 1

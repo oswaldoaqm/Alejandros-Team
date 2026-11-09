@@ -1,0 +1,128 @@
+{
+  "rutas": 29,
+  "corredores": 19,
+  "ritmo_autopista_min_por_km": 0.765,
+  "velocidad_autopista_kmh": 78.4,
+  "factor_carretera_central": 1.37,
+  "en_auto": {
+    "dentro_del_rango": 20,
+    "debajo": 8,
+    "encima": 1,
+    "error_medio_contra_la_mitad": 0.064,
+    "distancia_media_al_rango": 0.0131
+  },
+  "en_bus_con_todas": {
+    "dentro_del_rango": 24,
+    "debajo": 3,
+    "encima": 2,
+    "error_medio_contra_la_mitad": 0.049,
+    "distancia_media_al_rango": 0.0036
+  },
+  "en_bus_dejando_fuera_cada_corredor": {
+    "dentro_del_rango": 20,
+    "debajo": 5,
+    "encima": 4,
+    "error_medio_contra_la_mitad": 0.058,
+    "distancia_media_al_rango": 0.0063
+  },
+  "alternativas": {
+    "solo_carretera_central": {
+      "parametros": 1.37,
+      "parametros_dejando_fuera_cada_corredor": [
+        1.37,
+        1.37,
+        1.37,
+        1.37,
+        1.37,
+        1.37,
+        1.46,
+        1.37,
+        1.37,
+        1.43,
+        1.3,
+        1.37,
+        1.37,
+        1.32,
+        1.37,
+        1.37,
+        1.37,
+        1.37,
+        1.37
+      ],
+      "con_todas": {
+        "dentro_del_rango": 23,
+        "debajo": 5,
+        "encima": 1,
+        "error_medio_contra_la_mitad": 0.054,
+        "distancia_media_al_rango": 0.0051
+      },
+      "dejando_fuera_cada_corredor": {
+        "dentro_del_rango": 21,
+        "debajo": 6,
+        "encima": 2,
+        "error_medio_contra_la_mitad": 0.058,
+        "distancia_media_al_rango": 0.007
+      }
+    },
+    "un_solo_factor": {
+      "parametros": 1.05,
+      "parametros_dejando_fuera_cada_corredor": [
+        1.055,
+        1.05,
+        1.045,
+        1.045,
+        1.05,
+        1.05,
+        1.045,
+        1.05,
+        1.055,
+        1.045,
+        1.04,
+        1.05,
+        1.05,
+        1.04,
+        1.05,
+        1.05,
+        1.045,
+        1.045,
+        1.05
+      ],
+      "con_todas": {
+        "dentro_del_rango": 23,
+        "debajo": 2,
+        "encima": 4,
+        "error_medio_contra_la_mitad": 0.053,
+        "distancia_media_al_rango": 0.0108
+      },
+      "dejando_fuera_cada_corredor": {
+        "dentro_del_rango": 23,
+        "debajo": 2,
+        "encima": 4,
+        "error_medio_contra_la_mitad": 0.056,
+        "distancia_media_al_rango": 0.0117
+      }
+    },
+    "en_auto": {
+      "parametros": null,
+      "parametros_dejando_fuera_cada_corredor": null,
+      "con_todas": {
+        "dentro_del_rango": 20,
+        "debajo": 8,
+        "encima": 1,
+        "error_medio_contra_la_mitad": 0.064,
+        "distancia_media_al_rango": 0.0131
+      },
+      "dejando_fuera_cada_corredor": {
+        "dentro_del_rango": 20,
+        "debajo": 8,
+        "encima": 1,
+        "error_medio_contra_la_mitad": 0.064,
+        "distancia_media_al_rango": 0.0131
+      }
+    }
+  },
+  "ritmo_autopista_dejando_fuera_cada_corredor": [
+    0.74,
+    0.805
+  ]
+}

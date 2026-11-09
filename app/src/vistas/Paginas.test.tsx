@@ -83,21 +83,20 @@ describe("la zona de un viaje", () => {
 
   it("cada fiesta de la zona ofrece armar el viaje para ir", async () => {
     await abrir(`/?origen=cusco&mes=7&dias=4#/polo/${POLO.polo.id}`, {
-      // Las fiestas de Huancayo, la zona 33, que el ejemplo del contrato trae en uno de sus viajes.
+      // Las fiestas de Huacho, la zona 70, que el ejemplo del contrato trae en uno de sus viajes.
       [`/v1/polos/${POLO.polo.id}`]: {
-        cuerpo: { ...POLO, eventos: EVENTOS.eventos.filter((e) => e.polo === 33) },
+        cuerpo: { ...POLO, eventos: EVENTOS.eventos.filter((e) => e.polo === 70) },
       },
     });
     const fiestas = await screen.findByRole("region", { name: "Fiestas de los próximos meses" });
     const ir = within(fiestas).getAllByRole("link", { name: /^Ir a esta fiesta/ });
     expect(ir.map((a) => a.getAttribute("href"))).toEqual([
-      // La que dura todo el mes, en su mes; las de un día, saliendo la víspera.
-      "?origen=cusco&destino=33&mes=7&dias=4#/editar",
-      "?origen=cusco&destino=33&fecha_inicio=2027-07-10&dias=4#/editar",
-      "?origen=cusco&destino=33&fecha_inicio=2027-07-30&dias=4#/editar",
+      // La que dura todo el mes, en su mes; la de un día, saliendo la víspera.
+      "?origen=cusco&destino=70&mes=7&dias=4#/editar",
+      "?origen=cusco&destino=70&fecha_inicio=2027-07-15&dias=4#/editar",
     ]);
     expect(ir[1]?.getAttribute("aria-label")).toBe(
-      "Ir a esta fiesta: Escenificación de los Hechos Heroicos del 11 de Julio en Matahuasi",
+      "Ir a esta fiesta: Festividad de la Santísima Virgen del Carmen",
     );
   });
 
@@ -180,7 +179,7 @@ describe("el calendario de fiestas", () => {
     expect(ir).toHaveLength(EVENTOS.eventos.length);
     // Sin consulta, desde Lima y seis días.
     expect(ir[1]?.getAttribute("href")).toBe(
-      "?origen=lima&destino=33&fecha_inicio=2027-07-10&dias=6#/editar",
+      "?origen=lima&destino=70&fecha_inicio=2027-07-15&dias=6#/editar",
     );
     expect(screen.queryByRole("link", { name: "Ir a esta fiesta: Feria sin zona" })).toBeNull();
   });

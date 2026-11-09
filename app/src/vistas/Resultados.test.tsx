@@ -234,22 +234,22 @@ describe("los tres viajes", () => {
 });
 
 describe("el viaje a una zona elegida", () => {
-  const HUANCAYO = "origen=lima&destino=33&mes=7&dias=4";
+  const TRUJILLO = "origen=lima&destino=139&mes=7&dias=4";
   const CUZCO = "origen=lima&destino=36&mes=7&dias=4&solo_por_tierra=true";
 
   it("se abre directo, porque es uno solo, y «Cambiar el viaje» vuelve al formulario", async () => {
-    const api = await abrir(`/?${HUANCAYO}`);
-    await screen.findByRole("heading", { level: 1, name: "Huancayo" });
+    const api = await abrir(`/?${TRUJILLO}`);
+    await screen.findByRole("heading", { level: 1, name: "Trujillo" });
     await waitFor(() => expect(window.location.hash).toBe("#/ruta/1"));
-    expect(window.location.search).toBe(`?${HUANCAYO}&v=${VERSION}`);
-    expect(pedidosA(api, "/v1/viajes")).toEqual([`/v1/viajes?${HUANCAYO}`]);
+    expect(window.location.search).toBe(`?${TRUJILLO}&v=${VERSION}`);
+    expect(pedidosA(api, "/v1/viajes")).toEqual([`/v1/viajes?${TRUJILLO}`]);
 
     const cambiar = screen.getByRole("link", { name: "Cambiar el viaje" });
-    expect(cambiar.getAttribute("href")).toBe(`?${HUANCAYO}&v=${VERSION}#/editar`);
+    expect(cambiar.getAttribute("href")).toBe(`?${TRUJILLO}&v=${VERSION}#/editar`);
     await userEvent.click(cambiar);
     await screen.findByRole("heading", { level: 1, name: "Cambia tu viaje" });
     await waitFor(() =>
-      expect(plano(screen.getByRole("button", { name: /^A dónde/ }).textContent)).toBe("A dónde Huancayo"),
+      expect(plano(screen.getByRole("button", { name: /^A dónde/ }).textContent)).toBe("A dónde Trujillo"),
     );
   });
 
@@ -310,11 +310,11 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "2 imperdibles: Santuario Arqueológico de Wariwillka y Convento de Santa Rosa de Ocopa.",
+      "3 imperdibles: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);
-    expect(razones).toContain("Todas sus paradas son de historia y arqueología o naturaleza.");
+    expect(razones).toContain("14 de sus 24 paradas son de historia y arqueología o naturaleza.");
   });
 
   it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {
