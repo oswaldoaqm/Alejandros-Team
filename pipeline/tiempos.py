@@ -35,6 +35,10 @@ Escribe en data/procesados/:
 Todo lo que sale de la red es obra derivada de OpenStreetMap: ODbL 1.0, © colaboradores de
 OpenStreetMap.
 
+Las bases de los polos se quedan como estaban en polos_bases.csv (decisión 0025): con el
+tráfico de las ciudades, varios grupos se irían a dormir a un pueblo de las afueras, y qué
+polos hay se decide con la v3 de TA-01 (decisión 0023). ``--elegir-bases`` las vuelve a elegir.
+
 Uso:  python -m pipeline.tiempos                    (después de python -m pipeline.maestro)
       python -m pipeline.tiempos --indice "sparse_file_array,nodos.idx"   con poca memoria
 """
@@ -260,12 +264,17 @@ def _recorrer(ruteador: Ruteador, parametros: dict, polo: int, grupo: pd.DataFra
 
 
 def recorrer_polos(
-    ruteador: Ruteador, parametros: dict, paradas: pd.DataFrame, candidatos: pd.DataFrame
+    ruteador: Ruteador,
+    parametros: dict,
+    paradas: pd.DataFrame,
+    candidatos: pd.DataFrame,
+    fijas: dict[int, int] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """(tiempos entre paradas, base de cada polo, tiempos de la base a cada parada).
 
     ``paradas``: codigo, polo, lat, lon, jerarquia y, si lo tiene, acceso (``paradas_de``). Su
-    ``polo`` es el grupo de TA-01. ``candidatos``: los de ``bases.candidatos``.
+    ``polo`` es el grupo de TA-01. ``candidatos``: los de ``bases.candidatos``. ``fijas``: grupo →
+    el candidato que es su base sin elegirla otra vez (``bases.fijas``); los que no están, eligen.
 
     Una sola búsqueda por grupo, desde sus paradas hasta sus paradas y los candidatos cercanos;
     solo las paradas obligan a buscar en toda la red si dentro del rectángulo del grupo no hay
@@ -291,8 +300,9 @@ def recorrer_polos(
         "clon": candidatos["lon"].to_numpy(),
     }
     en_polo = paradas[paradas["polo"] >= 0]
+    fijas = fijas or {}
     recorridos = {
-        int(polo): _recorrer(ruteador, parametros, int(polo), grupo, lugar, None)
+        int(polo): _recorrer(ruteador, parametros, int(polo), grupo, lugar, fijas.get(int(polo)))
         for polo, grupo in en_polo.groupby("polo")
     }
     por_base: dict[int, list[int]] = {}
@@ -390,6 +400,11 @@ def main() -> None:
     ap.add_argument("--maestro", type=Path, default=PROCESADOS / "maestro_v3.csv")
     ap.add_argument("--salida", type=Path, default=PROCESADOS)
     ap.add_argument("--indice", default="flex_mem", help="dónde guarda pyosmium los nodos al leer (ver leer_red)")
+    ap.add_argument(
+        "--elegir-bases",
+        action="store_true",
+        help="vuelve a elegir la base de cada grupo; sin esto, se queda la de polos_bases.csv (decisión 0025)",
+    )
     a = ap.parse_args()
 
     red, osm, manifiesto = red_en_cache(a.pbf, a.indice)
@@ -429,7 +444,15 @@ def main() -> None:
     ruteador = Ruteador(red, minutos_por_arista(red, parametros))
     paradas = paradas_de(maestro)
     candidatos = bases_.candidatos(osm.lugares, osm.capitales, osm.hospedajes)
-    pares, bases, desde_base = recorrer_polos(ruteador, parametros, paradas, candidatos)
+    previas = a.salida / "polos_bases.csv"
+    fijas = None
+    if not a.elegir_bases and previas.exists():
+        fijas = bases_.fijas(pd.read_csv(previas, sep=";", encoding="utf-8-sig"), candidatos)
+        print(
+            f"Bases de {previas}: {len(set(fijas.values()))} pueblos para {len(fijas)} grupos "
+            "(con --elegir-bases se vuelven a elegir)"
+        )
+    pares, bases, desde_base = recorrer_polos(ruteador, parametros, paradas, candidatos, fijas)
     a_polo = bases_.polo_de_cada_grupo(bases)
     paradas = paradas.assign(polo=paradas["polo"].map(lambda grupo: a_polo.get(grupo, grupo)))
     bases["altitud_m"], bases["altitud_fuente"] = bases_.altitud(bases, maestro)

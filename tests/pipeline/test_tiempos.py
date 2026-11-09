@@ -150,6 +150,20 @@ def test_dos_grupos_que_duermen_en_el_mismo_pueblo_son_un_solo_polo(un_solo_pueb
     assert elegidas_antes["base"].iloc[0] == polo["base"]
 
 
+def test_con_las_bases_de_antes_no_se_vuelven_a_elegir(un_solo_pueblo, mundo):
+    """Decisión 0025: con su base de antes, el grupo 2 se queda en Otro Pueblo aunque el Pueblo del Este le quede
+    más cerca, y sigue junto con el 1."""
+    ruteador, candidatos, *_ = mundo
+    previas = un_solo_pueblo[3]
+    otro = int(candidatos.index[candidatos["nombre"] == "Otro Pueblo"][0])
+    fijas = bases.fijas(previas, candidatos)
+    assert fijas == {1: otro, 2: otro}
+    _, elegidas, _ = tiempos.recorrer_polos(ruteador, PARAMETROS, PARADAS, candidatos, fijas)
+    assert elegidas[["polo", "grupos", "base"]].to_numpy().tolist() == [[1, "1|2", "Otro Pueblo"]]
+    # Una base que ya no es candidata no se fija: ese grupo vuelve a elegir.
+    assert bases.fijas(previas.assign(lat=-11.5), candidatos) == {}
+
+
 def test_de_que_polo_es_cada_grupo(un_solo_pueblo, mundo):
     assert bases.polo_de_cada_grupo(un_solo_pueblo[3]) == {1: 1, 2: 1}
     assert bases.polo_de_cada_grupo(mundo[3]) == {1: 1, 2: 2}

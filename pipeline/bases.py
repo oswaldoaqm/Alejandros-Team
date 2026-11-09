@@ -127,6 +127,27 @@ def polo_de_cada_grupo(bases: pd.DataFrame) -> dict[int, int]:
     }
 
 
+def fijas(previas: pd.DataFrame, candidatos: pd.DataFrame) -> dict[int, int]:
+    """Grupo de TA-01 → el candidato que ya era su base en ``previas`` (un polos_bases.csv de antes), por su
+    coordenada con seis decimales. Un grupo cuya base ya no está entre los candidatos no entra: elige otra vez.
+
+    Desde la decisión 0025 las bases no se vuelven a elegir con cada corrida: con el tráfico de las ciudades, el
+    costo de dormir en una ciudad sube y varios grupos se irían a un pueblo de las afueras. Cuáles polos hay y
+    dónde duerme cada uno se decide con la v3 de TA-01 (decisión 0023)."""
+    clave = {
+        (f"{la:.6f}", f"{lo:.6f}"): i
+        for i, (la, lo) in enumerate(zip(candidatos["lat"], candidatos["lon"], strict=True))
+    }
+    fijas = {}
+    for fila in previas.itertuples():
+        candidato = clave.get((f"{fila.lat:.6f}", f"{fila.lon:.6f}"))
+        if candidato is None:
+            continue
+        for grupo in str(getattr(fila, "grupos", fila.polo)).split("|"):
+            fijas[int(grupo)] = candidato
+    return fijas
+
+
 def altitud(bases: pd.DataFrame, recursos: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     """(altitud en metros, de dónde sale) de cada base.
 
