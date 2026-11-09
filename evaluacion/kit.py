@@ -59,8 +59,8 @@ def _del_motor(consulta: Consulta, datos: Datos) -> list[int]:
     return [r.polo.id for r in viaje.resolver(consulta, datos, sugerir=False).rutas]
 
 
-# Lo que se compara: el motor desplegado, la guía (la línea de base) y la variante con más peso para lo que
-# se pidió. Cada uno da hasta tres zonas, en su orden.
+# Lo que se compara: el motor desplegado, la guía (la línea de base) y la variante, que usa la raíz de la calidad
+# para repartir más los viajes. Cada uno da hasta tres zonas, en su orden.
 SISTEMAS: dict[str, Callable[[Consulta, Datos], list[int]]] = {
     "motor": _del_motor,
     "guia": linea_base.zonas,
