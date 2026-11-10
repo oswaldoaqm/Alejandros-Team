@@ -699,6 +699,7 @@
   display: grid;
   place-items: center;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   opacity: 0.75;
   transition:
@@ -772,6 +773,7 @@
   color: #ffffff;
   display: grid;
   place-items: center;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   box-shadow: 0 10px 25px rgb(0 0 0 / 40%);
   transition:
@@ -819,7 +821,8 @@
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding: 10px 4px;
+  margin: 0 -16px;
+  padding: 12px 16px;
   scrollbar-width: thin;
   align-items: flex-start;
   justify-content: flex-start;
@@ -827,6 +830,7 @@
 
 @media (min-width: 768px) {
   .stories-destacadas {
+    overflow-x: visible;
     justify-content: space-between;
   }
 }
@@ -835,16 +839,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   background: transparent;
   border: 0;
   padding: 0;
   cursor: pointer;
-  min-width: 72px;
-  max-width: 96px;
+  min-width: 64px;
+  max-width: 76px;
   text-align: center;
   color: var(--tinta-2);
   transition: transform 0.15s ease;
+  overflow: visible;
 }
 
 .stories-destacada:hover {
@@ -852,10 +857,10 @@
 }
 
 .stories-destacada__aro {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  padding: 2.5px;
+  padding: 3px;
   background: var(--linea);
   display: grid;
   place-items: center;
@@ -867,7 +872,7 @@
 
 .stories-destacada--activo .stories-destacada__aro {
   background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  box-shadow: 0 0 12px rgb(220 39 67 / 40%);
+  box-shadow: 0 0 14px rgb(220 39 67 / 45%);
 }
 
 .stories-destacada__circulo {
@@ -891,6 +896,7 @@
   font-weight: 700;
   color: var(--tinta-3);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .stories-destacada--activo .stories-destacada__numero {
@@ -1030,7 +1036,7 @@
 .inicio-cta-planear {
   max-width: 1200px;
   width: 100%;
-  margin: -24px auto 32px;
+  margin: 16px auto 44px;
   padding: 0 var(--margen);
   position: relative;
   z-index: 10;
@@ -1115,7 +1121,7 @@
 
 .inicio-cta-planear__llamado {
   margin: 2px 0;
-  font-size: 0.8125rem;
+  font-size: var(--t-pie);
   font-weight: 600;
   color: var(--tinta-2);
   text-align: center;
@@ -1217,6 +1223,7 @@
 
 .festividad-tarjeta__media {
   position: relative;
+  width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #000000;
@@ -1271,6 +1278,7 @@
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
 }
@@ -1357,6 +1365,7 @@
 
 .hoja-festividad__portada {
   position: relative;
+  width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
@@ -1407,6 +1416,7 @@
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
 }
@@ -1566,6 +1576,7 @@
 
 .inicio-blog__destacado-media {
   position: relative;
+  width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #000000;
@@ -1594,6 +1605,7 @@
   text-transform: capitalize;
   padding: 4px 12px;
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
 }
@@ -1694,6 +1706,7 @@
 
 .inicio-blog__fila-media {
   position: relative;
+  width: 100%;
   height: 100%;
   min-height: 120px;
   overflow: hidden;
@@ -1701,6 +1714,8 @@
 }
 
 .inicio-blog__fila-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1861,6 +1876,8 @@
 }
 
 .blog-reciente-tarjeta__media {
+  position: relative;
+  width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #000000;
@@ -2070,6 +2087,8 @@
 }
 
 .blog-feed-item__media {
+  position: relative;
+  width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #000000;

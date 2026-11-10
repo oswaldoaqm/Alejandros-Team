@@ -288,11 +288,10 @@ export function VideoGuia() {
               >
                 <div className="stories-destacada__aro">
                   <div className="stories-destacada__circulo">
-                    <Icono nombre={paso.icono} tamano={22} />
+                    <Icono nombre={paso.icono} tamano={24} />
                   </div>
                 </div>
                 <span className="stories-destacada__numero">{paso.numero}</span>
-                <span className="stories-destacada__etiqueta">{paso.titulo}</span>
               </button>
             );
           })}
@@ -321,7 +320,7 @@ export function VideoGuia() {
           {/* El video único con cache local */}
           <video
             ref={videoRef}
-            src="./tutorial.mp4#t=6"
+            src="./tutorial.mp4"
             className="stories-visor__video"
             playsInline
             muted

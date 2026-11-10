@@ -74,7 +74,7 @@ describe("vista Cómo funciona con Reproductor estilo Stories de Instagram", () 
 
     expect(screen.getByText("DreemGO Stories · Paso 4: El viaje a Huaraz")).toBeDefined();
     expect(screen.getByText("4 de 8")).toBeDefined();
-    expect(screen.getAllByText("El viaje a Huaraz").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/El viaje a Huaraz/i)).toBeDefined();
 
     // Saltar al Paso 8: Un municipio publica un evento
     const destacadaPaso8 = screen.getByRole("tab", { name: /Ver Paso 8: Un municipio publica un evento/i });

@@ -27,13 +27,13 @@ describe("página de inicio", () => {
     });
     expect(btnComoFunciona.getAttribute("href")).toBe("./#/acerca");
 
-    // 3. Festividades y eventos del mes (Alineados a la primera quincena de noviembre)
+    // 3. Festividades y eventos del mes (Dinámico según la fecha actual)
     expect(screen.getByRole("heading", { level: 2, name: "Festividades y eventos del mes" })).toBeDefined();
     expect(screen.getByRole("region", { name: "Festividades destacadas del mes" })).toBeDefined();
-    expect(screen.getByText("Escenificación Quespiwanca Tinkuy")).toBeDefined();
-    expect(screen.getByText("Festival de la Salchicha Huachana")).toBeDefined();
-    expect(screen.getByText("Festival de la Orquídea de Moyobamba")).toBeDefined();
-    expect(screen.getByText("Festividad Patronal en Honor a San Martín de Tours")).toBeDefined();
+    const festividadesVivas = obtenerFestividadesVivas();
+    for (const fiesta of festividadesVivas) {
+      expect(screen.getByText(fiesta.titulo)).toBeDefined();
+    }
 
     const btnTodasFiestas = screen.getByRole("link", { name: /Ver todas las festividades/i });
     expect(btnTodasFiestas.getAttribute("href")).toBe("./#/calendario");
@@ -100,23 +100,25 @@ describe("página de inicio", () => {
     ponerApi();
     render(<App />);
 
+    const festividades = obtenerFestividadesVivas();
+    const primeraFiesta = festividades[0];
+    expect(primeraFiesta).toBeDefined();
+    if (!primeraFiesta) {
+      throw new Error("No hay festividades activas");
+    }
     const botonVerMas = screen.getByRole("button", {
-      name: /Ver más sobre Escenificación Quespiwanca Tinkuy/i,
+      name: new RegExp(`Ver más sobre ${primeraFiesta.titulo}`, "i"),
     });
     await userEvent.click(botonVerMas);
 
     const hoja = screen.getByRole("dialog", {
-      name: "Escenificación Quespiwanca Tinkuy",
+      name: primeraFiesta.titulo,
     });
     expect(hoja).toBeDefined();
-    expect(
-      within(hoja).getByText(/El Valle Sagrado revive el esplendor del inca Huayna Cápac/i),
-    ).toBeDefined();
     expect(within(hoja).getByText("Actividades destacadas")).toBeDefined();
-    expect(within(hoja).getByText("5 de noviembre")).toBeDefined();
 
     const btnPlanear = within(hoja).getByRole("link", {
-      name: /Planear viaje a Urubamba y Valle Sagrado/i,
+      name: new RegExp(`Planear viaje a ${primeraFiesta.lugar}`, "i"),
     });
     expect(btnPlanear.getAttribute("href")).toContain("#/planear");
 
