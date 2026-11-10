@@ -377,8 +377,8 @@ export function DetalleRuta({
         <footer className="letra-chica">
           <h2 className="letra-chica__titulo">Sobre estos datos</h2>
           <p>
-            Las horas son estimadas: el camino, por la red de vías de OpenStreetMap; la visita, según la ficha
-            de cada lugar.{" "}
+            Las horas son estimadas: el camino entre lugares supone ir en auto o taxi por la red de vías de
+            OpenStreetMap; la visita, según la ficha de cada lugar.{" "}
             {excursion
               ? "En el mapa, cada día es un pétalo que abarca sus lugares: muestra qué se ve ese día, no el camino."
               : "En el mapa, cada día es un pétalo que sale de donde duermes y abarca sus lugares: muestra qué se ve ese día, no el camino."}

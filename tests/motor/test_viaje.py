@@ -143,3 +143,56 @@ def test_el_clima_se_cuenta_con_las_palabras_de_la_app():
         "Febrero trae algo de lluvia (70 mm), sin ser de los meses más lluviosos de la zona.",
         "Febrero es temporada seca: 12 mm de lluvia en el mes. Las noches bajan de cero en la base (-3 °C).",
     ]
+
+
+def test_recurso_expone_horario_y_dias_validos():
+    base = {
+        "codigo": "99",
+        "nombre": "Huaca Arco Iris",
+        "categoria": "Manifestaciones Culturales",
+        "tipo": "Sitios Arqueológicos",
+        "subtipo": "Templos",
+        "jerarquia": 2,
+        "lat": -8.07,
+        "lon": -79.04,
+        "altitud_m": 40,
+        "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=99",
+        "descripcion": "Templo Chimú.",
+        "ingreso": "pagado",
+        "tarifa_soles": 10.0,
+        "abre": "09:00",
+        "cierra": "16:00",
+        "dias": ["mar", "mie", "jue", "vie", "sab"],
+    }
+    r = viaje.recurso(base)
+    assert (r.abre, r.cierra, r.dias) == ("09:00", "16:00", ["mar", "mie", "jue", "vie", "sab"])
+    # Un horario mal escrito en la ficha (cierra <= abre) no se expone como rango válido.
+    mal = viaje.recurso(base | {"abre": "06:00", "cierra": "06:00"})
+    assert (mal.abre, mal.cierra) == (None, None)
+
+
+def test_avisos_de_cupo_vraem_y_dias_de_cierre():
+    from dreemgo.contrato import Consulta
+    from dreemgo.motor import datos as artefactos
+
+    if not artefactos.hay_datos():
+        pytest.skip("sin los artefactos del motor")
+    datos = artefactos.cargar()
+    # 1. Machu Picchu Pueblo (polo 4) incluye la llaqta ("917") y avisa del cupo diario.
+    [ruta_mp] = viaje.resolver(Consulta(origen="cusco", mes=7, dias=4, destino=4), datos).rutas
+    assert any(a.tipo == "acceso" and "5\u00a0600 entradas" in a.mensaje for a in ruta_mp.avisos)
+
+    # 2. Un polo del VRAEM (Mazamari, 111) avisa del estado de emergencia vigente.
+    [ruta_vraem] = viaje.resolver(Consulta(origen="lima", mes=7, dias=6, destino=111), datos).rutas
+    assert any(a.tipo == "acceso" and "VRAEM" in a.mensaje for a in ruta_vraem.avisos)
+
+    # 3. Sin fecha exacta, si una parada cierra algún día de la semana (Trujillo, polo 139), avisa.
+    [ruta_sin_fecha] = viaje.resolver(
+        Consulta(origen="lima", mes=7, dias=4, destino=139, intereses=["historia"]), datos
+    ).rutas
+    assert any(a.tipo == "dias" and "Sin fecha exacta" in a.mensaje for a in ruta_sin_fecha.avisos)
+    # Con fecha de inicio exacta, ese aviso no sale porque el planificador ya respeta el día de la semana.
+    [ruta_con_fecha] = viaje.resolver(
+        Consulta(origen="lima", fecha_inicio=date(2027, 7, 20), dias=4, destino=139, intereses=["historia"]), datos
+    ).rutas
+    assert not any("Sin fecha exacta" in a.mensaje for a in ruta_con_fecha.avisos)

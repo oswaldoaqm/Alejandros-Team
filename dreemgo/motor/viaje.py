@@ -486,6 +486,9 @@ def eventos_del_polo(polo: PoloDatos, desde: date, hasta: date, datos: Datos) ->
 
 
 def recurso(r: dict) -> Recurso:
+    abre, cierra = r.get("abre"), r.get("cierra")
+    if not (abre and cierra and abre < cierra):
+        abre, cierra = None, None
     return Recurso(
         codigo=r["codigo"],
         nombre=r["nombre"],
@@ -500,6 +503,9 @@ def recurso(r: dict) -> Recurso:
         descripcion=r["descripcion"],
         ingreso=r["ingreso"],
         tarifa_soles=r["tarifa_soles"],
+        abre=abre,
+        cierra=cierra,
+        dias=r.get("dias"),
     )
 
 
@@ -949,6 +955,10 @@ def motivos(
     return salida[:4]
 
 
+CODIGO_MACHU_PICCHU = "917"
+POLOS_VRAEM = frozenset({"Kimbiri", "Pichari", "Llochegua", "Chirumpiari", "Mazamari", "San Martín de Pangoa"})
+
+
 def avisos(
     it: Itinerario, consulta: Consulta, est: Estacionalidad, costo: Costo, dias: list[Dia], datos: Datos
 ) -> list[Aviso]:
@@ -1041,12 +1051,43 @@ def avisos(
                 mensaje="Parte del viaje va en tren, con horarios y cupos fijos: compra el pasaje con anticipación.",
             )
         )
+    if any(r["codigo"] == CODIGO_MACHU_PICCHU for r in visitadas):
+        salida.append(
+            Aviso(
+                tipo="acceso",
+                nivel="advertencia",
+                mensaje="Machu Picchu tiene cupo diario fijo (5\u00a0600 entradas al día en 2026, Ministerio de "
+                "Cultura): reserva la entrada con semanas de anticipación en tuboleto.cultura.pe.",
+            )
+        )
+    if polo.nombre in POLOS_VRAEM:
+        salida.append(
+            Aviso(
+                tipo="acceso",
+                nivel="advertencia",
+                mensaje=f"{polo.nombre} está en el ámbito del VRAEM, zona con estado de emergencia vigente: "
+                "revisa las alertas oficiales antes de viajar y muévete solo de día por las vías principales.",
+            )
+        )
     largas = [r for r in visitadas if (r["caminata_min"] or 0) >= 60]
     if largas:
         nombres = textos.lista([r["nombre"] for r in largas[:3]])
         salida.append(
             Aviso(tipo="acceso", nivel="info", mensaje=f"Hay que caminar más de una hora para llegar a {nombres}.")
         )
+    if consulta.fecha_inicio is None:
+        con_cierre = [r for r in visitadas if r.get("dias") and set(r["dias"]) < set(DIAS_SEMANA)]
+        if con_cierre:
+            nombres = textos.lista([r["nombre"] for r in con_cierre[:3]])
+            verbo = "no abre" if len(con_cierre) == 1 else "no abren"
+            salida.append(
+                Aviso(
+                    tipo="dias",
+                    nivel="info",
+                    mensaje=f"Sin fecha exacta no sabemos qué día de la semana cae cada visita, y {nombres} "
+                    f"{verbo} todos los días: elige una fecha de inicio o revisa su horario.",
+                )
+            )
     carretera = sum(it.plan.tramos.values())
     if it.plan.tipo_viaje == "estrella" and carretera >= CAMINO_QUE_PESA * consulta.dias * JORNADA_MIN:
         salida.append(

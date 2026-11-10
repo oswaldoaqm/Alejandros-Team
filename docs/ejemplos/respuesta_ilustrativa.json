@@ -105,7 +105,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=101",
                 "descripcion": "La Basílica Menor Catedral de Santa María, conocida como Catedral de Trujillo, es el principal templo católico de la ciudad y sede de la Arquidiócesis Metropolitana de Trujillo. A lo largo de su historia ha contado con tres edificaciones sucesivas.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "12:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "08:04",
               "minutos_traslado": 4,
@@ -127,7 +138,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14233",
                 "descripcion": "El Cerro Cabras se ubica en el distrito de La Esperanza, provincia de Trujillo, departamento de La Libertad, con una altitud aproximada de 663 m.s.n.m.; el acceso principal se realiza desde el centro poblado Nueva Jerusalén (Sector Nueva Jerusalén), donde se inicia el ascenso…",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "09:09",
               "minutos_traslado": 31,
@@ -149,7 +163,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=122",
                 "descripcion": "El Museo de Sitio de Chan Chan, inaugurado el 20 de marzo de 1990 gracias a la donación de la Fundación Emilio Odebrecht (Brasil), forma parte del Sistema Nacional de Museos del Estado, administrado por el Ministerio de Cultura.",
                 "ingreso": "pagado",
-                "tarifa_soles": 60.0
+                "tarifa_soles": 60.0,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "11:07",
               "minutos_traslado": 28,
@@ -171,7 +195,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=96",
                 "descripcion": "La Zona Arqueológica Chan Chan es reconocida por la UNESCO como Patrimonio Mundial. Chan Chan fue la capital del reino chimú, la cual representa la cúspide del desarrollo de las comunidades prehispánicas de la costa norte peruana.",
                 "ingreso": "pagado",
-                "tarifa_soles": 10.0
+                "tarifa_soles": 10.0,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "11:57",
               "minutos_traslado": 5,
@@ -193,7 +228,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13095",
                 "descripcion": "Los Totorales también conocidos como Humedales, Pantanos o Balsares de Huanchaco es una reserva Chimú de pesca artesanal que se ubican en la costa norte del Perú, cerca al balneario de Huanchaco y a 50 m de la línea costera del Océano Pacífico, en el Distrito de Huanchaco,…",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "17:00",
+                "dias": null
               },
               "llegada": "14:45",
               "minutos_traslado": 18,
@@ -215,7 +253,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13734",
                 "descripcion": "El Arzobispo Don Manuel Prado erigió como parroquia de Monserrat a través de un Decreto con fecha 6 de septiembre de 1994, siendo su primer administrador parroquial el Padre Robert Prevost, además de ser el párroco fundador (1992-1999).",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "16:08",
               "minutos_traslado": 23,
@@ -256,7 +297,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8714",
                 "descripcion": "En sus inicios fue construida en la parte baja del pueblo sobre la Huaca Chimú en 1540, este lugar albergó siempre a las divinidades, durante el Imperio Chimú hubo allí una huaca o templo ceremonial llamada Huaca del Pez Dorado o Huaca Taska, dedicada a los dioses de entonces;…",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "19:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "08:39",
               "minutos_traslado": 39,
@@ -278,7 +329,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14627",
                 "descripcion": "La Campiña de Moche se ubica en el distrito de Moche, provincia de Trujillo, región La Libertad, aproximadamente a 8 km al sur de la ciudad de Trujillo.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "09:44",
               "minutos_traslado": 45,
@@ -300,7 +354,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=114",
                 "descripcion": "Durante los siglos I al VII d.c. la cultura Moche se desarrolló en la costa norte del Perú y ubicó su capital en el Valle Moche. En este lugar se levantaron majestuosos templos como Huaca del Sol y Huaca de la Luna.",
                 "ingreso": "pagado",
-                "tarifa_soles": 10.0
+                "tarifa_soles": 10.0,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "10:53",
               "minutos_traslado": 9,
@@ -322,7 +387,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14620",
                 "descripcion": "El Museo Santiago Uceda Castillo se ubica en el distrito de Moche, provincia de Trujillo, departamento de La Libertad, junto al Complejo Arqueológico Huacas de Moche, conformado por la Huaca del Sol y la Huaca de la Luna.",
                 "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "tarifa_soles": 5.0,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "12:30",
               "minutos_traslado": 7,
@@ -344,7 +412,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13708",
                 "descripcion": "El año de 1986 se creó el Vicariato San Juan de Sahagún (Agustinos del Norte), nombrando como primer Superior Mayor al Padre Daniel Turley que después se convertiría en el segundo obispo de la diócesis de Chulucanas.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "10:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "14:35",
               "minutos_traslado": 20,
@@ -366,7 +437,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14624",
                 "descripcion": "La Casa Natal de Víctor Raúl Haya de la Torre, ubicada en el Centro Histórico de Trujillo a solo una cuadra y media del Centro Histórico, constituye un inmueble de alto valor histórico, arquitectónico y cultural.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "20:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab"
+                ]
               },
               "llegada": "15:31",
               "minutos_traslado": 11,
@@ -407,7 +488,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=118",
                 "descripcion": "La Plaza Mayor de Trujillo constituye un escenario histórico de gran importancia, pues desde este lugar Martín de Estete inició el trazado de la ciudad por encargo del fundador Diego de Almagro, en diciembre de 1534.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "23:00",
+                "dias": null
               },
               "llegada": "08:04",
               "minutos_traslado": 4,
@@ -429,7 +513,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
                 "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "23:30",
+                "dias": null
               },
               "llegada": "08:28",
               "minutos_traslado": 4,
@@ -451,7 +538,12 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2186",
                 "descripcion": "El Museo de Zoología \"Juan Ormea Rodríguez\" fue fundado el 25 de julio de 1939 por iniciativa del entonces rector de la Universidad Nacional de Trujillo, el Dr.",
                 "ingreso": "pagado",
-                "tarifa_soles": 3.0
+                "tarifa_soles": 3.0,
+                "abre": "08:00",
+                "cierra": "19:00",
+                "dias": [
+                  "sab"
+                ]
               },
               "llegada": "08:53",
               "minutos_traslado": 5,
@@ -473,7 +565,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13736",
                 "descripcion": "El Seminario Mayor San Carlos y San Marcelo de Trujillo es una de las instituciones formativas más antiguas del norte peruano, creado en el siglo XVII como parte de la misión evangelizadora y educativa impulsada por la Iglesia Católica en el virreinato del Perú.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "10:35",
               "minutos_traslado": 21,
@@ -495,7 +590,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13197",
                 "descripcion": "El muelle fue construido por don José Saa & Cía. en el año 1886. En 1891, don Víctor Larco Herrera lo adquirió y lo modernizó, agregando 30 metros más.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "20:00",
+                "dias": null
               },
               "llegada": "11:40",
               "minutos_traslado": 45,
@@ -517,7 +615,16 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=99",
                 "descripcion": "Durante los siglos XI al XV d.C., la cultura Chimú se consolidó en la costa norte del Perú y tuvo como núcleo urbano la gran metrópoli de barro de Chan Chan.",
                 "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "tarifa_soles": 5.0,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab"
+                ]
               },
               "llegada": "13:37",
               "minutos_traslado": 37,
@@ -558,7 +665,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13723",
                 "descripcion": "El Arzobispado Metropolitano de Trujillo tiene sus raíces en la Diócesis de Trujillo, erigida el 15 de abril de 1577 por el Papa Gregorio XIII, en el corazón del virreinato del Perú.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "17:00",
+                "dias": null
               },
               "llegada": "09:00",
               "minutos_traslado": 5,
@@ -580,7 +690,16 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=120",
                 "descripcion": "El Museo de Arqueología, Antropología e Historia de la Universidad Nacional de Trujillo constituye uno de los principales espacios de conservación, investigación y difusión del patrimonio arqueológico e histórico de la costa norte del Perú.",
                 "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "tarifa_soles": 5.0,
+                "abre": "09:00",
+                "cierra": "17:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab"
+                ]
               },
               "llegada": "09:28",
               "minutos_traslado": 6,
@@ -602,7 +721,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2528",
                 "descripcion": "El Museo de Arte Moderno de Trujillo (MAM) es uno de los espacios culturales más importantes del norte del Perú.",
                 "ingreso": "pagado",
-                "tarifa_soles": 20.0
+                "tarifa_soles": 20.0,
+                "abre": "11:00",
+                "cierra": "19:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "11:00",
               "minutos_traslado": 17,
@@ -624,7 +753,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14622",
                 "descripcion": "El Paseo Temático \"Fertilidad Moche\" es un espacio público abierto ubicado en la Carretera Panamericana Norte, sector Santa Rosa, en el ingreso a la Campiña de Moche, distrito de Moche, Trujillo.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "18:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:25",
               "minutos_traslado": 10,
@@ -646,7 +786,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13709",
                 "descripcion": "Durante los primeros años del siglo XXI, en un contexto de expansión urbana en Trujillo, surgió la necesidad de una presencia pastoral en la zona de Santa María, un nuevo asentamiento habitacional sin infraestructura eclesial establecida.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "07:00",
+                "cierra": "19:00",
+                "dias": null
               },
               "llegada": "14:09",
               "minutos_traslado": 14,
@@ -668,7 +811,16 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=113",
                 "descripcion": "La Casa Urquiaga es una casona de gran valor arquitectónico e histórico ubicada en la Plaza Mayor de Trujillo. Su construcción original data del siglo XVI, poco después de la fundación de la ciudad en 1534, por lo que pertenece a la época colonial.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:30",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie"
+                ]
               },
               "llegada": "14:41",
               "minutos_traslado": 12,
@@ -720,6 +872,11 @@
           "tipo": "acceso",
           "nivel": "info",
           "mensaje": "La ida y la vuelta van en bus de noche, 9 h 57 por carretera: sales de Lima a las 20:00 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
+        },
+        {
+          "tipo": "dias",
+          "nivel": "info",
+          "mensaje": "Sin fecha exacta no sabemos qué día de la semana cae cada visita, y Museo de Sitio Chan Chan, Santuario de Nuestra Señora del Socorro de Huanchaco y Casa Natal de Victor Raúl Haya de la Torre – Centro Cultural del Banco de la Nación no abren todos los días: elige una fecha de inicio o revisa su horario."
         }
       ],
       "indicadores": {
@@ -810,7 +967,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3513",
                 "descripcion": "El parque ecológico ex campo de aterrizaje es un espacio imperdible para los amantes del turismo, la naturaleza, la historia y la aventura.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "20:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "08:06",
               "minutos_traslado": 6,
@@ -832,7 +1000,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7103",
                 "descripcion": "El Parque Temático de la Miel “La Abeja Reina” se encuentra ubicado en el sector San José del distrito de Chontabamba, a 9 minutos de la Plaza Principal de Oxapampa, dentro de la región natural Yunga, según la clasificación de Javier Pulgar Vidal, a una altitud de 1,805 m s. n.…",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "18:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "09:02",
               "minutos_traslado": 14,
@@ -854,7 +1033,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=6993",
                 "descripcion": "El Fundo Margarita se ubica en el distrito de Chontabamba, tiene una extensión de 23 hectáreas, se encuentra en funcionamiento desde el año 1996.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "09:59",
               "minutos_traslado": 12,
@@ -876,7 +1058,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=200",
                 "descripcion": "El Parque Nacional Yanachaga Chemillén (PNYCh), ubicado en la provincia de Oxapampa, región Pasco, es un Área Natural Protegida (ANP) que abarca 122,000 hectáreas de bosques nublados, ríos cristalinos y una biodiversidad asombrosa.",
                 "ingreso": "pagado",
-                "tarifa_soles": 15.0
+                "tarifa_soles": 15.0,
+                "abre": "08:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:34",
               "minutos_traslado": 35,
@@ -898,7 +1091,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=202",
                 "descripcion": "La Casa Tradicional Hassinger Baumann Haus es una residencia histórica, construida en el año 1947, situada en el distrito y provincia de Oxapampa, departamento de Pasco, se ubica a un minuto de la Plaza Principal de Oxapampa, a una altitud de 1812 m.s.n.m. dentro de la región…",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "06:00",
+                "cierra": "21:30",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "16:04",
               "minutos_traslado": 30,
@@ -939,7 +1143,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=201",
                 "descripcion": "La Iglesia Matriz Santa Rosa de Oxapampa se encuentra en el Jr. Grau S/N, frente a la Plaza Principal, a 1814 m.s.n.m.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:30",
+                "cierra": "20:00",
+                "dias": null
               },
               "llegada": "08:04",
               "minutos_traslado": 4,
@@ -961,7 +1168,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=8880",
                 "descripcion": "La Reserva de Biosfera Oxapampa-Asháninka-Yánesha es una joya de conservación natural y cultural ubicada en el departamento de Pasco, en la provincia de Oxapampa.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "18:30",
+                "dias": null
               },
               "llegada": "08:28",
               "minutos_traslado": 4,
@@ -983,7 +1193,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13969",
                 "descripcion": "El Taller de Artesanías “La Collpa - Porre” es un espacio cultural y productivo administrado por la Sra.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "dom"
+                ]
               },
               "llegada": "11:46",
               "minutos_traslado": 18,
@@ -1005,7 +1225,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12287",
                 "descripcion": "Ubicada en el cerro Porrayepen la Comunidad Nativa de Tsachopen del distrito de Chontabamba, en la región natural Yunga, sobre los 1550 m.s.n.m., tiene una extensión de 1250 m², de clima cálido.",
                 "ingreso": "pagado",
-                "tarifa_soles": 3.0
+                "tarifa_soles": 3.0,
+                "abre": "09:00",
+                "cierra": "16:30",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "13:52",
               "minutos_traslado": 6,
@@ -1027,7 +1258,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7066",
                 "descripcion": "La Plaza Principal de Oxapampa tiene forma cuadrangular y una superficie neta de 8,979.94 m2, con una superficie de sus calles perimétricas de 3,979.07 m2, posee 7 caminos que se reúnen en el centro de la plaza que se caracteriza por tener como monumento tipo obelisco de 4…",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "22:30",
+                "dias": null
               },
               "llegada": "14:54",
               "minutos_traslado": 17,
@@ -1049,7 +1283,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13797",
                 "descripcion": "El Malecón turístico del río Chorobamba se encuentra ubicado en la ciudad de Oxapampa y se extiende a lo largo del río Chorobamba margen derecha, consta de unas murallas de piedras con mallas y muros de concreto, cubierto por áreas verdes.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "19:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "15:19",
               "minutos_traslado": 5,
@@ -1118,7 +1363,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7062",
                 "descripcion": "La Catarata Río Tigre es un hermoso escenario natural que se ubica en el distrito y provincia de Oxapampa, en la región de Pasco. Específicamente, el recurso forma parte del caserío de La Cañera, a solo 18 km de la ciudad de Oxapampa.",
                 "ingreso": "pagado",
-                "tarifa_soles": 3.0
+                "tarifa_soles": 3.0,
+                "abre": "08:30",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "08:33",
               "minutos_traslado": 33,
@@ -1140,7 +1396,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13039",
                 "descripcion": "El Parque de Miraflores en Oxapampa destaca como parte integral del barrio típico de Miraflores. Con una superficie de 5,100.26 m² y calles perimétricas que abarcan 2,670.66 m², este parque tiene una forma cuadrangular.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "21:30",
+                "dias": null
               },
               "llegada": "10:02",
               "minutos_traslado": 29,
@@ -1162,7 +1421,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12930",
                 "descripcion": "El Mirador Centro Histórico Cultural Asháninka - Yánesha se encuentra sobre una colina a unos 1908 m.s.n.m. Este sitio ofrece una vista panorámica excepcional de la ciudad de Oxapampa y sus alrededores.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "17:30",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab"
+                ]
               },
               "llegada": "10:40",
               "minutos_traslado": 8,
@@ -1184,7 +1453,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7111",
                 "descripcion": "El Cementerio de los Colonos de Huancabamba, fundado en el siglo XIX, presenta una serie de características que lo convierten en un espacio único tanto por su valor histórico como por su estética.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "13:09",
               "minutos_traslado": 47,
@@ -1206,7 +1478,16 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7123",
                 "descripcion": "La Plaza Principal de Huancabamba se distingue como un espacio emblemático de arquitectura típica que refleja la herencia austro-alemana, tiene una extensión de 4,051.850 m2.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "18:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie"
+                ]
               },
               "llegada": "14:48",
               "minutos_traslado": 5,
@@ -1228,7 +1509,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=7109",
                 "descripcion": "El Centro Yanachaga, se encuentra ubicado en el distrito de Huancabamba, Provincia de Oxapampa, departamento de Pasco, a una altitud de 1794 m.s.n.m. está considerada dentro de la región natural Yunga, según la clasificación de Javier Pulgar Vidal.",
                 "ingreso": "pagado",
-                "tarifa_soles": 3.0
+                "tarifa_soles": 3.0,
+                "abre": "08:00",
+                "cierra": "16:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "15:15",
               "minutos_traslado": 7,
@@ -1269,7 +1560,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13927",
                 "descripcion": "El Área de Conservación Privada Bosque de Churumazú se encuentra ubicado en el distrito de Chontabamba, provincia de Oxapampa del departamento de Pasco, a una altitud de 1870 a 2250 m.s.n.m. dentro de la región natural Yunga según la clasificación de Javier Pulgar Vidal.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "06:30",
+                "cierra": "17:00",
+                "dias": null
               },
               "llegada": "08:15",
               "minutos_traslado": 15,
@@ -1291,7 +1585,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12286",
                 "descripcion": "Museo Vintage Años Dorados, es una Casa Museo de madera de estilo típico tirolés, ubicado en el distrito Chontabamba, cuenta con salas de exhibición y colección de los años 1960, 1970 y 1980.",
                 "ingreso": "pagado",
-                "tarifa_soles": 7.5
+                "tarifa_soles": 7.5,
+                "abre": "10:00",
+                "cierra": "17:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "11:28",
               "minutos_traslado": 13,
@@ -1313,7 +1617,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12929",
                 "descripcion": "El Mariposario MARIPOXA Parque Ecobiológico de Oxapampa, es una atracción ecológica privada en la región de Pasco, dedicada a la crianza, estudio y conservación.",
                 "ingreso": "pagado",
-                "tarifa_soles": 20.0
+                "tarifa_soles": 20.0,
+                "abre": "08:30",
+                "cierra": "17:30",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:44",
               "minutos_traslado": 16,
@@ -1335,7 +1650,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=12928",
                 "descripcion": "La Casa Museo Schlaefli, ubicada en Oxapampa, es un testimonio vivo de la historia de los colonos europeos que llegaron a esta región del Perú en el siglo XIX.",
                 "ingreso": "pagado",
-                "tarifa_soles": 10.0
+                "tarifa_soles": 10.0,
+                "abre": "11:30",
+                "cierra": "18:30",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "14:43",
               "minutos_traslado": 14,
@@ -1357,7 +1683,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4337",
                 "descripcion": "El Manantial de la Virgen se encuentra en el sector Cantarizú, en el distrito y provincia de Oxapampa, ubicado dentro de la región natural Yunga según la clasificación de Javier Pulgar Vidal, El origen del Manantial de la Virgen nacen de las aguas que emanan del subsuelo,…",
                 "ingreso": "pagado",
-                "tarifa_soles": 3.0
+                "tarifa_soles": 3.0,
+                "abre": "09:00",
+                "cierra": "18:30",
+                "dias": null
               },
               "llegada": "15:39",
               "minutos_traslado": 11,
@@ -1440,6 +1769,11 @@
           "tipo": "acceso",
           "nivel": "info",
           "mensaje": "La ida y la vuelta van en bus de noche, 10 h 17 por carretera: sales de Lima a las 19:30 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
+        },
+        {
+          "tipo": "dias",
+          "nivel": "info",
+          "mensaje": "Sin fecha exacta no sabemos qué día de la semana cae cada visita, y Taller de Artesanías La Collpa - Porre, Mirador Centro Histórico Cultural Asháninka - Yánesha y Plaza Principal de Huancabamba no abren todos los días: elige una fecha de inicio o revisa su horario."
         }
       ],
       "indicadores": {
@@ -1534,7 +1868,16 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3499",
                 "descripcion": "La iglesia San Pedro Apostol no cuenta con fecha exacta de construcción, pero data del siglo XIX, tiene una antigüedad de 200 años aproximadamente y pertenece a la época colonial – republicana.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie"
+                ]
               },
               "llegada": "10:55",
               "minutos_traslado": 11,
@@ -1556,7 +1899,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
                 "descripcion": "La Ciudad Sagrada de Caral está a 184 km al norte de Lima y entre 23 km y 25 km desde el litoral, en la sección Media-Baja del valle de Supe y en la margen izquierda de este río, a 365 metros sobre el nivel del mar.",
                 "ingreso": "pagado",
-                "tarifa_soles": 11.0
+                "tarifa_soles": 11.0,
+                "abre": "10:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:15",
               "minutos_traslado": 60,
@@ -1597,7 +1951,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298",
                 "descripcion": "Está construida sobre una colina en el valle del río Fortaleza, es el monumento de mayor importancia que conserva su estructura arquitectónica, presenta una pirámide construida íntegramente en adobe formada por cuatro plataformas macizas con recintos en la parte alta, con un…",
                 "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "tarifa_soles": 5.0,
+                "abre": "09:30",
+                "cierra": "17:00",
+                "dias": null
               },
               "llegada": "09:30",
               "minutos_traslado": 57,
@@ -1619,7 +1976,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
                 "descripcion": "Este sitio arqueológico cuenta con una extensión de 136.37 hectáreas y con un perímetro de 69670 metros, el área monumental pertenece al periodo arcaico tardío con una antigüedad de 3800 años de ideología de nuestros ancestros, con un área de 25 hectáreas ubicado en los cerros…",
                 "ingreso": "pagado",
-                "tarifa_soles": 11.0
+                "tarifa_soles": 11.0,
+                "abre": "08:00",
+                "cierra": "15:00",
+                "dias": null
               },
               "llegada": "11:19",
               "minutos_traslado": 49,
@@ -1641,7 +2001,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14521",
                 "descripcion": "El Balcón de Huaura es un monumento histórico ubicado en la Plaza de Armas de Huaura, en el departamento de Lima.",
                 "ingreso": "pagado",
-                "tarifa_soles": 5.0
+                "tarifa_soles": 5.0,
+                "abre": "08:00",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:34",
               "minutos_traslado": 15,
@@ -1663,7 +2034,14 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211",
                 "descripcion": "Este museo fue creado en el mes de diciembre del 2019, está bajo el cargo de la Oficina de Cultura de la Municipalidad distrital de Hualmay.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "10:00",
+                "cierra": "16:00",
+                "dias": [
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "15:02",
               "minutos_traslado": 13,
@@ -1685,7 +2063,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3373",
                 "descripcion": "Este Monumento Histórico – Artístico, es de la Época y de estilo Republicano, con líneas neoclásicas y afrancesadas, de las que son comunes en Barranco, Chorrillos, La punta y en la Lima de los años de 1920.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "15:40",
               "minutos_traslado": 8,
@@ -1707,7 +2088,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13931",
                 "descripcion": "El distrito de Huacho, reconocido como la “Capital de la Hospitalidad”, es uno de los doce distritos que conforman la provincia de Huaura.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "08:00",
+                "cierra": "20:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "16:05",
               "minutos_traslado": 5,
@@ -1748,7 +2140,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11873",
                 "descripcion": "La Zona Arqueológica Monumental de Peñico pertenece políticamente al departamento de Lima, provincia de Huaura, distrito de Huaura.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "09:05",
               "minutos_traslado": 65,
@@ -1770,7 +2165,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4545",
                 "descripcion": "Miraya es uno de los asentamientos arcaicos que rodean a la Ciudad Sagrada de Caral, ocupa aproximadamente 43 hectáreas y tiene una antigüedad de 3,000 a 1,800 años A.C.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
               },
               "llegada": "10:18",
               "minutos_traslado": 28,
@@ -1792,7 +2190,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3484",
                 "descripcion": "La Zona Arqueológica Monumental Los Huacos se ubica en el distrito de Hualmay, Provincia de Huaura, departamento de Lima.",
                 "ingreso": "desconocido",
-                "tarifa_soles": null
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "12:16",
               "minutos_traslado": 58,
@@ -1814,7 +2223,18 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3439",
                 "descripcion": "El Museo Arqueológico \"Arturo Ruiz Estrada\" constituye un eje fundamental para la investigación y la salvaguarda del patrimonio en la provincia de Huaura.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
               },
               "llegada": "14:30",
               "minutos_traslado": 8,
@@ -1836,7 +2256,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375",
                 "descripcion": "Casona construida antes de 1878. El 20 de noviembre de 1938, el Dr. Pedro Luna Arrieta, Alcalde de Huacho, inauguró la construcción de la carretera Panamericana Norte, en el tramo Lima - Huacho, desde el Balcón del Club Casino Huacho contando con la presencia del Gral.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "20:00",
+                "dias": null
               },
               "llegada": "16:00",
               "minutos_traslado": 5,
@@ -1858,7 +2281,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379",
                 "descripcion": "Plaza de Armas pública ubicada en el centro de la ciudad, considerada como punto principal para toda serie de eventos y acontecimientos.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "00:00",
+                "cierra": "23:30",
+                "dias": null
               },
               "llegada": "16:24",
               "minutos_traslado": 4,
@@ -1899,7 +2325,10 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11107",
                 "descripcion": "La playa Chorrillos es importante por las actividades económicas que genera en comercio, recreación, pesca artesanal e industrial, que se desarrollan a lo largo de 3 km de extensión.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": null
               },
               "llegada": "08:07",
               "minutos_traslado": 7,
@@ -1921,7 +2350,17 @@
                 "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3456",
                 "descripcion": "Esta Iglesia está construida de adobe y madera, como se menciona en el inventario mandado hacer por el Arzobispo de Lima, Javier de Luna Pizarro en 1848. Esta iglesia es de época Republicana de los años 1848.",
                 "ingreso": "libre",
-                "tarifa_soles": 0.0
+                "tarifa_soles": 0.0,
+                "abre": "10:00",
+                "cierra": "13:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "dom"
+                ]
               },
               "llegada": "11:23",
               "minutos_traslado": 16,
@@ -1993,6 +2432,11 @@
           "tipo": "presupuesto",
           "nivel": "advertencia",
           "mensaje": "El costo central (S/ 804) pasa tu presupuesto por S/ 104."
+        },
+        {
+          "tipo": "dias",
+          "nivel": "info",
+          "mensaje": "Sin fecha exacta no sabemos qué día de la semana cae cada visita, y Iglesia San Pedro Apóstol, Museo Municipal de Hualmay y Iglesia de Santa María no abren todos los días: elige una fecha de inicio o revisa su horario."
         }
       ],
       "indicadores": {

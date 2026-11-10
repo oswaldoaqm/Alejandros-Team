@@ -167,6 +167,10 @@ class Punto(_Modelo):
     altitud_m: int | None = None
 
 
+HORA = r"^([01]\d|2[0-3]):[0-5]\d$"
+DiaSemana = Literal["lun", "mar", "mie", "jue", "vie", "sab", "dom"]
+
+
 class Recurso(_Modelo):
     """Un recurso turístico del inventario oficial, con lo que la ficha publica."""
 
@@ -189,9 +193,12 @@ class Recurso(_Modelo):
     descripcion: str | None = None
     ingreso: Literal["libre", "pagado", "desconocido"] = "desconocido"
     tarifa_soles: float | None = Field(None, ge=0)
-
-
-HORA = r"^([01]\d|2[0-3]):[0-5]\d$"
+    abre: str | None = Field(None, pattern=HORA, description="Hora de apertura en la ficha, HH:MM; null si no figura.")
+    cierra: str | None = Field(None, pattern=HORA, description="Hora de cierre en la ficha, HH:MM; null si no figura.")
+    dias: list[DiaSemana] | None = Field(
+        None,
+        description="Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.",
+    )
 
 
 class Parada(_Modelo):

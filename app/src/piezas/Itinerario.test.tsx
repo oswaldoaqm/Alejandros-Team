@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { Dia, Evento, Recurso } from "../api/tipos";
+import type { Dia, Evento, Parada, Recurso } from "../api/tipos";
 import type { Foto } from "../fotos";
 import { numerar } from "../itinerario";
 import { plano } from "../pruebas/texto";
@@ -450,6 +450,21 @@ describe("la hoja de un lugar", () => {
         .getAttribute("href"),
     ).toBe("https://commons.wikimedia.org/wiki/File:Capilla_de_la_Merced_(Huancayo).jpg");
     expect(within(hoja).getByRole("link", { name: "CC BY-SA 4.0" })).toBeDefined();
+  });
+
+  it("muestra el horario y los días de cierre cuando la ficha los trae", () => {
+    const conHorario: Parada = {
+      ...capilla,
+      recurso: recurso("99", "Museo de Sitio Chan Chan", {
+        abre: "09:00",
+        cierra: "16:00",
+        dias: ["mar", "mie", "jue", "vie", "sab", "dom"],
+      }),
+    };
+    abrir({ parada: conHorario, numero: 1, dia: 1, desde: "Trujillo", foto: null });
+    const hoja = screen.getByRole("dialog", { name: "Museo de Sitio Chan Chan" });
+    const horario = within(hoja).getByText("Horario").nextElementSibling;
+    expect(plano(horario?.textContent)).toBe("09:00 a 16:00 (cierra los lunes)");
   });
 
   it("cerrada no muestra nada, y la cruz la cierra", async () => {

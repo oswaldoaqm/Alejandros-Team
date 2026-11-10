@@ -854,10 +854,20 @@ export interface components {
          * @description Un recurso turístico del inventario oficial, con lo que la ficha publica.
          */
         Recurso: {
+            /**
+             * Abre
+             * @description Hora de apertura en la ficha, HH:MM; null si no figura.
+             */
+            abre?: string | null;
             /** Altitud M */
             altitud_m?: number | null;
             /** Categoria */
             categoria: string;
+            /**
+             * Cierra
+             * @description Hora de cierre en la ficha, HH:MM; null si no figura.
+             */
+            cierra?: string | null;
             /**
              * Codigo
              * @description Código del recurso en el inventario de MINCETUR.
@@ -865,6 +875,11 @@ export interface components {
             codigo: string;
             /** Descripcion */
             descripcion?: string | null;
+            /**
+             * Dias
+             * @description Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.
+             */
+            dias?: ("lun" | "mar" | "mie" | "jue" | "vie" | "sab" | "dom")[] | null;
             /**
              * Ingreso
              * @default desconocido

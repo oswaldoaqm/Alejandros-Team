@@ -1724,6 +1724,19 @@
         "additionalProperties": false,
         "description": "Un recurso turístico del inventario oficial, con lo que la ficha publica.",
         "properties": {
+          "abre": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Hora de apertura en la ficha, HH:MM; null si no figura.",
+            "title": "Abre"
+          },
           "altitud_m": {
             "anyOf": [
               {
@@ -1738,6 +1751,19 @@
           "categoria": {
             "title": "Categoria",
             "type": "string"
+          },
+          "cierra": {
+            "anyOf": [
+              {
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Hora de cierre en la ficha, HH:MM; null si no figura.",
+            "title": "Cierra"
           },
           "codigo": {
             "description": "Código del recurso en el inventario de MINCETUR.",
@@ -1754,6 +1780,30 @@
               }
             ],
             "title": "Descripcion"
+          },
+          "dias": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "lun",
+                    "mar",
+                    "mie",
+                    "jue",
+                    "vie",
+                    "sab",
+                    "dom"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.",
+            "title": "Dias"
           },
           "ingreso": {
             "default": "desconocido",
