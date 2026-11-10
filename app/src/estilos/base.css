@@ -57,15 +57,15 @@
   --sombra-flota: 0 1px 3px rgb(38 41 46 / 8%), 0 12px 28px rgb(38 41 46 / 10%);
   --sombra-baja: 0 1px 3px rgb(38 41 46 / 6%);
 
-  /* Texto: Serif editorial (Merriweather / Lora) para titulares; sans-serif limpio en cuerpo */
-  --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Texto: Serif editorial (Merriweather / Lora) unificado para titulares y cuerpo */
+  --fuente: "Merriweather", "Lora", "Charter", Georgia, "Times New Roman", serif;
   --fuente-titular: "Merriweather", "Lora", "Charter", Georgia, "Times New Roman", serif;
   --t-display: 2.5rem;
   --t-titulo: 1.75rem;
   --t-titular: 1.25rem;
-  --t-cuerpo: 1.0625rem;
-  --t-nota: 0.9375rem;
-  --t-pie: 0.8125rem;
+  --t-cuerpo: 1.125rem;
+  --t-nota: 1rem;
+  --t-pie: 0.875rem;
 
   /* Medidas */
   --ancho: 1180px;
@@ -152,7 +152,7 @@ body {
   margin: 0;
   font-family: var(--fuente);
   font-size: var(--t-cuerpo);
-  line-height: 1.47;
+  line-height: 1.55;
   color: var(--tinta);
   background: var(--fondo);
   -webkit-font-smoothing: antialiased;
