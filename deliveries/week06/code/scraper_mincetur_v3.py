@@ -36,7 +36,7 @@ ENTRADA = "../data/processed/dreemgo_master_dataset.csv"
 SALIDA = "../data/processed/fichas_mincetur.csv"
 PAUSA, TIMEOUT = 1.0, 25
 AGENTE = ("DreemGO/1.0 (proyecto academico UTEC DS3022; 1 req/s; "
-          "contacto oswaldoaqm@gmail.com)")
+          "https://github.com/oswaldoaqm/Alejandros-Team)")
 
 COLS = [
     "CODIGO", "URL", "HTTP",

@@ -26,6 +26,10 @@ import pandas as pd
 from sklearn.cluster import AgglomerativeClustering, HDBSCAN
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score, davies_bouldin_score
+from pathlib import Path
+_AQUI = Path(__file__).resolve().parent
+PROCESADOS = _AQUI.parent / "data" / "processed"   # asignación por recurso
+DOCS = _AQUI.parent / "docs"                       # perfiles, comparativas y figuras
 
 warnings.filterwarnings("ignore")
 R_TIERRA = 6371.0
@@ -207,10 +211,10 @@ val.groupby("POLO").agg(
     regiones=("REGIÓN", "nunique"), region_top=("REGIÓN", lambda s: s.mode().iat[0]),
     jerarquia_media=("JERARQUIA_OFICIAL", "mean")).reset_index().merge(
     p.rename(columns={"grupo": "POLO"})[["POLO", "diametro_km", "radio_km", "desnivel_m"]],
-    on="POLO").to_csv("perfil_polos_v2.csv", sep=";", index=False)
+    on="POLO").to_csv(DOCS / "perfil_polos_v2.csv", sep=";", index=False)
 
 geo[["CODIGO DEL RECURSO", "NOMBRE DEL RECURSO", "REGIÓN", "latitud", "longitud",
      "ALTITUD", "ZONA_CLIMATICA", "JERARQUIA_OFICIAL", "POLO"]].to_csv(
-    "polos_asignados_v2.csv", sep=";", index=False)
-comp.to_csv("comparativa_polos_v2.csv", sep=";", index=False)
+    PROCESADOS / "polos_asignados_v2.csv", sep=";", index=False)
+comp.to_csv(DOCS / "comparativa_polos_v2.csv", sep=";", index=False)
 print("\nArchivos: polos_asignados_v2.csv · perfil_polos_v2.csv · comparativa_polos_v2.csv")

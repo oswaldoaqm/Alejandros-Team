@@ -1,0 +1,41 @@
+id;perfil;origen;mes;fecha_inicio;dias;intereses;presupuesto;altitud_max;solo_por_tierra;sorpresa
+1;Una pareja de Lima con un fin de semana libre en julio, sin nada en mente;lima;7;;2;;;;false;false
+2;Dos amigas de Lima que quieren caminar en la sierra un fin de semana largo de agosto, con S/ 900 cada una;lima;8;;3;naturaleza|caminatas;900;;false;false
+3;Una familia de Lima con cuatro días en julio, que quiere historia y naturaleza, con S/ 700 por persona y un abuelo que no debe pasar de 3 500 m;lima;7;;4;historia|naturaleza;700;3500;false;false
+4;Una pareja de Lima que quiere playa cinco días en mayo, con S/ 1 200 cada uno;lima;5;;5;playa;1200;;false;false
+5;Un estudiante de Lima con seis días en julio al que le interesa la historia;lima;7;;6;historia;;;false;false
+6;Dos amigos de Lima con una semana en setiembre que buscan aventura y naturaleza, con S/ 2 500 cada uno;lima;9;;7;aventura|naturaleza;2500;;false;false
+7;Una familia de Lima que quiere playa y buena comida tres días en febrero, con S/ 800 por persona;lima;2;;3;playa|gastronomia;800;;false;false
+8;Un grupo de amigos de Lima que quiere comer bien y salir de noche un fin de semana de octubre, con S/ 600 cada uno;lima;10;;2;gastronomia|vida_nocturna;600;;false;false
+9;Una pareja de Lima que quiere vivir la Semana Santa de 2027, con fiestas e historia, en cinco días;lima;;2027-03-24;5;fiestas|historia;;;false;false
+10;Una profesora de Lima que quiere estar en una gran fiesta andina en junio de 2027, con ocho días;lima;;2027-06-21;8;historia|fiestas;;;false;false
+11;Un viajero de Lima que no quiere volar, con cuatro días de naturaleza en diciembre;lima;12;;4;naturaleza;;;true;false
+12;Un mochilero de Lima con seis días en agosto y solo S/ 600 en total;lima;8;;6;;600;;false;false
+13;Una pareja de Lima con diez días en julio para naturaleza, aventura y caminatas;lima;7;;10;naturaleza|aventura|caminatas;;;false;false
+14;Una señora de Lima a la que la altura le cae mal: tres días de arquitectura e historia en noviembre, sin pasar de 2 500 m;lima;11;;3;arquitectura|historia;;2500;false;false
+15;Unos amigos de Lima que quieren playa un fin de semana de enero;lima;1;;2;playa;;;false;false
+16;Una viajera de Lima que pide «Sorpréndeme» para cinco días de abril;lima;4;;5;;;;false;true
+17;Un turista que ya está en el Cusco y tiene dos días en julio para la historia;cusco;7;;2;historia;;;false;false
+18;Una pareja en el Cusco con cuatro días de agosto para naturaleza y caminatas;cusco;8;;4;naturaleza|caminatas;;;false;false
+19;Un viajero en el Cusco con tres días de febrero, en plena temporada de lluvias;cusco;2;;3;;;;false;false
+20;Unos amigos en el Cusco que quieren comer bien y salir de noche cinco días de octubre, con S/ 1 500 cada uno;cusco;10;;5;gastronomia|vida_nocturna;1500;;false;false
+21;Una familia de Arequipa con tres días de julio para la naturaleza;arequipa;7;;3;naturaleza;;;false;false
+22;Un jubilado de Arequipa que no vuela, con cinco días de setiembre para la historia y la arquitectura;arequipa;9;;5;historia|arquitectura;;;true;false
+23;Unos primos de Arequipa que quieren playa un fin de semana de enero;arequipa;1;;2;playa;;;false;false
+24;Un aventurero de Arequipa con seis días de mayo, que no quiere pasar de 4 000 m;arequipa;5;;6;aventura;;4000;false;false
+25;Una estudiante de Trujillo con tres días de junio para la historia;trujillo;6;;3;historia;;;false;false
+26;Una pareja de Trujillo que quiere playa y buena comida cuatro días de agosto;trujillo;8;;4;playa|gastronomia;;;false;false
+27;Un profesor de Chiclayo con tres días de octubre para la historia y la arquitectura;chiclayo;10;;3;historia|arquitectura;;;false;false
+28;Una familia de Chiclayo con cinco días de julio para la naturaleza;chiclayo;7;;5;naturaleza;;;false;false
+29;Unos amigos de Piura que quieren playa un fin de semana de febrero;piura;2;;2;playa;;;false;false
+30;Una pareja de Piura con cinco días de agosto para naturaleza y aventura;piura;8;;5;naturaleza|aventura;;;false;false
+31;Una familia de Iquitos con cuatro días de setiembre para la naturaleza;iquitos;9;;4;naturaleza;;;false;false
+32;Un viajero de Huancayo con tres días de julio para historia y fiestas;huancayo;7;;3;historia|fiestas;;;false;false
+33;Una pareja de Huancayo con cuatro días de noviembre para naturaleza y caminatas;huancayo;11;;4;naturaleza|caminatas;;;false;false
+34;Un estudiante de Puno con tres días de agosto para la historia;puno;8;;3;historia;;;false;false
+35;Una familia de Tacna con tres días de abril, sin nada en mente;tacna;4;;3;;;;false;false
+36;Una pareja de Ayacucho con cuatro días de mayo para la historia;ayacucho;5;;4;historia;;;false;false
+37;Unos amigos de Cajamarca con tres días de julio para naturaleza e historia;cajamarca;7;;3;naturaleza|historia;;;false;false
+38;Un montañista de Huaraz con tres días de junio para caminar;huaraz;6;;3;caminatas;;;false;false
+39;Una pareja de Tarapoto con cuatro días de agosto para naturaleza y aventura;tarapoto;8;;4;naturaleza|aventura;;;false;false
+40;Una familia de Puerto Maldonado con tres días de julio para la naturaleza;puerto-maldonado;7;;3;naturaleza;;;false;false

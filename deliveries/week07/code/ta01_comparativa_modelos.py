@@ -14,6 +14,10 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, HDBSCAN
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from pathlib import Path
+_AQUI = Path(__file__).resolve().parent
+PROCESADOS = _AQUI.parent / "data" / "processed"   # asignación por recurso
+DOCS = _AQUI.parent / "docs"                       # perfiles, comparativas y figuras
 
 warnings.filterwarnings("ignore")
 RNG = 42
@@ -218,9 +222,9 @@ print(f"  tiene {n_limpios} salidas posibles que no contienen ningún recurso sa
 # ───────────────── salidas ─────────────────
 geo[["CODIGO DEL RECURSO", "NOMBRE DEL RECURSO", "REGIÓN", "latitud", "longitud",
      "ALTITUD", "ZONA_CLIMATICA", "CLUSTER"]].to_csv(
-    "clusters_asignados.csv", sep=";", index=False)
-comp.to_csv("comparativa_modelos.csv", sep=";", index=False)
-perfil.to_csv("perfil_clusters.csv", sep=";", index=False)
-pd.DataFrame(barrido).to_csv("barrido_k.csv", sep=";", index=False)
+    PROCESADOS / "clusters_asignados.csv", sep=";", index=False)
+comp.to_csv(DOCS / "comparativa_modelos.csv", sep=";", index=False)
+perfil.to_csv(DOCS / "perfil_clusters.csv", sep=";", index=False)
+pd.DataFrame(barrido).to_csv(DOCS / "barrido_k.csv", sep=";", index=False)
 print("\nArchivos escritos: clusters_asignados.csv · comparativa_modelos.csv · "
       "perfil_clusters.csv · barrido_k.csv")

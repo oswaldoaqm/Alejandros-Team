@@ -1,0 +1,101 @@
+/* En papel (o en PDF): el viaje entero, sin botones ni mapa. El plan sale completo, todos los
+   días, aunque en pantalla se esté viendo uno solo. */
+
+@media print {
+  .saltar,
+  .cabecera,
+  .barra-inferior,
+  .pie,
+  .portada__barra,
+  .portada__arte,
+  .recorrido__selector,
+  .recorrido__mapa,
+  .recorrido__plan > :not(.plan-impreso),
+  .aviso-flotante,
+  .resultados__consulta .boton,
+  .boton {
+    display: none !important;
+  }
+
+  body {
+    font-size: 10.5pt;
+    color: #000;
+    background: #fff;
+  }
+
+  .viaje,
+  .pagina {
+    max-width: none;
+    padding: 0;
+  }
+
+  .viaje__cuerpo {
+    display: block;
+  }
+
+  .viaje__cuerpo > * {
+    margin-bottom: 14pt;
+  }
+
+  .recorrido {
+    display: block;
+  }
+
+  .portada__titulo {
+    font-size: 24pt;
+  }
+
+  .datos-clave,
+  .antes,
+  .viaje .costo,
+  .viaje .temporada,
+  .eventos {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .solo-impresion {
+    display: block;
+  }
+
+  .plan-impreso__dia {
+    margin-top: 10pt;
+    break-inside: avoid;
+  }
+
+  .plan-impreso h3 {
+    font-size: 12pt;
+  }
+
+  .plan-impreso ol {
+    display: grid;
+    gap: 3pt;
+    margin-top: 4pt;
+  }
+
+  /* En papel no hay clic: la ficha oficial va con su dirección. */
+  .plan-impreso__ficha {
+    font-size: 8pt;
+    color: #444;
+    overflow-wrap: anywhere;
+  }
+
+  .antes__aviso,
+  .razon,
+  .evento,
+  .viaje .costo,
+  .viaje .temporada,
+  .letra-chica {
+    break-inside: avoid;
+  }
+
+  /* Un título no se queda solo al pie de una hoja: pasa a la siguiente con lo que titula. */
+  .viaje__titular,
+  .plan-impreso h3 {
+    break-after: avoid;
+  }
+
+  a {
+    color: inherit;
+  }
+}

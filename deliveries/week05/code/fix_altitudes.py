@@ -3,7 +3,9 @@ import requests
 import time
 import numpy as np
 
-CSV_PATH = "../data/dataset_enriched.csv"
+from pathlib import Path
+
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "dataset_enriched.csv"
 
 def get_elevation_batch(lats, lons):
     url = "https://api.open-meteo.com/v1/elevation"

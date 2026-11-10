@@ -37,12 +37,13 @@ curl -L -o data/sample.csv \
 
 ### Opción 2 — script reproducible
 
+Desde la raíz del repositorio:
+
 ```bash
-python code/download_inventory.py
+python pipeline/adquisicion/descargar_inventario.py
 ```
 
-No se requiere clave de API, registro ni autenticación. El recurso es de acceso público y anónimo.
-P.D. No hemos generado ese Script, es solo una posible opción.
+Baja el CSV, guarda su MD5 y su número de registros en un manifiesto, y compara el resultado con `data/sample.csv`. No se requiere clave de API, registro ni autenticación: el recurso es de acceso público y anónimo.
 
 ---
 

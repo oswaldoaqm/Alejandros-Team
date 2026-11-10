@@ -1,0 +1,47 @@
+{
+  "version_datos": "2026.10.8",
+  "consultas": 40,
+  "cobertura": {
+    "motor": {
+      "viajes": 120,
+      "zonas_distintas": 30,
+      "de": 194,
+      "fuera_del_circuito": 0.75,
+      "novedad_media": 0.4147
+    },
+    "guia": {
+      "viajes": 120,
+      "zonas_distintas": 35,
+      "de": 194,
+      "fuera_del_circuito": 0.5833,
+      "novedad_media": 0.3573
+    },
+    "variante": {
+      "viajes": 120,
+      "zonas_distintas": 33,
+      "de": 194,
+      "fuera_del_circuito": 0.7417,
+      "novedad_media": 0.4111
+    }
+  },
+  "coinciden": {
+    "motor_y_guia": {
+      "propuestas_en_comun": 60,
+      "de": 120,
+      "consultas_con_las_mismas_zonas": 2,
+      "consultas": 40
+    },
+    "motor_y_variante": {
+      "propuestas_en_comun": 110,
+      "de": 120,
+      "consultas_con_las_mismas_zonas": 30,
+      "consultas": 40
+    },
+    "guia_y_variante": {
+      "propuestas_en_comun": 63,
+      "de": 120,
+      "consultas_con_las_mismas_zonas": 3,
+      "consultas": 40
+    }
+  }
+}

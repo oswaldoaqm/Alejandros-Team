@@ -1,0 +1,30 @@
+﻿origen;destino;zona;motor_min;empresa_min;empresa_max;donde;razon;motor_km;empresa_km;razon_km;de_noche;sale;llega_motor;llega_bus;atraso_min;atraso_max;fuente
+Lima;Abancay;Abancay;1047;975;1100;dentro;1.009;898;912;0.985;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-abancay/
+Lima;Arequipa;Arequipa;1076;1035;1200;dentro;0.963;1006;1009;0.997;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-arequipa/
+Lima;Ayacucho;Ayacucho;636;585;725;dentro;0.971;546;555;0.983;sí;19:15;05:55;05:00 a 07:20;-52;88;https://www.cruzdelsur.com.pe/pasajes/lima-a-ayacucho/
+Lima;Chiclayo;Chiclayo;823;815;980;dentro;0.917;770;770;0.999;sí;19:00;08:45;08:35 a 11:20;-9;156;https://www.cruzdelsur.com.pe/pasajes/lima-a-chiclayo/
+Lima;Chimbote;Nuevo Chimbote;465;410;495;dentro;1.027;417;430;0.97;sí;22:15;06:00;05:05 a 06:30;-55;30;https://www.cruzdelsur.com.pe/pasajes/lima-a-chimbote/
+Lima;Cusco;Cuzco;1311;1290;1425;dentro;0.966;1076;1102;0.976;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-cusco/
+Lima;Huancayo;Huancayo;512;450;535;dentro;1.04;303;300;1.009;sí;21:15;05:50;04:45 a 06:10;-63;22;https://www.cruzdelsur.com.pe/pasajes/lima-a-huancayo/
+Lima;Huaraz;Huaraz;505;445;510;dentro;1.058;402;400;1.004;sí;21:30;06:00;04:55 a 06:00;-61;4;https://www.cruzdelsur.com.pe/pasajes/lima-a-huaraz/
+Lima;Ica;Ica;316;220;365;dentro;1.081;301;303;0.994;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-ica/
+Lima;Jauja;Jauja;455;395;455;dentro;1.07;262;255;1.026;sí;22:15;05:50;04:50 a 05:50;-60;0;https://www.cruzdelsur.com.pe/pasajes/lima-a-jauja/
+Lima;La Merced;La Merced;512;510;605;dentro;0.918;303;300;1.009;sí;21:15;05:50;05:45 a 07:20;-2;93;https://www.cruzdelsur.com.pe/pasajes/lima-a-la-merced/
+Lima;Marcona;San Juan de Marcona;550;500;585;dentro;1.015;520;530;0.982;sí;20:45;06:00;05:05 a 06:30;-51;34;https://www.cruzdelsur.com.pe/pasajes/lima-a-marcona/
+Lima;Nasca;Nasca;473;400;550;dentro;0.996;442;444;0.995;sí;22:00;05:55;04:40 a 07:10;-73;77;https://www.cruzdelsur.com.pe/pasajes/lima-a-nasca/
+Lima;Oxapampa;Oxapampa;616;630;720;debajo;0.913;380;390;0.973;sí;19:30;05:50;06:00 a 07:30;13;103;https://www.cruzdelsur.com.pe/pasajes/lima-a-oxapampa/
+Lima;Pacasmayo;Pacasmayo;716;635;810;dentro;0.991;672;680;0.989;sí;19:00;07:00;05:35 a 08:30;-81;94;https://www.cruzdelsur.com.pe/pasajes/lima-a-pacasmayo/
+Lima;Paracas;Paracas;256;180;285;dentro;1.103;248;261;0.949;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-paracas/
+Lima;Piura;Piura;1056;1020;1170;dentro;0.964;982;973;1.009;;;;;;;https://www.cruzdelsur.com.pe/pasajes/lima-a-piura/
+Lima;Trujillo;Trujillo;597;565;680;dentro;0.959;557;561;0.993;sí;20:00;06:00;05:25 a 07:20;-32;83;https://www.cruzdelsur.com.pe/pasajes/lima-a-trujillo/
+Abancay;Lima;Lima;1047;970;995;encima;1.066;898;912;0.985;;;;;;;https://www.cruzdelsur.com.pe/pasajes/abancay-a-lima/
+Arequipa;Lima;Lima;1077;995;1130;dentro;1.014;1006;1009;0.998;;;;;;;https://www.cruzdelsur.com.pe/pasajes/arequipa-a-lima/
+Ayacucho;Lima;Lima;637;655;720;debajo;0.927;546;555;0.984;sí;19:15;05:55;06:10 a 07:15;17;82;https://www.cruzdelsur.com.pe/pasajes/ayacucho-a-lima/
+Chiclayo;Lima;Lima;824;805;945;dentro;0.941;770;770;1.0;sí;19:00;08:45;08:25 a 10:45;-19;121;https://www.cruzdelsur.com.pe/pasajes/chiclayo-a-lima/
+Cusco;Lima;Lima;1315;1280;1310;encima;1.016;1078;1102;0.978;;;;;;;https://www.cruzdelsur.com.pe/pasajes/cusco-a-lima/
+Huancayo;Lima;Lima;514;445;535;dentro;1.049;303;300;1.011;sí;21:15;05:50;04:40 a 06:10;-70;20;https://www.cruzdelsur.com.pe/pasajes/huancayo-a-lima/
+Huaraz;Lima;Lima;504;440;590;dentro;0.98;402;400;1.004;sí;21:30;05:55;04:50 a 07:20;-65;85;https://www.cruzdelsur.com.pe/pasajes/huaraz-a-lima/
+Ica;Lima;Lima;318;235;320;dentro;1.145;302;303;0.997;;;;;;;https://www.cruzdelsur.com.pe/pasajes/ica-a-lima/
+Piura;Lima;Lima;1058;1015;1165;dentro;0.97;983;973;1.01;;;;;;;https://www.cruzdelsur.com.pe/pasajes/piura-a-lima/
+Trujillo;Lima;Lima;595;550;740;dentro;0.923;557;561;0.993;sí;20:00;06:00;05:10 a 08:20;-46;144;https://www.cruzdelsur.com.pe/pasajes/trujillo-a-lima/
+Arequipa;Cusco;Cuzco;600;600;640;debajo;0.967;471;521;0.905;sí;20:00;06:00;06:00 a 06:40;0;40;https://www.cruzdelsur.com.pe/pasajes/arequipa-a-cusco/

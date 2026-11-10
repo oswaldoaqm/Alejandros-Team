@@ -17,8 +17,11 @@ ACCESIBILIDAD LOGÍSTICA.
 
 import csv
 import math
+import unicodedata
 
-CSV_PATH = "../data/dataset_enriched.csv"
+from pathlib import Path
+
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "dataset_enriched.csv"
 
 # Coordenadas de los principales nodos logísticos (Capitales Regionales)
 CAPITALES = {
@@ -32,6 +35,12 @@ CAPITALES = {
     'MOQUEGUA': (-17.1983, -70.9357), 'TUMBES': (-3.5669, -80.4515), 'HUANCAVELICA': (-12.7826, -74.9727),
     'CALLAO': (-12.0566, -77.1181)
 }
+
+
+def sin_tildes(texto):
+    """Junín -> JUNIN: las claves de CAPITALES van sin tilde. Sin esto, cinco regiones
+    (Junín, Áncash, Huánuco, Apurímac, San Martín) se quedan sin distancia."""
+    return unicodedata.normalize("NFD", texto).encode("ascii", "ignore").decode().upper()
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calcula la distancia geodésica en kilómetros entre dos puntos terrestres."""
@@ -99,7 +108,7 @@ def main():
     for row in reader[1:]:
         lat_str = row[idx_lat]
         lon_str = row[idx_lon]
-        region = row[idx_reg].upper()
+        region = sin_tildes(row[idx_reg])
         categoria = row[idx_cat]
         
         dist_str = ""

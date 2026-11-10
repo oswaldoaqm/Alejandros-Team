@@ -1,0 +1,42 @@
+$ DREEMGO_PROPIEDADES=1000 python -m pytest -o addopts='' -v -p no:cacheprovider --hypothesis-show-statistics tests/test_propiedades.py    # en .
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/claude/dg/venv/bin/python
+hypothesis profile 'default'
+rootdir: /home/claude/dg/w12/prueba_final2/Alejandros-Team
+configfile: pyproject.toml
+plugins: platformdirs-4.12.4, hypothesis-6.168.5, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/test_propiedades.py::test_las_propiedades PASSED                   [ 50%]
+tests/test_propiedades.py::test_lo_publicado_se_suma_sin_mover_las_rutas PASSED [100%]
+============================ Hypothesis Statistics =============================
+
+tests/test_propiedades.py::test_las_propiedades:
+
+  - during generate phase (1004.88 seconds):
+    - Typical runtimes: ~ 1-2880 ms, of which ~ 1-2 ms in data generation
+    - 1000 passing, 0 failing, and 78 invalid test cases
+    - Events:
+      * 53.99%, algún almuerzo donde no hay registrado dónde comer
+      * 31.54%, alguna ruta en bus de noche
+      * 18.83%, algún viaje con día tranquilo
+
+  - Stopped because settings.max_examples=1000
+
+
+tests/test_propiedades.py::test_lo_publicado_se_suma_sin_mover_las_rutas:
+
+  - during generate phase (354.63 seconds):
+    - Typical runtimes: ~ 46-3265 ms, of which ~ 2-6 ms in data generation
+    - 250 passing, 0 failing, and 19 invalid test cases
+    - Events:
+      * 52.04%, eventos publicados que salen en alguna ruta: alguno
+      * 40.89%, eventos publicados que salen en alguna ruta: ninguno
+
+  - Stopped because settings.max_examples=250
+
+
+======================== 2 passed in 1359.84s (0:22:39) ========================
+
+[código de salida: 0]

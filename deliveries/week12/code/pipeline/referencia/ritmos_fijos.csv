@@ -1,0 +1,5 @@
+clase;min_por_km;fuente
+tren;2.14;Fichas oficiales: mediana de los 15 tramos en ferrocarril con distancia y tiempo (percentiles 25 a 75: 1,92 a 2,50). A ese ritmo, los 43 km de Ollantaytambo a Machu Picchu toman 1 h 32
+bote;3.0;Fichas oficiales: mediana de los 273 tramos lacustres, fluviales y marítimos con distancia y tiempo (percentiles 25 a 75: 1,95 a 5,0), de la canoa al deslizador
+transbordo;12.0;Supuesto del equipo: caminar de la vía a la estación o al muelle, a 5 km/h
+transbordo_min;15.0;Supuesto del equipo: minutos fijos cada vez que se sube o se baja de un tren o un bote (llegar antes, comprar el pasaje, esperar la salida): 30 por cada viaje

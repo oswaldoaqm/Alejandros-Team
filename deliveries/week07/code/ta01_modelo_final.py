@@ -7,6 +7,10 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, HDBSCAN
 from sklearn.metrics import silhouette_score, davies_bouldin_score
+from pathlib import Path
+_AQUI = Path(__file__).resolve().parent
+PROCESADOS = _AQUI.parent / "data" / "processed"   # asignación por recurso
+DOCS = _AQUI.parent / "docs"                       # perfiles, comparativas y figuras
 
 warnings.filterwarnings("ignore")
 R = 6371.0
@@ -123,11 +127,11 @@ fig.text(.008, .012, "4 915 recursos geolocalizables del Inventario Nacional de 
          "Turísticos (MINCETUR) · variables: latitud, longitud, altitud, índice de lejanía",
          fontsize=9, color="#6B747E")
 fig.tight_layout(rect=[0, .035, 1, .955])
-fig.savefig("ta01_seleccion_modelo.png", dpi=170, facecolor="white")
+fig.savefig(DOCS / "ta01_seleccion_modelo.png", dpi=170, facecolor="white")
 print("\nFigura: ta01_seleccion_modelo.png")
 
 geo[["CODIGO DEL RECURSO","NOMBRE DEL RECURSO","REGIÓN","latitud","longitud",
      "ALTITUD","ZONA_CLIMATICA","CLUSTER","CLUSTER_KM"]].to_csv(
-    "clusters_asignados.csv", sep=";", index=False)
-perfil.to_csv("perfil_clusters_hdbscan.csv", sep=";", index=False)
+    PROCESADOS / "clusters_asignados.csv", sep=";", index=False)
+perfil.to_csv(DOCS / "perfil_clusters_hdbscan.csv", sep=";", index=False)
 print("CSV: clusters_asignados.csv · perfil_clusters_hdbscan.csv")

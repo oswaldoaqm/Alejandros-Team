@@ -1,0 +1,12 @@
+{
+  "version_datos": "2026.11.1",
+  "rutas": 29,
+  "dentro": 24,
+  "debajo": 3,
+  "encima": 2,
+  "razon_mediana": 0.991,
+  "razon_km_mediana": 0.994,
+  "de_noche": 18,
+  "de_noche_el_mas_lento_llega_una_hora_despues": 11,
+  "de_noche_ni_el_mas_rapido_llega_a_la_hora": 2
+}

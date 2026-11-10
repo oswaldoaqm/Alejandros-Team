@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 
-CSV_PATH = "../data/dataset_enriched.csv"
+from pathlib import Path
+
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "dataset_enriched.csv"
 
 def main():
     try:
@@ -49,18 +51,23 @@ def main():
     if alt_min < -100:
         print(f"   [ALERTA] Altitud mínima ({alt_min}) es absurdamente negativa.")
 
-    # 3. Chequeo del Proxy de Precio
-    print(f"\n3. NIVEL_PRECIO_PROXY:")
-    print("   - Distribución de valores:")
-    dist = df['NIVEL_PRECIO_PROXY'].value_counts().sort_index()
-    for val, count in dist.items():
-        print(f"       Nivel {val}: {count} recursos ({(count/len(df)):.2%})")
-        
-    # Verificación de lógica de negocio
-    cusco_cultural = df[(df['REGIÓN'].str.upper() == 'CUSCO') & (df['CATEGORÍA'].str.contains('MANIFESTACIONES CULTURALES', na=False))]
-    if not cusco_cultural.empty:
-        precio_cusco_cult = cusco_cultural['NIVEL_PRECIO_PROXY'].mean()
-        print(f"   - Prueba de estrés: Sitios culturales en Cusco tienen nivel promedio de {precio_cusco_cult:.1f} (Esperado: 3.0)")
+    # 3. Índice de lejanía. NIVEL_PRECIO_PROXY se descartó esta misma semana:
+    #    fix_pricing.py lo elimina y deja INDICE_COSTO_LOGISTICO, que solo mide distancia.
+    print(f"\n3. INDICE_COSTO_LOGISTICO (índice de lejanía):")
+    g = df.dropna(subset=['DISTANCIA_CAPITAL_KM'])
+    esperado = np.select([g['DISTANCIA_CAPITAL_KM'] < 20, g['DISTANCIA_CAPITAL_KM'] < 80], [1, 2], 3)
+    coincide = (g['INDICE_COSTO_LOGISTICO'] == esperado).mean()
+    print(f"   - Sigue la regla 1 = <20 km · 2 = <80 km · 3 = 80 km o más: {coincide:.2%} (Esperado: 100%)")
+    for val, count in g['INDICE_COSTO_LOGISTICO'].value_counts().sort_index().items():
+        print(f"       Nivel {int(val)}: {count} recursos ({count / len(g):.2%})")
+    if 'NIVEL_PRECIO_PROXY' in df.columns:
+        print("   [ALERTA] Sigue la columna NIVEL_PRECIO_PROXY: falta correr fix_pricing.py.")
+
+    # 4. Zona climática
+    zonas = df['ZONA_CLIMATICA'].value_counts()
+    print(f"\n4. ZONA_CLIMATICA:")
+    print(f"   - {len(zonas)} pisos ecológicos · nulos: {df['ZONA_CLIMATICA'].isna().sum()} "
+          f"(Esperado: los mismos 1 245 recursos sin coordenadas)")
 
 if __name__ == "__main__":
     main()

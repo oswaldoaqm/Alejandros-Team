@@ -1,0 +1,6 @@
+$ ruff check . && ruff format --check .    # en .
+
+All checks passed!
+160 files already formatted
+
+[código de salida: 0]

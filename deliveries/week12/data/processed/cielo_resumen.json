@@ -1,0 +1,106 @@
+{
+  "goes16": {
+    "anios": [
+      2022,
+      2023,
+      2024
+    ],
+    "horas_utc": [
+      2,
+      6
+    ],
+    "imagenes": 2188
+  },
+  "goes_contra_metar": {
+    "en_la_costa": {
+      "Chiclayo": {
+        "diferencia_media": 25.1,
+        "r": 0.1
+      },
+      "Lima": {
+        "diferencia_media": 36.8,
+        "r": -0.81
+      },
+      "Pisco": {
+        "diferencia_media": 32.3,
+        "r": -0.52
+      },
+      "Piura": {
+        "diferencia_media": 36.6,
+        "r": 0.15
+      },
+      "Tacna": {
+        "diferencia_media": 44.9,
+        "r": -0.67
+      },
+      "Talara": {
+        "diferencia_media": 20.1,
+        "r": 0.71
+      },
+      "Trujillo": {
+        "diferencia_media": 18.6,
+        "r": -0.13
+      },
+      "Tumbes": {
+        "diferencia_media": 18.6,
+        "r": 0.71
+      }
+    },
+    "fuera_de_la_costa": {
+      "Arequipa": {
+        "diferencia_media": 14.9,
+        "r": 0.96
+      },
+      "Cusco": {
+        "diferencia_media": 7.9,
+        "r": 0.98
+      },
+      "Iquitos": {
+        "diferencia_media": 11.9,
+        "r": 0.53
+      },
+      "Pucallpa": {
+        "diferencia_media": 16.9,
+        "r": 0.94
+      },
+      "Tarapoto": {
+        "diferencia_media": 24.0,
+        "r": 0.92
+      }
+    }
+  },
+  "metar": {
+    "aeropuertos": 13,
+    "en_la_costa": 8
+  },
+  "polos": {
+    "con_luz": 57,
+    "con_observatorio": 12,
+    "muy_oscuro": 48,
+    "nubes_de_goes": 151,
+    "nubes_de_metar": 32,
+    "oscuro": 89,
+    "sin_nubes": 11
+  },
+  "viirs": {
+    "meses": [
+      "2024-01",
+      "2024-02",
+      "2024-03",
+      "2024-04",
+      "2024-05",
+      "2024-06",
+      "2024-07",
+      "2024-08",
+      "2024-09",
+      "2024-11",
+      "2024-12",
+      "2025-01",
+      "2025-02",
+      "2025-03",
+      "2025-04",
+      "2025-05",
+      "2025-06"
+    ]
+  }
+}

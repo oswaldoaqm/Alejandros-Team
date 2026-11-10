@@ -115,13 +115,13 @@ Ambos wireframes son de baja fidelidad y están anotados: cada elemento numerado
 
 ### Wireframe 1 — Definición del viaje
 
-![Wireframe 1 — pantalla de entrada](./assets/wireframe_01.png)
+![Wireframe 1 — pantalla de entrada](../week05/assets/wireframe_01.png)
 
 Pantalla de entrada. Recoge las cinco restricciones que alimentan el motor: punto de partida, días, intereses, mes de viaje y presupuesto, más el tope de altitud opcional. Cubre RF-01, US1, CU-01 y CU-02.
 
 ### Wireframe 2 — Resultado e itinerario
 
-![Wireframe 2 — resultado e itinerario](./assets/wireframe_02.png)
+![Wireframe 2 — resultado e itinerario](../week05/assets/wireframe_02.png)
 
 Pantalla de resultado. Mapa con la secuencia numerada a la izquierda, tres rutas comparables y el itinerario por día a la derecha, con alerta de estacionalidad y enlace a la ficha oficial en cada parada. Cubre RF-02, RNF-01, US1 y US2.
 
@@ -131,13 +131,13 @@ Pantalla de resultado. Mapa con la secuencia numerada a la izquierda, tres rutas
 
 ### Storyboard 1 — Ana planifica seis días en julio
 
-![Storyboard 1 — recorrido feliz](./assets/storyboard_01.png)
+![Storyboard 1 — recorrido feliz](../week05/assets/storyboard_01.png)
 
 Recorrido completo del usuario primario en el camino feliz: desde la frustración de comparar catorce pestañas hasta la verificación del destino en la fuente oficial. Seis viñetas, correspondiente a CU-02.
 
 ### Storyboard 2 — Carlos quiere ir a Huaraz en febrero
 
-![Storyboard 2 — recorrido con conflicto](./assets/storyboard_02.png)
+![Storyboard 2 — recorrido con conflicto](../week05/assets/storyboard_02.png)
 
 El recorrido donde el producto contradice al usuario: advierte el riesgo estacional con su fuente, propone una alternativa equivalente y deja la decisión en manos de la persona. Seis viñetas, correspondiente a CU-01.
 
@@ -145,7 +145,7 @@ El recorrido donde el producto contradice al usuario: advierte el riesgo estacio
 
 ## 5. User stories y diagrama
 
-![Diagrama de casos de uso UML](./assets/diagrama_casos_uso.png)
+![Diagrama de casos de uso UML](../week05/assets/diagrama_casos_uso.png)
 
 Modelo UML de casos de uso con dos actores primarios, dos sistemas externos y nueve casos de uso, con las relaciones «include» y «extend» que conectan el caso base con sus dependencias.
 

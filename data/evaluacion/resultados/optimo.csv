@@ -1,0 +1,361 @@
+﻿tamano;consulta;polo;zona;jornadas;candidatas;paradas_heuristica;paradas_optimo;valor_heuristica;valor_optimo;brecha;estado;segundos;solo_heuristica;solo_optimo
+10;1;70;Huacho;2;10;7;8;39.6;41.6;0.048077;mejorable;0.14;;Taller Artesanal Chankay Namú
+10;1;27;Nasca;2;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;1;14;Huaraz;2;10;8;8;46.0;46.0;0.0;heuristica_optima;0.49;;
+10;2;14;Huaraz;3;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;2;70;Huacho;3;10;10;10;37.2;37.2;0.0;visita_todas;0.0;;
+10;2;151;La Merced;3;10;10;10;22.2;22.2;0.0;visita_todas;0.0;;
+10;3;139;Trujillo;4;10;10;10;43.1;43.1;0.0;visita_todas;0.0;;
+10;3;96;Oxapampa;4;10;10;10;21.88;21.88;0.0;visita_todas;0.0;;
+10;3;70;Huacho;4;10;10;10;43.08;43.08;0.0;visita_todas;0.0;;
+10;4;139;Trujillo;5;10;10;10;17.6;17.6;0.0;visita_todas;0.0;;
+10;4;180;Paracas;5;10;9;10;11.2232;11.8786;0.055172;mejorable;0.09;;Playa Raspón-Paracas
+10;4;2;Cajamarca;5;10;10;10;8.62;8.62;0.0;visita_todas;0.0;;
+10;5;36;Cuzco;6;10;10;10;78.7;78.7;0.0;visita_todas;0.0;;
+10;5;40;Arequipa;6;10;10;10;40.6;40.6;0.0;visita_todas;0.0;;
+10;5;11;Puno;6;10;10;10;35.0;35.0;0.0;visita_todas;0.0;;
+10;6;14;Huaraz;7;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;6;71;Yanque;5;10;10;10;38.6;38.6;0.0;visita_todas;0.0;;
+10;6;150;Iquitos;7;10;10;10;31.9;31.9;0.0;visita_todas;0.0;;
+10;7;70;Huacho;3;10;9;9;37.1;37.1;0.0;heuristica_optima;0.39;;
+10;7;139;Trujillo;3;10;10;10;24.5;24.5;0.0;visita_todas;0.0;;
+10;7;178;Chincha Alta;3;10;10;10;14.78;14.78;0.0;visita_todas;0.0;;
+10;8;70;Huacho;2;10;6;5;33.4;33.7;0.008902;mejorable;0.18;Club Casino Huacho | Iglesia San Pedro Apóstol;Sitio Arqueológico de Vichama
+10;8;15;Huánuco;2;10;10;10;21.62;21.62;0.0;visita_todas;0.0;;
+10;8;178;Chincha Alta;2;10;7;7;13.63;13.78;0.010885;mejorable;0.08;Santuario de la Melchorita;Casa Hacienda Alto Larán
+10;9;36;Cuzco;5;10;10;10;97.904;97.904;0.0;visita_todas;0.0;;
+10;9;139;Trujillo;5;10;10;10;48.4;48.4;0.0;visita_todas;0.0;;
+10;9;27;Nasca;5;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;10;36;Cuzco;8;10;10;10;97.904;97.904;0.0;visita_todas;0.0;;
+10;10;11;Puno;8;10;10;10;39.6;39.6;0.0;visita_todas;0.0;;
+10;10;71;Yanque;6;10;10;10;39.504;39.504;0.0;visita_todas;0.0;;
+10;11;25;Íllimo;4;10;9;9;43.1;43.1;0.0;heuristica_optima;0.09;;
+10;11;14;Huaraz;4;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;11;172;Jauja;4;10;10;10;20.5;20.5;0.0;visita_todas;0.0;;
+10;12;96;Oxapampa;6;10;10;10;17.88;17.88;0.0;visita_todas;0.0;;
+10;12;139;Trujillo;6;10;10;10;48.4;48.4;0.0;visita_todas;0.0;;
+10;12;2;Cajamarca;6;10;10;10;34.48;34.48;0.0;visita_todas;0.0;;
+10;13;71;Yanque;8;10;10;10;40.1;40.1;0.0;visita_todas;0.0;;
+10;13;14;Huaraz;10;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;13;86;Moyobamba;8;10;9;9;25.6;25.6;0.0;heuristica_optima;0.14;;
+10;14;139;Trujillo;3;10;10;10;48.4;48.4;0.0;visita_todas;0.0;;
+10;14;70;Huacho;3;10;9;9;46.0;46.0;0.0;heuristica_optima;0.4;;
+10;14;27;Nasca;3;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;15;70;Huacho;2;10;7;6;9.9;9.9;0.0;heuristica_optima;0.06;Museo Municipal de Hualmay | Sitio Arqueológico de Vichama;Playa Chorrillos de Huacho
+10;15;27;Nasca;2;10;10;10;10.446;10.446;0.0;visita_todas;0.0;;
+10;15;180;Paracas;2;10;5;5;6.5;6.5;0.0;heuristica_optima;0.0;Playa El Chaco - Paracas;Playa Yumaque-Paracas
+10;16;139;Trujillo;5;10;10;10;48.4;48.4;0.0;visita_todas;0.0;;
+10;16;11;Puno;5;10;10;10;39.6;39.6;0.0;visita_todas;0.0;;
+10;16;40;Arequipa;5;10;9;9;41.904;41.904;0.0;heuristica_optima;0.26;;
+10;17;11;Puno;2;10;10;10;35.0;35.0;0.0;visita_todas;0.0;;
+10;17;4;Machupicchu Pueblo;2;10;5;5;27.5;27.5;0.0;heuristica_optima;0.01;Mirador de Tunki;Mariposario de Machupicchu
+10;17;71;Yanque;2;10;10;10;20.2;20.2;0.0;visita_todas;0.0;;
+10;18;71;Yanque;4;10;10;10;40.1;40.1;0.0;visita_todas;0.0;;
+10;18;40;Arequipa;4;10;10;10;38.0;38.0;0.0;visita_todas;0.0;;
+10;18;187;Ilo;4;10;10;10;32.604;32.604;0.0;visita_todas;0.0;;
+10;19;27;Nasca;3;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;19;187;Ilo;3;10;10;10;38.08;38.08;0.0;visita_todas;0.0;;
+10;19;177;Mollendo;3;10;10;10;18.48;18.48;0.0;visita_todas;0.0;;
+10;20;31;Miraflores;5;10;10;10;38.26;38.26;0.0;visita_todas;0.0;;
+10;20;70;Huacho;3;10;9;9;35.6;35.6;0.0;heuristica_optima;0.32;;
+10;20;173;Urubamba;5;10;9;9;38.45;38.45;0.0;heuristica_optima;0.27;;
+10;21;71;Yanque;3;10;10;10;37.88;37.88;0.0;visita_todas;0.0;;
+10;21;187;Ilo;3;10;10;10;32.604;32.604;0.0;visita_todas;0.0;;
+10;21;11;Puno;3;10;9;9;22.1;22.6;0.022124;mejorable;0.49;Museo Municipal Carlos Dreyer;Piscicultura de Chucuito - Centro de Investigación y Producción Pesquera de Chucuito.
+10;22;36;Cuzco;5;10;10;10;102.88;102.88;0.0;visita_todas;0.0;;
+10;22;11;Puno;5;10;10;10;39.6;39.6;0.0;visita_todas;0.0;;
+10;22;27;Nasca;5;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;23;187;Ilo;2;10;7;7;8.7;8.7;0.0;heuristica_optima;0.01;;
+10;23;177;Mollendo;2;10;8;8;8.0;8.1;0.012346;mejorable;0.45;Mercado San José;Castillo Forga
+10;23;106;La Pampa;2;10;5;5;4.8;4.8;0.0;heuristica_optima;0.01;Playa ''El Chorro'';Playa “Cerrillos”
+10;24;71;Yanque;6;10;10;10;38.6;38.6;0.0;visita_todas;0.0;;
+10;24;25;Íllimo;4;10;9;9;36.9;36.9;0.0;heuristica_optima;0.21;;
+10;24;27;Nasca;6;10;10;10;31.696;31.696;0.0;visita_todas;0.0;;
+10;25;31;Miraflores;3;10;10;10;56.7;56.7;0.0;visita_todas;0.0;;
+10;25;2;Cajamarca;3;10;8;8;27.6;27.6;0.0;heuristica_optima;0.98;Museo de la Marioneta Manuel Nicanor Taica Llalle;Museo Arqueológico y Etnográfico del Conjunto Monumental Belen
+10;25;70;Huacho;3;10;7;7;40.58;40.58;0.0;heuristica_optima;0.84;Balcón y Museo Histórico de Huaura;Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión
+10;26;25;Íllimo;4;10;9;9;37.22;37.22;0.0;heuristica_optima;0.4;;
+10;26;31;Miraflores;4;10;10;10;38.26;38.26;0.0;visita_todas;0.0;;
+10;26;70;Huacho;4;10;9;9;37.1;37.1;0.0;heuristica_optima;0.34;;
+10;27;139;Trujillo;3;10;10;10;48.4;48.4;0.0;visita_todas;0.0;;
+10;27;31;Miraflores;3;10;10;10;69.6;69.6;0.0;visita_todas;0.0;;
+10;27;2;Cajamarca;3;10;10;10;34.48;34.48;0.0;visita_todas;0.0;;
+10;28;25;Íllimo;5;10;9;9;43.1;43.1;0.0;heuristica_optima;0.17;;
+10;28;14;Huaraz;5;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;28;86;Moyobamba;5;10;9;9;25.6;25.6;0.0;heuristica_optima;0.16;;
+10;29;139;Trujillo;2;10;10;10;17.6;17.6;0.0;visita_todas;0.0;;
+10;29;85;Los Órganos;2;10;3;3;12.5;12.5;0.0;heuristica_optima;0.01;;
+10;29;25;Íllimo;2;10;4;4;9.5;9.5;0.0;heuristica_optima;0.06;Iglesia Matriz de Jayanca;Julián Bravo Taller Artesanal
+10;30;14;Huaraz;5;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;30;25;Íllimo;5;10;9;9;43.1;43.1;0.0;heuristica_optima;0.1;;
+10;30;86;Moyobamba;5;10;9;9;25.6;25.6;0.0;heuristica_optima;0.22;;
+10;31;31;Miraflores;4;10;10;10;28.404;28.404;0.0;visita_todas;0.0;;
+10;31;245;Mazán;4;5;3;3;4.8;4.8;0.0;heuristica_optima;0.0;;
+10;31;189;Nauta;4;9;4;4;5.8;5.8;0.0;heuristica_optima;0.0;;
+10;32;31;Miraflores;3;10;10;10;54.0;54.0;0.0;visita_todas;0.0;;
+10;32;27;Nasca;3;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;32;30;Cerro de Pasco;3;10;10;10;16.7232;16.7232;0.0;visita_todas;0.0;;
+10;33;172;Jauja;4;10;10;10;20.5;20.5;0.0;visita_todas;0.0;;
+10;33;14;Huaraz;4;10;10;10;45.6;45.6;0.0;visita_todas;0.0;;
+10;33;70;Huacho;4;10;10;10;37.2;37.2;0.0;visita_todas;0.0;;
+10;34;36;Cuzco;3;10;10;10;78.7;78.7;0.0;visita_todas;0.0;;
+10;34;40;Arequipa;3;10;8;10;39.7;40.6;0.022167;mejorable;1.04;;Casa Tristan del Pozo | Iglesia de la Compañia
+10;34;71;Yanque;3;10;10;10;20.2;20.2;0.0;visita_todas;0.0;;
+10;35;187;Ilo;3;10;10;10;38.08;38.08;0.0;visita_todas;0.0;;
+10;35;11;Puno;3;10;10;10;39.6;39.6;0.0;visita_todas;0.0;;
+10;35;71;Yanque;3;10;10;10;38.784;38.784;0.0;visita_todas;0.0;;
+10;36;36;Cuzco;4;10;10;10;78.7;78.7;0.0;visita_todas;0.0;;
+10;36;31;Miraflores;4;10;10;10;56.7;56.7;0.0;visita_todas;0.0;;
+10;36;27;Nasca;4;10;10;10;41.784;41.784;0.0;visita_todas;0.0;;
+10;37;14;Huaraz;3;10;10;10;51.2;51.2;0.0;visita_todas;0.0;;
+10;37;139;Trujillo;3;10;8;9;39.9;41.5;0.038554;mejorable;1.57;;Museo de Zoología “Juan Ormea Rodríguez” de la Universidad Nacional de Trujillo
+10;37;25;Íllimo;3;10;5;6;39.0;40.0;0.025;mejorable;0.14;Complejo Arqueológico Jotoro;Huaca Las Balsas | Parque Principal de Pacora Alfredo Bilmer Paz Solis
+10;38;25;Íllimo;3;10;9;9;47.88;47.88;0.0;heuristica_optima;0.1;;
+10;38;70;Huacho;3;10;10;10;37.2;37.2;0.0;visita_todas;0.0;;
+10;38;151;La Merced;3;10;10;10;17.8;17.8;0.0;visita_todas;0.0;;
+10;39;86;Moyobamba;4;10;9;9;25.6;25.6;0.0;heuristica_optima;0.2;;
+10;39;25;Íllimo;4;10;9;9;43.1;43.1;0.0;heuristica_optima;0.1;;
+10;39;31;Miraflores;4;10;10;10;23.8232;23.8232;0.0;visita_todas;0.0;;
+10;40;11;Puno;3;10;10;10;24.1;24.1;0.0;visita_todas;0.0;;
+10;40;36;Cuzco;3;10;10;10;29.0;29.0;0.0;visita_todas;0.0;;
+10;40;140;Juli;3;10;10;10;11.82;11.82;0.0;visita_todas;0.0;;
+12;1;70;Huacho;2;12;7;8;39.6;41.6;0.048077;mejorable;0.55;;Taller Artesanal Chankay Namú
+12;1;27;Nasca;2;12;11;11;44.76;44.784;0.000536;mejorable;0.87;Centro Administrativo Inca Los Paredones;Geoglifos El Telar de Buena Fe
+12;1;14;Huaraz;2;12;8;8;46.0;46.0;0.0;heuristica_optima;1.78;;
+12;2;14;Huaraz;3;12;10;10;45.6;46.8;0.025641;mejorable;0.71;Mirador de Rataquenua;Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan
+12;2;70;Huacho;3;12;10;11;38.7;39.2;0.012755;mejorable;1.54;;Museo Municipal de Hualmay
+12;2;151;La Merced;3;12;12;12;25.8;25.8;0.0;visita_todas;0.0;;
+12;3;139;Trujillo;4;12;12;12;47.1;47.1;0.0;visita_todas;0.0;;
+12;3;96;Oxapampa;4;12;12;12;23.38;23.38;0.0;visita_todas;0.0;;
+12;3;70;Huacho;4;12;12;12;44.86;44.86;0.0;visita_todas;0.0;;
+12;4;139;Trujillo;5;12;12;12;19.7;19.7;0.0;visita_todas;0.0;;
+12;4;180;Paracas;5;12;10;12;11.7232;12.9028;0.091425;mejorable;1.05;;Playa Mendieta-Paracas | Playa Raspón-Paracas
+12;4;2;Cajamarca;5;12;12;12;9.44;9.44;0.0;visita_todas;0.0;;
+12;5;36;Cuzco;6;12;12;12;85.5;85.5;0.0;visita_todas;0.0;;
+12;5;40;Arequipa;6;12;12;12;41.42;41.42;0.0;visita_todas;0.0;;
+12;5;11;Puno;6;12;12;12;37.88;37.88;0.0;visita_todas;0.0;;
+12;6;14;Huaraz;7;12;12;12;48.1;48.1;0.0;visita_todas;0.0;;
+12;6;71;Yanque;5;12;12;12;40.904;40.904;0.0;visita_todas;0.0;;
+12;6;150;Iquitos;7;12;12;12;34.22;34.22;0.0;visita_todas;0.0;;
+12;7;70;Huacho;3;12;10;11;38.7;39.2;0.012755;mejorable;1.3;;Taller Artesanal Chankay Namú
+12;7;139;Trujillo;3;12;12;12;25.4;25.4;0.0;visita_todas;0.0;;
+12;7;178;Chincha Alta;3;12;10;11;14.93;15.18;0.016469;mejorable;3.01;;Humedales Grocio Prado (Humedales de Chincha)
+12;8;70;Huacho;2;12;6;5;33.4;33.7;0.008902;mejorable;0.18;Club Casino Huacho | Iglesia San Pedro Apóstol;Sitio Arqueológico de Vichama
+12;8;15;Huánuco;2;12;12;12;22.34;22.34;0.0;visita_todas;0.0;;
+12;8;178;Chincha Alta;2;12;7;7;13.63;13.78;0.010885;mejorable;0.11;Santuario de la Melchorita;Casa Hacienda Alto Larán
+12;9;36;Cuzco;5;12;11;11;98.7232;98.7232;0.0;heuristica_optima;4.35;;
+12;9;139;Trujillo;5;12;12;12;52.0;52.0;0.0;visita_todas;0.0;;
+12;9;27;Nasca;5;12;12;12;44.296;44.296;0.0;visita_todas;0.0;;
+12;10;36;Cuzco;8;12;11;11;98.7232;98.7232;0.0;heuristica_optima;7.11;;
+12;10;11;Puno;8;12;12;12;43.6;43.6;0.0;visita_todas;0.0;;
+12;10;71;Yanque;6;12;12;12;42.3232;42.3232;0.0;visita_todas;0.0;;
+12;11;25;Íllimo;4;12;11;11;44.0;44.0;0.0;heuristica_optima;0.53;;
+12;11;14;Huaraz;4;12;12;12;48.1;48.1;0.0;visita_todas;0.0;;
+12;11;172;Jauja;4;12;12;12;23.3;23.3;0.0;visita_todas;0.0;;
+12;12;96;Oxapampa;6;12;12;12;19.904;19.904;0.0;visita_todas;0.0;;
+12;12;139;Trujillo;6;12;12;12;52.0;52.0;0.0;visita_todas;0.0;;
+12;12;2;Cajamarca;6;12;12;12;37.76;37.76;0.0;visita_todas;0.0;;
+12;13;71;Yanque;8;12;12;12;41.88;41.88;0.0;visita_todas;0.0;;
+12;13;14;Huaraz;10;12;12;12;49.6;49.6;0.0;visita_todas;0.0;;
+12;13;86;Moyobamba;8;12;11;11;28.1;28.1;0.0;heuristica_optima;0.81;;
+12;14;139;Trujillo;3;12;12;12;52.0;52.0;0.0;visita_todas;0.0;;
+12;14;70;Huacho;3;12;11;11;47.92;47.92;0.0;heuristica_optima;1.77;;
+12;14;27;Nasca;3;12;12;12;44.296;44.296;0.0;visita_todas;0.0;;
+12;15;70;Huacho;2;12;7;8;9.9;10.4;0.048077;mejorable;0.22;;Taller Artesanal Chankay Namú
+12;15;27;Nasca;2;12;11;11;11.19;11.196;0.000536;mejorable;0.9;Centro Administrativo Inca Los Paredones;Geoglifos El Telar de Buena Fe
+12;15;180;Paracas;2;12;5;5;6.5;6.5;0.0;heuristica_optima;0.01;Playa El Chaco - Paracas;Playa Yumaque-Paracas
+12;16;139;Trujillo;5;12;12;12;52.0;52.0;0.0;visita_todas;0.0;;
+12;16;11;Puno;5;12;12;12;43.2;43.2;0.0;visita_todas;0.0;;
+12;16;40;Arequipa;5;12;11;11;43.3786;43.3786;0.0;heuristica_optima;1.28;;
+12;17;11;Puno;2;12;12;12;37.88;37.88;0.0;visita_todas;0.0;;
+12;17;4;Machupicchu Pueblo;2;12;5;5;27.5;27.5;0.0;heuristica_optima;0.01;Mirador de Tunki;Mariposario de Machupicchu
+12;17;71;Yanque;2;12;11;11;21.8;22.58;0.034544;mejorable;1.58;Templo de la Inmaculada Concepción;Tumbas de Yuraq Qaqa
+12;18;71;Yanque;4;12;12;12;41.88;41.88;0.0;visita_todas;0.0;;
+12;18;40;Arequipa;4;12;12;12;38.9;38.9;0.0;visita_todas;0.0;;
+12;18;187;Ilo;4;12;12;12;35.4232;35.4232;0.0;visita_todas;0.0;;
+12;19;27;Nasca;3;12;12;12;45.784;45.784;0.0;visita_todas;0.0;;
+12;19;187;Ilo;3;12;12;12;39.9232;39.9232;0.0;visita_todas;0.0;;
+12;19;177;Mollendo;3;12;12;12;26.48;26.48;0.0;visita_todas;0.0;;
+12;20;31;Miraflores;5;12;12;12;41.76;41.76;0.0;visita_todas;0.0;;
+12;20;70;Huacho;3;12;11;11;39.2;39.2;0.0;heuristica_optima;0.74;;
+12;20;173;Urubamba;5;12;11;11;39.17;39.17;0.0;heuristica_optima;0.52;;
+12;21;71;Yanque;3;12;12;12;39.3136;39.3136;0.0;visita_todas;0.0;;
+12;21;187;Ilo;3;12;10;11;33.58;34.604;0.029592;mejorable;1.62;;Fundo La Huerta
+12;21;11;Puno;3;12;10;10;22.6;23.1;0.021645;mejorable;2.21;Museo Municipal Carlos Dreyer;Piscicultura de Chucuito - Centro de Investigación y Producción Pesquera de Chucuito.
+12;22;36;Cuzco;5;12;12;12;104.7232;104.7232;0.0;visita_todas;0.0;;
+12;22;11;Puno;5;12;12;12;43.2;43.2;0.0;visita_todas;0.0;;
+12;22;27;Nasca;5;12;12;12;44.296;44.296;0.0;visita_todas;0.0;;
+12;23;187;Ilo;2;12;7;7;8.7;8.7;0.0;heuristica_optima;0.02;;
+12;23;177;Mollendo;2;12;8;8;8.0;8.1;0.012346;mejorable;0.64;Mercado San José;Castillo Forga
+12;23;106;La Pampa;2;12;5;5;4.8;4.8;0.0;heuristica_optima;0.03;Playa ''El Chorro'';Playa “Cerrillos”
+12;24;71;Yanque;6;12;12;12;39.5;39.5;0.0;visita_todas;0.0;;
+12;24;25;Íllimo;4;12;11;11;37.476;37.476;0.0;heuristica_optima;1.53;;
+12;24;27;Nasca;6;12;12;12;32.446;32.446;0.0;visita_todas;0.0;;
+12;25;31;Miraflores;3;12;12;12;60.2;60.2;0.0;visita_todas;0.0;;
+12;25;2;Cajamarca;3;12;9;10;28.1;28.5;0.014035;mejorable;2.42;Museo de la Marioneta Manuel Nicanor Taica Llalle;Iglesia Catedral Santa Catalina | Museo Arqueológico y Etnográfico del Conjunto Monumental Belen
+12;25;70;Huacho;3;12;7;9;40.58;40.7;0.002948;mejorable;3.12;Balcón y Museo Histórico de Huaura | Zona Arqueológica Monumental Los Huacos;Club Casino Huacho | Iglesia San Pedro Apóstol | Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión | Plaza de Armas de Huacho
+12;26;25;Íllimo;4;12;11;11;37.876;37.876;0.0;heuristica_optima;1.33;;
+12;26;31;Miraflores;4;12;12;12;41.76;41.76;0.0;visita_todas;0.0;;
+12;26;70;Huacho;4;12;11;11;39.2;39.2;0.0;heuristica_optima;1.06;;
+12;27;139;Trujillo;3;12;12;12;52.0;52.0;0.0;visita_todas;0.0;;
+12;27;31;Miraflores;3;12;12;12;72.88;72.88;0.0;visita_todas;0.0;;
+12;27;2;Cajamarca;3;12;12;12;37.76;37.76;0.0;visita_todas;0.0;;
+12;28;25;Íllimo;5;12;11;11;44.0;44.0;0.0;heuristica_optima;1.16;;
+12;28;14;Huaraz;5;12;12;12;48.1;48.1;0.0;visita_todas;0.0;;
+12;28;86;Moyobamba;5;12;11;11;28.1;28.1;0.0;heuristica_optima;0.79;;
+12;29;139;Trujillo;2;12;11;12;19.2;19.7;0.025381;mejorable;1.86;;Casa Urquiaga o Calonge
+12;29;85;Los Órganos;2;12;3;3;12.5;12.5;0.0;heuristica_optima;0.0;;
+12;29;25;Íllimo;2;12;4;4;9.5;9.5;0.0;heuristica_optima;0.1;Iglesia Matriz de Jayanca;Julián Bravo Taller Artesanal
+12;30;14;Huaraz;5;12;12;12;48.1;48.1;0.0;visita_todas;0.0;;
+12;30;25;Íllimo;5;12;11;11;44.0;44.0;0.0;heuristica_optima;0.49;;
+12;30;86;Moyobamba;5;12;11;11;28.1;28.1;0.0;heuristica_optima;1.1;;
+12;31;31;Miraflores;4;12;12;12;32.404;32.404;0.0;visita_todas;0.0;;
+12;31;245;Mazán;4;5;3;3;4.8;4.8;0.0;heuristica_optima;0.0;;
+12;31;189;Nauta;4;9;4;4;5.8;5.8;0.0;heuristica_optima;0.01;;
+12;32;31;Miraflores;3;12;12;12;61.6;61.6;0.0;visita_todas;0.0;;
+12;32;27;Nasca;3;12;12;12;44.296;44.296;0.0;visita_todas;0.0;;
+12;32;30;Cerro de Pasco;3;12;12;12;20.3232;20.3232;0.0;visita_todas;0.0;;
+12;33;172;Jauja;4;12;12;12;24.1;24.1;0.0;visita_todas;0.0;;
+12;33;14;Huaraz;4;12;12;12;49.6;49.6;0.0;visita_todas;0.0;;
+12;33;70;Huacho;4;12;11;11;39.2;39.2;0.0;heuristica_optima;1.45;;
+12;34;36;Cuzco;3;12;12;12;85.5;85.5;0.0;visita_todas;0.0;;
+12;34;40;Arequipa;3;12;8;11;39.7;41.1;0.034063;mejorable;2.27;;Casa Tristan del Pozo | Iglesia de la Compañia | Puente de Fierro
+12;34;71;Yanque;3;12;10;10;20.2;20.2;0.0;heuristica_optima;1.47;;
+12;35;187;Ilo;3;12;12;12;39.9232;39.9232;0.0;visita_todas;0.0;;
+12;35;11;Puno;3;12;12;12;43.2;43.2;0.0;visita_todas;0.0;;
+12;35;71;Yanque;3;12;12;12;41.6032;41.6032;0.0;visita_todas;0.0;;
+12;36;36;Cuzco;4;12;12;12;85.5;85.5;0.0;visita_todas;0.0;;
+12;36;31;Miraflores;4;12;12;12;60.2;60.2;0.0;visita_todas;0.0;;
+12;36;27;Nasca;4;12;12;12;44.296;44.296;0.0;visita_todas;0.0;;
+12;37;14;Huaraz;3;12;12;12;53.7;53.7;0.0;visita_todas;0.0;;
+12;37;139;Trujillo;3;12;8;9;39.9;42.3;0.056738;mejorable;5.72;Casa Natal de Victor Raúl Haya de la Torre – Centro Cultural del Banco de la Nación;Campiña de Moche | Los Totorales de Huanchaco
+12;37;25;Íllimo;3;12;5;6;39.0;40.0;0.025;mejorable;0.5;Complejo Arqueológico Jotoro;Huaca Las Balsas | Parque Principal de Pacora Alfredo Bilmer Paz Solis
+12;38;25;Íllimo;3;12;11;11;48.78;48.78;0.0;heuristica_optima;0.83;;
+12;38;70;Huacho;3;12;10;10;37.2;37.2;0.0;heuristica_optima;1.31;;
+12;38;151;La Merced;3;12;12;12;21.08;21.08;0.0;visita_todas;0.0;;
+12;39;86;Moyobamba;4;12;11;11;28.1;28.1;0.0;heuristica_optima;1.08;;
+12;39;25;Íllimo;4;12;11;11;44.0;44.0;0.0;heuristica_optima;0.78;;
+12;39;31;Miraflores;4;12;12;12;25.6786;25.6786;0.0;visita_todas;0.0;;
+12;40;11;Puno;3;12;12;12;25.0;25.0;0.0;visita_todas;0.0;;
+12;40;36;Cuzco;3;12;12;12;31.5;31.5;0.0;visita_todas;0.0;;
+12;40;140;Juli;3;12;12;12;14.32;14.32;0.0;visita_todas;0.0;;
+15;1;70;Huacho;2;15;8;8;40.4;41.6;0.028846;mejorable;2.79;Iglesia de Santa María;Taller Artesanal Chankay Namú
+15;1;27;Nasca;2;15;10;11;44.48;45.76;0.027972;mejorable;2.84;;Acueducto de Aja o Puquio de Aja
+15;1;14;Huaraz;2;15;8;9;46.0;47.0;0.021277;mejorable;7.67;;Mirador de Rataquenua
+15;2;14;Huaraz;3;15;11;10;46.1;46.8;0.014957;mejorable;3.27;Mirador de Rataquenua | Plaza de Armas de Huaraz;Baños Termales de Monterrey
+15;2;70;Huacho;3;15;10;11;38.7;39.3;0.015267;mejorable;5.29;Club Casino Huacho | Playa Chorrillos de Huacho;Museo Municipal de Hualmay | Playa Hornillos | Taller Artesanal Chankay Namú
+15;2;151;La Merced;3;15;13;14;27.8;29.8;0.067114;mejorable;9.25;;Zoologico Zhaveta Yard
+15;3;139;Trujillo;4;15;15;15;49.38;49.38;0.0;visita_todas;0.0;;
+15;3;96;Oxapampa;4;15;15;15;27.88;27.88;0.0;visita_todas;0.0;;
+15;3;70;Huacho;4;15;14;15;48.204;49.484;0.025867;mejorable;11.02;;Museo Comunitario de Végueta José Mateo García de los Santos
+15;4;139;Trujillo;5;15;15;15;21.88;21.88;0.0;visita_todas;0.0;;
+15;4;180;Paracas;5;15;11;13;12.904;14.3786;0.102553;mejorable;50.73;;Playa Lagunilla-Paracas | Playa Raspón-Paracas
+15;4;2;Cajamarca;5;15;15;15;11.696;11.696;0.0;visita_todas;0.0;;
+15;5;36;Cuzco;6;15;15;15;89.98;89.98;0.0;visita_todas;0.0;;
+15;5;40;Arequipa;6;15;14;14;43.92;43.92;0.0;heuristica_optima;16.38;;
+15;5;11;Puno;6;15;15;15;40.104;40.104;0.0;visita_todas;0.0;;
+15;6;14;Huaraz;7;15;15;15;56.58;56.58;0.0;visita_todas;0.0;;
+15;6;71;Yanque;5;15;15;15;45.3136;45.3136;0.0;visita_todas;0.0;;
+15;6;150;Iquitos;7;15;15;15;35.0808;35.0808;0.0;visita_todas;0.0;;
+15;7;70;Huacho;3;15;10;11;38.7;39.2;0.012755;mejorable;3.94;;Taller Artesanal Chankay Namú
+15;7;139;Trujillo;3;15;15;15;28.7;28.7;0.0;visita_todas;0.0;;
+15;7;178;Chincha Alta;3;13;11;12;15.18;15.43;0.016202;mejorable;7.96;;Humedales Grocio Prado (Humedales de Chincha)
+15;8;70;Huacho;2;15;6;5;33.4;33.7;0.008902;mejorable;2.04;Club Casino Huacho | Iglesia San Pedro Apóstol;Sitio Arqueológico de Vichama
+15;8;15;Huánuco;2;15;12;12;24.94;24.94;0.0;heuristica_optima;21.61;Iglesia del Sagrario La Merced;Iglesia de San Francisco
+15;8;178;Chincha Alta;2;13;7;7;13.63;13.78;0.010885;mejorable;0.16;Santuario de la Melchorita;Casa Hacienda Alto Larán
+15;9;36;Cuzco;5;15;14;14;108.7232;108.7232;0.0;heuristica_optima;41.36;;
+15;9;139;Trujillo;5;15;15;15;58.0;58.0;0.0;visita_todas;0.0;;
+15;9;27;Nasca;5;15;15;15;50.296;50.296;0.0;visita_todas;0.0;;
+15;10;36;Cuzco;8;15;14;14;108.7232;108.7232;0.0;heuristica_optima;63.51;;
+15;10;11;Puno;8;15;15;15;53.6;53.6;0.0;visita_todas;0.0;;
+15;10;71;Yanque;6;15;15;15;47.9232;47.9232;0.0;visita_todas;0.0;;
+15;11;25;Íllimo;4;15;14;14;44.976;44.976;0.0;heuristica_optima;4.28;;
+15;11;14;Huaraz;4;15;12;12;52.1;52.1;0.0;heuristica_optima;31.04;;
+15;11;172;Jauja;4;15;15;15;29.3;29.3;0.0;visita_todas;0.0;;
+15;12;96;Oxapampa;6;15;15;15;28.7232;28.7232;0.0;visita_todas;0.0;;
+15;12;139;Trujillo;6;15;15;15;62.0;62.0;0.0;visita_todas;0.0;;
+15;12;2;Cajamarca;6;15;15;15;46.784;46.784;0.0;visita_todas;0.0;;
+15;13;71;Yanque;8;15;15;15;45.3136;45.3136;0.0;visita_todas;0.0;;
+15;13;14;Huaraz;10;15;15;15;57.3;57.3;0.0;visita_todas;0.0;;
+15;13;86;Moyobamba;8;15;14;14;32.98;32.98;0.0;heuristica_optima;2.55;;
+15;14;139;Trujillo;3;15;15;15;58.0;58.0;0.0;visita_todas;0.0;;
+15;14;70;Huacho;3;15;12;14;50.64;53.52;0.053812;mejorable;5.7;;Balcón y Museo Histórico de Huaura | Zona Arqueológica Monumental Los Huacos
+15;14;27;Nasca;3;15;14;15;47.296;49.296;0.040571;mejorable;1.77;;Petroglifos de Chichictara
+15;15;70;Huacho;2;15;7;8;9.9;10.4;0.048077;mejorable;0.15;;Taller Artesanal Chankay Namú
+15;15;27;Nasca;2;15;10;11;11.12;11.44;0.027972;mejorable;1.98;;Acueducto de Aja o Puquio de Aja
+15;15;180;Paracas;2;15;5;5;6.5;6.5;0.0;heuristica_optima;0.02;Playa El Chaco - Paracas;Playa Yumaque-Paracas
+15;16;139;Trujillo;5;15;15;15;62.0;62.0;0.0;visita_todas;0.0;;
+15;16;11;Puno;5;15;15;15;49.2;49.2;0.0;visita_todas;0.0;;
+15;16;40;Arequipa;5;15;14;14;49.3786;49.3786;0.0;heuristica_optima;5.17;;
+15;17;11;Puno;2;15;12;12;37.4;37.88;0.012672;mejorable;6.5;Mirador Puma Uta | Museo de la Coca y Costumbres;Buque Museo Yavari | Museo Naval de Puno
+15;17;4;Machupicchu Pueblo;2;15;5;5;27.5;27.5;0.0;heuristica_optima;0.02;Mirador de Tunki;Mariposario de Machupicchu
+15;17;71;Yanque;2;15;12;12;22.7;22.7;0.0;heuristica_optima;8.3;;
+15;18;71;Yanque;4;15;15;15;45.3136;45.3136;0.0;visita_todas;0.0;;
+15;18;40;Arequipa;4;15;14;14;41.22;41.22;0.0;heuristica_optima;5.66;;
+15;18;187;Ilo;4;15;15;15;40.0786;40.0786;0.0;visita_todas;0.0;;
+15;19;27;Nasca;3;15;13;14;47.784;49.784;0.040174;mejorable;9.86;;Necrópolis de Chauchilla
+15;19;187;Ilo;3;15;15;15;44.1786;44.1786;0.0;visita_todas;0.0;;
+15;19;177;Mollendo;3;15;15;15;32.48;32.48;0.0;visita_todas;0.0;;
+15;20;31;Miraflores;5;15;15;15;46.86;46.86;0.0;visita_todas;0.0;;
+15;20;70;Huacho;3;15;13;14;39.92;40.08;0.003992;mejorable;3.01;;Iglesia de Santa María
+15;20;173;Urubamba;5;15;13;13;39.83;39.83;0.0;heuristica_optima;0.7;;
+15;21;71;Yanque;3;15;13;12;41.3136;42.404;0.025715;mejorable;7.37;Mirador de Achomani - Sector San Miguel | Plaza Principal de Yanque;Laguna de Tres Colores
+15;21;187;Ilo;3;15;10;11;33.58;35.58;0.056211;mejorable;3.19;Fundo Chucarapi;Fundo La Huerta | Valle El Algarrobal
+15;21;11;Puno;3;15;10;12;22.6;23.6;0.042373;mejorable;6.96;;Basilica Menor de la Catedral de Puno | Iglesia San Juan Bautista - Santuario Virgen de la Candelaria
+15;22;36;Cuzco;5;15;14;14;108.7232;108.7232;0.0;heuristica_optima;7.59;;
+15;22;11;Puno;5;15;15;15;53.2;53.2;0.0;visita_todas;0.0;;
+15;22;27;Nasca;5;15;15;15;49.296;49.296;0.0;visita_todas;0.0;;
+15;23;187;Ilo;2;15;7;7;8.7;8.7;0.0;heuristica_optima;0.01;;
+15;23;177;Mollendo;2;15;11;11;8.3;8.3;0.0;heuristica_optima;2.03;;
+15;23;106;La Pampa;2;15;5;5;4.8;4.8;0.0;heuristica_optima;0.04;Playa ''El Chorro'';Playa “Cerrillos”
+15;24;71;Yanque;6;15;15;15;41.82;41.82;0.0;visita_todas;0.0;;
+15;24;25;Íllimo;4;15;14;14;38.596;38.596;0.0;heuristica_optima;5.73;;
+15;24;27;Nasca;6;15;15;15;33.574;33.574;0.0;visita_todas;0.0;;
+15;25;31;Miraflores;3;15;15;15;65.7;65.7;0.0;visita_todas;0.0;;
+15;25;2;Cajamarca;3;15;10;10;28.6;28.6;0.0;heuristica_optima;2.98;Iglesia San Antonio de Padua - San Francisco | Museo de la Marioneta Manuel Nicanor Taica Llalle;Iglesia Catedral Santa Catalina | Museo Arqueológico y Etnográfico del Conjunto Monumental Belen
+15;25;70;Huacho;3;15;7;9;40.58;40.7;0.002948;mejorable;3.14;Balcón y Museo Histórico de Huaura | Zona Arqueológica Monumental Los Huacos;Club Casino Huacho | Iglesia San Pedro Apóstol | Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión | Plaza de Armas de Huacho
+15;26;25;Íllimo;4;15;14;14;38.724;38.724;0.0;heuristica_optima;3.01;;
+15;26;31;Miraflores;4;15;15;15;46.86;46.86;0.0;visita_todas;0.0;;
+15;26;70;Huacho;4;15;11;11;39.2;39.2;0.0;heuristica_optima;2.35;Balneario Ecoturístico La Costanera | Playa Chorrillos de Huacho;Playa Chica - Huacho | Playa Hornillos
+15;27;139;Trujillo;3;15;14;15;56.0;58.0;0.034483;mejorable;6.05;;Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco)
+15;27;31;Miraflores;3;15;15;15;78.08;78.08;0.0;visita_todas;0.0;;
+15;27;2;Cajamarca;3;15;12;13;39.2;40.48;0.031621;mejorable;4.21;;Casona del Conde Uceda
+15;28;25;Íllimo;5;15;14;14;44.976;44.976;0.0;heuristica_optima;2.82;;
+15;28;14;Huaraz;5;15;14;15;55.3;56.58;0.022623;mejorable;0.84;;Laguna Almacocha
+15;28;86;Moyobamba;5;15;14;14;32.98;32.98;0.0;heuristica_optima;1.33;;
+15;29;139;Trujillo;2;15;11;12;19.2;19.8;0.030303;mejorable;2.79;Iglesia Nuestra Señora de Monserrat;Casa Urquiaga o Calonge | Paseo Temático “Fertilidad Moche”
+15;29;85;Los Órganos;2;15;4;4;13.0;13.0;0.0;heuristica_optima;0.01;;
+15;29;25;Íllimo;2;15;4;4;9.5;9.5;0.0;heuristica_optima;0.1;Iglesia Matriz de Jayanca;Julián Bravo Taller Artesanal
+15;30;14;Huaraz;5;15;14;15;55.3;56.58;0.022623;mejorable;0.68;;Laguna Almacocha
+15;30;25;Íllimo;5;15;14;14;44.976;44.976;0.0;heuristica_optima;1.35;;
+15;30;86;Moyobamba;5;15;14;14;32.98;32.98;0.0;heuristica_optima;1.53;;
+15;31;31;Miraflores;4;15;13;14;33.404;35.404;0.056491;mejorable;12.38;;Zona Arqueológica Monumental Huaca Pucllana
+15;31;245;Mazán;4;5;3;3;4.8;4.8;0.0;heuristica_optima;0.0;;
+15;31;189;Nauta;4;9;4;4;5.8;5.8;0.0;heuristica_optima;0.0;;
+15;32;31;Miraflores;3;15;15;15;70.3;70.3;0.0;visita_todas;0.0;;
+15;32;27;Nasca;3;15;14;14;48.296;49.784;0.029889;mejorable;11.66;Acueducto de Ocongalla;Petroglifos de Chichictara
+15;32;30;Cerro de Pasco;3;15;14;15;28.3232;29.9232;0.05347;mejorable;4.1;;Virgen del Carmen de Tingo Palca
+15;33;172;Jauja;4;15;15;15;28.5;28.5;0.0;visita_todas;0.0;;
+15;33;14;Huaraz;4;15;12;13;52.6;54.1;0.027726;mejorable;64.86;Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan;Baños Termales de Monterrey | Museo Arqueológico de Áncash Augusto Soriano Infante
+15;33;70;Huacho;4;15;14;14;42.58;42.58;0.0;heuristica_optima;1.47;;
+15;34;36;Cuzco;3;15;14;15;88.7;89.98;0.014225;mejorable;3.03;;Museo del Convento de la Merced
+15;34;40;Arequipa;3;15;8;11;39.7;41.2;0.036408;mejorable;3.37;Iglesia y Museo de la Recoleta;Casa Tristan del Pozo | Iglesia de la Compañia | Plaza de Armas de Arequipa | Puente de Fierro
+15;34;71;Yanque;3;15;10;11;20.2;20.7;0.024155;mejorable;2.67;;Templo de los Santos Reyes
+15;35;187;Ilo;3;15;14;15;43.5232;44.1786;0.014834;mejorable;6.57;;Fundo El Algodonal - Chiriwasi
+15;35;11;Puno;3;15;15;15;49.2;49.2;0.0;visita_todas;0.0;;
+15;35;71;Yanque;3;15;15;15;47.6032;47.6032;0.0;visita_todas;0.0;;
+15;36;36;Cuzco;4;15;15;15;89.98;89.98;0.0;visita_todas;0.0;;
+15;36;31;Miraflores;4;15;15;15;65.7;65.7;0.0;visita_todas;0.0;;
+15;36;27;Nasca;4;15;15;15;48.7056;48.7056;0.0;visita_todas;0.0;;
+15;37;14;Huaraz;3;15;13;12;54.2;56.4;0.039007;mejorable;7.02;Mirador de Rataquenua | Monumento Histórico Puente Calicanto “San Gerónimo” - Huaraz | Plaza de Armas de Huaraz;Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan | Laguna Willcacocha Huaraz
+15;37;139;Trujillo;3;15;10;11;40.9;42.5;0.037647;mejorable;8.15;Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco);Campiña de Moche | Museo Santiago Uceda Castillo
+15;37;25;Íllimo;3;15;5;6;39.0;40.0;0.025;mejorable;0.72;Complejo Arqueológico Jotoro;Huaca Las Balsas | Parque Principal de Pacora Alfredo Bilmer Paz Solis
+15;38;25;Íllimo;3;15;11;11;48.78;49.18;0.008133;mejorable;3.82;Taller de Susana Bances;Complejo Arqueológico Monumental Zurita - La Viña
+15;38;70;Huacho;3;15;10;11;37.2;37.7;0.013263;mejorable;1.24;;Taller Artesanal Chankay Namú
+15;38;151;La Merced;3;15;12;13;21.08;22.104;0.046326;mejorable;14.74;;Catarata Tres Deseos
+15;39;86;Moyobamba;4;15;14;14;32.98;32.98;0.0;heuristica_optima;1.39;;
+15;39;25;Íllimo;4;15;14;14;44.976;44.976;0.0;heuristica_optima;1.68;;
+15;39;31;Miraflores;4;15;15;15;33.4828;33.4828;0.0;visita_todas;0.0;;
+15;40;11;Puno;3;15;14;15;26.0;26.4;0.015152;mejorable;4.58;;Balcón del Conde de Lemos
+15;40;36;Cuzco;3;15;14;15;35.0;35.32;0.00906;mejorable;3.27;;Templo de Santa Ana
+15;40;140;Juli;3;15;15;15;17.22;17.22;0.0;visita_todas;0.0;;

@@ -1,0 +1,118 @@
+{
+  "osm": {
+    "md5": "faea114a828e7a306a5010f985c1320b",
+    "datos": "Wed, 30 Sep 2026 00:42:58 GMT"
+  },
+  "contra_los_tiempos_del_motor": {
+    "pares": 210722,
+    "con_camino_aqui": 208776,
+    "a_menos_de_un_minuto": 1.0,
+    "mas_cortos_aqui_por_mas_de_5_min": 0,
+    "diferencia_mediana_min": 0.0
+  },
+  "paradas": 4578,
+  "lejos_de_la_red": 128,
+  "v2": {
+    "grupos": 222,
+    "paradas": 4465,
+    "cobertura": 0.9753,
+    "paradas_por_grupo_mediana": 14.0,
+    "diametro_h": {
+      "mediana": 3.37,
+      "p90": 6.23,
+      "maximo": 9.77
+    },
+    "desnivel_m": {
+      "mediana": 674.0,
+      "maximo": 1434.0
+    },
+    "con_pares_sin_camino": 43,
+    "pasan_de": {
+      "3_h": 129,
+      "4_h": 82,
+      "5_h": 48,
+      "6_h": 29,
+      "8_h": 5
+    }
+  },
+  "v3": {
+    "180": {
+      "grupos": 235,
+      "paradas": 4134,
+      "cobertura": 0.903,
+      "paradas_por_grupo_mediana": 11.0,
+      "diametro_h": {
+        "mediana": 2.12,
+        "p90": 2.76,
+        "maximo": 2.93
+      },
+      "desnivel_m": {
+        "mediana": 947.0,
+        "maximo": 1300.0
+      },
+      "con_pares_sin_camino": 0
+    },
+    "240": {
+      "grupos": 203,
+      "paradas": 4268,
+      "cobertura": 0.9323,
+      "paradas_por_grupo_mediana": 12.0,
+      "diametro_h": {
+        "mediana": 2.78,
+        "p90": 3.78,
+        "maximo": 4.0
+      },
+      "desnivel_m": {
+        "mediana": 1026.0,
+        "maximo": 1300.0
+      },
+      "con_pares_sin_camino": 0
+    },
+    "300": {
+      "grupos": 180,
+      "paradas": 4316,
+      "cobertura": 0.9428,
+      "paradas_por_grupo_mediana": 14.0,
+      "diametro_h": {
+        "mediana": 3.3,
+        "p90": 4.57,
+        "maximo": 4.98
+      },
+      "desnivel_m": {
+        "mediana": 1078.5,
+        "maximo": 1300.0
+      },
+      "con_pares_sin_camino": 0
+    }
+  },
+  "elegido": {
+    "umbral_min": 240,
+    "desnivel_max_m": 1300,
+    "paradas_en_las_dos": 4219,
+    "ari": 0.745,
+    "pares_juntos_en_la_v2_que_siguen_juntos": 0.831,
+    "pares_juntos_en_la_v3_que_ya_lo_estaban": 0.68,
+    "grupos_de_la_v2_que_se_parten": 127,
+    "grupos_de_la_v3_que_juntan_dos_o_mas": 155,
+    "en_la_v2_y_sin_grupo_en_la_v3": 246,
+    "sin_grupo_en_la_v2_y_en_la_v3": 49
+  },
+  "v3_sin_tope_de_desnivel": {
+    "240": {
+      "grupos": 161,
+      "paradas": 4346,
+      "cobertura": 0.9493,
+      "paradas_por_grupo_mediana": 18.0,
+      "diametro_h": {
+        "mediana": 3.11,
+        "p90": 3.82,
+        "maximo": 3.96
+      },
+      "desnivel_m": {
+        "mediana": 1421.0,
+        "maximo": 4017.0
+      },
+      "con_pares_sin_camino": 0
+    }
+  }
+}

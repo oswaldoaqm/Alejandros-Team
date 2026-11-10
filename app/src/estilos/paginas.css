@@ -1,0 +1,2337 @@
+/* Las pantallas que acompañan al viaje: Guardados, Fiestas, Cómo funciona, Publicar un evento
+   y la página de cada zona. Comparten la cabecera: un título grande y una bajada. */
+
+/* Cabecera hero para las pantallas interiores (Fiestas, Guardados, Cómo funciona, Publicar) */
+.pagina-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px var(--margen) 44px;
+  color: #ffffff;
+  background: var(--lago-hundido);
+  border-bottom: 1px solid rgb(0 0 0 / 14%);
+}
+
+.pagina-hero__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.pagina-hero__titulo {
+  margin: 0 0 8px;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.pagina-hero__titulo:focus {
+  outline: none;
+}
+
+.pagina-hero__bajada {
+  max-width: 54ch;
+  margin: 0 auto;
+  font-size: var(--t-cuerpo);
+  line-height: 1.4;
+  color: rgb(255 255 255 / 90%);
+  text-wrap: pretty;
+}
+
+.pagina__titulo {
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.pagina__bajada {
+  max-width: 60ch;
+  margin: 8px 0 24px;
+  color: var(--tinta-2);
+}
+
+@media (min-width: 960px) {
+  .pagina__titulo {
+    font-size: var(--t-display);
+    letter-spacing: -0.035em;
+  }
+}
+
+/* ── Guardados ────────────────────────────────────────────────────────────────── */
+
+.guardados {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.guardado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 10px 0 0;
+}
+
+.guardado + .guardado {
+  border-top: 1px solid var(--linea);
+}
+
+.guardado__enlace {
+  display: grid;
+  gap: 2px;
+  min-height: 64px;
+  padding: 14px 4px 14px 18px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.guardado__enlace:hover .guardado__titulo {
+  color: var(--lago-texto);
+}
+
+.guardado__titulo {
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.guardado__detalle {
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+}
+
+.guardado__meta {
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+.guardado__quitar {
+  color: var(--tinta-3);
+  background: none;
+}
+
+.guardado__quitar:hover {
+  color: var(--critico-tinta);
+  background: var(--critico-fondo);
+}
+
+/* ── La zona de un viaje (vistas/PaginaPolo.tsx) ──────────────────────────────────
+   Usa la portada del viaje. En celular, una columna; desde 960 px, los lugares a la
+   izquierda y el clima y las fiestas a la derecha. */
+
+.zona__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.zona__lado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+}
+
+.zona__bajada {
+  margin: -8px 0 14px;
+  color: var(--tinta-2);
+}
+
+.zona__mas {
+  margin-top: 12px;
+}
+
+/* «Armar un viaje aquí», bajo los datos de la zona. */
+.zona__armar {
+  justify-self: start;
+  margin-top: 18px;
+}
+
+/* Sin foto (todavía no llega, o la zona no tiene), la barra no flota: va sobre el título. */
+.portada--sin-arte .portada__barra {
+  position: static;
+}
+
+.zona-lugares {
+  overflow: hidden;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.zona-lugares > li {
+  position: relative;
+}
+
+.zona-lugares > li + li::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 82px;
+  content: "";
+  border-top: 1px solid var(--linea);
+}
+
+.zona-lugar {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 76px;
+  padding: 10px 14px 10px 12px;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.zona-lugar:hover {
+  background: var(--superficie-2);
+}
+
+.zona-lugar:focus-visible {
+  outline: 3px solid var(--foco-lago);
+  outline-offset: -3px;
+}
+
+.zona-lugar > .icono {
+  color: var(--tinta-3);
+}
+
+/* La miniatura: la foto si hay; si no, o si no carga, un alfiler sobre el azul de la marca. */
+.zona-lugar__foto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  color: var(--lago-texto);
+  background: var(--lago-claro);
+  border-radius: 12px;
+}
+
+.zona-lugar__foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zona-lugar__texto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.zona-lugar__nombre {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.zona-lugar__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: var(--t-pie);
+  color: var(--tinta-3);
+}
+
+/* El clima del año: una tarjeta; la barra del mes elegido, entera; las demás, suaves. */
+.clima {
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--superficie);
+  border-radius: var(--r-tarjeta);
+  box-shadow: var(--sombra-baja);
+}
+
+.clima__barra {
+  width: 62%;
+  max-width: 24px;
+  background: color-mix(in srgb, var(--lago) 32%, var(--superficie));
+  border-radius: 5px 5px 2px 2px;
+}
+
+.clima__mes input:checked ~ .clima__columna {
+  border-bottom: 1px solid var(--borde);
+}
+
+.clima__mes input:checked ~ .clima__columna .clima__barra {
+  background: var(--lago);
+}
+
+.clima__mes input:focus-visible ~ .clima__columna {
+  outline: 3px solid var(--foco-lago);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.clima__nombre {
+  font-size: 0.6875rem;
+}
+
+.clima__lectura {
+  padding: 14px 18px;
+  background: var(--superficie);
+  border-left: 4px solid var(--lago);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+}
+
+.clima__lectura strong {
+  font-weight: 650;
+}
+
+@media (min-width: 960px) {
+  .zona__cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    gap: 40px 48px;
+    align-items: start;
+  }
+
+  .zona__cuerpo > .portada,
+  .zona__cuerpo > .letra-chica,
+  .zona__cuerpo > .cargando,
+  .zona__cuerpo > .aviso {
+    grid-column: 1 / -1;
+  }
+
+  .zona__cuerpo > .portada {
+    margin-bottom: -8px;
+  }
+
+  .portada--sin-arte {
+    grid-template-areas:
+      "barra"
+      "texto";
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Fiestas (vistas/PaginaCalendario.tsx) ─────────────────────────────────────── */
+
+.calendario__filtros {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.selector-de-meses {
+  scroll-padding-inline: 16px;
+}
+
+/* La región: un desplegable del sistema (en celular abre su rueda), con la forma de los botones. */
+.calendario__region {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-self: start;
+  max-width: 100%;
+}
+
+.calendario__region label {
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.calendario__region select {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 40px;
+  padding: 0 36px 0 14px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta);
+  appearance: none;
+  background-color: var(--superficie);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6c78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: var(--sombra-baja);
+}
+
+.calendario__region select:focus-visible {
+  outline: 3px solid var(--foco-lago);
+}
+
+.calendario__cuenta {
+  margin-bottom: 12px;
+  font-size: var(--t-nota);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.calendario__accion {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  margin-top: 32px;
+}
+
+.calendario__accion p {
+  color: var(--tinta-2);
+}
+
+.calendario__siguen {
+  margin-top: 32px;
+}
+
+.calendario__subtitulo {
+  margin-bottom: 12px;
+  font-size: var(--t-cuerpo);
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.calendario > .letra-chica {
+  margin-top: 40px;
+}
+
+/* ── Cómo funciona (Interactivo) ────────────────────────────────────────────── */
+
+.acerca-contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.acerca-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acerca-seccion__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.acerca-seccion__etiqueta {
+  font-size: var(--t-pie);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lago-texto);
+}
+
+.acerca-seccion__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.acerca-seccion__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  width: 100%;
+  max-width: none;
+  line-height: 1.55;
+}
+
+/* ── Reproductor de Historias (Estilo Instagram Stories) ─────────────────────── */
+
+.stories-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Ventana estilo macOS para el Stories player ───────────────────────────── */
+
+.stories-ventana {
+  background: #000000;
+  border: 1.5px solid var(--linea);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    var(--sombra-flota),
+    0 20px 40px -15px rgb(0 0 0 / 25%);
+}
+
+.stories-ventana__barra {
+  background: var(--superficie-2);
+  border-bottom: 1px solid var(--linea);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stories-ventana__botones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stories-ventana__boton {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stories-ventana__boton--rojo {
+  background: #ff5f56;
+}
+
+.stories-ventana__boton--amarillo {
+  background: #ffbd2e;
+}
+
+.stories-ventana__boton--verde {
+  background: #27c93f;
+}
+
+.stories-ventana__titulo-barra {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tinta);
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 6px;
+}
+
+.stories-ventana__contador {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--lago-texto);
+  background: var(--lago-claro);
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ── Visor de Stories (Pantalla 16:10 con overlays) ────────────────────────── */
+
+.stories-visor {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.stories-visor__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000000;
+  display: block;
+}
+
+/* Capa superior: Barritas de progreso y datos de cuenta */
+.stories-visor__arriba {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 85%) 0%, rgb(0 0 0 / 40%) 65%, transparent 100%);
+  padding: 10px 14px 24px;
+}
+
+/* Las 8 barritas horizontales segmentadas */
+.stories-barras {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+.stories-barra {
+  flex: 1;
+  height: 3.5px;
+  background: rgb(255 255 255 / 35%);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.stories-barra:hover {
+  transform: scaleY(1.8);
+  background: rgb(255 255 255 / 55%);
+}
+
+.stories-barra__relleno {
+  height: 100%;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: width 100ms linear;
+}
+
+.stories-barra--activa .stories-barra__relleno {
+  box-shadow: 0 0 6px rgb(255 255 255 / 90%);
+}
+
+/* Cabecera del Story (Usuario + Título + Botón de play/pausa) */
+.stories-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stories-perfil__usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stories-perfil__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  box-shadow: 0 0 14px rgb(220 39 67 / 45%);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.stories-perfil__icono {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #9e0a22;
+  border: 2px solid #000000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.stories-perfil__flor {
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
+  display: block;
+}
+
+.stories-perfil__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 70%);
+}
+
+.stories-perfil__nombre-fila {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.84rem;
+}
+
+.stories-perfil__nombre {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stories-perfil__verificado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3897f0;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* Botones flotantes de navegación lateral */
+.stories-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 25%);
+  background: rgb(0 0 0 / 55%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  opacity: 0.75;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.stories-nav-btn:hover {
+  opacity: 1;
+  background: rgb(0 0 0 / 85%);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.stories-nav-btn--izq {
+  left: 14px;
+}
+
+.stories-nav-btn--der {
+  right: 14px;
+}
+
+/* Zonas táctiles invisibles (Tap Left 30%, Tap Center 40%, Tap Right 30%) */
+.stories-tap-zonas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 2;
+}
+
+.stories-tap-zona {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.stories-tap-zona--izq {
+  width: 30%;
+}
+
+.stories-tap-zona--centro {
+  width: 40%;
+}
+
+.stories-tap-zona--der {
+  width: 30%;
+}
+
+/* Overlay de Play gigante cuando está en pausa */
+.stories-play-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.stories-play-circle {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 65%);
+  border: 2.5px solid rgb(255 255 255 / 90%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 25px rgb(0 0 0 / 40%);
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.stories-play-overlay:hover .stories-play-circle {
+  transform: scale(1.1);
+  background: var(--lago);
+  border-color: #ffffff;
+}
+
+/* ── Historias destacadas (Highlights por encima de la ventanita) ─────────────── */
+
+.stories-destacadas-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stories-destacadas-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 8px;
+}
+
+.stories-destacadas-titulo {
+  font-size: var(--t-nota);
+  font-weight: 700;
+  color: var(--lago-texto);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stories-destacadas-sub {
+  font-size: var(--t-pie);
+  font-weight: 600;
+  color: var(--tinta-3);
+}
+
+.stories-destacadas {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 4px;
+  scrollbar-width: thin;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .stories-destacadas {
+    justify-content: space-between;
+  }
+}
+
+.stories-destacada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  min-width: 72px;
+  max-width: 96px;
+  text-align: center;
+  color: var(--tinta-2);
+  transition: transform 0.15s ease;
+}
+
+.stories-destacada:hover {
+  transform: translateY(-2px);
+}
+
+.stories-destacada__aro {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: var(--linea);
+  display: grid;
+  place-items: center;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.stories-destacada--activo .stories-destacada__aro {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  box-shadow: 0 0 12px rgb(220 39 67 / 40%);
+}
+
+.stories-destacada__circulo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--superficie);
+  border: 2px solid var(--superficie);
+  display: grid;
+  place-items: center;
+  color: var(--tinta-2);
+  transition: color 0.15s ease;
+}
+
+.stories-destacada--activo .stories-destacada__circulo {
+  color: var(--lago-texto);
+}
+
+.stories-destacada__numero {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--tinta-3);
+  text-transform: uppercase;
+}
+
+.stories-destacada--activo .stories-destacada__numero {
+  color: var(--lago-texto);
+}
+
+.stories-destacada__etiqueta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stories-destacada--activo .stories-destacada__etiqueta {
+  color: var(--lago-texto);
+  font-weight: 700;
+}
+
+.acerca-acordeones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.acerca-acordeon {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-tarjeta);
+  overflow: hidden;
+  transition: border-color var(--movimiento);
+}
+
+.acerca-acordeon summary {
+  padding: 16px 20px;
+  font-size: var(--t-cuerpo);
+  font-weight: 700;
+  color: var(--tinta);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: color var(--movimiento);
+}
+
+.acerca-acordeon summary:hover {
+  color: var(--lago-texto);
+}
+
+.acerca-acordeon summary .icono {
+  color: var(--tinta-3);
+  transition: transform var(--movimiento);
+}
+
+.acerca-acordeon[open] summary .icono {
+  transform: rotate(180deg);
+}
+
+.acerca-acordeon[open] summary {
+  border-bottom: 1px solid var(--linea);
+}
+
+.acerca-acordeon__contenido {
+  padding: 18px 20px;
+  font-size: var(--t-nota);
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.acerca-acordeon__contenido p {
+  margin: 0 0 12px;
+}
+
+.acerca-acordeon__contenido p:last-child {
+  margin-bottom: 0;
+}
+
+.acerca-acordeon__contenido ul {
+  margin: 0 0 12px;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.acerca-acordeon__contenido li {
+  display: list-item;
+  margin-bottom: 8px;
+}
+
+.acerca-acordeon__contenido li:last-child {
+  margin-bottom: 0;
+}
+
+.acerca-pie-seccion {
+  text-align: center;
+  max-width: 62ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.acerca-pie-seccion h2 {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.acerca-pie-seccion p {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.acerca-cta {
+  margin-top: 16px;
+}
+
+/* ── Página de Inicio: Portada, Fiestas y Blog Viajero (Estilo ¿Y tú qué planes?) ── */
+
+.pagina-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+/* ── Banner de Acceso Rápido al Planificador ──────────────────────────────── */
+
+.inicio-cta-planear {
+  max-width: 1200px;
+  width: 100%;
+  margin: -24px auto 32px;
+  padding: 0 var(--margen);
+  position: relative;
+  z-index: 10;
+}
+
+.inicio-cta-planear__caja {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: var(--sombra-flota);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@media (min-width: 860px) {
+  .inicio-cta-planear__caja {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(36px, 5vw, 64px);
+    padding: 30px 44px;
+  }
+}
+
+.inicio-cta-planear__texto {
+  flex: 0 1 580px;
+}
+
+.inicio-cta-planear__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lago-texto);
+  margin-bottom: 6px;
+}
+
+.inicio-cta-planear__titulo {
+  margin: 0 0 6px;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.inicio-cta-planear__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  max-width: 65ch;
+}
+
+.inicio-cta-planear__acciones {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .inicio-cta-planear__acciones {
+    width: auto;
+    min-width: 220px;
+  }
+}
+
+.inicio-cta-planear__acciones .boton {
+  width: 100%;
+  justify-content: center;
+}
+
+.inicio-cta-planear__llamado {
+  margin: 2px 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tinta-2);
+  text-align: center;
+}
+
+/* ── Secciones genéricas de la página de inicio ────────────────────────────── */
+
+.inicio-seccion {
+  padding: 48px var(--margen) 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+}
+
+.inicio-seccion__cabeza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 720px;
+  gap: 8px;
+}
+
+.inicio-seccion__icono-adorno {
+  color: var(--lago-texto);
+  margin-bottom: 4px;
+}
+
+.inicio-seccion__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.6rem, 4vw, 2.35rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.inicio-seccion__bajada {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.inicio-seccion__pie-boton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ── Sección de Fiestas y Eventos del Mes ─────────────────────────────────── */
+
+.inicio-fiestas {
+  background: color-mix(in srgb, var(--superficie-2) 65%, transparent);
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+}
+
+.festividades-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 600px) {
+  .festividades-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1020px) {
+  .festividades-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.festividad-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.festividad-tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.festividad-tarjeta__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000000;
+}
+
+.festividad-tarjeta__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.festividad-tarjeta:hover .festividad-tarjeta__img {
+  transform: scale(1.05);
+}
+
+.festividad-tarjeta__badge-fecha {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffc42e;
+  color: #14212b;
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+}
+
+.festividad-tarjeta__badge-dias {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.festividad-tarjeta__badge-meses {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.festividad-tarjeta__badge-cat {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+}
+
+.festividad-tarjeta__cuerpo {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.festividad-tarjeta__titulo {
+  margin: 0 0 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.festividad-tarjeta__extracto {
+  margin: 0 0 14px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.festividad-tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--linea);
+  margin-top: auto;
+}
+
+.festividad-tarjeta__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.festividad-tarjeta__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: color var(--movimiento);
+}
+
+.festividad-tarjeta__enlace:hover {
+  color: var(--lago-texto);
+}
+
+.festividad-tarjeta__boton-ver {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ── Hoja de detalle de festividad ────────────────────────────────────────── */
+
+.hoja-festividad {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hoja-festividad__portada {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.hoja-festividad__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hoja-festividad__badge-fecha {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffc42e;
+  color: #14212b;
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+}
+
+.hoja-festividad__badge-dias {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hoja-festividad__badge-meses {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hoja-festividad__badge-cat {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+}
+
+.hoja-festividad__metas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hoja-festividad__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+}
+
+.hoja-festividad__extracto {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--tinta);
+  padding: 10px 14px;
+  background: var(--superficie-2);
+  border-left: 3px solid #ffc42e;
+  border-radius: 4px 8px 8px 4px;
+}
+
+.hoja-festividad__descripcion {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--tinta);
+}
+
+.hoja-festividad__seccion {
+  background: var(--superficie-2);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.hoja-festividad__subtitulo {
+  margin: 0 0 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.hoja-festividad__lista {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hoja-festividad__lista li {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+
+.hoja-festividad__nota-fuente {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--tinta-3);
+  margin-top: 4px;
+}
+
+.hoja-festividad__pie-acciones {
+  width: 100%;
+}
+
+/* ── Botones estilizados estilo ¿Y tú qué planes? ─────────────────────────── */
+
+.boton--amarillo-ytqp {
+  background: #ffc42e;
+  color: #14212b;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(255 196 46 / 40%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton--amarillo-ytqp:hover {
+  background: #f5b91b;
+  color: #14212b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(255 196 46 / 50%);
+}
+
+.boton--vino-ytqp {
+  background: var(--lago);
+  color: #ffffff;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(158 10 34 / 35%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton--vino-ytqp:hover {
+  background: var(--lago-hundido);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(158 10 34 / 50%);
+}
+
+/* ── Sección de Blog Viajero en Inicio (Layout 2 columnas) ─────────────────── */
+
+.inicio-blog {
+  background: var(--fondo);
+}
+
+.inicio-blog__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 900px) {
+  .inicio-blog__layout {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+}
+
+.inicio-blog__destacado {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.inicio-blog__destacado:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.inicio-blog__destacado-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000000;
+}
+
+.inicio-blog__destacado-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.inicio-blog__destacado:hover .inicio-blog__destacado-img {
+  transform: scale(1.05);
+}
+
+.inicio-blog__cat-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgb(255 255 255 / 92%);
+  color: #141b21;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 4px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+}
+
+.inicio-blog__destacado-cuerpo {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.inicio-blog__destacado-titulo {
+  margin: 0 0 10px;
+  font-family: var(--fuente-titular);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+
+.inicio-blog__destacado-extracto {
+  margin: 0 0 16px;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.inicio-blog__destacado-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+
+.inicio-blog__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.inicio-blog__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: color var(--movimiento);
+}
+
+.inicio-blog__enlace:hover {
+  color: var(--lago-texto);
+}
+
+.inicio-blog__secundarios {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.inicio-blog__fila-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+  flex: 1;
+}
+
+@media (min-width: 600px) {
+  .inicio-blog__fila-tarjeta {
+    grid-template-columns: 160px 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inicio-blog__fila-tarjeta {
+    grid-template-columns: 180px 1fr;
+  }
+}
+
+.inicio-blog__fila-tarjeta:hover {
+  transform: translateX(4px);
+  box-shadow: var(--sombra-flota);
+}
+
+.inicio-blog__fila-media {
+  position: relative;
+  height: 100%;
+  min-height: 120px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.inicio-blog__fila-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.inicio-blog__fila-tarjeta:hover .inicio-blog__fila-img {
+  transform: scale(1.08);
+}
+
+.inicio-blog__fila-cuerpo {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inicio-blog__fila-cat {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--lago-texto);
+}
+
+.inicio-blog__fila-titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.inicio-blog__fila-extracto {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.inicio-blog__fila-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--linea);
+}
+
+/* ── Pantalla Completa: Blog Viajero (PaginaBlog.tsx) ─────────────────────── */
+
+.pagina-blog {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.blog-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0 8px;
+  gap: 8px;
+}
+
+.blog-hero__icono {
+  color: var(--lago-texto);
+  margin-bottom: 4px;
+}
+
+.blog-hero__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 800;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.blog-hero__bajada {
+  margin: 0;
+  font-size: var(--t-cuerpo);
+  color: var(--tinta-2);
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
+/* Sección: Lo más reciente */
+.blog-seccion--reciente {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-seccion__cabeza-simple {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 8px;
+}
+
+.blog-seccion__titulo-simple {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.blog-recientes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .blog-recientes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .blog-recientes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.blog-reciente-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+.blog-reciente-tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-flota);
+}
+
+.blog-reciente-tarjeta__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000000;
+}
+
+.blog-reciente-tarjeta__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.blog-reciente-tarjeta:hover .blog-reciente-tarjeta__img {
+  transform: scale(1.06);
+}
+
+.blog-reciente-tarjeta__cuerpo {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.blog-reciente-tarjeta__titulo {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-reciente-tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--linea);
+}
+
+.blog-reciente-tarjeta__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.blog-reciente-tarjeta__enlace {
+  color: var(--tinta-2);
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--movimiento);
+}
+
+.blog-reciente-tarjeta__enlace:hover {
+  color: var(--lago-texto);
+}
+
+/* Filtros por Categoría y Buscador */
+.blog-filtros-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+@media (min-width: 860px) {
+  .blog-filtros-seccion {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.blog-filtros {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.blog-filtro-pill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--tinta-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--movimiento),
+    color var(--movimiento),
+    border-color var(--movimiento);
+}
+
+.blog-filtro-pill:hover {
+  border-color: var(--borde);
+  color: var(--tinta);
+}
+
+.blog-filtro-pill--activo {
+  background: var(--lago);
+  color: #ffffff;
+  border-color: var(--lago);
+  font-weight: 700;
+}
+
+.blog-filtro-pill--activo:hover {
+  background: var(--lago-hundido);
+  color: #ffffff;
+}
+
+.blog-buscador {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.blog-buscador .icono {
+  position: absolute;
+  left: 12px;
+  color: var(--tinta-3);
+  pointer-events: none;
+}
+
+.blog-buscador__input {
+  width: 100%;
+  padding: 8px 32px 8px 36px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--tinta);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color var(--movimiento);
+}
+
+.blog-buscador__input:focus {
+  border-color: var(--lago);
+}
+
+.blog-buscador__limpiar {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--tinta-3);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* Feed vertical de artículos */
+.blog-feed__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.blog-feed__vacio {
+  text-align: center;
+  padding: 48px 16px;
+  background: var(--superficie-2);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.blog-feed-item {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  box-shadow: var(--sombra-baja);
+  transition:
+    transform var(--movimiento),
+    box-shadow var(--movimiento);
+}
+
+@media (min-width: 680px) {
+  .blog-feed-item {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.blog-feed-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-flota);
+}
+
+.blog-feed-item__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000000;
+}
+
+@media (min-width: 680px) {
+  .blog-feed-item__media {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+}
+
+.blog-feed-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.blog-feed-item:hover .blog-feed-item__img {
+  transform: scale(1.05);
+}
+
+.blog-feed-item__cuerpo {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.blog-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--superficie-2);
+  color: var(--lago-texto);
+  border: 1px solid var(--linea);
+}
+
+.blog-tag--destacado {
+  background: var(--lago);
+  color: #ffffff;
+  border: 0;
+}
+
+.blog-feed-item__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+
+.blog-feed-item__titulo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-feed-item__titulo a:hover {
+  color: var(--lago-texto);
+}
+
+.blog-feed-item__extracto {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+.blog-feed-item__pie {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+
+.blog-feed-item__lugar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lago-texto);
+}
+
+.blog-feed-item__fecha {
+  font-size: 0.8125rem;
+  color: var(--tinta-3);
+  margin-right: auto;
+}
+
+.blog-feed-item__leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.blog-feed-item__leer-mas:hover {
+  color: var(--lago-texto);
+}
+
+/* ── Vista de Lectura Completa de Artículo ────────────────────────────────── */
+
+.blog-articulo-vista {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px var(--margen) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.blog-articulo-vista__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.blog-articulo-vista__volver {
+  align-self: flex-start;
+}
+
+.blog-articulo-vista__metas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-vista__titulo {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--tinta);
+  letter-spacing: -0.02em;
+}
+
+.blog-articulo-vista__extracto {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-vista__portada {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.blog-articulo-vista__img {
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-articulo-vista__pie-foto {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: var(--tinta-3);
+  background: var(--superficie-2);
+}
+
+.blog-articulo-vista__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.blog-articulo-vista__parrafos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-articulo-vista__parrafos p {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--tinta);
+}
+
+.blog-articulo-vista__seccion-bloque {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  padding: 22px 24px;
+}
+
+.blog-articulo-vista__seccion-bloque h2 {
+  margin: 0 0 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.blog-lista-puntos {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: disc;
+}
+
+.blog-lista-puntos li {
+  font-size: var(--t-nota);
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.blog-articulo-cta {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--lago) 12%, var(--superficie)) 0%,
+    var(--superficie) 100%
+  );
+  border: 1.5px solid var(--lago);
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .blog-articulo-cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.blog-articulo-cta__texto h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.blog-articulo-cta__texto p {
+  margin: 0;
+  font-size: var(--t-nota);
+  color: var(--tinta-2);
+  line-height: 1.5;
+  max-width: 48ch;
+}

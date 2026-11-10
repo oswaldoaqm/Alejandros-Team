@@ -1,0 +1,19 @@
+﻿Destino,Día,Llegada estimada,Lugar,ID MINCETUR,Ficha MINCETUR,Cobro en catálogo,Tarifa en catálogo (S/),Traslado estimado (min),Visita estimada (min),Horario confirmado,Tarifa confirmada (S/),Fecha de verificación,Fuente consultada,Observaciones
+Huacho,1,10:02,Club Casino Huacho,3375,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375,libre,0.0,8,20,,,,,
+Huacho,1,10:30,Plaza de Armas de Huacho,3379,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379,libre,0.0,8,20,,,,,
+Huacho,1,11:03,Iglesia de Santa María,3456,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3456,libre,0.0,13,20,,,,,
+Huacho,1,12:19,Ciudad Sagrada de Caral,1237,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237,pagado,11.0,56,90,,,,,
+Huacho,2,09:00,Casona Pittaluga,3373,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3373,desconocido,,8,20,,,,,
+Huacho,2,09:28,Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión,3439,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3439,libre,0.0,8,85,,,,,
+Huacho,2,11:04,Iglesia San Pedro Apóstol,3499,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3499,desconocido,,11,20,,,,,
+Huacho,2,11:36,Museo Municipal de Hualmay,11211,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211,desconocido,,12,30,,,,,Pendiente de confirmar
+Huacho,2,12:29,Sitio Arqueológico de Vichama,3486,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486,pagado,11.0,23,60,,,,,
+Huacho,2,13:47,Balcón y Museo Histórico de Huaura,14521,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14521,pagado,5.0,18,75,,,,,
+Huacho,3,09:00,Iglesia de Vilca-Huaura,11830,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11830,desconocido,,30,20,,,,,
+Huacho,3,10:05,Zona Arqueológica Monumental de Peñico,11873,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11873,desconocido,,45,45,,,,,Pendiente de confirmar
+Huacho,3,11:23,Sitio Arqueológico Miraya,4545,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4545,desconocido,,33,60,,,,,
+Huacho,3,13:12,Mirador Cristo Redentor de Barranca,14024,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14024,libre,0.0,49,20,,,,,
+Huacho,3,14:04,Fortaleza de Paramonga,1298,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298,pagado,5.0,32,60,,,,,
+Huacho,4,18:00,Iglesia de la Santísima Virgen del Carmen de Huaura,11831,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11831,desconocido,,14,20,,,,,
+Huacho,4,18:34,Taller Artesanal Chankay Namú,13931,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13931,desconocido,,14,45,,,,,
+Huacho,4,19:30,Balneario Ecoturístico La Costanera,11310,https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11310,libre,0.0,11,180,,,,,

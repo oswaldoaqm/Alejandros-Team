@@ -1,0 +1,79 @@
+$ npm run e2e    # en app
+
+
+> dreemgo-app@0.1.0 e2e
+> playwright test
+
+[2m[WebServer] [22mINFO:     Started server process [12051]
+[2m[WebServer] [22mINFO:     Waiting for application startup.
+[2m[WebServer] [22mINFO:     Application startup complete.
+[2m[WebServer] [22mINFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+Running 60 tests using 1 worker
+
+  ✓   1 [celular] › e2e/humo.spec.ts:38:1 › de la consulta al viaje, con su mapa, sus días y la ficha de cada lugar (5.0s)
+  ✓   2 [celular] › e2e/humo.spec.ts:79:1 › el enlace es el viaje: quien lo abre ve el mismo (3.9s)
+  ✓   3 [celular] › e2e/humo.spec.ts:94:1 › desde Lima con seis días al Cusco se vuela, y con «Solo por tierra» no vuela ninguno (2.6s)
+  ✓   4 [celular] › e2e/humo.spec.ts:110:1 › «A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y con eso sale (2.2s)
+  ✓   5 [celular] › e2e/humo.spec.ts:144:1 › a Huaraz en bus de noche: los tres días son allá, cada uno con su almuerzo, y el primero, tranquilo (6.3s)
+  ✓   6 [celular] › e2e/humo.spec.ts:185:1 › guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él (3.1s)
+  ✓   7 [celular] › e2e/humo.spec.ts:206:1 › con «Vida nocturna», cada noche en la zona trae dónde salir, y la primera en la altura, descanso (5.5s)
+  ✓   8 [celular] › e2e/humo.spec.ts:232:1 › una noche de estrellas, con fecha: la luna de esa noche y el cielo de la zona mes a mes (2.1s)
+  ✓   9 [celular] › e2e/humo.spec.ts:254:1 › la zona de un viaje y el calendario cargan del API (3.0s)
+[2m[WebServer] [22mINFO:     dreemgo.api: Evento p-88969daef285 publicado; sale en los polos [14].
+  ✓  10 [celular] › e2e/humo.spec.ts:271:1 › un municipio publica un evento, con su lugar, y sale en el calendario (1.9s)
+  ✓  11 [celular] › e2e/humo.spec.ts:329:1 › sin la clave correcta no se publica, y lo dice en la casilla de la clave (1.4s)
+  ✓  12 [celular] › e2e/humo.spec.ts:386:3 › el formulario: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.3s)
+  ✓  13 [celular] › e2e/humo.spec.ts:386:3 › los resultados: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.3s)
+  ✓  14 [celular] › e2e/humo.spec.ts:386:3 › un viaje: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (3.7s)
+  ✓  15 [celular] › e2e/humo.spec.ts:386:3 › un viaje a una zona que no cabe: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.6s)
+  ✓  16 [celular] › e2e/humo.spec.ts:386:3 › la zona de un viaje: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.0s)
+  ✓  17 [celular] › e2e/humo.spec.ts:386:3 › el calendario: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.0s)
+  ✓  18 [celular] › e2e/humo.spec.ts:386:3 › cómo funciona: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.2s)
+  ✓  19 [celular] › e2e/humo.spec.ts:386:3 › guardados: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.4s)
+  ✓  20 [celular] › e2e/humo.spec.ts:386:3 › publicar un evento: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.0s)
+  ✓  21 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › el formulario, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.5s)
+  ✓  22 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › los resultados, en oscuro: sin fallas de accesibilidad que una máquina detecte (2.2s)
+  ✓  23 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › un viaje, en oscuro: sin fallas de accesibilidad que una máquina detecte (3.6s)
+  ✓  24 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › un viaje a una zona que no cabe, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.6s)
+  ✓  25 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › la zona de un viaje, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.9s)
+  ✓  26 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › el calendario, en oscuro: sin fallas de accesibilidad que una máquina detecte (2.1s)
+  ✓  27 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › cómo funciona, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.2s)
+  ✓  28 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › guardados, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.3s)
+  ✓  29 [celular] › e2e/humo.spec.ts:397:5 › en tema oscuro › publicar un evento, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.9s)
+  ✓  30 [celular] › e2e/humo.spec.ts:404:1 › cada tipo de noche: sin fallas de accesibilidad que una máquina detecte (7.5s)
+  ✓  31 [escritorio] › e2e/humo.spec.ts:38:1 › de la consulta al viaje, con su mapa, sus días y la ficha de cada lugar (5.0s)
+  ✓  32 [escritorio] › e2e/humo.spec.ts:79:1 › el enlace es el viaje: quien lo abre ve el mismo (3.6s)
+  ✓  33 [escritorio] › e2e/humo.spec.ts:94:1 › desde Lima con seis días al Cusco se vuela, y con «Solo por tierra» no vuela ninguno (3.5s)
+  ✓  34 [escritorio] › e2e/humo.spec.ts:110:1 › «A dónde»: si el viaje a la zona elegida no cabe, dice qué cambiar, y con eso sale (2.2s)
+  ✓  35 [escritorio] › e2e/humo.spec.ts:144:1 › a Huaraz en bus de noche: los tres días son allá, cada uno con su almuerzo, y el primero, tranquilo (5.3s)
+  ✓  36 [escritorio] › e2e/humo.spec.ts:185:1 › guardar un viaje lo deja en «Guardados» de este navegador, y de ahí se vuelve a él (2.6s)
+  ✓  37 [escritorio] › e2e/humo.spec.ts:206:1 › con «Vida nocturna», cada noche en la zona trae dónde salir, y la primera en la altura, descanso (2.8s)
+  ✓  38 [escritorio] › e2e/humo.spec.ts:232:1 › una noche de estrellas, con fecha: la luna de esa noche y el cielo de la zona mes a mes (1.7s)
+  ✓  39 [escritorio] › e2e/humo.spec.ts:254:1 › la zona de un viaje y el calendario cargan del API (2.6s)
+[2m[WebServer] [22mINFO:     dreemgo.api: Evento p-2c3df03d2322 publicado; sale en los polos [14].
+  ✓  40 [escritorio] › e2e/humo.spec.ts:271:1 › un municipio publica un evento, con su lugar, y sale en el calendario (1.7s)
+  ✓  41 [escritorio] › e2e/humo.spec.ts:329:1 › sin la clave correcta no se publica, y lo dice en la casilla de la clave (1.7s)
+  ✓  42 [escritorio] › e2e/humo.spec.ts:386:3 › el formulario: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.4s)
+  ✓  43 [escritorio] › e2e/humo.spec.ts:386:3 › los resultados: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.2s)
+  ✓  44 [escritorio] › e2e/humo.spec.ts:386:3 › un viaje: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (3.2s)
+  ✓  45 [escritorio] › e2e/humo.spec.ts:386:3 › un viaje a una zona que no cabe: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.7s)
+  ✓  46 [escritorio] › e2e/humo.spec.ts:386:3 › la zona de un viaje: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.1s)
+  ✓  47 [escritorio] › e2e/humo.spec.ts:386:3 › el calendario: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (2.2s)
+  ✓  48 [escritorio] › e2e/humo.spec.ts:386:3 › cómo funciona: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.4s)
+  ✓  49 [escritorio] › e2e/humo.spec.ts:386:3 › guardados: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.2s)
+  ✓  50 [escritorio] › e2e/humo.spec.ts:386:3 › publicar un evento: sin desborde a lo ancho ni fallas de accesibilidad que una máquina detecte (1.9s)
+  ✓  51 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › el formulario, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.6s)
+  ✓  52 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › los resultados, en oscuro: sin fallas de accesibilidad que una máquina detecte (2.3s)
+  ✓  53 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › un viaje, en oscuro: sin fallas de accesibilidad que una máquina detecte (3.6s)
+  ✓  54 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › un viaje a una zona que no cabe, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.5s)
+  ✓  55 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › la zona de un viaje, en oscuro: sin fallas de accesibilidad que una máquina detecte (2.2s)
+  ✓  56 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › el calendario, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.9s)
+  ✓  57 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › cómo funciona, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.3s)
+  ✓  58 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › guardados, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.3s)
+  ✓  59 [escritorio] › e2e/humo.spec.ts:397:5 › en tema oscuro › publicar un evento, en oscuro: sin fallas de accesibilidad que una máquina detecte (1.9s)
+  ✓  60 [escritorio] › e2e/humo.spec.ts:404:1 › cada tipo de noche: sin fallas de accesibilidad que una máquina detecte (5.8s)
+
+  60 passed (2.8m)
+
+[código de salida: 0]

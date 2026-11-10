@@ -1,0 +1,63 @@
+{
+  "bases": 194,
+  "completadas": 13,
+  "diferencia_m": {
+    "osm": {
+      "bases": 170,
+      "mas_de_100": 0,
+      "mas_de_300": 0,
+      "max": 26.0,
+      "mediana": 1.0,
+      "p90": 4.0
+    },
+    "recursos_a_2_km": {
+      "bases": 11,
+      "mas_de_100": 1,
+      "mas_de_300": 0,
+      "max": 137.0,
+      "mediana": 28.0,
+      "p90": 92.0
+    }
+  },
+  "fuente": "Terrain Tiles (registro de datos abiertos de AWS), formato skadi: SRTM a un segundo de arco",
+  "las_que_mas_difieren": [
+    {
+      "altitud_dem_m": 2993,
+      "altitud_m": 2856,
+      "base": "Picoy",
+      "fuente": "recursos_a_2_km",
+      "polo": 5
+    },
+    {
+      "altitud_dem_m": 3616,
+      "altitud_m": 3524,
+      "base": "San Miguel de Coroise",
+      "fuente": "recursos_a_2_km",
+      "polo": 26
+    },
+    {
+      "altitud_dem_m": 3774,
+      "altitud_m": 3865,
+      "base": "Tinki",
+      "fuente": "recursos_a_2_km",
+      "polo": 137
+    },
+    {
+      "altitud_dem_m": 3739,
+      "altitud_m": 3676,
+      "base": "Imperial",
+      "fuente": "recursos_a_2_km",
+      "polo": 226
+    },
+    {
+      "altitud_dem_m": 3169,
+      "altitud_m": 3200,
+      "base": "Sausacocha",
+      "fuente": "recursos_a_2_km",
+      "polo": 193
+    }
+  ],
+  "radio_puntos": 2,
+  "reemplazadas": 11,
+  "sin_altura": 0
+}

@@ -16,7 +16,7 @@ altitud   RF-01 dice «ningún destino recomendado supera la altitud máxima
           se descarta porque una de sus paradas esté alta, se descarta la
           parada. Si al filtrar quedan menos de MIN_PARADAS, entonces sí cae
           el polo entero.
-mes       veredicto de TA-02. `desaconsejado` saca el polo del ranking;
+mes       veredicto de TA-05. `desaconsejado` saca el polo del ranking;
           `advertencia` lo deja pero la salida lo declara. RF-01 exige que
           nada aparezca sin advertencia explícita Y con una alternativa
           viable: la alternativa son los mejores meses del propio polo.

@@ -1,0 +1,96 @@
+{
+  "version_datos": "2026.10.8",
+  "montos": [
+    500,
+    800,
+    1200,
+    2000
+  ],
+  "por_grupo": {
+    "con_presupuesto": {
+      "consultas": 8,
+      "viajes_hoy": 24,
+      "hoy_pasan_en_p50": 6,
+      "hoy_pasan_en_p80": 8,
+      "hoy_solo_en_p80": 2,
+      "filtro_p50": {
+        "cambian": 2,
+        "menos_viajes": 2,
+        "ninguno": 2
+      },
+      "filtro_p80": {
+        "cambian": 3,
+        "menos_viajes": 2,
+        "ninguno": 2
+      }
+    },
+    "monto_500": {
+      "consultas": 40,
+      "viajes_hoy": 120,
+      "hoy_pasan_en_p50": 95,
+      "hoy_pasan_en_p80": 105,
+      "hoy_solo_en_p80": 10,
+      "filtro_p50": {
+        "cambian": 35,
+        "menos_viajes": 31,
+        "ninguno": 27
+      },
+      "filtro_p80": {
+        "cambian": 37,
+        "menos_viajes": 34,
+        "ninguno": 34
+      }
+    },
+    "monto_800": {
+      "consultas": 40,
+      "viajes_hoy": 120,
+      "hoy_pasan_en_p50": 51,
+      "hoy_pasan_en_p80": 72,
+      "hoy_solo_en_p80": 21,
+      "filtro_p50": {
+        "cambian": 22,
+        "menos_viajes": 15,
+        "ninguno": 13
+      },
+      "filtro_p80": {
+        "cambian": 27,
+        "menos_viajes": 20,
+        "ninguno": 18
+      }
+    },
+    "monto_1200": {
+      "consultas": 40,
+      "viajes_hoy": 120,
+      "hoy_pasan_en_p50": 18,
+      "hoy_pasan_en_p80": 34,
+      "hoy_solo_en_p80": 16,
+      "filtro_p50": {
+        "cambian": 10,
+        "menos_viajes": 5,
+        "ninguno": 3
+      },
+      "filtro_p80": {
+        "cambian": 16,
+        "menos_viajes": 8,
+        "ninguno": 6
+      }
+    },
+    "monto_2000": {
+      "consultas": 40,
+      "viajes_hoy": 120,
+      "hoy_pasan_en_p50": 6,
+      "hoy_pasan_en_p80": 11,
+      "hoy_solo_en_p80": 5,
+      "filtro_p50": {
+        "cambian": 4,
+        "menos_viajes": 1,
+        "ninguno": 0
+      },
+      "filtro_p80": {
+        "cambian": 6,
+        "menos_viajes": 1,
+        "ninguno": 1
+      }
+    }
+  }
+}

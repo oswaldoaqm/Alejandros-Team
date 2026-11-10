@@ -4,6 +4,8 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, HDBSCAN
+from pathlib import Path
+DOCS = Path(__file__).resolve().parent.parent / "docs"
 warnings.filterwarnings("ignore")
 
 df = pd.read_csv(sys.argv[1], sep=None, engine="python")
@@ -78,5 +80,5 @@ fig.text(.007, .012, "4 915 recursos geolocalizables del Inventario Nacional de 
          "silueta de HDBSCAN calculada solo sobre los recursos que agrupa",
          fontsize=8.8, color=MUT)
 fig.tight_layout(rect=[0, .035, 1, .952])
-fig.savefig("ta01_seleccion_modelo.png", dpi=170, facecolor="white")
+fig.savefig(DOCS / "ta01_seleccion_modelo.png", dpi=170, facecolor="white")
 print("ok")

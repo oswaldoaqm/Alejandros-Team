@@ -1,0 +1,9 @@
+$ npm run revisar    # en app
+
+
+> dreemgo-app@0.1.0 revisar
+> biome check . && tsc --noEmit && tsc --noEmit -p tsconfig.herramientas.json
+
+Checked 108 files in 269ms. No fixes applied.
+
+[código de salida: 0]

@@ -1,0 +1,15 @@
+{
+  "bases": 194,
+  "bases_con_comida": 154,
+  "osm": {
+    "lugares": 16648,
+    "md5": "faea114a828e7a306a5010f985c1320b"
+  },
+  "overture": {
+    "lugares": 27005,
+    "version": "2026-09-23.1"
+  },
+  "radio_m": 1500,
+  "recursos": 6225,
+  "recursos_con_comida": 2954
+}
