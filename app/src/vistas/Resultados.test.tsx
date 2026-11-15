@@ -325,6 +325,9 @@ describe("un viaje abierto", () => {
     // La visita no sale de la ficha: es un tiempo típico por clase de lugar (pipeline/referencia/duracion_visita.csv).
     expect(plano(letraChica?.textContent)).toContain("la visita, con lo que suele tomar cada clase de lugar");
     expect(plano(letraChica?.textContent)).not.toContain("la visita, según la ficha");
+    // Desde los datos 2026.11.4, el tráfico de la hora en tres ciudades; las colas no tienen fuente (decisión 0031).
+    expect(plano(letraChica?.textContent)).toContain("el camino cuenta el tráfico de la hora");
+    expect(plano(letraChica?.textContent)).toContain("No cuenta colas ni esperas");
   });
 
   it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {

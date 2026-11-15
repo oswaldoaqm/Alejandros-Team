@@ -381,7 +381,9 @@ export function DetalleRuta({
           <p>
             Las horas son estimadas: el camino, por la red de vías de OpenStreetMap y, entre un lugar y otro
             del día, en auto o taxi; la visita, con lo que suele tomar cada clase de lugar, un supuesto
-            nuestro, y la caminata o el bote para llegar, con lo que dice su ficha.{" "}
+            nuestro, y la caminata o el bote para llegar, con lo que dice su ficha. En Lima, Arequipa y
+            Trujillo, el camino cuenta el tráfico de la hora. No cuenta colas ni esperas, como la del bus a
+            Machu Picchu: no hay una fuente que las mida.{" "}
             {excursion
               ? "En el mapa, cada día es un pétalo que abarca sus lugares: muestra qué se ve ese día, no el camino."
               : "En el mapa, cada día es un pétalo que sale de donde duermes y abarca sus lugares: muestra qué se ve ese día, no el camino."}
