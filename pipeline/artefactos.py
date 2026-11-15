@@ -7,10 +7,12 @@ que entran a la imagen del API:
   manifiesto.json     versión de los datos, de dónde sale cada cosa y la huella de cada archivo
   recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos, lo que
                       el motor necesita para programarlos, a cuántos metros hay dónde comer
-                      (pipeline/comida.py) y, si se visitan en lugar de otro que no tiene camino,
-                      la jerarquía de ese (pipeline/referencia/valor_por_acceso.csv)
+                      (pipeline/comida.py), si se visitan en lugar de otro que no tiene camino,
+                      la jerarquía de ese (pipeline/referencia/valor_por_acceso.csv), y si están
+                      en una zona con alerta oficial de viaje (pipeline/referencia/zonas_de_seguridad.csv)
   polos.json.gz       cada polo: base, con su altura (la de OpenStreetMap o, si no la tiene, la
-                      del modelo de elevación: pipeline/elevacion.py), novedad, clima mes a mes,
+                      del modelo de elevación: pipeline/elevacion.py) y su zona si es la capital
+                      de un distrito de esas zonas, novedad, clima mes a mes,
                       sus paradas y los tiempos entre ellas y desde la base; si algún camino va en
                       tren o en bote, cuántos de sus km van en cada uno; su noche: dónde salir
                       cerca de la base y su cielo para mirar las estrellas (pipeline/noche.py y
@@ -50,7 +52,7 @@ import pandas as pd
 from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
 from pipeline import elevacion
 from pipeline.bases import polo_de_cada_grupo
-from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA
+from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA, haversine_km
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
@@ -135,16 +137,52 @@ def vale_como() -> dict[str, str]:
     return dict(zip(tabla["codigo"], tabla["vale_como"], strict=True))
 
 
+ZONA_MISMO_PUNTO_KM = 0.1  # una base es la capital de un distrito si está a menos de esto de la de OpenStreetMap
+
+
+def zonas_de_seguridad() -> pd.DataFrame:
+    """Los distritos de las zonas con alerta oficial de viaje, con la capital de cada uno según OpenStreetMap
+    (``zonas_de_seguridad.csv``, decisión 0029): hoy, los 37 del VRAEM."""
+    return pd.read_csv(REFERENCIA / "zonas_de_seguridad.csv", sep=";", dtype=str, keep_default_na=False)
+
+
+def _distrito(region, provincia, distrito) -> tuple[str, str, str]:
+    return tuple(sin_tildes(str(x)).strip() for x in (region, provincia, distrito))
+
+
+def zona_por_distrito(zonas: pd.DataFrame) -> dict[tuple[str, str, str], str]:
+    """(región, provincia, distrito), en minúsculas y sin tildes → su zona; el distrito, también con los
+    otros nombres con que lo escriben las fichas."""
+    salida = {}
+    for f in zonas.itertuples():
+        for nombre in [f.distrito, *filter(None, f.otros_nombres.split("|"))]:
+            salida[_distrito(f.region, f.provincia, nombre)] = f.zona
+    return salida
+
+
+def zona_de_la_base(lat: float, lon: float, zonas: pd.DataFrame) -> str | None:
+    """La zona de una base que es la capital de uno de sus distritos, o None. La base y la capital son el
+    mismo lugar de OpenStreetMap: una base que no es capital no se reconoce, aunque esté en la zona."""
+    km = haversine_km(lat, lon, zonas["lat"].astype(float).to_numpy(), zonas["lon"].astype(float).to_numpy())
+    cerca = np.asarray(km) < ZONA_MISMO_PUNTO_KM
+    return str(zonas["zona"][cerca].iloc[0]) if cerca.any() else None
+
+
 def recursos(
-    maestro: pd.DataFrame, comida: pd.DataFrame | None = None, por_acceso: dict[str, str] | None = None
+    maestro: pd.DataFrame,
+    comida: pd.DataFrame | None = None,
+    por_acceso: dict[str, str] | None = None,
+    zonas: pd.DataFrame | None = None,
 ) -> list[dict]:
     """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
     lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
     menos de 1,5 km). ``vale_como_jerarquia`` es la jerarquía del recurso que se visita yendo a este,
     si lo hay (``por_acceso``, por defecto ``vale_como()``): el motor la usa para su valor, y la
-    jerarquía oficial no cambia."""
+    jerarquía oficial no cambia. ``zona`` es la de su distrito si tiene una alerta oficial de viaje
+    (``zonas``, por defecto ``zonas_de_seguridad()``), o null."""
     cerca = _comida(comida, "recurso")
     por_acceso = vale_como() if por_acceso is None else por_acceso
+    por_distrito = zona_por_distrito(zonas_de_seguridad() if zonas is None else zonas)
     jerarquia = {str(c): _entero(j) for c, j in zip(maestro["codigo"], maestro["jerarquia"], strict=True)}
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
@@ -159,6 +197,7 @@ def recursos(
                 "subtipo": _limpio(f["subtipo"]),
                 "jerarquia": _entero(f["jerarquia"]),
                 "vale_como_jerarquia": jerarquia.get(por_acceso.get(str(f["codigo"]), "")),
+                "zona": por_distrito.get(_distrito(f["region"], f["provincia"], f["distrito"])),
                 "lat": round(float(f["lat"]), 6),
                 "lon": round(float(f["lon"]), 6),
                 "altitud_m": _entero(f["altitud_m"]),
@@ -203,9 +242,13 @@ def polos(
     origenes: pd.DataFrame,
     noche: dict[int, dict] | None = None,
     comida: pd.DataFrame | None = None,
+    zonas: pd.DataFrame | None = None,
 ) -> list[dict]:
-    """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla."""
+    """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla. La base lleva
+    su ``zona`` si es la capital de un distrito con alerta oficial de viaje (``zonas``, por defecto
+    ``zonas_de_seguridad()``), o null."""
     comida_en_base = _comida(comida, "base")
+    zonas = zonas_de_seguridad() if zonas is None else zonas
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
@@ -292,6 +335,7 @@ def polos(
                     "lugar": b.lugar,
                     "hospedajes_osm": int(b.hospedajes_osm),
                     "criterio": b.criterio,
+                    "zona": zona_de_la_base(b.lat, b.lon, zonas),
                 }
                 | ({} if comida_en_base is None else {"comida_m": comida_en_base.get(str(int(b.polo)))}),
                 "paradas": [str(c) for c in codigos],

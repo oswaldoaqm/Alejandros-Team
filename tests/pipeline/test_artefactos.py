@@ -211,12 +211,62 @@ def test_un_recurso_que_se_visita_por_otro_lleva_la_jerarquia_de_ese():
             "abre": None,
             "cierra": None,
             "dias": None,
+            "region": "Puno",
+            "provincia": "Puno",
+            "distrito": "Puno",
         }
     )
     por_codigo = {r["codigo"]: r for r in artefactos.recursos(maestro, por_acceso={"960": "412"})}
     assert por_codigo["960"]["jerarquia"] is None and por_codigo["960"]["vale_como_jerarquia"] == 4
     assert por_codigo["412"]["vale_como_jerarquia"] is None and por_codigo["961"]["vale_como_jerarquia"] is None
     assert artefactos.vale_como() == {"960": "412"}
+
+
+def test_un_recurso_y_una_base_del_vraem_llevan_su_zona():
+    """El distrito decide, con el nombre que traiga la ficha; la base, si es la capital (decisión 0029)."""
+    maestro = pd.DataFrame(
+        {
+            "codigo": [1, 2, 3, 4],
+            "nombre": ["Playa de Kimbiri", "Catarata", "Plaza de Huanta", "Playa"],
+            "region": ["Cusco", "Cusco", "Ayacucho", "Lima"],
+            "provincia": ["La Convencion", "La Convención", "Huanta", "Lima"],
+            "distrito": ["Quimbiri", "Union Asháninka", "Huanta", "Santa Rosa"],
+            "polo": 1,
+            "es_parada": True,
+            "lat": -12.6,
+            "lon": -73.8,
+            "ingreso": "libre",
+            "boleto_combinado": False,
+            "intereses": "",
+            **dict.fromkeys(("categoria", "tipo", "subtipo", "jerarquia", "altitud_m", "url_ficha"), None),
+            **dict.fromkeys(("descripcion_corta", "foto_url", "tarifa_soles", "tarifa_regla"), None),
+            **dict.fromkeys(("visita_min", "caminata_min", "abre", "cierra", "dias"), None),
+        }
+    )
+    # Huanta está en el ámbito de influencia, no en el de intervención directa,
+    # y el Santa Rosa de Lima no es el de La Mar.
+    assert [r["zona"] for r in artefactos.recursos(maestro, por_acceso={})] == ["vraem", "vraem", None, None]
+    tabla = artefactos.zonas_de_seguridad()
+    assert artefactos.zona_de_la_base(-12.620387, -73.78851, tabla) == "vraem"  # Kimbiri, su capital
+    assert artefactos.zona_de_la_base(-12.807733, -73.603867, tabla) == "vraem"  # Chirumpiari, capital de Cielo Punco
+    assert artefactos.zona_de_la_base(-12.939888, -74.247953, tabla) is None  # Huanta
+    assert artefactos.zona_de_la_base(-12.62, -73.75, tabla) is None  # en el valle, pero no en una capital
+
+
+def test_las_zonas_de_seguridad_son_los_37_distritos_del_vraem_con_su_fuente():
+    tabla = artefactos.zonas_de_seguridad()
+    assert len(tabla) == 37 and set(tabla["zona"]) == {"vraem"}
+    assert not tabla.duplicated(["region", "provincia", "distrito"]).any()
+    assert tabla.groupby(["region", "provincia"]).size().to_dict() == {
+        ("Ayacucho", "Huanta"): 9,
+        ("Ayacucho", "La Mar"): 9,
+        ("Cusco", "La Convención"): 8,
+        ("Huancavelica", "Tayacaja"): 5,
+        ("Junín", "Huancayo"): 2,
+        ("Junín", "Satipo"): 4,
+    }
+    assert tabla["fuente"].str.contains("decreto-supremo-n-133-2022-pcm").all()
+    assert tabla["capital"].ne("").all() and not tabla.duplicated(["lat", "lon"]).any()
 
 
 def test_las_tablas_de_antes_de_juntar_no_cambian():
