@@ -310,7 +310,7 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "3 imperdibles: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo.",
+      "3 imperdibles: Complejo Arqueológico Chan Chan, Centro Histórico de Trujillo y Huacas del Sol y la Luna.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);

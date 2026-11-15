@@ -117,7 +117,7 @@ def test_cada_dia_con_visitas_almuerza_a_su_hora():
     for d in ruta.dias:
         if d.almuerzo is None:
             # Como dice el contrato: no almuerza el día que termina antes de la hora. Su última visita acaba
-            # antes de las 12:30 (con los datos 2026.11.1, el primer día, tranquilo, termina a las 12:21).
+            # antes de las 12:30 (con los datos 2026.11.2, el primer día, tranquilo, termina a las 12:21).
             ultima = d.paradas[-1]
             h, m = (int(x) for x in ultima.llegada.split(":"))
             assert h * H + m + ultima.minutos_visita < 12 * H + 30
