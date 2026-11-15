@@ -270,6 +270,7 @@ python -m pipeline.eventos     # data/procesados/eventos_v3.csv
 python -m pipeline.tiempos     # tiempos de viaje (carretera, tren y bote) y bases, unos 9 minutos
 python -m pipeline.vuelos      # el viaje en avión de cada origen a cada base, unos 3 minutos
 python -m pipeline.terminales  # el terminal de bus de cada punta y el taxi hasta él, unos 6 minutos
+python -m pipeline.hospedajes  # los hospedajes con nombre cerca de cada base, unos 3 minutos
 python pipeline/adquisicion/descargar_elevacion.py    # la altura del terreno alrededor de cada base, unos minutos
 python -m pipeline.elevacion   # la altura de cada base según el modelo de elevación
 python -m pipeline.clima       # clima por polo y mes
@@ -281,7 +282,7 @@ python pipeline/adquisicion/descargar_metar.py         # METAR de los aeropuerto
 python -m pipeline.noche       # dónde salir cerca de cada base
 python -m pipeline.cielo       # el cielo de cada base, unos 3 minutos
 python -m pipeline.comida      # dónde comer cerca de cada lugar y de cada base, unos 2 minutos
-python -m pipeline.artefactos --version 2026.11.4   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.11.5   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»

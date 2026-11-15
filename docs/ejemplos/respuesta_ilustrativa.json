@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.9",
-  "version_datos": "2026.11.4",
+  "version_contrato": "1.10",
+  "version_datos": "2026.11.5",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -32,9 +32,35 @@
           "altitud_m": 37
         },
         "recursos": 59,
-        "fuera_del_circuito": true
+        "fuera_del_circuito": true,
+        "hospedajes": [
+          {
+            "nombre": "Enkanta Guest house",
+            "tipo": "albergue",
+            "km": 0.15,
+            "lat": -8.112226,
+            "lon": -79.030015,
+            "osm": "node/7149566639"
+          },
+          {
+            "nombre": "Los Corregidores",
+            "tipo": "hotel",
+            "km": 0.17,
+            "lat": -8.110202,
+            "lon": -79.028245,
+            "osm": "node/4560993390"
+          },
+          {
+            "nombre": "Yaqta Hostel",
+            "tipo": "albergue",
+            "km": 0.2,
+            "lat": -8.110211,
+            "lon": -79.029795,
+            "osm": "node/13236244901"
+          }
+        ]
       },
-      "puntaje": 0.482,
+      "puntaje": 0.448,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo",
         "15 de sus 22 paradas son de historia y arqueología o naturaleza",
@@ -777,17 +803,17 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 744,
-        "p50": 859,
-        "p80": 973,
+        "p20": 783,
+        "p50": 906,
+        "p80": 1019,
         "desglose": {
-          "transporte": 267,
-          "alojamiento": 244,
-          "alimentacion": 232,
-          "entradas": 116
+          "transporte": 281,
+          "alojamiento": 257,
+          "alimentacion": 245,
+          "entradas": 123
         },
         "dentro_del_presupuesto": false,
-        "exceso": 159,
+        "exceso": 206,
         "supuestos": [
           "Bus de noche de ida y vuelta: 1 126 km, a la misma tarifa por km que de día",
           "Movilidad local en colectivo o taxi: 199 km",
@@ -801,7 +827,7 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 859) pasa tu presupuesto por S/ 159."
+          "mensaje": "El costo central (S/ 906) pasa tu presupuesto por S/ 206."
         },
         {
           "tipo": "acceso",
@@ -838,9 +864,35 @@
           "altitud_m": 35
         },
         "recursos": 68,
-        "fuera_del_circuito": false
+        "fuera_del_circuito": false,
+        "hospedajes": [
+          {
+            "nombre": "Garden Hotal",
+            "tipo": "albergue",
+            "km": 0.1,
+            "lat": -11.107816,
+            "lon": -77.609697,
+            "osm": "way/521594137"
+          },
+          {
+            "nombre": "Hotel Skorpio's",
+            "tipo": "hotel",
+            "km": 0.14,
+            "lat": -11.107766,
+            "lon": -77.609315,
+            "osm": "way/521594130"
+          },
+          {
+            "nombre": "Caral",
+            "tipo": "albergue",
+            "km": 0.14,
+            "lat": -11.107353,
+            "lon": -77.609863,
+            "osm": "way/521914200"
+          }
+        ]
       },
-      "puntaje": 0.481,
+      "puntaje": 0.422,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral, Fortaleza de Paramonga y Sitio Arqueológico de Vichama",
         "10 de sus 14 paradas son de historia y arqueología o naturaleza",
@@ -1357,17 +1409,17 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 652,
-        "p50": 771,
-        "p80": 885,
+        "p20": 701,
+        "p50": 828,
+        "p80": 944,
         "desglose": {
-          "transporte": 241,
-          "alojamiento": 250,
-          "alimentacion": 238,
-          "entradas": 42
+          "transporte": 258,
+          "alojamiento": 269,
+          "alimentacion": 256,
+          "entradas": 45
         },
         "dentro_del_presupuesto": false,
-        "exceso": 71,
+        "exceso": 128,
         "supuestos": [
           "Bus interprovincial de ida y vuelta: 298 km",
           "Movilidad local en colectivo o taxi: 278 km",
@@ -1412,7 +1464,7 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 771) pasa tu presupuesto por S/ 71."
+          "mensaje": "El costo central (S/ 828) pasa tu presupuesto por S/ 128."
         },
         {
           "tipo": "dias",
@@ -1444,9 +1496,35 @@
           "altitud_m": 1814
         },
         "recursos": 53,
-        "fuera_del_circuito": true
+        "fuera_del_circuito": true,
+        "hospedajes": [
+          {
+            "nombre": "Hospedaje Jimenez",
+            "tipo": "albergue",
+            "km": 0.08,
+            "lat": -10.574282,
+            "lon": -75.403726,
+            "osm": "node/4321956754"
+          },
+          {
+            "nombre": "hospedaje Oxapampa",
+            "tipo": "hotel",
+            "km": 0.11,
+            "lat": -10.57417,
+            "lon": -75.403473,
+            "osm": "node/4345347119"
+          },
+          {
+            "nombre": "Reyna",
+            "tipo": "albergue",
+            "km": 0.12,
+            "lat": -10.574102,
+            "lon": -75.403337,
+            "osm": "node/4367321990"
+          }
+        ]
       },
-      "puntaje": 0.452,
+      "puntaje": 0.422,
       "motivos": [
         "Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto, de jerarquía 3",
         "17 de sus 22 paradas son de historia y arqueología o naturaleza",
@@ -2250,17 +2328,17 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 664,
-        "p50": 780,
-        "p80": 891,
+        "p20": 708,
+        "p50": 830,
+        "p80": 943,
         "desglose": {
-          "transporte": 221,
-          "alojamiento": 247,
-          "alimentacion": 236,
-          "entradas": 76
+          "transporte": 235,
+          "alojamiento": 263,
+          "alimentacion": 251,
+          "entradas": 81
         },
         "dentro_del_presupuesto": false,
-        "exceso": 80,
+        "exceso": 130,
         "supuestos": [
           "Bus de noche de ida y vuelta: 770 km, a la misma tarifa por km que de día",
           "Movilidad local en colectivo o taxi: 179 km",
@@ -2305,7 +2383,7 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 780) pasa tu presupuesto por S/ 80."
+          "mensaje": "El costo central (S/ 830) pasa tu presupuesto por S/ 130."
         },
         {
           "tipo": "acceso",
