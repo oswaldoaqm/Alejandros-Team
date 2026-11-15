@@ -32,5 +32,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0026](./0026-ida-en-bus.md) | La ida a la base va en bus | Vigente |
 | [0027](./0027-tope-del-bus-de-noche.md) | El bus de noche se lleva como máximo el 30 % del viaje | Vigente |
 | [0028](./0028-horarios-y-visitas-corregidos.md) | El horario y la visita, corregidos con su fuente | Vigente |
+| [0029](./0029-avisos-de-seguridad-y-de-entradas.md) | Los avisos de seguridad y de entradas | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
