@@ -198,6 +198,8 @@ def candidatas(polo: PoloDatos, consulta: Consulta, datos: Datos, desde: np.ndar
         r = datos.recursos[codigo]
         if not np.isfinite(desde[i]) or minutos_de_visita(r) > VISITA_MAX_MIN:
             continue
+        if r.get("de_noche"):  # se ve de noche: va en la noche del viaje (noche.py), no en el día
+            continue
         if consulta.altitud_max is not None and (r["altitud_m"] is None or r["altitud_m"] > consulta.altitud_max):
             continue
         salida.append(_candidata(i, r, intereses))

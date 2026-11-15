@@ -85,7 +85,27 @@ def _la_noche(consulta: Consulta, ruta) -> None:
         assert d.noche.tipo != "estrellas" or pide_estrellas
         assert len(d.noche.lugares) <= 3 and all(lugar.minutos_a_pie <= 30 for lugar in d.noche.lugares)
         assert (d.noche.cielo is not None) == (d.noche.tipo == "estrellas")
+        assert bool(d.noche.funciones) == (d.noche.tipo == "espectaculo")
     assert sum(1 for d in noches if d.noche.tipo == "estrellas") <= 1
+    assert sum(1 for d in noches if d.noche.tipo == "espectaculo") <= 1
+
+
+def _de_noche(consulta: Consulta, ruta, datos) -> None:
+    """19. Un lugar que se ve de noche no es parada del día; con fecha, su noche cae en un día con función (desde
+    1.9, decisión 0030)."""
+    assert not any(datos.recursos[p.recurso.codigo].get("de_noche") for d in ruta.dias for p in d.paradas)
+    for d in ruta.dias:
+        if d.noche is not None and d.noche.tipo == "espectaculo":
+            event("alguna noche de espectáculo")
+            if d.fecha is not None:
+                [r] = [
+                    r
+                    for r in datos.recursos.values()
+                    if r.get("de_noche")
+                    and r["de_noche"]["funciones"] == d.noche.funciones
+                    and r["de_noche"]["nombre"] in d.noche.titulo
+                ]
+                assert not r["dias"] or DIAS[d.fecha.weekday()] in r["dias"]
 
 
 def _el_almuerzo(consulta: Consulta, ruta) -> None:
@@ -282,6 +302,7 @@ def test_las_propiedades(consulta):
         _a_su_hora(consulta, ruta)
         _la_zona(consulta, ruta, datos)
         _las_entradas(ruta, datos)
+        _de_noche(consulta, ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)
