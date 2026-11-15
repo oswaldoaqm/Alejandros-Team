@@ -35,5 +35,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0029](./0029-avisos-de-seguridad-y-de-entradas.md) | Los avisos de seguridad y de entradas | Vigente |
 | [0030](./0030-a-su-hora-y-desde-el-terminal.md) | Los vuelos con su frecuencia, el bus desde el terminal y el Circuito Mágico de noche | Vigente |
 | [0031](./0031-la-hora-del-dia.md) | La hora del día en las ciudades, y las colas | Vigente |
+| [0032](./0032-costo-del-bus-y-donde-dormir.md) | El techo del bus con tarifas de 2026, y dónde dormir | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.
