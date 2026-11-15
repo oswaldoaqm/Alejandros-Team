@@ -8,7 +8,8 @@ revisa que sean de este kit y escribe en data/evaluacion/resultados/:
   notas.csv      cada viaje con la nota de cada quien, su media y el puesto que le da cada sistema
   metricas.csv   por consulta y por sistema: nDCG@3, P@3, el rango recíproco y cuántos no encajan
   resumen.json   el acuerdo, la media de cada métrica por sistema, las comparaciones, la cobertura y la
-                 novedad, y lo mismo por interés
+                 novedad, lo mismo por interés, y la nota de los viajes según cuánto se lleva el bus de noche,
+                 como lo dice el cuadernillo que vio quien calificó (decisión 0027)
 
 Uso:  python -m evaluacion.informe
 """
@@ -18,6 +19,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,6 +31,9 @@ RAIZ = Path(__file__).resolve().parents[1]
 CARPETA = RAIZ / "data" / "evaluacion"
 NOTAS = ("0", "1", "2")
 COMPARACIONES = (("motor", "guia"), ("variante", "motor"))
+# La parte del viaje que se lleva el bus de noche, ida y vuelta, contra las horas de sus días: los tramos con que
+# se mira la nota (decisión 0027). El kit se armó con el tope de entonces, el 40 %.
+TRAMOS_DEL_BUS = ((0.0, 0.2, "menos_del_20"), (0.2, 0.3, "del_20_al_30"), (0.3, 0.4, "del_30_al_40"))
 
 
 @dataclass(frozen=True)
@@ -94,12 +99,25 @@ def leer_calificaciones(carpeta: Path, viajes: list[Viaje]) -> dict[str, dict[tu
     return salida
 
 
+def parte_en_bus(cuadernillo: str, dias: dict[int, int]) -> dict[tuple[int, str], float | None]:
+    """De cada tarjeta del cuadernillo, lo que vio quien calificó: la parte del viaje que se lleva el bus de noche,
+    ida y vuelta contra las horas de sus días, o None si el viaje no va en bus de noche."""
+    salida = {}
+    for consulta, letra, tarjeta in re.findall(
+        r"<article class='opcion' id='c(\d+)-([A-Z])'>(.*?)</article>", cuadernillo, re.S
+    ):
+        bus = re.search(r"En bus de noche: [^<]*?, (\d+) h(?: (\d+))? de puerta a puerta", tarjeta)
+        n = int(consulta)
+        salida[(n, letra)] = None if bus is None else 2 * (int(bus[1]) + int(bus[2] or 0) / 60) / (dias[n] * 24)
+    return salida
+
+
 def _media(valores: list[int | None]) -> float | None:
     hay = [v for v in valores if v is not None]
     return sum(hay) / len(hay) if hay else None
 
 
-def calcular(clave: Path, calificaciones: Path) -> tuple[list[dict], list[dict], dict]:
+def calcular(clave: Path, calificaciones: Path, cuadernillo: Path | None = None) -> tuple[list[dict], list[dict], dict]:
     viajes, sistemas = leer_clave(clave)
     quienes = leer_calificaciones(calificaciones, viajes)
     nombres = sorted(quienes)
@@ -185,6 +203,26 @@ def calcular(clave: Path, calificaciones: Path) -> tuple[list[dict], list[dict],
         i: {"consultas": len(next(iter(m.values()))), **{s: sum(xs) / len(xs) for s, xs in m.items()}}
         for i, m in sorted(grupos.items())
     }
+
+    # La nota según cuánto del viaje se lleva el bus de noche, con lo que dice el cuadernillo de cada viaje.
+    if cuadernillo is not None:
+        dias = {c.id: c.consulta.dias for c in consultas.leer()}
+        partes = parte_en_bus(cuadernillo.read_text(encoding="utf-8"), dias)
+        tramos: dict[str, list[float]] = defaultdict(list)
+        for k, m in media.items():
+            p = partes.get(k)
+            if m is None:
+                continue
+            nombre = "sin_bus_de_noche" if p is None else next((t for a, b, t in TRAMOS_DEL_BUS if a <= p < b), "mas")
+            tramos[nombre].append(m)
+        resumen["nota_por_parte_en_bus"] = {
+            t: {
+                "viajes": len(ms),
+                "media": sum(ms) / len(ms),
+                "no_encajan": sum(1 for x in ms if x < 0.5) / len(ms),
+            }
+            for t, ms in sorted(tramos.items())
+        }
     return notas, filas, resumen
 
 
@@ -200,8 +238,9 @@ def main() -> None:
     ap.add_argument("--clave", type=Path, default=CARPETA / "clave.csv")
     ap.add_argument("--calificaciones", type=Path, default=CARPETA / "calificaciones")
     ap.add_argument("--salida", type=Path, default=CARPETA / "resultados")
+    ap.add_argument("--cuadernillo", type=Path, default=CARPETA / "cuadernillo.html")
     a = ap.parse_args()
-    notas, filas, resumen = calcular(a.clave, a.calificaciones)
+    notas, filas, resumen = calcular(a.clave, a.calificaciones, a.cuadernillo)
     a.salida.mkdir(parents=True, exist_ok=True)
     _escribir(a.salida / "notas.csv", notas)
     _escribir(a.salida / "metricas.csv", filas)
