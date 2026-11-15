@@ -54,6 +54,7 @@ from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
 from pipeline import elevacion
 from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA, haversine_km
+from pipeline.terminales import sumar_terminales
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
@@ -190,12 +191,20 @@ def entradas_con_cupo() -> dict[str, dict]:
     }
 
 
+def de_noche() -> dict[str, dict]:
+    """Código → un lugar que se ve de noche (``de_noche.csv``, decisión 0030): cómo se lo nombra y las horas de sus
+    funciones. El motor no lo pone en el día, sino en la noche del viaje."""
+    tabla = pd.read_csv(REFERENCIA / "de_noche.csv", sep=";", dtype=str, keep_default_na=False)
+    return {f.codigo: {"nombre": f.nombre, "funciones": f.funciones.split("|")} for f in tabla.itertuples()}
+
+
 def recursos(
     maestro: pd.DataFrame,
     comida: pd.DataFrame | None = None,
     por_acceso: dict[str, str] | None = None,
     zonas: pd.DataFrame | None = None,
     cupos: dict[str, dict] | None = None,
+    de_noche_: dict[str, dict] | None = None,
 ) -> list[dict]:
     """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
     lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
@@ -203,11 +212,13 @@ def recursos(
     si lo hay (``por_acceso``, por defecto ``vale_como()``): el motor la usa para su valor, y la
     jerarquía oficial no cambia. ``zona`` es la de su distrito si tiene una alerta oficial de viaje
     (``zonas``, por defecto ``zonas_de_seguridad()``), o null; y ``cupo``, el de sus entradas si vende un
-    número fijo por día (``cupos``, por defecto ``entradas_con_cupo()``), o null."""
+    número fijo por día (``cupos``, por defecto ``entradas_con_cupo()``), o null; y ``de_noche``, su nombre y las
+    horas de sus funciones si se ve de noche (``de_noche_``, por defecto ``de_noche()``), o null."""
     cerca = _comida(comida, "recurso")
     por_acceso = vale_como() if por_acceso is None else por_acceso
     por_distrito = zona_por_distrito(zonas_de_seguridad() if zonas is None else zonas)
     cupos = entradas_con_cupo() if cupos is None else cupos
+    de_noche_ = de_noche() if de_noche_ is None else de_noche_
     jerarquia = {str(c): _entero(j) for c, j in zip(maestro["codigo"], maestro["jerarquia"], strict=True)}
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
@@ -224,6 +235,7 @@ def recursos(
                 "vale_como_jerarquia": jerarquia.get(por_acceso.get(str(f["codigo"]), "")),
                 "zona": por_distrito.get(_distrito(f["region"], f["provincia"], f["distrito"])),
                 "cupo": cupos.get(str(f["codigo"])),
+                "de_noche": de_noche_.get(str(f["codigo"])),
                 "lat": round(float(f["lat"]), 6),
                 "lon": round(float(f["lon"]), 6),
                 "altitud_m": _entero(f["altitud_m"]),
@@ -537,10 +549,21 @@ def costos_(vuelos_rutas: pd.DataFrame | None = None) -> dict:
 
 
 def aeropuertos_(vuelos_rutas: pd.DataFrame) -> dict:
-    """Cada aeropuerto con su ciudad y los minutos de su vuelo a Lima, para los textos del motor."""
+    """Cada aeropuerto con su ciudad, los minutos de su vuelo a Lima y cuántos vuelos hay al mes, para el
+    motor. Lima, y un aeropuerto sin esa cifra, no la llevan."""
     aeropuertos = pd.read_csv(REFERENCIA / "aeropuertos.csv", sep=";")
     minutos = dict(zip(vuelos_rutas["hasta"], vuelos_rutas["minutos"].astype(int), strict=True))
-    return {a.iata: {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)} for a in aeropuertos.itertuples()}
+    al_mes = {}
+    if "vuelos_al_mes" in vuelos_rutas:
+        al_mes = {
+            h: int(n) for h, n in zip(vuelos_rutas["hasta"], vuelos_rutas["vuelos_al_mes"], strict=True) if pd.notna(n)
+        }
+    salida = {}
+    for a in aeropuertos.itertuples():
+        salida[a.iata] = {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)}
+        if a.iata in al_mes:
+            salida[a.iata]["vuelos_al_mes"] = al_mes[a.iata]
+    return salida
 
 
 def _fecha(aaaammdd) -> str:
@@ -586,6 +609,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     if hay_noche:
         lugares_de_noche = leer("noche_lugares.csv", keep_default_na=False, dtype={"osm": str, "horario": str})
         noche = noches(lugares_de_noche, leer("cielo_polos.csv", dtype={"oscuro_osm": str, "astro_osm": str}))
+
+    if (entrada / "terminales.csv").exists():  # la ida en bus, de terminal a terminal (pipeline/terminales.py)
+        tiempos_origen_base = sumar_terminales(tiempos_origen_base, leer("terminales.csv"))
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {

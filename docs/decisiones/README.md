@@ -33,5 +33,6 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0027](./0027-tope-del-bus-de-noche.md) | El bus de noche se lleva como máximo el 30 % del viaje | Vigente |
 | [0028](./0028-horarios-y-visitas-corregidos.md) | El horario y la visita, corregidos con su fuente | Vigente |
 | [0029](./0029-avisos-de-seguridad-y-de-entradas.md) | Los avisos de seguridad y de entradas | Vigente |
+| [0030](./0030-a-su-hora-y-desde-el-terminal.md) | Los vuelos con su frecuencia, el bus desde el terminal y el Circuito Mágico de noche | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.

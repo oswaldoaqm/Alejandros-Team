@@ -35,6 +35,7 @@ El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: 
 | `altitud_resumen.json` | Cuántas bases toman la altura del modelo y cuánto difiere de la que tenían, por fuente |
 | `tiempos_base.csv` | Minutos y km de la base de cada polo a cada una de sus paradas |
 | `tiempos_origen_base.csv` | Minutos y km de cada ciudad de origen a la base de cada polo, en bus |
+| `terminales.csv` | El terminal de bus de cada ciudad de origen y de cada base que tiene uno cerca, y los minutos y km del taxi hasta él ([`pipeline/terminales.py`](../../pipeline/terminales.py)) |
 | `ida_en_bus.json` | Los dos ritmos de la ida en bus, ajustados con 29 rutas de Cruz del Sur, y cuántas caen en su rango con todas y dejando fuera cada corredor; lo mismo para los tres modelos más simples con que se compara |
 | `clima_polo_mes.csv` | Lluvia, días con lluvia y temperaturas de cada polo mes a mes, con su veredicto de temporada. Las temperaturas van llevadas a la altura de la base que usan los artefactos |
 | `vuelos_rutas.csv` | Cada ruta aérea desde Lima: minutos de vuelo y la banda del pasaje por tramo, en soles |

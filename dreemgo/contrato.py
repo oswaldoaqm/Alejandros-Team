@@ -17,11 +17,11 @@ from __future__ import annotations
 import unicodedata
 from datetime import date, timedelta
 from enum import StrEnum
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, StringConstraints, field_validator, model_validator
 
-VERSION_CONTRATO = "1.8"
+VERSION_CONTRATO = "1.9"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -332,14 +332,18 @@ class Cielo(_Modelo):
 class Noche(_Modelo):
     """Qué hacer una noche que se duerme en la base (desde 1.5). No cambia nada del día."""
 
-    tipo: Literal["salir", "estrellas", "descanso"] = Field(
+    tipo: Literal["salir", "estrellas", "descanso", "espectaculo"] = Field(
         description="salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o "
-        "sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna."
+        "sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna. espectaculo (desde "
+        "1.9): un lugar que se ve de noche, como el Circuito Mágico del Agua, que no es parada del día."
     )
     titulo: str
     nota: str
     lugares: list[LugarDeNoche] = Field(default_factory=list, description="Con salir: los que se proponen esa noche.")
     cielo: Cielo | None = Field(None, description="Con estrellas.")
+    funciones: list[Annotated[str, StringConstraints(pattern=HORA)]] = Field(
+        default_factory=list, description="Con espectaculo (desde 1.9): a qué horas empieza, HH:MM."
+    )
 
 
 class Dia(_Modelo):

@@ -198,6 +198,8 @@ def candidatas(polo: PoloDatos, consulta: Consulta, datos: Datos, desde: np.ndar
         r = datos.recursos[codigo]
         if not np.isfinite(desde[i]) or minutos_de_visita(r) > VISITA_MAX_MIN:
             continue
+        if r.get("de_noche"):  # se ve de noche: va en la noche del viaje (noche.py), no en el día
+            continue
         if consulta.altitud_max is not None and (r["altitud_m"] is None or r["altitud_m"] > consulta.altitud_max):
             continue
         salida.append(_candidata(i, r, intereses))
@@ -1011,6 +1013,28 @@ def aviso_de_entradas(cupo: dict) -> Aviso:
     return Aviso(tipo="entradas", nivel="info", mensaje=f"{cuantos}{donde} Compra la entrada con anticipación.")
 
 
+VUELOS_DIARIOS_AL_MES = 30  # menos que esto, no hay un vuelo cada día
+
+
+def aviso_de_pocos_vuelos(vuelo: Vuelo, datos: Datos) -> Aviso | None:
+    """Si alguna punta del vuelo no tiene un vuelo cada día, cuántos hay por semana: el motor supone que
+    hay uno a la hora en que se llega al aeropuerto, y con pocos no es así (pipeline/referencia/rutas_aereas.csv)."""
+    pocos = []
+    for codigo in vuelo.aeropuertos:
+        a = datos.aeropuertos.get(codigo, {})
+        al_mes = a.get("vuelos_al_mes")
+        if codigo != "LIM" and al_mes is not None and al_mes < VUELOS_DIARIOS_AL_MES:
+            pocos.append((a.get("ciudad", codigo), max(1, round(al_mes * 7 / 30))))
+    if not pocos:
+        return None
+    partes = textos.lista([f"{ciudad}, unos {n} por semana" for ciudad, n in pocos])
+    return Aviso(
+        tipo="acceso",
+        nivel="advertencia",
+        mensaje=f"No hay un vuelo cada día: a {partes}. Fija las fechas del viaje según el vuelo, y no al revés.",
+    )
+
+
 def avisos(
     it: Itinerario, consulta: Consulta, est: Estacionalidad, costo: Costo, dias: list[Dia], datos: Datos
 ) -> list[Aviso]:
@@ -1085,6 +1109,9 @@ def avisos(
                 "con anticipación sale más barato.",
             )
         )
+        pocos = aviso_de_pocos_vuelos(it.vuelo, datos)
+        if pocos is not None:
+            salida.append(pocos)
     if it.plan.bus_de_noche is not None:
         sale = textos.hora(it.plan.bus_de_noche[0])
         ida = textos.duracion(minutos_de_la_ida(it.minutos_ida))

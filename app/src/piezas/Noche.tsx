@@ -1,4 +1,5 @@
-// La noche: qué hacer cada noche que se duerme en la base (salir, mirar las estrellas o descansar)
+// La noche: qué hacer cada noche que se duerme en la base (salir, mirar las estrellas, descansar o ver un
+// espectáculo, como el Circuito Mágico del Agua)
 // y, en la página de la zona, lo que hay para salir y cuántas noches salen despejadas mes a mes. Es
 // lo único con fondo de noche en la app: se distingue del día de un vistazo.
 
@@ -13,6 +14,7 @@ const ICONO: Record<Noche["tipo"], NombreDeIcono> = {
   salir: "copa",
   estrellas: "estrellas",
   descanso: "luna",
+  espectaculo: "fuente",
 };
 
 /** La luna como se ve esa noche desde el Perú: en el sur, la creciente se ilumina por la izquierda. */

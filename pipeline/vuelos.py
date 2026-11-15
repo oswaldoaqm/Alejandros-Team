@@ -72,6 +72,7 @@ def rutas_en_soles(rutas: pd.DataFrame) -> pd.DataFrame:
         tarifa_maxima=(minima * TARIFA_MAXIMA).round(0),
         tarifa_publicada=~sin_tarifa,
         fuente=rutas["fuente_tarifa"],
+        vuelos_al_mes=rutas["vuelos_al_mes"] if "vuelos_al_mes" in rutas else None,
     )
 
 

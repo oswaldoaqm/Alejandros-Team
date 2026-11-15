@@ -1,23 +1,23 @@
-﻿desde;hasta;minutos;tarifa_minima;tarifa_central;tarifa_maxima;tarifa_publicada;fuente
-LIM;ANS;70;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;AQP;90;247.0;371.0;544.0;True;Sky, tarifa Basic desde, por tramo
-LIM;AYP;60;210.0;314.0;461.0;True;Sky, tarifa Basic desde, por tramo
-LIM;CJA;85;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo
-LIM;CHH;90;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;CIX;95;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo
-LIM;CUZ;80;155.0;232.0;340.0;True;Sky, tarifa Basic desde, por tramo
-LIM;ATA;60;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;HUU;45;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;IQT;110;261.0;392.0;574.0;True;Sky, tarifa Basic desde, por tramo
-LIM;JAU;55;230.0;345.0;506.0;True;Sky, tarifa Basic desde, por tramo
-LIM;JUL;90;275.0;412.0;605.0;True;Sky, tarifa Basic desde, por tramo
-LIM;MZA;65;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;PIU;105;241.0;361.0;529.0;True;Sky, tarifa Basic desde, por tramo
-LIM;PCL;70;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo
-LIM;PEM;100;254.0;381.0;559.0;True;Sky, tarifa Basic desde, por tramo
-LIM;TCQ;110;265.0;397.0;582.0;True;Sky, tarifa Basic desde, por tramo
-LIM;TYL;110;251.0;376.0;552.0;True;Sky, tarifa Basic desde, por tramo
-LIM;TPP;85;223.0;335.0;491.0;True;Sky, tarifa Basic desde, por tramo
-LIM;TGI;60;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar
-LIM;TRU;75;206.0;309.0;454.0;True;Sky, tarifa Basic desde, por tramo
-LIM;TBP;115;254.0;381.0;559.0;True;Sky, tarifa Basic desde, por tramo
+﻿desde;hasta;minutos;tarifa_minima;tarifa_central;tarifa_maxima;tarifa_publicada;fuente;vuelos_al_mes
+LIM;ANS;70;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;22
+LIM;AQP;90;247.0;371.0;544.0;True;Sky, tarifa Basic desde, por tramo;620
+LIM;AYP;60;210.0;314.0;461.0;True;Sky, tarifa Basic desde, por tramo;156
+LIM;CJA;85;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo;266
+LIM;CHH;90;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;34
+LIM;CIX;95;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo;371
+LIM;CUZ;80;155.0;232.0;340.0;True;Sky, tarifa Basic desde, por tramo;1006
+LIM;ATA;60;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;25
+LIM;HUU;45;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;94
+LIM;IQT;110;261.0;392.0;574.0;True;Sky, tarifa Basic desde, por tramo;272
+LIM;JAU;55;230.0;345.0;506.0;True;Sky, tarifa Basic desde, por tramo;90
+LIM;JUL;90;275.0;412.0;605.0;True;Sky, tarifa Basic desde, por tramo;205
+LIM;MZA;65;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;9
+LIM;PIU;105;241.0;361.0;529.0;True;Sky, tarifa Basic desde, por tramo;303
+LIM;PCL;70;220.0;330.0;484.0;True;Sky, tarifa Basic desde, por tramo;227
+LIM;PEM;100;254.0;381.0;559.0;True;Sky, tarifa Basic desde, por tramo;116
+LIM;TCQ;110;265.0;397.0;582.0;True;Sky, tarifa Basic desde, por tramo;195
+LIM;TYL;110;251.0;376.0;552.0;True;Sky, tarifa Basic desde, por tramo;90
+LIM;TPP;85;223.0;335.0;491.0;True;Sky, tarifa Basic desde, por tramo;349
+LIM;TGI;60;235.0;353.0;518.0;False;Sin tarifa publicada que se pudiera citar;17
+LIM;TRU;75;206.0;309.0;454.0;True;Sky, tarifa Basic desde, por tramo;286
+LIM;TBP;115;254.0;381.0;559.0;True;Sky, tarifa Basic desde, por tramo;125

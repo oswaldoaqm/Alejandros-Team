@@ -127,7 +127,9 @@ export const TRAZOS = {
   fiestas: ["M9 18V6l11-2v12", "M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z", "M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"],
   arquitectura: ["M4 21h16", "M6 21V10l6-6 6 6v11", "M10 21v-5h4v5", "M12 7.5v2.5"],
   aventura: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "m15.5 8.5-2 5-5 2 2-5 5-2Z"],
-  // La noche: una copa para salir, una luna para descansar y tres destellos para las estrellas.
+  // La noche: una copa para salir, una luna para descansar, tres destellos para las estrellas y una
+  // fuente con sus chorros para un espectáculo.
+  fuente: ["M4 20h16", "M6 20v-3h12v3", "M12 17V9", "M12 9c-3 0-5 2-5 5", "M12 9c3 0 5 2 5 5", "M12 9V4"],
   copa: ["M5 4h14l-7 8-7-8Z", "M12 12v8", "M8 20h8", "M7.5 7h9"],
   luna: ["M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z"],
   estrellas: [

@@ -433,3 +433,12 @@ test("cada tipo de noche: sin fallas de accesibilidad que una máquina detecte",
     expect(informe.violations.map((v) => `${tipo}: ${v.id} (${v.nodes.length})`)).toEqual([]);
   }
 });
+
+test("el Circuito Mágico se ve de noche, el miércoles, y no de día", async ({ page }) => {
+  // Desde el Cusco, cuatro días en Lima desde el lunes 5 de julio de 2027: las funciones son de miércoles a domingo.
+  await page.goto("./?origen=cusco&fecha_inicio=2027-07-05&dias=4&destino=31#/ruta/1");
+  await page.getByRole("radio", { name: "Día 3" }).check({ force: true });
+  await expect(page.locator(".noche--espectaculo")).toContainText("19:15");
+  const informe = await new AxeBuilder({ page }).withTags(PAUTAS).include(".noche").analyze();
+  expect(informe.violations.map((v) => `${v.id} (${v.nodes.length})`)).toEqual([]);
+});

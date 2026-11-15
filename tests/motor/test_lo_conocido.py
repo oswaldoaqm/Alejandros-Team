@@ -32,10 +32,11 @@ def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_se_queda_en_el_valle_
 def test_un_viaje_a_puno_con_tiempo_lleva_a_los_uros():
     """Los Uros se visitan en lugar de la Reserva Nacional del Titicaca, que no tiene camino, y valen como ella
     (decisión 0028). En dos días desde Arequipa no caben: el primero es tranquilo, por la altura, y el segundo
-    termina con la vuelta."""
+    termina con la vuelta. Y desde que la ida en bus cuenta los terminales (decisión 0030), en tres días se pasa
+    más tiempo en el camino que en Puno."""
     datos = artefactos.cargar()
     [puno] = [p.id for p in datos.polos.values() if p.base["nombre"] == "Puno"]
-    for origen, dias in (("cusco", 3), ("arequipa", 3), ("lima", 4), ("tacna", 3)):
+    for origen, dias in (("cusco", 3), ("arequipa", 4), ("lima", 4), ("tacna", 3)):
         [ruta] = viaje.resolver(Consulta(origen=origen, mes=7, dias=dias, destino=puno), datos).rutas
         assert "960" in {p.recurso.codigo for d in ruta.dias for p in d.paradas}, origen
 

@@ -11,6 +11,10 @@ horas y el costo son los mismos con plan de noche o sin él.
 - **Descanso**, con vida_nocturna: la primera noche en la altura, con la misma regla que el primer
   día tranquilo (``aclimatacion.py``): en una base de 2 500 m o más, si se llega de al menos 1 000 m
   más abajo. El alcohol empeora el mal de altura.
+- **Espectáculo** (decisión 0030), con cualquier interés: un lugar que se ve de noche, como el
+  Circuito Mágico del Agua, a no más de una hora de la base. Una noche por viaje: con fecha, la
+  primera en que hay función; sin fecha, la segunda en la base si la hay. Va antes que las
+  estrellas y que salir.
 - **Estrellas**, con naturaleza o sin ningún interés: una noche por viaje, desde la base si su
   cielo es oscuro (brillo menor que 2) o, si no, en un observatorio o un planetario a menos de
   45 minutos. Con fecha, la noche con más horas sin luna; sin fecha, la segunda en la base si
@@ -23,6 +27,7 @@ from __future__ import annotations
 from datetime import time, timedelta
 
 from dreemgo import astronomia
+from dreemgo.calendario import DIAS
 from dreemgo.contrato import (
     Cielo,
     CieloDeLaZona,
@@ -41,6 +46,7 @@ from dreemgo.motor.datos import Polo as PoloDatos
 OSCURO, MUY_OSCURO = 2.0, 0.3  # las clases del Servicio de Parques Nacionales de EE. UU.
 LUGARES_POR_NOCHE = 3
 DESPEJADAS_MINIMO = 0.2
+ESPECTACULO_MAX_MIN = 60  # de la base al espectáculo, de noche
 SALIR_PARA_EL_PUNTAJE = 5  # con 5 lugares para salir o más, la zona no pierde puntaje
 FRIO_C = 10
 
@@ -267,6 +273,53 @@ def cielo_de_la_noche(polo: PoloDatos, desde: LugarDeEstrellas, observatorio, co
     return cielo
 
 
+def espectaculos(polo: PoloDatos, datos: Datos) -> list[tuple[dict, int]]:
+    """Los lugares del polo que se ven de noche, con los minutos desde la base, del más cercano al más lejano."""
+    salida = []
+    for i, codigo in enumerate(polo.paradas):
+        r = datos.recursos[codigo]
+        minutos = polo.base_minutos[i]
+        if r.get("de_noche") and minutos == minutos and minutos <= ESPECTACULO_MAX_MIN:
+            salida.append((r, int(round(minutos))))
+    return sorted(salida, key=lambda x: (x[1], x[0]["codigo"]))
+
+
+NOMBRE_DEL_DIA = {
+    "lun": "lunes",
+    "mar": "martes",
+    "mie": "miércoles",
+    "jue": "jueves",
+    "vie": "viernes",
+    "sab": "sábado",
+    "dom": "domingo",
+}
+
+
+def dias_de_funcion(dias: list[str]) -> str:
+    """«de miércoles a domingo» si son seguidos; si no, «los lunes y jueves»; «todos los días» si son los siete."""
+    orden = [d for d in DIAS if d in dias]
+    if len(orden) == len(DIAS):
+        return "todos los días"
+    i = [DIAS.index(d) for d in orden]
+    if len(i) > 2 and i == list(range(i[0], i[-1] + 1)):
+        return f"de {NOMBRE_DEL_DIA[orden[0]]} a {NOMBRE_DEL_DIA[orden[-1]]}"
+    plural = {d: n if n.endswith("s") else n + "s" for d, n in NOMBRE_DEL_DIA.items()}
+    return "los " + textos.lista([plural[d] for d in orden])
+
+
+def noche_de_espectaculo(recurso: dict, minutos: int, fecha) -> Noche:
+    funciones = recurso["de_noche"]["funciones"]
+    horas = textos.lista([f"las {h}" for h in funciones])
+    cuando = f", {dias_de_funcion(recurso['dias'])}" if fecha is None and recurso.get("dias") else ""
+    nota = (
+        f"Se ve de noche: las funciones empiezan a {horas}{cuando}. Queda a {textos.duracion(minutos)} de donde "
+        "duermes, en auto o taxi."
+    )
+    return Noche(
+        tipo="espectaculo", titulo=f"{recurso['de_noche']['nombre']} de noche", nota=nota, funciones=list(funciones)
+    )
+
+
 # ─────────────────────────────── las noches del viaje ───────────────────────────────
 
 
@@ -298,6 +351,16 @@ def plan_de_noches(it, consulta: Consulta, origen: Origen, datos: Datos, anio: i
             nota=f"Primera noche a {textos.miles(altura)} m: el cuerpo todavía se está acostumbrando a la altura, y "
             "el alcohol empeora el soroche. Mejor cenar temprano y dejar la salida para otra noche.",
         )
+
+    for recurso, minutos in espectaculos(polo, datos)[:1]:
+        dias = recurso.get("dias")
+        libres = [n for n in noches if n not in salida]
+        if consulta.fecha_inicio is not None and dias:
+            libres = [n for n in libres if DIAS[fechas[n].weekday()] in dias]
+        elif len(libres) > 1 and libres[0] == noches[0]:  # sin fecha, la segunda: la primera se llega cansado
+            libres = libres[1:]
+        if libres:
+            salida[libres[0]] = noche_de_espectaculo(recurso, minutos, fechas[libres[0]])
 
     desde, observatorio = desde_donde(polo) if pide_estrellas(consulta) else (None, None)
     despejadas = polo.noche.get("cielo", {}).get("despejadas", [None] * 12)[consulta.mes - 1]

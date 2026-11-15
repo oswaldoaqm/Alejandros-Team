@@ -4,6 +4,8 @@ El 5 de noviembre de 2026 revisamos el motor como lo haría un jurado que busca 
 
 El 12 de noviembre se arreglaron cuatro puntos de lo pendiente y la mitad de otros dos, con el contrato 1.8 y los datos `2026.11.2`, más dos cosas que salieron después: el tope del bus de noche y los Uros. Para esos, «antes» es el motor de `main` del 10 de noviembre con los datos `2026.11.1`, y «después», la `2026.11.2` ([`auditoria.json`](../data/evaluacion/resultados/auditoria.json)). Desde entonces, la auditoría mide también el bus de noche y los avisos de cada viaje.
 
+El 15 de noviembre se arreglaron los tres puntos que quedaban para w13e, con el contrato 1.9 y los datos `2026.11.3` ([decisión 0030](decisiones/0030-a-su-hora-y-desde-el-terminal.md)). Para esos, «antes» es la `2026.11.2`, la de arriba, y «después», la `2026.11.3`.
+
 ## Lo que se arregló
 
 ### En la ciudad se iba a velocidad de carretera
@@ -34,9 +36,9 @@ Las diez zonas más propuestas se llevan el 80 % de los viajes, y Miraflores sol
 
 Con dos días, la mitad de los viajes iba en bus de noche, con un tope de 9 h 36 por tramo, y tres días desde el Cusco podían ser Ilo o Nasca, a 14 horas por tramo. Las calificaciones del kit dan menos nota cuanto más del viaje se lleva el bus: 1,25 con menos del 20 %, 0,97 del 20 al 30 % y 0,80 del 30 al 40 %. El tope baja al 30 % ([decisión 0027](decisiones/0027-tope-del-bus-de-noche.md)). En la rejilla, el bus de noche pasa del 50,2 al 6,7 % de los viajes de dos días, y el que más se lleva del viaje, del 39,5 al 29,9 %. Tiene un costo: lo que ya no va de noche va de día, y los viajes de dos días que avisan que el camino se lleva mucho del viaje pasan del 27,9 al 56,8 %.
 
-### El Circuito Mágico, a la hora en que abre
+### El Circuito Mágico, a la hora en que abre y después de noche
 
-Salía 390 veces en la rejilla, siempre a las 10:51, porque su ficha dice que abre de 7:00 a 22:30. Abre de 15:00 a 22:00, de miércoles a domingo, y las fuentes con luces son a las 19:15, 20:15 y 21:30. Ese horario, con su fuente, manda ahora sobre el de la ficha ([decisión 0028](decisiones/0028-horarios-y-visitas-corregidos.md)): sale 277 veces, y se llega entre las 14:56 y las 15:30. Es la hora en que abre, pero todavía de día. Ponerlo en la noche del viaje queda en lo pendiente, en el punto 3.
+Salía 390 veces en la rejilla, siempre a las 10:51, porque su ficha dice que abre de 7:00 a 22:30. Abre de 15:00 a 22:00, de miércoles a domingo, y las fuentes con luces son a las 19:15, 20:15 y 21:30. Ese horario, con su fuente, manda ahora sobre el de la ficha ([decisión 0028](decisiones/0028-horarios-y-visitas-corregidos.md)): sale 277 veces, y se llega entre las 14:56 y las 15:30. Era la hora en que abre, pero todavía de día. Desde la `2026.11.3`, un lugar que se ve de noche no es parada del día: va en una noche del viaje, la primera con función si hay fecha ([decisión 0030](decisiones/0030-a-su-hora-y-desde-el-terminal.md)). En la rejilla, el Circuito ya no sale de día, y 447 de los 454 viajes que duermen en Miraflores llevan su noche.
 
 ### Visitas de 20 minutos a un centro histórico
 
@@ -54,6 +56,14 @@ El PR 52, de Miguel, llevó el horario de cada lugar al contrato y a su hoja en 
 
 Un viaje que duerme o para en uno de los 37 distritos del VRAEM que delimita el D.S. 133-2022-PCM lo avisa primero, con las alertas de Canadá y Estados Unidos. Hoy son 126 paradas en 9 polos, y 5 bases. Y cada parada con cupo dice cuántas personas entran al día y dónde se compran las entradas: Machu Picchu, 4 500 al día y 5 600 en temporada alta (el 5 de noviembre esta auditoría daba solo la segunda cifra), en tuboleto.cultura.pe y, solo 1 000 al día, en persona en Machu Picchu Pueblo ([decisión 0029](decisiones/0029-avisos-de-seguridad-y-de-entradas.md)). Lo verifican las propiedades 17 y 18. Reemplazan los dos avisos de `acceso` que el PR 52 había sumado para lo mismo (0029).
 
+### Un vuelo cada día
+
+El motor supone que hay un vuelo cuando se llega al aeropuerto, y a Mazamari hay unos 9 al mes. Cada ruta lleva ahora cuántos vuelos tiene al mes, de FlightConnections, y si alguna punta tiene menos de uno por día, el viaje lo avisa: cuántos hay por semana y que las fechas se fijen según el vuelo. En la rejilla, lo avisan 52 de 3 432 viajes. A qué hora sale cada vuelo sigue sin entrar: no hay una fuente que se pueda citar sin entrar a las páginas de venta.
+
+### El bus, desde el terminal
+
+La ida en bus iba de centro a centro. Ahora la de tres horas o más suma el taxi al terminal de la ciudad de origen, media hora de embarque y el taxi del terminal a la base, si el bus no deja en el pueblo. Los terminales salen de OpenStreetMap; en Lima, el taxi hasta el Terminal Terrestre Yerbateros es de 21 minutos. Cada ida suma de 35 a 71 minutos, 41 en la mediana, y la mediana del bus de noche en la rejilla pasa de 10,1 a 10,9 horas de puerta a puerta. Tres días desde Arequipa a Puno dejan de salir: el camino pesa más que la visita.
+
 ### En auto o taxi
 
 La app dice ahora, en la hoja de cada lugar y en la letra chica, que entre un lugar y otro del día el plan cuenta en auto o taxi. La letra chica decía además que la visita sale de la ficha de cada lugar, y no es así: es el tiempo típico de cada clase de lugar, un supuesto nuestro. Ya no lo dice. Cuánto sería en transporte público queda en lo pendiente, en el punto 6.
@@ -70,9 +80,6 @@ Los números son los de la lista del 5 de noviembre, para que se puedan citar: l
 
 | # | Lo que objetaría el jurado | La prueba | Qué hacer | Cuándo |
 |---|---|---|---|---|
-| 1 | «Hay un vuelo, un bus o un tren justo cuando llegas» | A Mazamari hay 2 vuelos por semana, a las 11:20; a Andahuaylas 5, a las 5:55 o a las 6:00; a Huaraz 6, a las 7:10 (FlightConnections, 5 de noviembre). `rutas_aereas.csv` lo dice: «el motor supone que hay uno a la hora en que se llega al aeropuerto». El bus de noche sale a la hora que conviene para llegar a las 6:00 | Las frecuencias y la primera y última salida de las 22 rutas aéreas y de los buses de cada empresa; en las de pocas salidas, el horario de verdad. Y la llegada como un rango | w13e |
-| 2 | El bus te deja en el centro, no en el terminal | La ida va de centro a centro y no cuenta llegar antes al terminal | Los terminales de OpenStreetMap en cada punta, el taxi hasta ellos con el tráfico de la ciudad y la media hora antes que piden las empresas | w13e |
-| 3 | Lo que se ve de noche, puesto de día | El Circuito Mágico del Agua se visita ahora a la hora en que abre, entre las 14:56 y las 15:30, pero las fuentes con luces son a las 19:15, 20:15 y 21:30 (Andina, 2024; How to Peru, julio de 2026) | Ponerlo en la noche del viaje | w13e |
 | 6 | Solo taxi | Los tramos del día suponen auto o taxi. La app ya lo dice, pero no cuánto sería en transporte público | Cuánto sería en transporte público, con una fuente por ciudad | después de la entrega |
 | 7 | La hora del día | TomTom mide Lima 17 % más lenta a las 8 de la mañana que en el promedio del día, y el motor usa un solo tiempo por tramo | El ritmo de cada hora en las ciudades, con TomTom | semana 14 |
 | 8 | Las colas | El motor no suma esperas en los lugares más visitados, como la fila del bus de Aguas Calientes a Machu Picchu en temporada alta, ni la espera del taxi. La del taxi la cubre el margen de la 0025, sin una fuente que la mida | Una espera por lugar y temporada donde haya una fuente que la mida; donde no la haya, decirlo en la app | semana 14 |
@@ -95,6 +102,7 @@ Entra más aprendizaje cuando haya datos. Con las calificaciones del kit (196 vi
 Consultadas el 5 de noviembre de 2026, salvo donde se dice otra cosa.
 
 - TomTom Traffic Index 2025, las páginas de [Lima](https://www.tomtom.com/traffic-index/city/lima/), [Arequipa](https://www.tomtom.com/traffic-index/city/arequipa) y [Trujillo](https://www.tomtom.com/traffic-index/city/trujillo).
+- FlightConnections: [los vuelos desde Lima](https://www.flightconnections.com/flights-from-lima-lim), con cuántos tiene al mes cada ruta, consultada el 15 de noviembre, y la [ruta a Tingo María](https://www.flightconnections.com/flights-from-lim-to-tgi), que vuelve a tener vuelos en enero de 2027.
 - Cruz del Sur: la página de cada una de las 29 rutas, en [`evaluacion/buses.csv`](../evaluacion/buses.csv), consultadas el 26 de octubre.
 - Infobae: [el último recorrido de 2025 del tren turístico Lima–Huancayo](https://www.infobae.com/peru/2025/08/06/tren-turistico-lima-huancayo-realizo-su-ultimo-recorrido-del-2025-evaluan-incrementar-sus-salidas-el-proximo-ano/), 6 de agosto de 2025, y [por qué no se venden pasajes para Semana Santa de 2026](https://www.infobae.com/peru/2026/03/18/tren-lima-huancayo-por-que-no-se-venden-boletos-para-el-viaje-de-semana-santa-2026/), 18 de marzo de 2026.
 - Andina, [el horario del Circuito Mágico del Agua](https://andina.pe/agencia/noticia-circuito-magico-del-agua-te-espera-diversion-y-comida-el-feriado-largo-1007809.aspx), 2024, y How to Peru, [Magic Water Circuit in Lima](https://howtoperu.com/answers/magic-water-circuit-in-lima-worth-it-for-couples-families-or-first-time-visitors/), julio de 2026.
