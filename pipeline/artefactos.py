@@ -319,14 +319,29 @@ def polos(
     comida: pd.DataFrame | None = None,
     zonas: pd.DataFrame | None = None,
     ciudades: list[dict] | None = None,
+    hospedajes: pd.DataFrame | None = None,
 ) -> list[dict]:
     """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla. La base lleva
     su ``zona`` si es la capital de un distrito con alerta oficial de viaje (``zonas``, por defecto
     ``zonas_de_seguridad()``), o null. Si la base está en una ciudad que mide TomTom, el polo lleva su
-    ``ritmo`` por hora (``ciudades``, por defecto ``ritmos_por_hora()``); si no, null."""
+    ``ritmo`` por hora (``ciudades``, por defecto ``ritmos_por_hora()``); si no, null. La base lleva hasta tres
+    ``hospedajes`` con nombre cerca (``hospedajes``, de ``pipeline/hospedajes.py``), o una lista vacía."""
     comida_en_base = _comida(comida, "base")
     zonas = zonas_de_seguridad() if zonas is None else zonas
     ciudades = ritmos_por_hora() if ciudades is None else ciudades
+    por_base: dict[int, list[dict]] = {}
+    if hospedajes is not None:
+        for h in hospedajes.itertuples():
+            por_base.setdefault(int(h.polo), []).append(
+                {
+                    "nombre": h.nombre,
+                    "tipo": h.tipo,
+                    "km": float(h.km),
+                    "lat": float(h.lat),
+                    "lon": float(h.lon),
+                    "osm": h.osm,
+                }
+            )
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
@@ -414,6 +429,7 @@ def polos(
                     "hospedajes_osm": int(b.hospedajes_osm),
                     "criterio": b.criterio,
                     "zona": zona_de_la_base(b.lat, b.lon, zonas),
+                    "hospedajes": por_base.get(int(b.polo), []),
                 }
                 | ({} if comida_en_base is None else {"comida_m": comida_en_base.get(str(int(b.polo)))}),
                 "ritmo": ritmo_de_la_base(b.lat, b.lon, ciudades),
@@ -653,13 +669,26 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
 
     if (entrada / "terminales.csv").exists():  # la ida en bus, de terminal a terminal (pipeline/terminales.py)
         tiempos_origen_base = sumar_terminales(tiempos_origen_base, leer("terminales.csv"))
+    hospedajes = None
+    if (entrada / "hospedajes_cerca.csv").exists():  # dónde dormir cerca de la base (pipeline/hospedajes.py)
+        hospedajes = leer("hospedajes_cerca.csv", keep_default_na=False)
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {
         "recursos.json.gz": _escribir_gz(recursos(maestro, comida), destino / "recursos.json.gz"),
         "polos.json.gz": _escribir_gz(
             polos(
-                maestro, bases, clima, tiempos_polo, tiempos_base, tiempos_origen_base, eventos, origenes, noche, comida
+                maestro,
+                bases,
+                clima,
+                tiempos_polo,
+                tiempos_base,
+                tiempos_origen_base,
+                eventos,
+                origenes,
+                noche,
+                comida,
+                hospedajes=hospedajes,
             ),
             destino / "polos.json.gz",
         ),
