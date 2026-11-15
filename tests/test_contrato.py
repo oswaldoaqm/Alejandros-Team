@@ -12,12 +12,14 @@ from pydantic import ValidationError
 from dreemgo.contrato import (
     DE_NOCHE,
     ETIQUETAS_INTERES,
+    Aviso,
     Consulta,
     Costo,
     EventoNuevo,
     Interes,
     LugarDeNoche,
     Luna,
+    Recurso,
     Respuesta,
     SinResultado,
 )
@@ -104,6 +106,35 @@ class TestSalida:
             assert {p.recurso.codigo for d in ruta.dias for p in d.paradas}, "cada ruta visita algo"
             for d in ruta.dias:
                 assert [p.orden for p in d.paradas] == list(range(1, len(d.paradas) + 1))
+
+
+class TestHorarioYAvisos:
+    """Desde 1.8, cada parada trae su horario y hay dos avisos más."""
+
+    RECURSO = {
+        "codigo": "4033",
+        "nombre": "Parque de la Reserva - Circuito Mágico del Agua",
+        "categoria": "Manifestaciones culturales",
+        "tipo": "Arquitectura y Espacios Urbanos",
+        "lat": -12.07,
+        "lon": -77.03,
+        "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4033",
+    }
+
+    def test_sin_horario_es_que_no_se_sabe(self):
+        r = Recurso(**self.RECURSO)
+        assert (r.abre, r.cierra, r.dias) == (None, None, None)
+
+    def test_el_horario_es_del_reloj_y_los_dias_de_la_semana(self):
+        r = Recurso(**self.RECURSO, abre="15:00", cierra="22:00", dias=["mie", "jue", "vie", "sab", "dom"])
+        assert r.dias == ["mie", "jue", "vie", "sab", "dom"]
+        for campo, valor in [("abre", "7:00"), ("cierra", "24:00"), ("dias", ["miercoles"])]:
+            with pytest.raises(ValidationError):
+                Recurso(**self.RECURSO, **{campo: valor})
+
+    @pytest.mark.parametrize("tipo", ["seguridad", "entradas"])
+    def test_los_avisos_nuevos(self, tipo):
+        assert Aviso(tipo=tipo, nivel="advertencia", mensaje="Algo que saber antes de ir").tipo == tipo
 
 
 class TestNoche:

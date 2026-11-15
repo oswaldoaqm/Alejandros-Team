@@ -147,6 +147,8 @@ const ICONO_DEL_AVISO: Record<Aviso["tipo"], NombreDeIcono> = {
   acceso: "pin",
   dias: "reloj",
   datos: "info",
+  seguridad: "escudo",
+  entradas: "calendario",
 };
 
 /**

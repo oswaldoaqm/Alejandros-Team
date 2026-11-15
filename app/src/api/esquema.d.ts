@@ -151,9 +151,10 @@ export interface components {
             nivel: "info" | "advertencia";
             /**
              * Tipo
+             * @description De qué avisa. Desde 1.8, `seguridad`: una parada o la base están en una zona con alerta oficial de viaje; y `entradas`: una parada vende un número fijo de entradas por día.
              * @enum {string}
              */
-            tipo: "estacionalidad" | "altitud" | "aclimatacion" | "presupuesto" | "acceso" | "dias" | "datos";
+            tipo: "estacionalidad" | "altitud" | "aclimatacion" | "presupuesto" | "acceso" | "dias" | "datos" | "seguridad" | "entradas";
         };
         /**
          * BusDeNoche
@@ -512,7 +513,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.7
+             * @default 1.8
              */
             version_contrato: string;
             /** Version Datos */
@@ -738,7 +739,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.7
+             * @default 1.8
              */
             version_contrato: string;
             /** Version Datos */
@@ -823,7 +824,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.7
+             * @default 1.8
              */
             version_contrato: string;
             /** Version Datos */
@@ -856,7 +857,7 @@ export interface components {
         Recurso: {
             /**
              * Abre
-             * @description Hora de apertura en la ficha, HH:MM; null si no figura.
+             * @description A qué hora abre, HH:MM (desde 1.8): el de la ficha o, si está mal, el corregido con su fuente. null si no se sabe.
              */
             abre?: string | null;
             /** Altitud M */
@@ -865,7 +866,7 @@ export interface components {
             categoria: string;
             /**
              * Cierra
-             * @description Hora de cierre en la ficha, HH:MM; null si no figura.
+             * @description A qué hora cierra, HH:MM (desde 1.8). null si no se sabe.
              */
             cierra?: string | null;
             /**
@@ -877,7 +878,7 @@ export interface components {
             descripcion?: string | null;
             /**
              * Dias
-             * @description Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.
+             * @description Los días que abre, de lunes a domingo (desde 1.8). null si la ficha no lo dice, que no quiere decir que abra todos los días.
              */
             dias?: ("lun" | "mar" | "mie" | "jue" | "vie" | "sab" | "dom")[] | null;
             /**
@@ -928,7 +929,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.7
+             * @default 1.8
              */
             version_contrato: string;
             /**
@@ -970,7 +971,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.7
+             * @default 1.8
              */
             version_contrato: string;
             /**

@@ -2,12 +2,19 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.7** · 20 de octubre de 2026. La 1.7 hace tranquilo el primer día en la altura ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)), como ya lo prometía el aviso de aclimatación:
+**Versión 1.8** · 10 de noviembre de 2026. La 1.8 suma lo que la [auditoría](./AUDITORIA.md) pidió mostrar en cada viaje:
+
+- **El horario de cada parada.** `recurso.abre`, `recurso.cierra` y `recurso.dias`: lo que dice la ficha o, si la ficha está mal, el horario corregido con su fuente. Vienen en `null` cuando no se sabe, y un `dias` en `null` no quiere decir que abra todos los días. Sin `fecha_inicio`, si alguna parada no abre todos los días, lo dice un aviso de `dias`;
+- **Dos avisos nuevos.** `seguridad`, cuando una parada o la base están en una zona con alerta oficial de viaje, y `entradas`, cuando una parada vende un número fijo de entradas por día.
+
+No quita nada de la 1.7.
+
+La 1.7, del 20 de octubre, hizo tranquilo el primer día en la altura ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)), como ya lo prometía el aviso de aclimatación:
 
 - **`Dia.tranquilo`.** Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo: medio día de visitas como mucho, ninguna parada a más de 500 m sobre la base y ninguna caminata larga. Es el de llegada, si queda tiempo para visitar, o el siguiente; después de un bus de noche, empieza a las 9:00. Es la misma regla de la noche de descanso de la 1.5.
 - **La base, con altitud máxima.** La propiedad 1 (§3) dice ahora también la base: con `altitud_max`, no se duerme más arriba, y una base de la que no se sabe la altura no se propone. Desde los datos `2026.10.8`, todas la tienen.
 
-No quita nada de la 1.6. Suma una propiedad, la 14.
+No quitó nada de la 1.6. Sumó una propiedad, la 14.
 
 Desde el 26 de octubre, `traslado.horas` sale de los minutos enteros de la ida, como los cuenta el plan, y lleva dos decimales. Así la duración que muestra la app es la misma que dicen la nota del día 1, el aviso del bus de noche y los motivos: antes, la tarjeta de Huaraz decía 8 h 06 y la nota del día, 8 h 07. Ningún campo cambia, así que la versión sigue en 1.7.
 
@@ -75,7 +82,8 @@ Respuesta
 │   │                  tren, bote), los vuelos de la ida, si por tierra haría falta bote y, si va de noche, las horas
 │   │                  del bus (desde 1.6)
 │   ├── dias[]         número, fecha, tipo (ida, visita, vuelta… o ida_visita_y_vuelta en un viaje de un día), horas, km
-│   │   ├── paradas[]  orden, recurso (con su ficha oficial), hora de llegada, traslado y visita en minutos
+│   │   ├── paradas[]  orden, recurso (con su ficha oficial y, desde 1.8, su horario), hora de llegada, traslado y
+│   │   │              visita en minutos
 │   │   ├── almuerzo   a qué hora, después de cuántas paradas, dónde y si cerca hay dónde comer (desde 1.6)
 │   │   ├── noche      si se duerme en la zona y la consulta la pide: salir (lugares[], a pie de la base), estrellas
 │   │   │              (cielo: desde dónde, noches despejadas del mes, la luna si hay fecha) o descanso (desde 1.5)
@@ -84,7 +92,8 @@ Respuesta
 │   ├── eventos[]      fiestas y ferias que caen en las fechas: las del inventario, con la precisión de su fecha,
 │   │                  y las que publicó un municipio (fuente «publicado»), con quién las publicó; cada una con su
 │   │                  zona (polo, desde 1.4)
-│   ├── avisos[]       estacionalidad, altitud, aclimatación, presupuesto, días, datos
+│   ├── avisos[]       estacionalidad, altitud, aclimatación, presupuesto, acceso, días, datos; seguridad y entradas
+│   │                  (desde 1.8)
 │   └── indicadores    paradas, jerarquía media, paradas de jerarquía 3-4, altitud máxima, km, valor capturado
 ├── sin_resultado                        solo si no hay ninguna ruta: por qué y qué cambiar para que salga
 └── atribucion[]                         fuentes y licencias que la app muestra junto al resultado
