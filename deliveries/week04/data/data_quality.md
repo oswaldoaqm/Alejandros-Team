@@ -46,7 +46,8 @@ Verificación contra coordenadas conocidas:
 | Parque Arqueológico Nacional de Machu Picchu | −72.5452 | −13.1629 | lat −13.16, lon −72.54 |
 | Lago Titicaca | −69.5043 | −15.7969 | lat −15.80, lon −69.50 |
 
-**Impacto.** Si no lo corrigiesemos todos los recursos caen en el océano Índico frente a Somalia y **el cálculo de
+**Impacto.** Si no lo corrigiésemos, todos los recursos caerían al sur del círculo polar antártico (Machu Picchu, en
+72,5° S y 13,2° O) y **el cálculo de
 rutas y el clustering geográfico de DreemGO producirían resultados inválidos sin lanzar ningún error**. Es el
 tipo de defecto que no se detecta con `df.info()`.
 
