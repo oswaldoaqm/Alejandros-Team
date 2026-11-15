@@ -300,3 +300,10 @@ def test_con_la_tabla_de_comida_la_base_dice_a_cuantos_metros_hay_donde_comer():
     assert artefactos._comida(comida, "recurso") == {"10": 120}
     # Sin la tabla, como antes de la 2026.10.7, la base no lo trae y el motor no lo sabe.
     assert all("comida_m" not in polo["base"] for polo in artefactos.polos(*tablas))
+
+
+def test_cada_aeropuerto_lleva_cuantos_vuelos_hay_al_mes():
+    rutas = pd.DataFrame({"hasta": ["CUZ", "MZA"], "minutos": [80, 65], "vuelos_al_mes": [1006, 9]})
+    aeropuertos = artefactos.aeropuertos_(rutas)
+    assert aeropuertos["MZA"]["vuelos_al_mes"] == 9 and aeropuertos["CUZ"]["minutos_a_lima"] == 80
+    assert "vuelos_al_mes" not in aeropuertos["LIM"]

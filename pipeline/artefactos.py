@@ -537,10 +537,21 @@ def costos_(vuelos_rutas: pd.DataFrame | None = None) -> dict:
 
 
 def aeropuertos_(vuelos_rutas: pd.DataFrame) -> dict:
-    """Cada aeropuerto con su ciudad y los minutos de su vuelo a Lima, para los textos del motor."""
+    """Cada aeropuerto con su ciudad, los minutos de su vuelo a Lima y cuántos vuelos hay al mes, para el
+    motor. Lima, y un aeropuerto sin esa cifra, no la llevan."""
     aeropuertos = pd.read_csv(REFERENCIA / "aeropuertos.csv", sep=";")
     minutos = dict(zip(vuelos_rutas["hasta"], vuelos_rutas["minutos"].astype(int), strict=True))
-    return {a.iata: {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)} for a in aeropuertos.itertuples()}
+    al_mes = {}
+    if "vuelos_al_mes" in vuelos_rutas:
+        al_mes = {
+            h: int(n) for h, n in zip(vuelos_rutas["hasta"], vuelos_rutas["vuelos_al_mes"], strict=True) if pd.notna(n)
+        }
+    salida = {}
+    for a in aeropuertos.itertuples():
+        salida[a.iata] = {"ciudad": a.ciudad, "minutos_a_lima": minutos.get(a.iata, 0)}
+        if a.iata in al_mes:
+            salida[a.iata]["vuelos_al_mes"] = al_mes[a.iata]
+    return salida
 
 
 def _fecha(aaaammdd) -> str:

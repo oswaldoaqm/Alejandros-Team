@@ -1,23 +1,23 @@
-desde;hasta;minutos;tarifa_desde_usd;fuente_tarifa
-LIM;ANS;70;;Sin tarifa publicada que se pudiera citar
-LIM;AQP;90;72;Sky, tarifa Basic desde, por tramo
-LIM;AYP;60;61;Sky, tarifa Basic desde, por tramo
-LIM;CJA;85;64;Sky, tarifa Basic desde, por tramo
-LIM;CHH;90;;Sin tarifa publicada que se pudiera citar
-LIM;CIX;95;64;Sky, tarifa Basic desde, por tramo
-LIM;CUZ;80;45;Sky, tarifa Basic desde, por tramo
-LIM;ATA;60;;Sin tarifa publicada que se pudiera citar
-LIM;HUU;45;;Sin tarifa publicada que se pudiera citar
-LIM;IQT;110;76;Sky, tarifa Basic desde, por tramo
-LIM;JAU;55;67;Sky, tarifa Basic desde, por tramo
-LIM;JUL;90;80;Sky, tarifa Basic desde, por tramo
-LIM;MZA;65;;Sin tarifa publicada que se pudiera citar
-LIM;PIU;105;70;Sky, tarifa Basic desde, por tramo
-LIM;PCL;70;64;Sky, tarifa Basic desde, por tramo
-LIM;PEM;100;74;Sky, tarifa Basic desde, por tramo
-LIM;TCQ;110;77;Sky, tarifa Basic desde, por tramo
-LIM;TYL;110;73;Sky, tarifa Basic desde, por tramo
-LIM;TPP;85;65;Sky, tarifa Basic desde, por tramo
-LIM;TGI;60;;Sin tarifa publicada que se pudiera citar
-LIM;TRU;75;60;Sky, tarifa Basic desde, por tramo
-LIM;TBP;115;74;Sky, tarifa Basic desde, por tramo
+desde;hasta;minutos;tarifa_desde_usd;fuente_tarifa;vuelos_al_mes;fuente_frecuencia
+LIM;ANS;70;;Sin tarifa publicada que se pudiera citar;22;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;AQP;90;72;Sky, tarifa Basic desde, por tramo;620;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;AYP;60;61;Sky, tarifa Basic desde, por tramo;156;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;CJA;85;64;Sky, tarifa Basic desde, por tramo;266;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;CHH;90;;Sin tarifa publicada que se pudiera citar;34;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;CIX;95;64;Sky, tarifa Basic desde, por tramo;371;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;CUZ;80;45;Sky, tarifa Basic desde, por tramo;1006;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;ATA;60;;Sin tarifa publicada que se pudiera citar;25;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;HUU;45;;Sin tarifa publicada que se pudiera citar;94;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;IQT;110;76;Sky, tarifa Basic desde, por tramo;272;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;JAU;55;67;Sky, tarifa Basic desde, por tramo;90;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;JUL;90;80;Sky, tarifa Basic desde, por tramo;205;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;MZA;65;;Sin tarifa publicada que se pudiera citar;9;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;PIU;105;70;Sky, tarifa Basic desde, por tramo;303;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;PCL;70;64;Sky, tarifa Basic desde, por tramo;227;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;PEM;100;74;Sky, tarifa Basic desde, por tramo;116;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;TCQ;110;77;Sky, tarifa Basic desde, por tramo;195;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;TYL;110;73;Sky, tarifa Basic desde, por tramo;90;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;TPP;85;65;Sky, tarifa Basic desde, por tramo;349;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;TGI;60;;Sin tarifa publicada que se pudiera citar;17;FlightConnections, LIM-TGI: 4 vuelos por semana desde enero de 2027, ninguno en noviembre de 2026 (actualizado el 15 de noviembre)
+LIM;TRU;75;60;Sky, tarifa Basic desde, por tramo;286;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)
+LIM;TBP;115;74;Sky, tarifa Basic desde, por tramo;125;FlightConnections, vuelos programados de Lima en noviembre de 2026 (actualizado el 2 de noviembre)

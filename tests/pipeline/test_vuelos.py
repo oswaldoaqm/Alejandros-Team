@@ -82,3 +82,23 @@ def test_los_viajes_procesados_no_traen_negativos(columna):
         pytest.skip("sin data/procesados/vuelos_origen_base.csv")
     tabla = pd.read_csv(ruta, sep=";", encoding="utf-8-sig")
     assert (tabla[columna] >= 0).all()
+
+
+def test_la_banda_lleva_cuantos_vuelos_hay_al_mes():
+    rutas = pd.DataFrame(
+        {
+            "desde": ["LIM", "LIM"],
+            "hasta": ["CUZ", "MZA"],
+            "minutos": [80, 65],
+            "tarifa_desde_usd": [50.0, None],
+            "fuente_tarifa": ["Sky", "Sin tarifa"],
+            "vuelos_al_mes": [1006, 9],
+        }
+    )
+    assert vuelos.rutas_en_soles(rutas)["vuelos_al_mes"].tolist() == [1006, 9]
+
+
+def test_las_22_rutas_dicen_cuantos_vuelos_hay_al_mes_y_de_donde_sale():
+    rutas = pd.read_csv(REFERENCIA / "rutas_aereas.csv", sep=";")
+    assert len(rutas) == 22 and rutas["vuelos_al_mes"].notna().all()
+    assert rutas["fuente_frecuencia"].str.len().gt(0).all()
