@@ -190,6 +190,18 @@ def _a_su_hora(consulta: Consulta, ruta) -> None:
                 assert DIAS[d.fecha.weekday()] in p.recurso.dias
 
 
+def _la_zona(consulta: Consulta, ruta, datos) -> None:
+    """17. Un viaje a una zona con alerta oficial de viaje lo avisa primero (desde 1.8, decisión 0029): si se duerme
+    en ella o alguna parada lo está, el primer aviso es el de seguridad, de advertencia; si no, no hay ninguno."""
+    base = datos.polos[ruta.polo.id].base.get("zona") if consulta.dias > 1 else None
+    toca = base is not None or any(datos.recursos[p.recurso.codigo].get("zona") for d in ruta.dias for p in d.paradas)
+    de_seguridad = [a for a in ruta.avisos if a.tipo == "seguridad"]
+    assert len(de_seguridad) == int(toca)
+    if toca:
+        assert ruta.avisos[0] == de_seguridad[0] and de_seguridad[0].nivel == "advertencia"
+        event("algún viaje a una zona con alerta")
+
+
 def _los_lugares_menores_cerca(ruta) -> None:
     """15. Por un lugar menor no se va lejos (decisión 0024): una parada de jerarquía 1 o 2, o sin jerarquía, queda
     a TRAMO_MENOR_MAX minutos o menos de la anterior, o de la base si es la primera, y de la que sigue."""
@@ -257,6 +269,7 @@ def test_las_propiedades(consulta):
         _el_dia_tranquilo(consulta, ruta, datos)
         _los_lugares_menores_cerca(ruta)
         _a_su_hora(consulta, ruta)
+        _la_zona(consulta, ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

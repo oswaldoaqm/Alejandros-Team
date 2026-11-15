@@ -108,6 +108,16 @@ POLOS_A_PLANIFICAR = 12  # como mínimo; se sigue hasta tener tres bases distint
 POLOS_A_PLANIFICAR_MAX = 30
 CANDIDATAS_MAX = 40
 ALTITUD_AVISO_M = 3_500
+# Las zonas con alerta oficial de viaje (pipeline/referencia/zonas_de_seguridad.csv, decisión 0029): cómo se
+# nombran y por qué se avisa. El VRAEM es el del D.S. 133-2022-PCM, y las alertas, las de Canadá (6 de noviembre
+# de 2026, evitar todo viaje) y Estados Unidos (16 de mayo de 2025, no viajar).
+ZONAS_DE_SEGURIDAD = {
+    "vraem": (
+        "el VRAEM (el valle de los ríos Apurímac, Ene y Mantaro)",
+        "Es una zona de narcotráfico, con remanentes de Sendero Luminoso: Canadá y Estados Unidos recomiendan no "
+        "viajar ahí. Antes de decidir, revisa las alertas de viaje vigentes.",
+    ),
+}
 KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la estación o al muelle
 # Cuándo se vuela (decisión 0016). Solo a lo lejano: lo que por tierra no pasa de 16 horas se
 # hace en un bus de noche, como Trujillo o Huaraz desde Lima. Y solo si en avión se llega al
@@ -968,10 +978,35 @@ CODIGO_MACHU_PICCHU = "917"
 POLOS_VRAEM = frozenset({"Kimbiri", "Pichari", "Llochegua", "Chirumpiari", "Mazamari", "San Martín de Pangoa"})
 
 
+def aviso_de_seguridad(it: Itinerario, visitadas: list[dict]) -> Aviso | None:
+    """Si se duerme en una zona con alerta oficial de viaje, o alguna parada está en ella (decisión 0029). Va
+    primero entre los avisos. Si se duerme ahí, nombra la base; si no, las paradas."""
+    duerme = it.polo.base.get("zona") if it.plan.tipo_viaje == "estrella" else None
+    en_zona = [r for r in visitadas if r.get("zona")]
+    zona = duerme or (en_zona[0]["zona"] if en_zona else None)
+    if zona is None:
+        return None
+    nombre, por_que = ZONAS_DE_SEGURIDAD[zona]
+    nombres = [r["nombre"] for r in en_zona]
+    if duerme:
+        donde = f"{it.polo.base['nombre']}, donde se duerme, está en {nombre}"
+    elif len(nombres) == 1:
+        donde = f"{nombres[0]} está en {nombre}"
+    elif len(nombres) <= 3:
+        donde = f"{textos.lista(nombres)} están en {nombre}"
+    else:
+        donde = f"{len(nombres)} paradas están en {nombre}, entre ellas {textos.lista(nombres[:3])}"
+    return Aviso(tipo="seguridad", nivel="advertencia", mensaje=f"{donde}. {por_que}")
+
+
 def avisos(
     it: Itinerario, consulta: Consulta, est: Estacionalidad, costo: Costo, dias: list[Dia], datos: Datos
 ) -> list[Aviso]:
     polo, salida = it.polo, []
+    visitadas = [datos.recursos[polo.paradas[c.i]] for c in _visitadas(it)]
+    seguridad = aviso_de_seguridad(it, visitadas)
+    if seguridad is not None:
+        salida.append(seguridad)
     if est.veredicto != "viable":
         mejores = textos.meses(est.mejores_meses[:4]) if est.mejores_meses else "ninguno del todo seco"
         salida.append(
@@ -981,7 +1016,6 @@ def avisos(
                 mensaje=f"{est.explicacion} Mejores meses para ir: {mejores}.",
             )
         )
-    visitadas = [datos.recursos[polo.paradas[c.i]] for c in _visitadas(it)]
     altas = sorted((r for r in visitadas if (r["altitud_m"] or 0) >= ALTITUD_AVISO_M), key=lambda r: -r["altitud_m"])
     if altas:
         salida.append(
