@@ -202,6 +202,17 @@ def _la_zona(consulta: Consulta, ruta, datos) -> None:
         event("algún viaje a una zona con alerta")
 
 
+def _las_entradas(ruta, datos) -> None:
+    """18. Cada parada que vende un número fijo de entradas por día trae su aviso de entradas, y solo esas (desde
+    1.8, decisión 0029)."""
+    cupos = [datos.recursos[p.recurso.codigo].get("cupo") for d in ruta.dias for p in d.paradas]
+    esperados = sorted(f"A {c['nombre']} entran " for c in cupos if c)
+    avisos = sorted(a.mensaje for a in ruta.avisos if a.tipo == "entradas")
+    assert len(avisos) == len(esperados) and all(m.startswith(e) for m, e in zip(avisos, esperados, strict=True))
+    if esperados:
+        event("alguna parada con cupo de entradas")
+
+
 def _los_lugares_menores_cerca(ruta) -> None:
     """15. Por un lugar menor no se va lejos (decisión 0024): una parada de jerarquía 1 o 2, o sin jerarquía, queda
     a TRAMO_MENOR_MAX minutos o menos de la anterior, o de la base si es la primera, y de la que sigue."""
@@ -270,6 +281,7 @@ def test_las_propiedades(consulta):
         _los_lugares_menores_cerca(ruta)
         _a_su_hora(consulta, ruta)
         _la_zona(consulta, ruta, datos)
+        _las_entradas(ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

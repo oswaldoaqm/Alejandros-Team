@@ -999,6 +999,22 @@ def aviso_de_seguridad(it: Itinerario, visitadas: list[dict]) -> Aviso | None:
     return Aviso(tipo="seguridad", nivel="advertencia", mensaje=f"{donde}. {por_que}")
 
 
+def aviso_de_entradas(cupo: dict) -> Aviso:
+    """Una parada que vende un número fijo de entradas por día (decisión 0029): cuántas personas entran y dónde se
+    compran, de pipeline/referencia/entradas_con_cupo.csv."""
+    alta = f", y {textos.miles(cupo['por_dia_alta'])} en temporada alta" if cupo.get("por_dia_alta") else ""
+    en_linea, en_persona, cuantas = cupo.get("en_linea"), cupo.get("en_persona"), cupo.get("en_persona_por_dia")
+    solo = f" y, solo {textos.miles(cuantas)} al día," if cuantas else " y"
+    if en_linea and en_persona:
+        donde = f" Las entradas se venden en {en_linea}{solo} en persona en {en_persona}."
+    elif en_linea or en_persona:
+        donde = " Las entradas se venden solo " + (f"en {en_linea}." if en_linea else f"en persona, en {en_persona}.")
+    else:
+        donde = ""
+    cuantos = f"A {cupo['nombre']} entran {textos.miles(cupo['por_dia'])} personas al día como máximo{alta}."
+    return Aviso(tipo="entradas", nivel="info", mensaje=f"{cuantos}{donde} Compra la entrada con anticipación.")
+
+
 def avisos(
     it: Itinerario, consulta: Consulta, est: Estacionalidad, costo: Costo, dias: list[Dia], datos: Datos
 ) -> list[Aviso]:
@@ -1112,6 +1128,7 @@ def avisos(
                 "revisa las alertas oficiales antes de viajar y muévete solo de día por las vías principales.",
             )
         )
+    salida += [aviso_de_entradas(r["cupo"]) for r in visitadas if r.get("cupo")]
     largas = [r for r in visitadas if (r["caminata_min"] or 0) >= 60]
     if largas:
         nombres = textos.lista([r["nombre"] for r in largas[:3]])
