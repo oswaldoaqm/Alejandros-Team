@@ -14,9 +14,11 @@ from pipeline.maestro import (
     COLUMNAS,
     DIAMETRO_MAX,
     REFERENCIA,
+    HorariosCorregidos,
     ReglasDuracion,
     ReglasIntereses,
     asignar_polos,
+    con_referencias,
     construir,
     descripcion_corta,
     distancia_a_su_distrito,
@@ -113,6 +115,34 @@ def test_duracion_de_lo_especifico_a_lo_general():
         assert all(int(fila["minutos"]) > 0 for fila in csv.DictReader(f, delimiter=";"))
 
 
+def test_horarios_corregidos_mandan_sobre_la_ficha():
+    horarios = HorariosCorregidos.cargar()
+    assert horarios.de(4033, "07:00", "22:30", None) == ("15:00", "22:00", "mie|jue|vie|sab|dom", "referencia")
+    assert horarios.de(1237, "10:00", "16:00", None) == ("10:00", "16:00", None, "ficha")
+    assert horarios.de(1, None, None, None) == (None, None, None, None)
+    with open(REFERENCIA / "horarios_corregidos.csv", encoding="utf-8") as f:
+        assert all(fila["fuente"].startswith("https://") for fila in csv.DictReader(f, delimiter=";"))
+
+
+def test_rehacer_solo_las_referencias_no_toca_lo_demas():
+    columnas = ["codigo", "categoria_num", "tipo", "subtipo", "jerarquia", "visita_min", "visita_min_fuente"]
+    columnas += ["abre", "cierra", "dias", "epoca", "descripcion_corta"]
+    filas = [
+        ["4033", "2", "Arquitectura y Espacios Urbanos", "Parques", "3", "30", "referencia:subtipo"]
+        + ["07:00", "22:30", "", "Todo el año", "Fuentes; luces"],
+        ["5", "2", "Arquitectura y Espacios Urbanos", "Plazas", "", "20", "referencia:subtipo"] + ["", "", "", "", ""],
+    ]
+    antes = pd.DataFrame(filas, columns=columnas)
+    despues = con_referencias(antes)
+    assert list(despues.columns) == columnas[:10] + ["horario_fuente"] + columnas[10:]
+    circuito, plaza = despues.to_dict("records")
+    assert (circuito["visita_min"], circuito["visita_min_fuente"]) == ("30", "referencia:subtipo")
+    assert (circuito["abre"], circuito["cierra"], circuito["dias"]) == ("15:00", "22:00", "mie|jue|vie|sab|dom")
+    assert (circuito["horario_fuente"], circuito["descripcion_corta"]) == ("referencia", "Fuentes; luces")
+    assert (plaza["visita_min"], plaza["abre"], plaza["horario_fuente"]) == ("20", "", "")
+    assert con_referencias(despues).equals(despues)
+
+
 def test_distancia_a_su_distrito_detecta_el_punto_perdido():
     tabla = pd.DataFrame(
         {
@@ -201,7 +231,7 @@ def test_construir_con_la_muestra():
     assert (caral.nombre, caral.polo, caral.polo_fuente) == ("Ciudad Sagrada de Caral", 70, "v2")
     assert (caral.jerarquia, caral.altitud_m, caral.altitud_fuente, caral.altitud_dem_m) == (4, 350, "ficha", 349)
     assert (caral.tarifa_soles, caral.abre, caral.cierra) == (11, "10:00", "16:00")
-    assert caral.dias == "lun|mar|mie|jue|vie|sab|dom"
+    assert (caral.dias, caral.horario_fuente) == ("lun|mar|mie|jue|vie|sab|dom", "ficha")
     assert caral.es_parada and caral.visita_min == 90
     assert "historia" in caral.intereses.split("|")
     assert caral.url_ficha.endswith("cod_Ficha=1237")

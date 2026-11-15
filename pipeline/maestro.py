@@ -86,6 +86,13 @@ def _referencia(nombre: str) -> list[dict[str, str]]:
         return list(csv.DictReader(f, delimiter=";"))
 
 
+def _texto(x: object) -> str | None:
+    """Un texto del maestro, o None si viene vacío."""
+    if x is None or x == "" or (isinstance(x, float) and np.isnan(x)):
+        return None
+    return str(x)
+
+
 @dataclass(frozen=True)
 class ReglasIntereses:
     por_campo: dict[tuple[str, str], frozenset[str]]
@@ -128,6 +135,32 @@ class ReglasDuracion:
             if valor and (campo, valor) in self.minutos:
                 return self.minutos[(campo, valor)], f"referencia:{campo}"
         return None, None
+
+
+@dataclass(frozen=True)
+class HorariosCorregidos:
+    """Los horarios que la ficha trae mal, con su fuente (``horarios_corregidos.csv``): abre, cierra y
+    los días, como los escribe el maestro. Un campo vacío en la tabla queda vacío en el maestro."""
+
+    por_codigo: dict[int, tuple[str | None, str | None, str | None]]
+
+    @classmethod
+    def cargar(cls) -> HorariosCorregidos:
+        return cls(
+            {
+                int(f["codigo"]): (f["abre"] or None, f["cierra"] or None, f["dias"] or None)
+                for f in _referencia("horarios_corregidos.csv")
+            }
+        )
+
+    def de(
+        self, codigo: int, abre: str | None, cierra: str | None, dias: str | None
+    ) -> tuple[str | None, str | None, str | None, str | None]:
+        """El horario de un recurso y de dónde sale: ``referencia`` si está corregido, ``ficha`` si la
+        ficha trae algo, y nada si no se sabe."""
+        if codigo in self.por_codigo:
+            return (*self.por_codigo[codigo], "referencia")
+        return abre, cierra, dias, ("ficha" if abre or cierra or dias else None)
 
 
 # ── Resumen de una ficha ────────────────────────────────────────────────────────────
@@ -437,6 +470,7 @@ COLUMNAS = [
     "abre",
     "cierra",
     "dias",
+    "horario_fuente",
     "epoca",
     "epoca_observaciones",
     "acceso_km",
@@ -506,6 +540,7 @@ def construir(inventario: pd.DataFrame, fichas: dict[int, Ficha], v2: pd.DataFra
     """El maestro v3. ``v2`` es polos_asignados_v2.csv con sus columnas originales."""
     intereses = ReglasIntereses.cargar()
     duracion = ReglasDuracion.cargar()
+    horarios = HorariosCorregidos.cargar()
 
     tabla = inventario.copy()
     tabla["nombre"] = tabla["nombre"].map(nombre_legible)
@@ -571,6 +606,12 @@ def construir(inventario: pd.DataFrame, fichas: dict[int, Ficha], v2: pd.DataFra
     ]
     tabla["visita_min"] = [m for m, _ in visita]
     tabla["visita_min_fuente"] = [f for _, f in visita]
+    horario = [
+        horarios.de(k, _texto(a), _texto(c), _texto(d))
+        for k, a, c, d in zip(tabla["codigo"], tabla["abre"], tabla["cierra"], tabla["dias"], strict=True)
+    ]
+    for i, columna in enumerate(("abre", "cierra", "dias", "horario_fuente")):
+        tabla[columna] = [h[i] for h in horario]
     tabla["motivo_no_parada"] = tabla.apply(_motivo_no_parada, axis=1)
     tabla["es_parada"] = tabla["motivo_no_parada"].isna()
     for columna in ENTEROS:
@@ -615,6 +656,25 @@ def resumen(maestro: pd.DataFrame) -> dict[str, object]:
     }
 
 
+def con_referencias(maestro: pd.DataFrame) -> pd.DataFrame:
+    """Rehace lo del maestro que sale de las tablas de referencia escritas a mano, sin volver a leer las
+    fichas: los horarios corregidos (``--solo-referencias``). ``maestro`` es el CSV leído como texto, y lo
+    demás queda igual, byte por byte. Una corrección que se quita de la tabla no devuelve el horario de la
+    ficha: para eso se vuelve a correr el maestro entero."""
+    horarios = HorariosCorregidos.cargar()
+    tabla = maestro.copy()
+    if "horario_fuente" not in tabla:
+        tabla.insert(tabla.columns.get_loc("dias") + 1, "horario_fuente", "")
+    horario = []
+    for f in tabla.itertuples(index=False):
+        horario.append(
+            tuple(x or "" for x in horarios.de(int(f.codigo), _texto(f.abre), _texto(f.cierra), _texto(f.dias)))
+        )
+    for i, columna in enumerate(("abre", "cierra", "dias", "horario_fuente")):
+        tabla[columna] = [h[i] for h in horario]
+    return tabla
+
+
 def leer_fichas(carpeta: Path, codigos: set[int] | None = None) -> dict[int, Ficha]:
     """Las fichas guardadas en ``carpeta``; solo las de ``codigos`` si se da."""
     fichas = {}
@@ -632,7 +692,19 @@ def main() -> None:
     ap.add_argument("--fichas", type=Path, default=EXTERNOS / "fichas_html")
     ap.add_argument("--polos-v2", type=Path, default=POLOS_V2)
     ap.add_argument("--salida", type=Path, default=PROCESADOS)
+    ap.add_argument(
+        "--solo-referencias",
+        action="store_true",
+        help="Rehace solo los horarios corregidos del maestro que ya está en --salida, sin leer las fichas",
+    )
     a = ap.parse_args()
+
+    if a.solo_referencias:
+        ruta = a.salida / "maestro_v3.csv"
+        maestro = pd.read_csv(ruta, sep=";", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+        con_referencias(maestro).to_csv(ruta, sep=";", index=False, encoding="utf-8-sig", lineterminator="\n")
+        print(f"Horarios rehechos en {ruta}")
+        return
 
     inventario = leer_inventario(a.inventario)
     fichas = leer_fichas(a.fichas)

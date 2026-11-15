@@ -108,8 +108,9 @@ Los 222 grupos del modelo v2 se mantienen, con sus mismos números. Cada uno sig
 | `ingreso` | `libre`, `boleto`, `permiso` (semi-restringido) u `otro` | Ficha |
 | `tarifa_soles`, `tarifa_regla` | Entrada de un adulto peruano. 0 si el ingreso es libre. La regla dice cómo se eligió entre los montos del texto (ver `leer_tarifa`) | Ficha, con `leer_tarifa` |
 | `boleto_combinado` | La entrada es parte de un boleto para varios lugares (Boleto Turístico del Cusco, un circuito): se paga una vez por viaje | Ficha |
-| `abre`, `cierra` | Horario en 24 h | Ficha, con `leer_horario` |
-| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (862 lugares) | Ficha, con `leer_dias` |
+| `abre`, `cierra` | Horario en 24 h | Ficha, con `leer_horario`, o la corrección de [`pipeline/referencia/horarios_corregidos.csv`](../../pipeline/referencia/horarios_corregidos.csv) |
+| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (862 lugares) o los corrige la referencia | Ficha, con `leer_dias`, o la corrección |
+| `horario_fuente` | De dónde salen `abre`, `cierra` y `dias`: `ficha`, `referencia` o vacío si no se sabe | |
 | `epoca`, `epoca_observaciones` | Época propicia de visita, como la escribe la ficha, sin los datos de contacto ([`pipeline/README.md`](../../pipeline/README.md#datos-personales)) | Ficha |
 
 ### Acceso
