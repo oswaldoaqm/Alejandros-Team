@@ -306,6 +306,12 @@ export function DetalleRuta({
                   ? `Ida y vuelta en el día desde ${traslado.desde}`
                   : `Duermes en ${polo.base.nombre}${polo.base.altitud_m != null ? `, a ${metros(polo.base.altitud_m)}` : ""}`}
               </li>
+              {!excursion && (polo.hospedajes ?? []).length > 0 ? (
+                <li className="portada__hospedajes">
+                  <Icono nombre="pin" />
+                  {`Cerca: ${lista((polo.hospedajes ?? []).map((h) => `${h.nombre} (${h.tipo}, a ${metros(Math.round(h.km * 100) * 10)})`))}`}
+                </li>
+              ) : null}
             </ul>
             <DatosClave datos={datosClave(ruta, excursion)} />
           </div>
