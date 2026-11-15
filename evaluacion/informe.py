@@ -8,8 +8,9 @@ revisa que sean de este kit y escribe en data/evaluacion/resultados/:
   notas.csv      cada viaje con la nota de cada quien, su media y el puesto que le da cada sistema
   metricas.csv   por consulta y por sistema: nDCG@3, P@3, el rango recíproco y cuántos no encajan
   resumen.json   el acuerdo, la media de cada métrica por sistema, las comparaciones, la cobertura y la
-                 novedad, lo mismo por interés, y la nota de los viajes según cuánto se lleva el bus de noche,
-                 como lo dice el cuadernillo que vio quien calificó (decisión 0027)
+                 novedad, lo mismo por interés, la nota de los viajes según cuánto se lleva el bus de noche,
+                 como lo dice el cuadernillo que vio quien calificó (decisión 0027), y lo que propone el motor
+                 de ahora para las mismas consultas, con la nota que tenían esas zonas en el kit
 
 Uso:  python -m evaluacion.informe
 """
@@ -25,6 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from dreemgo.motor import datos as artefactos
+from dreemgo.motor import viaje
 from evaluacion import acuerdo, consultas, metricas
 
 RAIZ = Path(__file__).resolve().parents[1]
@@ -117,7 +119,49 @@ def _media(valores: list[int | None]) -> float | None:
     return sum(hay) / len(hay) if hay else None
 
 
-def calcular(clave: Path, calificaciones: Path, cuadernillo: Path | None = None) -> tuple[list[dict], list[dict], dict]:
+def motor_de_ahora(viajes: list[Viaje], media: dict, datos) -> dict:
+    """Lo que propone el motor con los datos que carga para las consultas del kit, contra lo que propuso cuando se
+    armó: las calificaciones valen para esa versión, y esto dice cuánto se alejó. Una zona que el kit no tiene
+    queda sin nota."""
+    nota = {(v.consulta, v.polo): media[(v.consulta, v.opcion)] for v in viajes}
+    del_kit: dict[int, list[int]] = defaultdict(list)
+    for v in sorted((v for v in viajes if "motor" in v.puestos), key=lambda v: v.puestos["motor"]):
+        del_kit[v.consulta].append(v.polo)
+    nombre = {v.polo: v.zona for v in viajes}
+    cambian, sin_nota, con_nota, antes, primeros = 0, 0, [], [], []
+    for c in (c for c in consultas.leer() if c.id in del_kit):
+        ahora = [r.polo.id for r in viaje.resolver(c.consulta, datos, sugerir=False).rutas]
+        cambian += ahora != del_kit[c.id]
+        for p in ahora:
+            m = nota.get((c.id, p))
+            sin_nota += m is None
+            if m is not None:
+                con_nota.append(m)
+        antes += [nota[(c.id, p)] for p in del_kit[c.id] if nota.get((c.id, p)) is not None]
+        if ahora and del_kit[c.id] and ahora[0] != del_kit[c.id][0]:
+            primeros.append(
+                {
+                    "consulta": c.id,
+                    "antes": nombre.get(del_kit[c.id][0]),
+                    "nota_antes": nota.get((c.id, del_kit[c.id][0])),
+                    "ahora": nombre.get(ahora[0], datos.polos[ahora[0]].base["nombre"]),
+                    "nota_ahora": nota.get((c.id, ahora[0])),
+                }
+            )
+    return {
+        "version_datos": datos.version,
+        "consultas_que_cambian": cambian,
+        "propuestas": len(con_nota) + sin_nota,
+        "sin_nota_en_el_kit": sin_nota,
+        "media_con_nota": sum(con_nota) / len(con_nota) if con_nota else None,
+        "media_del_kit": sum(antes) / len(antes) if antes else None,
+        "otro_primer_puesto": primeros,
+    }
+
+
+def calcular(
+    clave: Path, calificaciones: Path, cuadernillo: Path | None = None, con_el_motor_de_ahora: bool = False
+) -> tuple[list[dict], list[dict], dict]:
     viajes, sistemas = leer_clave(clave)
     quienes = leer_calificaciones(calificaciones, viajes)
     nombres = sorted(quienes)
@@ -223,6 +267,8 @@ def calcular(clave: Path, calificaciones: Path, cuadernillo: Path | None = None)
             }
             for t, ms in sorted(tramos.items())
         }
+    if con_el_motor_de_ahora and "motor" in sistemas:
+        resumen["motor_de_ahora"] = motor_de_ahora(viajes, media, datos)
     return notas, filas, resumen
 
 
@@ -240,7 +286,7 @@ def main() -> None:
     ap.add_argument("--salida", type=Path, default=CARPETA / "resultados")
     ap.add_argument("--cuadernillo", type=Path, default=CARPETA / "cuadernillo.html")
     a = ap.parse_args()
-    notas, filas, resumen = calcular(a.clave, a.calificaciones, a.cuadernillo)
+    notas, filas, resumen = calcular(a.clave, a.calificaciones, a.cuadernillo, con_el_motor_de_ahora=True)
     a.salida.mkdir(parents=True, exist_ok=True)
     _escribir(a.salida / "notas.csv", notas)
     _escribir(a.salida / "metricas.csv", filas)
