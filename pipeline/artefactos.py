@@ -191,12 +191,20 @@ def entradas_con_cupo() -> dict[str, dict]:
     }
 
 
+def de_noche() -> dict[str, dict]:
+    """Código → un lugar que se ve de noche (``de_noche.csv``, decisión 0030): cómo se lo nombra y las horas de sus
+    funciones. El motor no lo pone en el día, sino en la noche del viaje."""
+    tabla = pd.read_csv(REFERENCIA / "de_noche.csv", sep=";", dtype=str, keep_default_na=False)
+    return {f.codigo: {"nombre": f.nombre, "funciones": f.funciones.split("|")} for f in tabla.itertuples()}
+
+
 def recursos(
     maestro: pd.DataFrame,
     comida: pd.DataFrame | None = None,
     por_acceso: dict[str, str] | None = None,
     zonas: pd.DataFrame | None = None,
     cupos: dict[str, dict] | None = None,
+    de_noche_: dict[str, dict] | None = None,
 ) -> list[dict]:
     """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
     lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
@@ -204,11 +212,13 @@ def recursos(
     si lo hay (``por_acceso``, por defecto ``vale_como()``): el motor la usa para su valor, y la
     jerarquía oficial no cambia. ``zona`` es la de su distrito si tiene una alerta oficial de viaje
     (``zonas``, por defecto ``zonas_de_seguridad()``), o null; y ``cupo``, el de sus entradas si vende un
-    número fijo por día (``cupos``, por defecto ``entradas_con_cupo()``), o null."""
+    número fijo por día (``cupos``, por defecto ``entradas_con_cupo()``), o null; y ``de_noche``, su nombre y las
+    horas de sus funciones si se ve de noche (``de_noche_``, por defecto ``de_noche()``), o null."""
     cerca = _comida(comida, "recurso")
     por_acceso = vale_como() if por_acceso is None else por_acceso
     por_distrito = zona_por_distrito(zonas_de_seguridad() if zonas is None else zonas)
     cupos = entradas_con_cupo() if cupos is None else cupos
+    de_noche_ = de_noche() if de_noche_ is None else de_noche_
     jerarquia = {str(c): _entero(j) for c, j in zip(maestro["codigo"], maestro["jerarquia"], strict=True)}
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
@@ -225,6 +235,7 @@ def recursos(
                 "vale_como_jerarquia": jerarquia.get(por_acceso.get(str(f["codigo"]), "")),
                 "zona": por_distrito.get(_distrito(f["region"], f["provincia"], f["distrito"])),
                 "cupo": cupos.get(str(f["codigo"])),
+                "de_noche": de_noche_.get(str(f["codigo"])),
                 "lat": round(float(f["lat"]), 6),
                 "lon": round(float(f["lon"]), 6),
                 "altitud_m": _entero(f["altitud_m"]),
