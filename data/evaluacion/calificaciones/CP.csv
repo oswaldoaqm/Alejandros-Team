@@ -1,0 +1,197 @@
+﻿consulta;opcion;zona;calificacion;comentario
+1;A;Cerro de Pasco;0;Son casi 12 horas de viaje ida y vuelta para solo dos días, y subir directo a 4300 m les va a dar un soroche bravo.
+1;B;Huancayo;2;
+1;C;Huaraz;1;El bus nocturno sirve, pero subir a más de 4400 m el segundo día puede ser pesado para un viaje tan corto.
+1;D;Huacho;2;
+1;E;Nasca;2;
+2;A;Cuzco;0;Se pasa de su presupuesto por más de 200 soles y en solo 3 días en avión casi no da tiempo de aclimatarse para caminar.
+2;B;La Merced;1;Tiene buenas caminatas a cataratas, pero pidieron sierra y Chanchamayo es selva central.
+2;C;Huacho;0;No encaja, es un viaje por la costa y sitios arqueológicos, no tiene nada de caminatas en la sierra.
+2;D;Huaraz;2;
+2;E;Cerro de Pasco;1;El bosque de piedras de Huayllay es genial para caminar, pero dormir a 4300 m el primer día es muy duro para solo 3 días.
+3;A;Huancayo;2;
+3;B;Cuzco;0;Peligroso para el abuelo porque sube a más de 3700 m, además de que cuesta el doble de su presupuesto.
+3;C;Huacho;2;
+3;D;Oxapampa;1;El clima y la altura están bien para el abuelo, pero casi no tiene sitios de historia o arqueología.
+3;E;Huaraz;0;No va, las visitas en el Huascarán pasan los 4400 m y el abuelo no puede pasar de 3500 m.
+3;F;Paracas;2;
+3;G;Trujillo;2;
+4;A;Paracas;1;En mayo ya corre bastante viento en Paracas y el agua está fría, no es tanto para meterse a la playa.
+4;B;Cajamarca;0;Cajamarca queda en la sierra andina a 2700 m, no tiene ninguna playa.
+4;C;Huarmey;1;Tuquillo y las playas de Huarmey son bonitas, aunque en mayo el agua de la costa central ya está fría.
+4;D;Los Órganos;2;
+4;E;Trujillo;0;En mayo Huanchaco está nublado y con mar frío, no da para un viaje de playa de cinco días.
+4;F;Ilo;0;Ilo queda lejísimos en bus desde Lima y en mayo el mar del sur está helado.
+5;A;Nasca;1;Tiene sitios increíbles como Cahuachi y las líneas, pero seis días completos solo en Nasca se hacen largos.
+5;B;Arequipa;2;
+5;C;Cuzco;2;
+5;D;Puno;1;Sillustani y los sitios arqueológicos valen la pena, pero en julio de noche hace un frío bajo cero tremendo.
+6;A;Yanque;2;
+6;B;Huaraz;2;
+6;C;Iquitos;2;
+6;D;Moyobamba;2;
+6;E;Puno;1;El Titicaca es lindo, pero es un viaje más tranquilo y contemplativo que de aventura intensa.
+6;F;Kimbiri;0;Son casi 16 horas de bus por sentido hacia el VRAEM por una ruta pesada, no vale la pena para vacaciones de aventura.
+7;A;La Merced;0;La Merced es selva, no tiene playa ni comida marina.
+7;B;Trujillo;1;La comida marina en Huanchaco es buenaza, pero para bañarse con niños en febrero las playas del norte chico son más cálidas.
+7;C;Chincha Alta;1;Tiene rica comida criolla, pero sus playas no son tan buenas para un viaje familiar.
+7;D;Cuzco;0;Cusco está en la sierra y en febrero llueve un montón, nada que ver con playa ni comida marina.
+7;E;Huacho;2;
+8;A;La Merced;0;Son más de 8 horas de viaje para solo dos días y La Merced no tiene mucha vida nocturna.
+8;B;Huacho;2;
+8;C;Chincha Alta;1;La carapulcra y las peñas son buenas, pero para salir de noche hay pocas opciones.
+8;D;Huánuco;1;La comida tradicional es rica, pero el viaje en bus es muy largo para un fin de semana.
+9;A;Cuzco;2;
+9;B;Trujillo;2;
+9;C;Nasca;0;Nasca tiene mucha arqueología, pero no tiene ninguna tradición festiva de Semana Santa.
+9;D;Puno;0;En marzo llueve fuertísimo en Puno y la fiesta grande de allá es la Candelaria en febrero, no Semana Santa.
+9;E;Huancayo;0;Marzo es época de lluvias fuertes en la sierra central y la Carretera Central se suele cerrar por huaicos.
+10;A;Puno;1;"Puno es la capital del folclore, pero su fiesta grande es la Candelaria en febrero; a finales de junio no hay fiesta mayor y hace un frío helado."
+10;B;Huancayo;1;El valle es bonito y hay fiestas patronales, pero para ocho días no tiene la magnitud de fiesta andina que busca.
+10;C;Yanque;1;El Colca tiene pueblos tradicionales lindos, pero en esas fechas no hay una fiesta andina grande.
+10;D;Cuzco;2;"Justo coincide con el Inti Raymi del 24 de junio y las fiestas del Cusco; calza exacto con lo que pidió la profesora."
+11;A;Jauja;1;Cumple con ir por tierra y la laguna de Paca es bonita, aunque en diciembre ya empiezan las lluvias en la sierra.
+11;B;Kimbiri;0;"Son casi 16 horas de bus por sentido; se pasaría la mitad del viaje metido en la carretera."
+11;C;Cerro de Pasco;1;Va por tierra, pero en diciembre a más de 4300 m hace demasiado frío y lluvia para pasear.
+11;D;Paracas;2;
+11;E;Íllimo;1;El bosque de Pómac es genial, pero casi 15 horas de bus de ida y 15 de vuelta es demasiado para solo cuatro días.
+11;F;Huaraz;1;El bus de noche ayuda a no volar, pero en diciembre la Cordillera Blanca ya suele estar nublada y con lluvias.
+12;A;Puno;0;Cuesta más del triple de lo que tiene el mochilero.
+12;B;Cerro de Pasco;0;Se pasa del presupuesto por casi el doble.
+12;C;Oxapampa;1;El costo del motor se pasa de 600 soles, pero acampando o en hostales baratos un mochilero la puede hacer.
+12;D;Cajamarca;0;El presupuesto estimado duplica lo que tiene para gastar.
+12;E;Trujillo;0;Supera por más del doble los 600 soles para seis días.
+12;F;Cuzco;0;Con pasajes y entradas a ruinas cuesta casi tres veces lo que tiene.
+12;G;Huaraz;1;Se pasa del cálculo oficial, pero Huaraz tiene hostales mochileros baratos y caminatas por libre en agosto seco.
+13;A;Cuzco;2;
+13;B;Huaraz;2;
+13;C;Yanque;2;
+13;D;Moyobamba;2;
+13;E;Puno;1;El lago es hermoso, pero diez días allá es más para contemplar que para caminatas de aventura, y el frío en julio es bravo.
+14;A;Huacho;2;
+14;B;Nasca;1;Cumple con estar bajo los 2500 m, pero Nasca es más arqueología en el desierto que arquitectura urbana.
+14;C;Trujillo;2;
+14;D;Chiclayo;2;
+15;A;Huacho;0;El itinerario no tiene nada de playa, los mandan a puras iglesias y ruinas.
+15;B;Huarmey;1;Tuquillo es una playaza, pero 11 horas de carretera ida y vuelta es mucho para solo un fin de semana.
+15;C;Paracas;2;
+15;D;Nasca;0;Nasca es puro desierto interior, no tiene playa.
+16;A;Ayacucho;2;
+16;B;Trujillo;1;Es un viaje cultural interesante, pero Trujillo es un destino muy clásico que no tiene mucho factor sorpresa.
+16;C;Huaraz;2;
+16;D;Puno;1;El Titicaca es impactante, pero la altura y el frío en Puno se sienten bastante para un viaje que pedía sorprenderla.
+16;E;Arequipa;1;Arequipa es una maravilla, pero para quien pide 'Sorpréndeme' es uno de los destinos más tradicionales del país.
+17;A;Machupicchu Pueblo;2;
+17;B;Yunguyo;0;"Yunguyo queda en la frontera con Bolivia a más de 7 horas de viaje; no tiene sentido para solo dos días."
+17;C;Puno;1;El bus nocturno permite conocer Sillustani, pero viajar hasta Puno para solo dos días estando ya en Cusco deja reparos.
+17;D;Yanque;1;Ocho horas de bus nocturno para solo 48 horas en el Colca queda un poco apretado.
+17;E;Ayaviri;2;
+18;A;Ilo;0;Viajar 14 horas en bus para ir al desierto y playa de Ilo no tiene sentido si querían caminar en la naturaleza.
+18;B;Yanque;2;
+18;C;Arequipa;1;La campiña es bonita, pero el plan está más enfocado en museos y ciudad que en caminatas de naturaleza.
+18;D;Puno;1;Hay caminatas bonitas frente al lago, pero el frío en la noche en agosto en la puna es fuertísimo.
+18;E;Miraflores;0;Tomar un vuelo a Lima para ir a Miraflores es lo contrario a un viaje de caminatas en la naturaleza.
+18;F;Kimbiri;1;Cataratas y selva virgen muy bonitas, pero la bajada al VRAEM en bus toma casi 13 horas por una ruta cansada.
+19;A;Puno;1;En febrero llueve bastante en el altiplano y suele estar nublado, aunque la fiesta de la Candelaria le da ambiente.
+19;B;Mollendo;2;
+19;C;Ilo;1;Buen clima de verano en la costa, pero 14 horas de bus por sentido es demasiado para solo tres días.
+19;D;Arequipa;0;En febrero Arequipa sufre sus peores lluvias, se caen huaicos y suelen cortar la carretera.
+19;E;Nasca;1;Clima seco garantizado en el desierto, pero son 14 horas de viaje en bus.
+19;F;Ayacucho;0;En febrero llueve mucho en la sierra y la ruta Cusco-Ayacucho suele tener derrumbes.
+20;A;Ilo;0;Ilo es muy tranquilo, no tiene vida nocturna para un grupo de amigos y el viaje en bus es larguísimo.
+20;B;Urubamba;2;
+20;C;Huacho;0;Volar a Lima para terminar yéndose en bus a Huacho a buscar fiesta no tiene ningún sentido.
+20;D;Miraflores;2;
+21;A;Puno;1;El Titicaca es lindo, pero en julio de noche hace temperaturas bajo cero que para una familia con niños son bien pesadas.
+21;B;Yanque;2;
+21;C;Ilo;1;Ilo queda cerca, pero en julio la costa sur está fría y con neblina, no se disfruta tanto el paisaje.
+21;D;Cuzco;1;Diez horas de bus por sentido es demasiado viaje para una salida familiar de solo tres días.
+22;A;Cuzco;2;
+22;B;Nasca;1;El bus de noche cumple, pero el desierto y el calor de Nasca pueden cansar a un jubilado.
+22;C;Yanque;2;
+22;D;Puno;1;Sillustani es impresionante, pero a más de 3800 m el frío y la altura constante pueden incomodar a un adulto mayor.
+22;E;Moquegua;2;
+23;A;Puno;0;"Puno está en el altiplano a casi 4000 m; no tiene playa de verano."
+23;B;La Pampa;2;
+23;C;Mollendo;2;
+23;D;Ilo;2;
+24;A;Miraflores;0;Miraflores en Lima es puro centro urbano y centros comerciales, nada de aventura.
+24;B;Nasca;2;
+24;C;Yanque;2;
+24;D;Íllimo;0;Hacer dos vuelos de escala para ir a ver pirámides de barro a Lambayeque no tiene nada de aventura.
+24;E;Huaraz;0;Incumple el límite de altura. En Huaraz las caminatas en el Huascarán pasan de los 4400 m.
+25;A;Íllimo;2;
+25;B;Miraflores;2;
+25;C;Huacho;1;Diez horas de bus de noche para tres días es mucho traslado, y en historia el norte tiene opciones más ricas y cercanas.
+25;D;Chachapoyas;0;Queda a más de 14 horas al sur de Lima y Paracas es casi todo fauna marina, no historia.
+25;E;Cajamarca;1;Los museos de Lima son de primera, pero viajar 10 horas de bus por sentido para solo tres días cansa bastante.
+26;A;Miraflores;2;
+26;B;Huacho;2;
+26;C;Íllimo;2;
+26;D;Los Órganos;0;"En agosto en Paracas corre mucho viento, hace frío y el agua está helada; no es para playa."
+27;A;Trujillo;2;
+27;B;Cajamarca;2;
+27;C;Íllimo;1;Tiene las pirámides de Túcume cerca, pero casi no tiene arquitectura urbana colonial o republicana.
+27;D;Miraflores;1;El centro de Lima tiene arquitectura impresionante, pero meterse 14 horas de bus de ida y vuelta para tres días es mucho.
+28;A;Miraflores;0;Lima urbana no es naturaleza para unas vacaciones familiares.
+28;B;Huaraz;2;
+28;C;Moyobamba;2;
+28;D;Cerro de Pasco;0;Llevar a una familia de la costa a dormir a más de 4300 m con heladas en julio les va a dar un soroche terrible.
+28;E;Íllimo;1;El Bosque de Pómac es muy bonito, pero cinco días completos solo en esa zona se hacen demasiados.
+29;A;Máncora;2;
+29;B;Íllimo;0;
+29;C;Colán;2;
+29;D;Los Órganos;2;
+29;E;Tumbes;1;Las playas son buenas pero febrero es época de lluvias en el norte y el viaje toma más de 5 horas.
+29;F;Trujillo;0;No tiene sentido viajar 8 horas al sur para meterse a Huanchaco con agua fría teniendo las mejores playas en Piura.
+30;A;Los Órganos;2;
+30;B;Íllimo;1;El bosque de Pómac tiene aves y algarrobos antiguos, pero le falta la aventura que busca una pareja para cinco días.
+30;C;Huaraz;2;
+30;D;Moyobamba;2;
+30;E;Miraflores;0;Volar a Lima para pasear por Miraflores no tiene nada de aventura ni naturaleza.
+31;A;Nauta;2;
+31;B;Miraflores;0;Ir de Iquitos a Miraflores en Lima es puro cemento y tiendas, nada que ver con naturaleza.
+31;C;Mazán;2;
+32;A;Nasca;0;Son más de 12 horas de viaje en bus para solo tres días y en julio Nasca no tiene fiestas tradicionales.
+32;B;Cerro de Pasco;1;Queda a pocas horas, pero a 4300 m en julio hace un frío bajo cero y no hay tanto ambiente de fiesta.
+32;C;Ayacucho;2;
+32;D;Miraflores;1;Tiene historia virreinal y Fiestas Patrias en julio, pero el viaje en bus reduce mucho los días útiles.
+33;A;Huaraz;1;Son más de 14 horas de bus nocturno y en noviembre ya llueve con frecuencia en la Cordillera Blanca.
+33;B;Ayacucho;2;
+33;C;Kimbiri;1;Selva bonita, pero el viaje de 10 horas de bus hacia el VRAEM es pesado y hay poca infraestructura para turistas.
+33;D;Jauja;2;
+33;E;Miraflores;0;Miraflores es una zona urbana de Lima, no tiene nada de caminatas en la naturaleza.
+33;F;Huacho;0;Hacer 10 horas de bus hacia la costa desértica para ver ruinas no encaja con caminatas de naturaleza.
+33;G;La Merced;2;
+34;A;Cuzco;2;
+34;B;Yanque;1;El Colca tiene iglesias coloniales bonitas, pero para historia Cusco o Arequipa tienen mucho más que ofrecer.
+34;C;Arequipa;2;
+34;D;Yunguyo;2;
+35;A;Puno;1;El lago es lindo, pero subir de la costa a 3800 m en 6 horas puede darles soroche a los chicos.
+35;B;Yanque;1;Casi 8 horas de viaje terrestre desde Tacna es demasiado cansado para una salida familiar de fin de semana.
+35;C;Moquegua;2;
+35;D;Ilo;2;
+36;A;Nasca;2;
+36;B;Huancayo;1;Wariwillka y el convento de Ocopa son interesantes, pero la densidad histórica es menor que en Cusco o Lima.
+36;C;Cuzco;2;
+36;D;Miraflores;2;
+37;A;Trujillo;2;
+37;B;Huaraz;1;Naturaleza impresionante, pero 12 horas de viaje en bus para solo tres días deja muy poco tiempo allá.
+37;C;Íllimo;2;
+37;D;Huacho;0;Hacer más de 12 horas de bus para tres días de viaje es demasiado cansado.
+37;E;Moyobamba;1;Mucha naturaleza en el Alto Mayo, pero casi 13 horas de viaje en bus y poca arqueología.
+38;A;Marcapomacocha;1;Tiene lagunas y altura sobre los 4400 m para caminar, pero viajar 10 horas teniendo los nevados de Huaraz al lado es raro.
+38;B;Huacho;0;"Huacho está al nivel del mar y es puro desierto y ruinas; nada de caminatas de montaña para un montañista."
+38;C;La Merced;0;Es selva baja cafetalera a 13 horas de bus, no tiene nada que ver con montañismo.
+38;D;Jauja;1;Tiene senderos andinos en el valle, pero meterse 13 horas de bus teniendo la Cordillera Blanca no tiene mucho sentido.
+38;E;Íllimo;0;Está a 50 m de altura en el bosque seco del norte, cero montañismo.
+38;F;Trujillo;0;Es costa urbana y arqueología, nada de caminatas de montaña.
+39;A;Cerro de Pasco;0;Subir de la selva caliente a más de 4300 m en pleno agosto helado les va a dar un soroche bravísimo.
+39;B;Moyobamba;2;
+39;C;Miraflores;0;Ir a Miraflores en Lima es un viaje de tiendas y comida urbana, nada de naturaleza ni aventura.
+39;D;Íllimo;1;El bosque seco es bonito pero son más de 13 horas de bus y no tiene actividades de aventura.
+40;A;Puno;0;Subir de la selva a casi 4000 m con heladas bajo cero en julio es muy peligroso para una familia no acostumbrada a la altura.
+40;B;Lanlacuni Bajo;2;
+40;C;Juli;0;"Casi 14 horas de bus para llegar a casi 3900 m con frío bajo cero; no es plan para una familia de la selva."
+40;D;Tinki;0;Subir directo a las faldas del Ausangate a más de 4000 m sin aclimatación le va a dar mal de altura a la familia.
+40;E;Cuzco;1;La Interoceánica conecta directo en bus nocturno, pero el salto de altura de la selva a 3400 m requiere bastante cuidado con los chicos.

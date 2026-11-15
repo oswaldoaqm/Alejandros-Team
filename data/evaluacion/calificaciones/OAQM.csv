@@ -1,0 +1,197 @@
+﻿consulta;opcion;zona;calificacion;comentario
+1;A;Cerro de Pasco;0;
+1;B;Huancayo;1;
+1;C;Huaraz;1;
+1;D;Huacho;2;
+1;E;Nasca;1;El itinerario está sobrecargado para solo 2 días (Cahuachi, Cantayoq, Palpa, Museo María Reiche, etc.), lo que puede resultar agotador para una escapada corta sin un interés temático específico.
+2;A;Cuzco;0;
+2;B;La Merced;0;
+2;C;Huacho;0;
+2;D;Huaraz;2;
+2;E;Cerro de Pasco;1;
+3;A;Huancayo;1;
+3;B;Cuzco;0;
+3;C;Huacho;1;
+3;D;Oxapampa;0;
+3;E;Huaraz;1;
+3;F;Paracas;1;
+3;G;Trujillo;0;
+4;A;Paracas;1;
+4;B;Cajamarca;0;
+4;C;Huarmey;2;
+4;D;Los Órganos;0;
+4;E;Trujillo;1;
+4;F;Ilo;0;
+5;A;Nasca;1;
+5;B;Arequipa;1;
+5;C;Cuzco;2;
+5;D;Puno;0;
+6;A;Yanque;1;
+6;B;Huaraz;2;
+6;C;Iquitos;1;
+6;D;Moyobamba;1;
+6;E;Puno;0;Vuelve a cometer el error de ignorar la navegación hacia las islas del Lago Titicaca. Es un itinerario contemplativo-cultural (iglesias, plazas, miradores urbanos y chullpas), totalmente desalineado con la búsqueda de aventura activa.
+6;F;Kimbiri;0;Kimbiri está ubicado en el corazón del VRAEM. No es una zona turística estándar ni recomendable para un viaje de aventura comercial saliendo de Lima. Además, el trayecto terrestre de 15h 49m por tramo es inviable para 7 días.
+7;A;La Merced;0;Epoca de lluvias
+7;B;Trujillo;1;
+7;C;Chincha Alta;1;
+7;D;Cuzco;0;
+7;E;Huacho;2;
+8;A;La Merced;0;
+8;B;Huacho;1;
+8;C;Chincha Alta;2;
+8;D;Huánuco;0;Hubiera sido mejor opción que recomiende ICA Paracas o donde está la laguna
+9;A;Cuzco;1;
+9;B;Trujillo;2;
+9;C;Nasca;0;
+9;D;Puno;0;
+9;E;Huancayo;1;
+10;A;Puno;0;"Puno vive sus mayores festividades andinas en febrero (Virgen de la Candelaria) o en junio con el Año Nuevo Andino en zonas puntuales. Sin embargo, el itinerario propuesto es 100% visitas a museos, iglesias y plazas de ciudad, omitiendo el ambiente de ""gran fiesta"""
+10;B;Huancayo;1;Coincide con las festividades de San Juan / Siega de Huaripampa. No obstante, 8 días es demasiado tiempo para el Valle del Mantaro y el itinerario se vuelve repetitivo al visitar iglesias y plazas locales de múltiples distritos.
+10;C;Yanque;0;"Se concentra en trekking y miradores del Cañón del Colca. Aunque hay manifestaciones culturales locales, no celebra una ""gran fiesta andina"" de renombre masivo como el Inti Raymi o San Juan."
+10;D;Cuzco;2;Las fechas (21 al 28 de junio) coinciden exactamente con el Inti Raymi (24 de junio) y las Jubilares del Cusco, la mayor fiesta andina de Sudamérica.
+11;A;Jauja;1;
+11;B;Kimbiri;0;Pérdida absurda de tiempo en carretera (casi 32 horas ida y vuelta en bus) para una estancia de solo 4 días. Además, se ubica en la zona del VRAEM y diciembre registra lluvias intensas (236 mm)
+11;C;Cerro de Pasco;0;Dormir a 4 340 m en plena temporada de lluvias (186 mm) con frío extremo. El itinerario está desequilibrado con visitas urbanas/mineras en lugar de priorizar naturaleza pura.
+11;D;Paracas;2;
+11;E;Íllimo;1;
+11;F;Huaraz;1;
+12;A;Puno;0;Omite la experiencia mochilera del Lago Titicaca en favor de museos e iglesias urbanas.
+12;B;Cerro de Pasco;0;Exposición innecesaria a soroche severo (dormir a 4 340 m con heladas nocturnas de -2 °C en agosto) sin valor mochilero de naturaleza ni aventura que lo justifique.
+12;C;Oxapampa;1;
+12;D;Cajamarca;1;
+12;E;Trujillo;1;
+12;F;Cuzco;0;Excede por casi el triple el presupuesto disponible (promedio S/ 1 766) debido a los vuelos y entradas de alto costo a sitios arqueológicos
+12;G;Huaraz;1;
+13;A;Cuzco;1;
+13;B;Huaraz;2;
+13;C;Yanque;1;
+13;D;Moyobamba;1;
+13;E;Puno;0;"Itinerario casi 100% histórico y contemplativo (museos, plazas, iglesias y chullpas). No satisface la demanda de ""naturaleza, aventura y caminatas"", omitiendo de paso las rutas de senderismo o deportes de aventura de la región."
+14;A;Huacho;1;
+14;B;Nasca;0;Cumple con la altura (593 m), pero el plan es 100% arqueología de desierto (geoglifos, acueductos, necrópolis). No ofrece arquitectura urbana colonial ni monumental que satisfaga el interés pedido.
+14;C;Trujillo;2;
+14;D;Chiclayo;1;
+15;A;Huacho;1;
+15;B;Huarmey;1;
+15;C;Paracas;2;
+15;D;Nasca;0;Nasca está en el desierto y no tiene playa. El plan es 100% arqueológico (geoglifos, acueductos, necropolis), totalmente ajeno a la búsqueda de sol y mar
+16;A;Ayacucho;2;
+16;B;Trujillo;1;
+16;C;Huaraz;1;
+16;D;Puno;0;Vuelve a cometer el error de ignorar por completo la navegación por el Lago Titicaca. Limita 5 días a iglesias y museos urbanos a 3 830 m.s.n.m., siendo una propuesta aburrida y costosa (S/ 1 749 promedio).
+16;E;Arequipa;1;
+17;A;Machupicchu Pueblo;2;
+17;B;Yunguyo;0;Viajar 9h 36m en bus nocturno (más de 19 horas ida y vuelta) para estar solo 2 días en la frontera con Bolivia es ineficiente y absurdo existiendo tanto patrimonio histórico en Cusco y sus cercanías.
+17;C;Puno;0;
+17;D;Yanque;0;Requiere más de 16 horas en bus para ir desde Cusco hasta el Valle del Colca por solo dos días. Es un recorrido apresurado e ilógico teniendo Machu Picchu al alcance de la mano.
+17;E;Ayaviri;1;
+18;A;Ilo;0;Desperdicia 28 horas de viaje terrestre ida y vuelta desde Cusco (14h 01m por tramo) para solo 4 días de estancia. Es una opción costera sin sentido logístico teniendo la sierra sur al alcance.
+18;B;Yanque;1;
+18;C;Arequipa;0;Viaje nocturno largo (casi 10 h por tramo) para un itinerario predominantemente urbano (casonas, museos, plazas y templos), el cual incumple la demanda de naturaleza y senderismo.
+18;D;Puno;1;
+18;E;Miraflores;0;Tomar un avión para ir de Cusco a Lima a hacer un recorrido 100% urbano por parques y centros comerciales (Larcomar, Centro Histórico) es totalmente opuesto al objetivo de naturaleza y caminatas.
+18;F;Kimbiri;1;La mejor opción entre las propuestas
+19;A;Puno;0;Febrero es el pico de la temporada de lluvias en Puno (213 mm), con alto riesgo de demoras o derrumbes en el trayecto terrestre (7h 21m). Además, omite la navegación por el Lago Titicaca para centrarse en un circuito urbano
+19;B;Mollendo;1;
+19;C;Ilo;0;Requiere 14h 01m de viaje en bus por tramo desde Cusco. Perder más de 28 horas en la carretera en un viaje de apenas 3 días resulta un despropósito logístico.
+19;D;Arequipa;0;Febrero es mes desaconsejado en Arequipa por lluvias intensas (169 mm). No soluciona el problema del clima lluvioso de origen y exige casi 10 horas de bus nocturno por tramo
+19;E;Nasca;0;El tiempo de tránsito por carretera desde Cusco asciende a 14h 08m. Es inviable dedicar casi 30 horas a traslados terrestres para un itinerario de 3 días.
+19;F;Ayacucho;0;Además de registrar precipitaciones de temporada (134 mm), el trayecto en bus desde Cusco toma 13h 26m por tramo, saturando el tiempo del viajero en transporte en lugar de destino.
+20;A;Ilo;0;
+20;B;Urubamba;1;
+20;C;Huacho;0;
+20;D;Miraflores;2;
+21;A;Puno;1;
+21;B;Yanque;2;
+21;C;Ilo;1;
+21;D;Cuzco;0;
+22;A;Cuzco;1;
+22;B;Nasca;0;
+22;C;Yanque;1;
+22;D;Puno;1;
+22;E;Moquegua;2;
+23;A;Puno;0;
+23;B;La Pampa;1;
+23;C;Mollendo;2;
+23;D;Ilo;1;
+24;A;Miraflores;1;
+24;B;Nasca;1;
+24;C;Yanque;2;
+24;D;Íllimo;0;
+24;E;Huaraz;1;
+25;A;Íllimo;2;
+25;B;Miraflores;1;
+25;C;Huacho;1;
+25;D;Chachapoyas;0;
+25;E;Cajamarca;1;
+26;A;Miraflores;1;
+26;B;Huacho;1;
+26;C;Íllimo;0;
+26;D;Los Órganos;2;
+27;A;Trujillo;2;
+27;B;Cajamarca;1;
+27;C;Íllimo;1;
+27;D;Miraflores;0;
+28;A;Miraflores;1;
+28;B;Huaraz;1;
+28;C;Moyobamba;2;
+28;D;Cerro de Pasco;0;
+28;E;Íllimo;1;
+29;A;Máncora;1;
+29;B;Íllimo;0;
+29;C;Colán;2;
+29;D;Los Órganos;1;
+29;E;Tumbes;0;
+29;F;Trujillo;1;
+30;A;Los Órganos;1;
+30;B;Íllimo;1;
+30;C;Huaraz;1;
+30;D;Moyobamba;2;
+30;E;Miraflores;0;
+31;A;Nauta;1;
+31;B;Miraflores;1;
+31;C;Mazán;2;
+32;A;Nasca;0;
+32;B;Cerro de Pasco;1;
+32;C;Ayacucho;2;
+32;D;Miraflores;1;
+33;A;Huaraz;1;
+33;B;Ayacucho;1;
+33;C;Kimbiri;0;
+33;D;Jauja;2;
+33;E;Miraflores;1;
+33;F;Huacho;1;
+33;G;La Merced;1;
+34;A;Cuzco;1;
+34;B;Yanque;1;
+34;C;Arequipa;1;
+34;D;Yunguyo;2;
+35;A;Puno;1;
+35;B;Yanque;0;
+35;C;Moquegua;2;
+35;D;Ilo;1;
+36;A;Nasca;1;
+36;B;Huancayo;2;
+36;C;Cuzco;1;
+36;D;Miraflores;1;
+37;A;Trujillo;1;
+37;B;Huaraz;2;
+37;C;Íllimo;1;
+37;D;Huacho;1;
+37;E;Moyobamba;0;Logística ineficiente para solo 3 días (13h 11m por tramo saliendo de Cajamarca). Además, el plan está enfocado casi al 100% en ecoturismo, orquídeas y reservas de selva alta (Tingana, Morro de Calzada, Waqanki, Pozas de Juningue), omitiendo completamente la oferta arqueológica e histórica requerida por los viajeros.
+38;A;Marcapomacocha;2;
+38;B;Huacho;0;Un plan puramente costero, arqueológico y urbano (Vichama, Caral, Paramonga, plazas y casonas) que ignora por completo el perfil de un montañista que busca hacer caminatas y trekking en junio.
+38;C;La Merced;1;
+38;D;Jauja;1;
+38;E;Íllimo;0;Circuito de arqueología y museos de sitio en el bosque seco (Túcume, Sicán, Huaca Bandera) a 56 m.s.n.m., desatendiendo el requerimiento de senderismo activo y montaña.
+38;F;Trujillo;0;Un itinerario totalmente urbano y cultural enfocado en el Centro Histórico, casonas, iglesias y ruinas arqueológicas (Chan Chan), sin ninguna actividad de caminata o montaña.
+39;A;Cerro de Pasco;0;Desgaste logístico extremo (14h 28m de viaje por carretera por tramo desde Tarapoto, casi 29 horas ida y vuelta). Pasar de la selva tropical a pernoctar a 4 340 m.s.n.m. con temperaturas bajo cero (-2 °C en la base) y paradas a 4 546 m en Huayllay representa un riesgo crítico de soroche e hipotermia para los viajeros
+39;B;Moyobamba;2;
+39;C;Miraflores;1;
+39;D;Íllimo;1;
+40;A;Puno;0;Desgaste logístico severo (12h 22m de bus nocturno por tramo, casi 25 horas ida y vuelta por carretera). Traer a una familia desde la selva baja (nivel de llanura) para pernoctar bruscamente a 3 830 m.s.n.m. con temperaturas heladas bajo cero (-1 °C) y paradas a 4 075 m genera un riesgo crítico de mal de altura (soroche) e hipotermia. Además, el plan está recargado de paradas urbanas, museos y artesanías
+40;B;Lanlacuni Bajo;2;
+40;C;Juli;0;Extremadamente ineficiente en transporte (13h 47m por tramo, casi 28 horas en carretera para un viaje de apenas 3 días). Expone a la familia a un choque térmico y de altitud extremo (dormir a 3 887 m.s.n.m., heladas de -3 °C y picos a 4 173 m). El itinerario se concentra en templos coloniales, iglesias y sitios arqueológicos, ignorando la temática de naturaleza.
+40;D;Tinki;1;
+40;E;Cuzco;1;
