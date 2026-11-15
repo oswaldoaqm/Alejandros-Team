@@ -974,10 +974,6 @@ def motivos(
     return salida[:4]
 
 
-CODIGO_MACHU_PICCHU = "917"
-POLOS_VRAEM = frozenset({"Kimbiri", "Pichari", "Llochegua", "Chirumpiari", "Mazamari", "San Martín de Pangoa"})
-
-
 def aviso_de_seguridad(it: Itinerario, visitadas: list[dict]) -> Aviso | None:
     """Si se duerme en una zona con alerta oficial de viaje, o alguna parada está en ella (decisión 0029). Va
     primero entre los avisos. Si se duerme ahí, nombra la base; si no, las paradas."""
@@ -1108,24 +1104,6 @@ def avisos(
                 tipo="acceso",
                 nivel="info",
                 mensaje="Parte del viaje va en tren, con horarios y cupos fijos: compra el pasaje con anticipación.",
-            )
-        )
-    if any(r["codigo"] == CODIGO_MACHU_PICCHU for r in visitadas):
-        salida.append(
-            Aviso(
-                tipo="acceso",
-                nivel="advertencia",
-                mensaje="Machu Picchu tiene cupo diario fijo (5\u00a0600 entradas al día en 2026, Ministerio de "
-                "Cultura): reserva la entrada con semanas de anticipación en tuboleto.cultura.pe.",
-            )
-        )
-    if polo.nombre in POLOS_VRAEM:
-        salida.append(
-            Aviso(
-                tipo="acceso",
-                nivel="advertencia",
-                mensaje=f"{polo.nombre} está en el ámbito del VRAEM, zona con estado de emergencia vigente: "
-                "revisa las alertas oficiales antes de viajar y muévete solo de día por las vías principales.",
             )
         )
     salida += [aviso_de_entradas(r["cupo"]) for r in visitadas if r.get("cupo")]

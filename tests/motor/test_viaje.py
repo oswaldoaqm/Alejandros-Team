@@ -181,13 +181,14 @@ def test_avisos_de_cupo_vraem_y_dias_de_cierre():
     if not artefactos.hay_datos():
         pytest.skip("sin los artefactos del motor")
     datos = artefactos.cargar()
-    # 1. Machu Picchu Pueblo (polo 4) incluye la llaqta ("917") y avisa del cupo diario.
+    # 1. Machu Picchu Pueblo (polo 4) incluye la llaqta ("917") y avisa una vez del cupo de sus entradas.
     [ruta_mp] = viaje.resolver(Consulta(origen="cusco", mes=7, dias=4, destino=4), datos).rutas
-    assert any(a.tipo == "acceso" and "5\u00a0600 entradas" in a.mensaje for a in ruta_mp.avisos)
+    assert [a.tipo for a in ruta_mp.avisos if "Machu Picchu" in a.mensaje] == ["entradas"]
 
-    # 2. Un polo del VRAEM (Mazamari, 111) avisa del estado de emergencia vigente.
+    # 2. Un polo del VRAEM (Mazamari, 111) lo avisa una vez, primero, con el aviso de seguridad.
     [ruta_vraem] = viaje.resolver(Consulta(origen="lima", mes=7, dias=6, destino=111), datos).rutas
-    assert any(a.tipo == "acceso" and "VRAEM" in a.mensaje for a in ruta_vraem.avisos)
+    assert [a.tipo for a in ruta_vraem.avisos if "VRAEM" in a.mensaje] == ["seguridad"]
+    assert ruta_vraem.avisos[0].tipo == "seguridad"
 
     # 3. Sin fecha exacta, si una parada cierra algún día de la semana (Trujillo, polo 139), avisa.
     [ruta_sin_fecha] = viaje.resolver(
