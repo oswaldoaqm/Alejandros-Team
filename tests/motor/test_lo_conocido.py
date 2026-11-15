@@ -2,7 +2,7 @@
 donde y cuando se puede ir, que desde Lima se vuele al Cusco, que a Huaraz se vaya en bus de
 noche, y que no mande a nadie más días en el bus que de visita. Corre contra los artefactos de
 dreemgo/datos: si un cambio en los datos o en el puntaje los saca de las tres rutas, aquí se nota
-(decisiones 0013 a 0016, 0019 y 0027)."""
+(decisiones 0013 a 0016, 0019, 0027 y 0028)."""
 
 import re
 
@@ -27,6 +27,17 @@ def test_desde_el_cusco_un_fin_de_semana_de_temporada_seca_se_queda_en_el_valle_
     assert all(r.traslado.bus_de_noche is None for r in dos)
     tres = viaje.resolver(Consulta(origen="cusco", mes=6, dias=3), artefactos.cargar()).rutas
     assert {r.polo.base.nombre: r for r in tres}["Puno"].traslado.bus_de_noche is not None
+
+
+def test_un_viaje_a_puno_con_tiempo_lleva_a_los_uros():
+    """Los Uros se visitan en lugar de la Reserva Nacional del Titicaca, que no tiene camino, y valen como ella
+    (decisión 0028). En dos días desde Arequipa no caben: el primero es tranquilo, por la altura, y el segundo
+    termina con la vuelta."""
+    datos = artefactos.cargar()
+    [puno] = [p.id for p in datos.polos.values() if p.base["nombre"] == "Puno"]
+    for origen, dias in (("cusco", 3), ("arequipa", 3), ("lima", 4), ("tacna", 3)):
+        [ruta] = viaje.resolver(Consulta(origen=origen, mes=7, dias=dias, destino=puno), datos).rutas
+        assert "960" in {p.recurso.codigo for d in ruta.dias for p in d.paradas}, origen
 
 
 def test_desde_el_cusco_un_fin_de_semana_de_historia_lleva_a_machu_picchu():
