@@ -6,6 +6,8 @@ El 12 de noviembre se arreglaron cuatro puntos de lo pendiente y la mitad de otr
 
 El 15 de noviembre se arreglaron los tres puntos que quedaban para w13e, con el contrato 1.9 y los datos `2026.11.3` ([decisión 0030](decisiones/0030-a-su-hora-y-desde-el-terminal.md)). Para esos, «antes» es la `2026.11.2`, la de arriba, y «después», la `2026.11.3`.
 
+El mismo día, con los datos `2026.11.4`, se sumó el tráfico de cada hora en Lima, Arequipa y Trujillo, y la app dice que no cuenta colas ([decisión 0031](decisiones/0031-la-hora-del-dia.md)). Para eso, «antes» es la `2026.11.3` ([`auditoria_2026.11.3.json`](../data/evaluacion/resultados/auditoria_2026.11.3.json)).
+
 ## Lo que se arregló
 
 ### En la ciudad se iba a velocidad de carretera
@@ -64,6 +66,14 @@ El motor supone que hay un vuelo cuando se llega al aeropuerto, y a Mazamari hay
 
 La ida en bus iba de centro a centro. Ahora la de tres horas o más suma el taxi al terminal de la ciudad de origen, media hora de embarque y el taxi del terminal a la base, si el bus no deja en el pueblo. Los terminales salen de OpenStreetMap; en Lima, el taxi hasta el Terminal Terrestre Yerbateros es de 21 minutos. Cada ida suma de 35 a 71 minutos, 41 en la mediana, y la mediana del bus de noche en la rejilla pasa de 10,1 a 10,9 horas de puerta a puerta. Tres días desde Arequipa a Puno dejan de salir: el camino pesa más que la visita.
 
+### La hora del día
+
+El motor usaba el mismo tiempo para un tramo a cualquier hora, y TomTom mide Lima 18 % más lenta a las 8:00 que en el promedio de 10:00 a 16:00, al que se ajustó la red, y 37 % más a las 18:00. Desde la `2026.11.4`, las bases de Lima, Arequipa y Trujillo llevan el ritmo de cada hora, y el planificador cuenta cada tramo a la hora en que sale ([decisión 0031](decisiones/0031-la-hora-del-dia.md)). En la rejilla, la mediana de los tramos del día en Lima baja de 13,5 a 11,7 km/h. Los días con seis paradas casi no cambian (78,1 %): la mayoría de los tramos va a media jornada, cuando el factor es cercano a 1.
+
+### Las colas
+
+No hay una fuente que mida la espera por lugar y por temporada, ni la del bus de Aguas Calientes a Machu Picchu. El motor no inventa una: la app dice en la letra chica que no cuenta colas ni esperas.
+
 ### En auto o taxi
 
 La app dice ahora, en la hoja de cada lugar y en la letra chica, que entre un lugar y otro del día el plan cuenta en auto o taxi. La letra chica decía además que la visita sale de la ficha de cada lugar, y no es así: es el tiempo típico de cada clase de lugar, un supuesto nuestro. Ya no lo dice. Cuánto sería en transporte público queda en lo pendiente, en el punto 6.
@@ -81,8 +91,6 @@ Los números son los de la lista del 5 de noviembre, para que se puedan citar: l
 | # | Lo que objetaría el jurado | La prueba | Qué hacer | Cuándo |
 |---|---|---|---|---|
 | 6 | Solo taxi | Los tramos del día suponen auto o taxi. La app ya lo dice, pero no cuánto sería en transporte público | Cuánto sería en transporte público, con una fuente por ciudad | después de la entrega |
-| 7 | La hora del día | TomTom mide Lima 17 % más lenta a las 8 de la mañana que en el promedio del día, y el motor usa un solo tiempo por tramo | El ritmo de cada hora en las ciudades, con TomTom | semana 14 |
-| 8 | Las colas | El motor no suma esperas en los lugares más visitados, como la fila del bus de Aguas Calientes a Machu Picchu en temporada alta, ni la espera del taxi. La del taxi la cubre el margen de la 0025, sin una fuente que la mida | Una espera por lugar y temporada donde haya una fuente que la mida; donde no la haya, decirlo en la app | semana 14 |
 | 10 | ¿Dónde duermo? | El motor elige el pueblo, no el hospedaje | Hospedajes del directorio de MINCETUR y de OpenStreetMap, con su categoría como banda de precio, y la seguridad del distrito (Observatorio de Seguridad Ciudadana del Mininter, INEI) | semana 14 |
 | 11 | Costos viejos | El README de `pipeline/referencia/` dice que ninguno de transporte, hospedaje o comida está calibrado con tarifas de este año | Pasajes, entradas y hospedaje de 2026, con su fuente | semana 14 |
 | 12 | Se califican ellos mismos | Quienes califican el kit hicieron el producto | Ya está declarado en la 0021; sumar calificadores de fuera del equipo | semana 14 |
