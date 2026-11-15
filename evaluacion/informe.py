@@ -8,7 +8,9 @@ revisa que sean de este kit y escribe en data/evaluacion/resultados/:
   notas.csv      cada viaje con la nota de cada quien, su media y el puesto que le da cada sistema
   metricas.csv   por consulta y por sistema: nDCG@3, P@3, el rango recíproco y cuántos no encajan
   resumen.json   el acuerdo, la media de cada métrica por sistema, las comparaciones, la cobertura y la
-                 novedad, y lo mismo por interés
+                 novedad, lo mismo por interés, la nota de los viajes según cuánto se lleva el bus de noche,
+                 como lo dice el cuadernillo que vio quien calificó (decisión 0027), y lo que propone el motor
+                 de ahora para las mismas consultas, con la nota que tenían esas zonas en el kit
 
 Uso:  python -m evaluacion.informe
 """
@@ -18,17 +20,22 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
 from dreemgo.motor import datos as artefactos
+from dreemgo.motor import viaje
 from evaluacion import acuerdo, consultas, metricas
 
 RAIZ = Path(__file__).resolve().parents[1]
 CARPETA = RAIZ / "data" / "evaluacion"
 NOTAS = ("0", "1", "2")
 COMPARACIONES = (("motor", "guia"), ("variante", "motor"))
+# La parte del viaje que se lleva el bus de noche, ida y vuelta, contra las horas de sus días: los tramos con que
+# se mira la nota (decisión 0027). El kit se armó con el tope de entonces, el 40 %.
+TRAMOS_DEL_BUS = ((0.0, 0.2, "menos_del_20"), (0.2, 0.3, "del_20_al_30"), (0.3, 0.4, "del_30_al_40"))
 
 
 @dataclass(frozen=True)
@@ -94,12 +101,67 @@ def leer_calificaciones(carpeta: Path, viajes: list[Viaje]) -> dict[str, dict[tu
     return salida
 
 
+def parte_en_bus(cuadernillo: str, dias: dict[int, int]) -> dict[tuple[int, str], float | None]:
+    """De cada tarjeta del cuadernillo, lo que vio quien calificó: la parte del viaje que se lleva el bus de noche,
+    ida y vuelta contra las horas de sus días, o None si el viaje no va en bus de noche."""
+    salida = {}
+    for consulta, letra, tarjeta in re.findall(
+        r"<article class='opcion' id='c(\d+)-([A-Z])'>(.*?)</article>", cuadernillo, re.S
+    ):
+        bus = re.search(r"En bus de noche: [^<]*?, (\d+) h(?: (\d+))? de puerta a puerta", tarjeta)
+        n = int(consulta)
+        salida[(n, letra)] = None if bus is None else 2 * (int(bus[1]) + int(bus[2] or 0) / 60) / (dias[n] * 24)
+    return salida
+
+
 def _media(valores: list[int | None]) -> float | None:
     hay = [v for v in valores if v is not None]
     return sum(hay) / len(hay) if hay else None
 
 
-def calcular(clave: Path, calificaciones: Path) -> tuple[list[dict], list[dict], dict]:
+def motor_de_ahora(viajes: list[Viaje], media: dict, datos) -> dict:
+    """Lo que propone el motor con los datos que carga para las consultas del kit, contra lo que propuso cuando se
+    armó: las calificaciones valen para esa versión, y esto dice cuánto se alejó. Una zona que el kit no tiene
+    queda sin nota."""
+    nota = {(v.consulta, v.polo): media[(v.consulta, v.opcion)] for v in viajes}
+    del_kit: dict[int, list[int]] = defaultdict(list)
+    for v in sorted((v for v in viajes if "motor" in v.puestos), key=lambda v: v.puestos["motor"]):
+        del_kit[v.consulta].append(v.polo)
+    nombre = {v.polo: v.zona for v in viajes}
+    cambian, sin_nota, con_nota, antes, primeros = 0, 0, [], [], []
+    for c in (c for c in consultas.leer() if c.id in del_kit):
+        ahora = [r.polo.id for r in viaje.resolver(c.consulta, datos, sugerir=False).rutas]
+        cambian += ahora != del_kit[c.id]
+        for p in ahora:
+            m = nota.get((c.id, p))
+            sin_nota += m is None
+            if m is not None:
+                con_nota.append(m)
+        antes += [nota[(c.id, p)] for p in del_kit[c.id] if nota.get((c.id, p)) is not None]
+        if ahora and del_kit[c.id] and ahora[0] != del_kit[c.id][0]:
+            primeros.append(
+                {
+                    "consulta": c.id,
+                    "antes": nombre.get(del_kit[c.id][0]),
+                    "nota_antes": nota.get((c.id, del_kit[c.id][0])),
+                    "ahora": nombre.get(ahora[0], datos.polos[ahora[0]].base["nombre"]),
+                    "nota_ahora": nota.get((c.id, ahora[0])),
+                }
+            )
+    return {
+        "version_datos": datos.version,
+        "consultas_que_cambian": cambian,
+        "propuestas": len(con_nota) + sin_nota,
+        "sin_nota_en_el_kit": sin_nota,
+        "media_con_nota": sum(con_nota) / len(con_nota) if con_nota else None,
+        "media_del_kit": sum(antes) / len(antes) if antes else None,
+        "otro_primer_puesto": primeros,
+    }
+
+
+def calcular(
+    clave: Path, calificaciones: Path, cuadernillo: Path | None = None, con_el_motor_de_ahora: bool = False
+) -> tuple[list[dict], list[dict], dict]:
     viajes, sistemas = leer_clave(clave)
     quienes = leer_calificaciones(calificaciones, viajes)
     nombres = sorted(quienes)
@@ -185,6 +247,28 @@ def calcular(clave: Path, calificaciones: Path) -> tuple[list[dict], list[dict],
         i: {"consultas": len(next(iter(m.values()))), **{s: sum(xs) / len(xs) for s, xs in m.items()}}
         for i, m in sorted(grupos.items())
     }
+
+    # La nota según cuánto del viaje se lleva el bus de noche, con lo que dice el cuadernillo de cada viaje.
+    if cuadernillo is not None:
+        dias = {c.id: c.consulta.dias for c in consultas.leer()}
+        partes = parte_en_bus(cuadernillo.read_text(encoding="utf-8"), dias)
+        tramos: dict[str, list[float]] = defaultdict(list)
+        for k, m in media.items():
+            p = partes.get(k)
+            if m is None:
+                continue
+            nombre = "sin_bus_de_noche" if p is None else next((t for a, b, t in TRAMOS_DEL_BUS if a <= p < b), "mas")
+            tramos[nombre].append(m)
+        resumen["nota_por_parte_en_bus"] = {
+            t: {
+                "viajes": len(ms),
+                "media": sum(ms) / len(ms),
+                "no_encajan": sum(1 for x in ms if x < 0.5) / len(ms),
+            }
+            for t, ms in sorted(tramos.items())
+        }
+    if con_el_motor_de_ahora and "motor" in sistemas:
+        resumen["motor_de_ahora"] = motor_de_ahora(viajes, media, datos)
     return notas, filas, resumen
 
 
@@ -200,8 +284,9 @@ def main() -> None:
     ap.add_argument("--clave", type=Path, default=CARPETA / "clave.csv")
     ap.add_argument("--calificaciones", type=Path, default=CARPETA / "calificaciones")
     ap.add_argument("--salida", type=Path, default=CARPETA / "resultados")
+    ap.add_argument("--cuadernillo", type=Path, default=CARPETA / "cuadernillo.html")
     a = ap.parse_args()
-    notas, filas, resumen = calcular(a.clave, a.calificaciones)
+    notas, filas, resumen = calcular(a.clave, a.calificaciones, a.cuadernillo, con_el_motor_de_ahora=True)
     a.salida.mkdir(parents=True, exist_ok=True)
     _escribir(a.salida / "notas.csv", notas)
     _escribir(a.salida / "metricas.csv", filas)

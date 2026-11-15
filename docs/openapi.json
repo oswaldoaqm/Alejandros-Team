@@ -65,6 +65,7 @@
             "type": "string"
           },
           "tipo": {
+            "description": "De qué avisa. Desde 1.8, `seguridad`: una parada o la base están en una zona con alerta oficial de viaje; y `entradas`: una parada vende un número fijo de entradas por día.",
             "enum": [
               "estacionalidad",
               "altitud",
@@ -72,7 +73,9 @@
               "presupuesto",
               "acceso",
               "dias",
-              "datos"
+              "datos",
+              "seguridad",
+              "entradas"
             ],
             "title": "Tipo",
             "type": "string"
@@ -981,7 +984,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.7",
+            "default": "1.8",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1463,7 +1466,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.7",
+            "default": "1.8",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1631,7 +1634,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.7",
+            "default": "1.8",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1734,7 +1737,7 @@
                 "type": "null"
               }
             ],
-            "description": "Hora de apertura en la ficha, HH:MM; null si no figura.",
+            "description": "A qué hora abre, HH:MM (desde 1.8): el de la ficha o, si está mal, el corregido con su fuente. null si no se sabe.",
             "title": "Abre"
           },
           "altitud_m": {
@@ -1762,7 +1765,7 @@
                 "type": "null"
               }
             ],
-            "description": "Hora de cierre en la ficha, HH:MM; null si no figura.",
+            "description": "A qué hora cierra, HH:MM (desde 1.8). null si no se sabe.",
             "title": "Cierra"
           },
           "codigo": {
@@ -1802,7 +1805,7 @@
                 "type": "null"
               }
             ],
-            "description": "Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.",
+            "description": "Los días que abre, de lunes a domingo (desde 1.8). null si la ficha no lo dice, que no quiere decir que abra todos los días.",
             "title": "Dias"
           },
           "ingreso": {
@@ -1929,7 +1932,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.7",
+            "default": "1.8",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2029,7 +2032,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.7",
+            "default": "1.8",
             "title": "Version Contrato",
             "type": "string"
           },

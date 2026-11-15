@@ -1,8 +1,8 @@
 // El plan, de a un día. Con «Todo» se ven los días en una lista (qué se hace en cada uno); al
 // elegir un día, sus lugares en orden con la hora de llegada, y entre ellos la hora del almuerzo.
 // El primer día en la altura dice que es tranquilo, en la lista, en el día y en el plan impreso.
-// Lo demás de cada lugar (cuánto dura la visita, si se paga, su ficha oficial) se abre al tocarlo,
-// en una hoja.
+// Un lugar que cierra algún día de la semana lo dice en su fila. Lo demás de cada lugar (cuánto
+// dura la visita, su horario, si se paga, su ficha oficial) se abre al tocarlo, en una hoja.
 
 import type { Almuerzo, Evento, Parada } from "../api/tipos";
 import { eventosDelDia } from "../eventos";
@@ -11,8 +11,10 @@ import type { Foto as DatosDeFoto } from "../fotos";
 import { type DiaNumerado, filasDelDia } from "../itinerario";
 import {
   DIA_TRANQUILO,
+  diasDeCierre,
   dondeSeAlmuerza,
   entrada,
+  horario,
   LLEVA_TU_ALMUERZO,
   resumenDeLugares,
   tipoDeDia,
@@ -195,6 +197,12 @@ function UnDia({
                         </>
                       ) : null}
                       <span>Visita de {duracion(fila.parada.minutos_visita)}</span>
+                      {diasDeCierre(fila.parada.recurso.dias) ? (
+                        <>
+                          {" "}
+                          <span className="lugar-fila__cierre">{diasDeCierre(fila.parada.recurso.dias)}</span>
+                        </>
+                      ) : null}
                     </span>
                   </span>
                   <Icono nombre="flecha" tamano={18} />
@@ -248,6 +256,12 @@ export function Itinerario({ dias, eventos, dia, elegirDia, abrirLugar }: Props)
   );
 }
 
+/** «Horario: de 9:00 a 16:00; cierra los lunes. », o nada si su ficha no lo dice. */
+function horarioImpreso(recurso: Parada["recurso"]): string {
+  const texto = horario(recurso);
+  return texto ? `Horario: ${texto.charAt(0).toLowerCase()}${texto.slice(1)}. ` : "";
+}
+
 /** El plan completo, todos los días, para imprimir o guardar en PDF. En pantalla no se ve. */
 export function PlanParaImprimir({ dias }: { dias: DiaNumerado[] }) {
   return (
@@ -278,6 +292,7 @@ export function PlanParaImprimir({ dias }: { dias: DiaNumerado[] }) {
                         {fila.numero}. {fila.parada.recurso.nombre}
                       </strong>
                       . Visita de {duracion(fila.parada.minutos_visita)}. {entrada(fila.parada.recurso)}.{" "}
+                      {horarioImpreso(fila.parada.recurso)}
                       <span className="plan-impreso__ficha">{fila.parada.recurso.url_ficha}</span>
                     </li>
                   ),
@@ -332,7 +347,7 @@ export function HojaDeLugar({ lugar, alCerrar }: { lugar: LugarAbierto | null; a
             <div>
               <dt>Desde {lugar.desde}</dt>
               <dd>
-                {duracion(lugar.parada.minutos_traslado)}, {km(lugar.parada.km_desde_anterior)}
+                {duracion(lugar.parada.minutos_traslado)} en auto o taxi, {km(lugar.parada.km_desde_anterior)}
               </dd>
             </div>
           </>

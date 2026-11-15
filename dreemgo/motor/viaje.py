@@ -11,8 +11,8 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
    Un viaje que pasaría más días solo viajando que días con visitas no se propone. Lo que
    por tierra toma de 7 a 16 horas, sin tren ni bote, va en bus de noche si ida y vuelta no
-   se llevan el 40 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
-   días: se sale la noche antes del día 1 y se vuelve la noche del último (decisión 0019).
+   se llevan el 30 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
+   días: se sale la noche antes del día 1 y se vuelve la noche del último (decisiones 0019 y 0027).
    Cada día con visitas lleva una hora de almuerzo, que no cuenta en las 8. Si se duerme a
    2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo:
    medio día como mucho, sin subir más de 500 m sobre la base ni nada exigente
@@ -108,6 +108,16 @@ POLOS_A_PLANIFICAR = 12  # como mínimo; se sigue hasta tener tres bases distint
 POLOS_A_PLANIFICAR_MAX = 30
 CANDIDATAS_MAX = 40
 ALTITUD_AVISO_M = 3_500
+# Las zonas con alerta oficial de viaje (pipeline/referencia/zonas_de_seguridad.csv, decisión 0029): cómo se
+# nombran y por qué se avisa. El VRAEM es el del D.S. 133-2022-PCM, y las alertas, las de Canadá (6 de noviembre
+# de 2026, evitar todo viaje) y Estados Unidos (16 de mayo de 2025, no viajar).
+ZONAS_DE_SEGURIDAD = {
+    "vraem": (
+        "el VRAEM (el valle de los ríos Apurímac, Ene y Mantaro)",
+        "Es una zona de narcotráfico, con remanentes de Sendero Luminoso: Canadá y Estados Unidos recomiendan no "
+        "viajar ahí. Antes de decidir, revisa las alertas de viaje vigentes.",
+    ),
+}
 KM_CARRETERA_MIN = 1.0  # menos que esto fuera del tren y del bote es ir a la estación o al muelle
 # Cuándo se vuela (decisión 0016). Solo a lo lejano: lo que por tierra no pasa de 16 horas se
 # hace en un bus de noche, como Trujillo o Huaraz desde Lima. Y solo si en avión se llega al
@@ -118,10 +128,13 @@ CAMINO_QUE_PESA = 0.4  # la parte del viaje que, en ir y volver, ya pesa: el avi
 # El bus de noche (decisión 0019): lo que por tierra toma de 7 a 16 horas, sin tren ni bote, en un viaje
 # de dos días o más. Sale a las 19:00 o más tarde, para llegar a eso de las 6:00, y después del bus hay
 # una hora para dejar las cosas y desayunar. Con menos de 7 horas llegaría de madrugada. No va si ida y
-# vuelta se llevan el 40 % de las horas del viaje, con sus noches: en dos días, hasta unas 9 horas y media
-# por tramo. Y sus dos noches pesan en el puntaje como un día más del viaje: sin eso, todo viaje corto
-# salía lejos, como dos días en Ilo desde el Cusco, a 14 horas. Es un supuesto del producto, por calibrar.
+# vuelta se llevan el 30 % de las horas del viaje, con sus noches: en dos días, hasta 7 horas y 12 minutos
+# por tramo, y en tres, hasta 10 horas y 48. Hasta la decisión 0027 era el 40 %, y dejaba tres días con 14
+# horas de bus por tramo, como Ilo o Nasca desde el Cusco. Y sus dos noches pesan en el puntaje como un día
+# más del viaje: sin eso, todo viaje corto salía lejos. Es un supuesto del producto, por calibrar con las
+# calificaciones del kit.
 NOCHE_MIN = 7 * 60
+TOPE_BUS_DE_NOCHE = 0.3  # la parte del viaje, con sus noches, que pueden llevarse la ida y la vuelta en bus
 SALIDA_DE_NOCHE = 19 * 60
 LLEGADA_DE_NOCHE = 30 * 60  # las 6:00 del día siguiente
 DESCANSO_AL_LLEGAR = 60
@@ -140,7 +153,11 @@ class DestinoDesconocido(ValueError):
 
 
 def valor(recurso: dict, intereses: set[str]) -> float:
-    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else VALOR_POR_JERARQUIA[recurso["jerarquia"]]
+    """Lo que vale una parada: por su jerarquía o, si se la visita en lugar de un recurso que no tiene camino,
+    por la de ese, si es más alta (``vale_como_jerarquia``: los Uros por la Reserva Nacional del Titicaca,
+    decisión 0028). Y la cuarta parte si no atiende ningún interés de la consulta."""
+    jerarquias = [j for j in (recurso["jerarquia"], recurso.get("vale_como_jerarquia")) if j is not None]
+    v = VALOR_POR_JERARQUIA[max(jerarquias)] if jerarquias else VALOR_SIN_JERARQUIA
     if intereses and not intereses & set(recurso["intereses"]):
         v *= FACTOR_SIN_INTERES
     return v
@@ -321,13 +338,13 @@ def bus_de_noche(minutos_ida: float) -> tuple[int, int]:
 
 def va_de_noche(dias: int, minutos_ida: float, km_tren: float, km_bote: float, vuelo: Vuelo | None) -> bool:
     """Si la ida y la vuelta van en bus de noche: por tierra, sin avión, tren ni bote, de 7 a 16 horas,
-    en un viaje de dos días o más, y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus
-    noches. En uno de un día no: entre dos noches de bus no hay hotel."""
+    en un viaje de dos días o más, y si ida y vuelta no se llevan el 30 % de las horas del viaje, con sus
+    noches (decisión 0027). En uno de un día no: entre dos noches de bus no hay hotel."""
     return (
         vuelo is None
         and dias >= 2
         and NOCHE_MIN <= minutos_ida <= LEJOS_PARA_VOLAR_MIN
-        and 2 * minutos_ida < CAMINO_QUE_PESA * dias * 24 * 60
+        and 2 * minutos_ida < TOPE_BUS_DE_NOCHE * dias * 24 * 60
         and _numero(km_tren) < KM_CARRETERA_MIN
         and _numero(km_bote) < KM_CARRETERA_MIN
     )
@@ -486,9 +503,11 @@ def eventos_del_polo(polo: PoloDatos, desde: date, hasta: date, datos: Datos) ->
 
 
 def recurso(r: dict) -> Recurso:
+    """La parada como la ve el viajero, con su horario (desde 1.8). Un horario que cierra a la hora en que abre,
+    o antes, está mal escrito en la ficha, y el motor no lo usa: viaja en null, como lo que no se sabe."""
     abre, cierra = r.get("abre"), r.get("cierra")
-    if not (abre and cierra and abre < cierra):
-        abre, cierra = None, None
+    if abre and cierra and cierra <= abre:
+        abre = cierra = None
     return Recurso(
         codigo=r["codigo"],
         nombre=r["nombre"],
@@ -955,14 +974,51 @@ def motivos(
     return salida[:4]
 
 
-CODIGO_MACHU_PICCHU = "917"
-POLOS_VRAEM = frozenset({"Kimbiri", "Pichari", "Llochegua", "Chirumpiari", "Mazamari", "San Martín de Pangoa"})
+def aviso_de_seguridad(it: Itinerario, visitadas: list[dict]) -> Aviso | None:
+    """Si se duerme en una zona con alerta oficial de viaje, o alguna parada está en ella (decisión 0029). Va
+    primero entre los avisos. Si se duerme ahí, nombra la base; si no, las paradas."""
+    duerme = it.polo.base.get("zona") if it.plan.tipo_viaje == "estrella" else None
+    en_zona = [r for r in visitadas if r.get("zona")]
+    zona = duerme or (en_zona[0]["zona"] if en_zona else None)
+    if zona is None:
+        return None
+    nombre, por_que = ZONAS_DE_SEGURIDAD[zona]
+    nombres = [r["nombre"] for r in en_zona]
+    if duerme:
+        donde = f"{it.polo.base['nombre']}, donde se duerme, está en {nombre}"
+    elif len(nombres) == 1:
+        donde = f"{nombres[0]} está en {nombre}"
+    elif len(nombres) <= 3:
+        donde = f"{textos.lista(nombres)} están en {nombre}"
+    else:
+        donde = f"{len(nombres)} paradas están en {nombre}, entre ellas {textos.lista(nombres[:3])}"
+    return Aviso(tipo="seguridad", nivel="advertencia", mensaje=f"{donde}. {por_que}")
+
+
+def aviso_de_entradas(cupo: dict) -> Aviso:
+    """Una parada que vende un número fijo de entradas por día (decisión 0029): cuántas personas entran y dónde se
+    compran, de pipeline/referencia/entradas_con_cupo.csv."""
+    alta = f", y {textos.miles(cupo['por_dia_alta'])} en temporada alta" if cupo.get("por_dia_alta") else ""
+    en_linea, en_persona, cuantas = cupo.get("en_linea"), cupo.get("en_persona"), cupo.get("en_persona_por_dia")
+    solo = f" y, solo {textos.miles(cuantas)} al día," if cuantas else " y"
+    if en_linea and en_persona:
+        donde = f" Las entradas se venden en {en_linea}{solo} en persona en {en_persona}."
+    elif en_linea or en_persona:
+        donde = " Las entradas se venden solo " + (f"en {en_linea}." if en_linea else f"en persona, en {en_persona}.")
+    else:
+        donde = ""
+    cuantos = f"A {cupo['nombre']} entran {textos.miles(cupo['por_dia'])} personas al día como máximo{alta}."
+    return Aviso(tipo="entradas", nivel="info", mensaje=f"{cuantos}{donde} Compra la entrada con anticipación.")
 
 
 def avisos(
     it: Itinerario, consulta: Consulta, est: Estacionalidad, costo: Costo, dias: list[Dia], datos: Datos
 ) -> list[Aviso]:
     polo, salida = it.polo, []
+    visitadas = [datos.recursos[polo.paradas[c.i]] for c in _visitadas(it)]
+    seguridad = aviso_de_seguridad(it, visitadas)
+    if seguridad is not None:
+        salida.append(seguridad)
     if est.veredicto != "viable":
         mejores = textos.meses(est.mejores_meses[:4]) if est.mejores_meses else "ninguno del todo seco"
         salida.append(
@@ -972,7 +1028,6 @@ def avisos(
                 mensaje=f"{est.explicacion} Mejores meses para ir: {mejores}.",
             )
         )
-    visitadas = [datos.recursos[polo.paradas[c.i]] for c in _visitadas(it)]
     altas = sorted((r for r in visitadas if (r["altitud_m"] or 0) >= ALTITUD_AVISO_M), key=lambda r: -r["altitud_m"])
     if altas:
         salida.append(
@@ -1051,24 +1106,7 @@ def avisos(
                 mensaje="Parte del viaje va en tren, con horarios y cupos fijos: compra el pasaje con anticipación.",
             )
         )
-    if any(r["codigo"] == CODIGO_MACHU_PICCHU for r in visitadas):
-        salida.append(
-            Aviso(
-                tipo="acceso",
-                nivel="advertencia",
-                mensaje="Machu Picchu tiene cupo diario fijo (5\u00a0600 entradas al día en 2026, Ministerio de "
-                "Cultura): reserva la entrada con semanas de anticipación en tuboleto.cultura.pe.",
-            )
-        )
-    if polo.nombre in POLOS_VRAEM:
-        salida.append(
-            Aviso(
-                tipo="acceso",
-                nivel="advertencia",
-                mensaje=f"{polo.nombre} está en el ámbito del VRAEM, zona con estado de emergencia vigente: "
-                "revisa las alertas oficiales antes de viajar y muévete solo de día por las vías principales.",
-            )
-        )
+    salida += [aviso_de_entradas(r["cupo"]) for r in visitadas if r.get("cupo")]
     largas = [r for r in visitadas if (r["caminata_min"] or 0) >= 60]
     if largas:
         nombres = textos.lista([r["nombre"] for r in largas[:3]])

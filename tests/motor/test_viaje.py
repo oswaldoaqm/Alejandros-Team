@@ -11,6 +11,9 @@ def test_valor_de_una_parada():
     r = {"jerarquia": 4, "intereses": ["historia"]}
     assert [viaje.valor({"jerarquia": j, "intereses": []}, set()) for j in (1, 2, 3, 4)] == [1, 2, 6, 24]
     assert viaje.valor({"jerarquia": None, "intereses": []}, set()) == viaje.VALOR_SIN_JERARQUIA == 2
+    uros = {"jerarquia": None, "vale_como_jerarquia": 4, "intereses": ["naturaleza"]}  # decisión 0028
+    assert viaje.valor(uros, set()) == 24 and viaje.valor(uros, {"historia"}) == 24 * viaje.FACTOR_SIN_INTERES
+    assert viaje.valor({"jerarquia": 4, "vale_como_jerarquia": 2, "intereses": []}, set()) == 24
     assert viaje.valor(r, {"historia", "playa"}) == 24
     assert viaje.valor(r, {"playa"}) == 24 * viaje.FACTOR_SIN_INTERES
 
@@ -178,13 +181,14 @@ def test_avisos_de_cupo_vraem_y_dias_de_cierre():
     if not artefactos.hay_datos():
         pytest.skip("sin los artefactos del motor")
     datos = artefactos.cargar()
-    # 1. Machu Picchu Pueblo (polo 4) incluye la llaqta ("917") y avisa del cupo diario.
+    # 1. Machu Picchu Pueblo (polo 4) incluye la llaqta ("917") y avisa una vez del cupo de sus entradas.
     [ruta_mp] = viaje.resolver(Consulta(origen="cusco", mes=7, dias=4, destino=4), datos).rutas
-    assert any(a.tipo == "acceso" and "5\u00a0600 entradas" in a.mensaje for a in ruta_mp.avisos)
+    assert [a.tipo for a in ruta_mp.avisos if "Machu Picchu" in a.mensaje] == ["entradas"]
 
-    # 2. Un polo del VRAEM (Mazamari, 111) avisa del estado de emergencia vigente.
+    # 2. Un polo del VRAEM (Mazamari, 111) lo avisa una vez, primero, con el aviso de seguridad.
     [ruta_vraem] = viaje.resolver(Consulta(origen="lima", mes=7, dias=6, destino=111), datos).rutas
-    assert any(a.tipo == "acceso" and "VRAEM" in a.mensaje for a in ruta_vraem.avisos)
+    assert [a.tipo for a in ruta_vraem.avisos if "VRAEM" in a.mensaje] == ["seguridad"]
+    assert ruta_vraem.avisos[0].tipo == "seguridad"
 
     # 3. Sin fecha exacta, si una parada cierra algún día de la semana (Trujillo, polo 139), avisa.
     [ruta_sin_fecha] = viaje.resolver(
@@ -196,3 +200,27 @@ def test_avisos_de_cupo_vraem_y_dias_de_cierre():
         Consulta(origen="lima", fecha_inicio=date(2027, 7, 20), dias=4, destino=139, intereses=["historia"]), datos
     ).rutas
     assert not any("Sin fecha exacta" in a.mensaje for a in ruta_con_fecha.avisos)
+
+
+def test_la_parada_trae_su_horario():
+    """Desde 1.8. Un horario que cierra a la hora en que abre está mal escrito y viaja en null."""
+    base = {
+        "codigo": "1237",
+        "nombre": "Ciudad Sagrada de Caral",
+        "categoria": "Manifestaciones culturales",
+        "tipo": "Sitios Arqueológicos",
+        "subtipo": "Ciudadelas",
+        "jerarquia": 4,
+        "lat": -10.89,
+        "lon": -77.52,
+        "altitud_m": 350,
+        "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
+        "descripcion": None,
+        "ingreso": "pagado",
+        "tarifa_soles": 11.0,
+    }
+    caral = viaje.recurso(base | {"abre": "10:00", "cierra": "16:00", "dias": ["mar", "mie", "jue"]})
+    assert (caral.abre, caral.cierra, caral.dias) == ("10:00", "16:00", ["mar", "mie", "jue"])
+    mal = viaje.recurso(base | {"abre": "09:00", "cierra": "09:00", "dias": None})
+    assert (mal.abre, mal.cierra, mal.dias) == (None, None, None)
+    assert viaje.recurso(base).abre is None

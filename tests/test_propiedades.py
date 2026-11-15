@@ -19,6 +19,7 @@ import pytest
 from hypothesis import HealthCheck, event, given, settings
 from hypothesis import strategies as st
 
+from dreemgo.calendario import DIAS
 from dreemgo.contrato import (
     ALTITUD_MAX_M,
     DIAS_MAX,
@@ -112,7 +113,7 @@ def _el_almuerzo(consulta: Consulta, ruta) -> None:
 
 def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
     """13. El bus de noche (desde 1.6): solo por carretera, de 7 a 16 horas, en un viaje de dos días o
-    más y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches. Sus noches van
+    más y si ida y vuelta no se llevan el 30 % de las horas del viaje, con sus noches. Sus noches van
     fuera de los días: sale a las 19:00 o después, ningún día lleva horas de camino y el día 1 se visita
     desde una hora después de llegar. Y lo que cumple todo eso va en bus de noche."""
     t = ruta.traslado
@@ -120,9 +121,9 @@ def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
     if t.bus_de_noche is None:
         # Las horas vienen redondeadas a la décima: en los bordes manda la cuenta del motor.
         adentro = solo_carretera and 7.1 <= t.horas <= 15.9
-        assert not (adentro and 2 * t.horas < 0.4 * 24 * consulta.dias - 0.2)
+        assert not (adentro and 2 * t.horas < 0.3 * 24 * consulta.dias - 0.2)
         return
-    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.4 * 24 * consulta.dias + 0.2
+    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.3 * 24 * consulta.dias + 0.2
     assert t.dias_de_viaje == 0
     event("alguna ruta en bus de noche")
     assert _hhmm(t.bus_de_noche.sale) >= 19 * 60 and _hhmm(t.bus_de_noche.llega) < 12 * 60
@@ -174,6 +175,42 @@ def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
         assert (r["caminata_min"] or 0) <= 30 and (r["visita_min"] or 0) <= 120
     if ruta.traslado.bus_de_noche is not None:
         assert d.numero == 1 and sale >= 9 * 60
+
+
+def _a_su_hora(consulta: Consulta, ruta) -> None:
+    """16. Cada parada se visita a su hora (desde 1.8): si trae horario, la visita empieza cuando abre o
+    después y termina antes de que cierre; y con fecha, el día no es uno en que cierra."""
+    for d in ruta.dias:
+        for p in d.paradas:
+            if p.recurso.abre is not None and p.recurso.cierra is not None:
+                inicio = max(_hhmm(p.llegada), _hhmm(p.recurso.abre))
+                assert inicio + p.minutos_visita <= _hhmm(p.recurso.cierra)
+                event("alguna parada con horario")
+            if d.fecha is not None and p.recurso.dias is not None:
+                assert DIAS[d.fecha.weekday()] in p.recurso.dias
+
+
+def _la_zona(consulta: Consulta, ruta, datos) -> None:
+    """17. Un viaje a una zona con alerta oficial de viaje lo avisa primero (desde 1.8, decisión 0029): si se duerme
+    en ella o alguna parada lo está, el primer aviso es el de seguridad, de advertencia; si no, no hay ninguno."""
+    base = datos.polos[ruta.polo.id].base.get("zona") if consulta.dias > 1 else None
+    toca = base is not None or any(datos.recursos[p.recurso.codigo].get("zona") for d in ruta.dias for p in d.paradas)
+    de_seguridad = [a for a in ruta.avisos if a.tipo == "seguridad"]
+    assert len(de_seguridad) == int(toca)
+    if toca:
+        assert ruta.avisos[0] == de_seguridad[0] and de_seguridad[0].nivel == "advertencia"
+        event("algún viaje a una zona con alerta")
+
+
+def _las_entradas(ruta, datos) -> None:
+    """18. Cada parada que vende un número fijo de entradas por día trae su aviso de entradas, y solo esas (desde
+    1.8, decisión 0029)."""
+    cupos = [datos.recursos[p.recurso.codigo].get("cupo") for d in ruta.dias for p in d.paradas]
+    esperados = sorted(f"A {c['nombre']} entran " for c in cupos if c)
+    avisos = sorted(a.mensaje for a in ruta.avisos if a.tipo == "entradas")
+    assert len(avisos) == len(esperados) and all(m.startswith(e) for m, e in zip(avisos, esperados, strict=True))
+    if esperados:
+        event("alguna parada con cupo de entradas")
 
 
 def _los_lugares_menores_cerca(ruta) -> None:
@@ -242,6 +279,9 @@ def test_las_propiedades(consulta):
         _el_bus_de_noche(consulta, ruta)
         _el_dia_tranquilo(consulta, ruta, datos)
         _los_lugares_menores_cerca(ruta)
+        _a_su_hora(consulta, ruta)
+        _la_zona(consulta, ruta, datos)
+        _las_entradas(ruta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

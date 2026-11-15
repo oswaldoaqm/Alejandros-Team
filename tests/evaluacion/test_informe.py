@@ -6,7 +6,8 @@ import csv
 import pytest
 
 from dreemgo.motor import datos as artefactos
-from evaluacion import informe
+from dreemgo.motor import viaje
+from evaluacion import consultas, informe
 
 pytestmark = pytest.mark.skipif(not artefactos.hay_datos(), reason="sin los artefactos del motor")
 
@@ -60,3 +61,51 @@ def test_se_niega_si_unas_calificaciones_son_de_otro_kit(tmp_path):
     ruta.write_text(ruta.read_text(encoding="utf-8-sig").replace("Huaraz", "Caraz"), encoding="utf-8-sig")
     with pytest.raises(ValueError, match="CD.csv no es de este kit"):
         informe.calcular(clave, carpeta)
+
+
+def test_la_nota_segun_cuanto_del_viaje_se_lleva_el_bus_de_noche(tmp_path):
+    """Lo que vio quien calificó: la consulta 1 es de dos días, así que 8 h 24 de bus por tramo son el 35 % del
+    viaje (decisión 0027)."""
+    clave, carpeta = _kit(tmp_path, {"AB": [2, 0, 2, 1], "CD": [1, 0, 2, 1]})
+    tarjeta = "<article class='opcion' id='c{}-{}'><p>{}</p></article>"
+    cuadernillo = tmp_path / "cuadernillo.html"
+    cuadernillo.write_text(
+        tarjeta.format(1, "A", "En bus de noche: sale a las 21:30 y llega a las 06:00, 8 h 24 de puerta a puerta.")
+        + tarjeta.format(1, "B", "Por carretera, 5 h 10 de puerta a puerta.")
+        + tarjeta.format(1, "C", "En bus de noche: sale a las 22:00 y llega a las 05:00, 7 h de puerta a puerta.")
+        + tarjeta.format(2, "A", "En avión (Lima–Piura), 4 h 30 de puerta a puerta."),
+        encoding="utf-8",
+    )
+    partes = informe.parte_en_bus(cuadernillo.read_text(encoding="utf-8"), {1: 2, 2: 5})
+    assert partes[(1, "A")] == pytest.approx(0.35) and partes[(1, "C")] == pytest.approx(7 / 24)
+    assert partes[(1, "B")] is None and partes[(2, "A")] is None
+    _, _, resumen = informe.calcular(clave, carpeta, cuadernillo)
+    assert resumen["nota_por_parte_en_bus"] == {
+        "del_20_al_30": {"viajes": 1, "media": 2.0, "no_encajan": 0.0},
+        "del_30_al_40": {"viajes": 1, "media": 1.5, "no_encajan": 0.0},
+        "sin_bus_de_noche": {"viajes": 2, "media": 0.5, "no_encajan": 0.5},
+    }
+
+
+def test_lo_que_propone_el_motor_de_ahora_contra_el_kit():
+    """Si el motor de ahora propone lo mismo que el del kit, no cambia nada; si cambia el primer puesto, se dice
+    cuál era, cuál es y qué nota tenían."""
+    datos = artefactos.cargar()
+    [c1] = [c for c in consultas.leer() if c.id == 1]
+    ahora = [r.polo.id for r in viaje.resolver(c1.consulta, datos, sugerir=False).rutas]
+    viajes = [informe.Viaje(1, "ABC"[i], p, f"Zona {p}", {"motor": i + 1}) for i, p in enumerate(ahora)]
+    media = {(1, v.opcion): float(i) for i, v in enumerate(viajes)}
+    igual = informe.motor_de_ahora(viajes, media, datos)
+    assert (igual["consultas_que_cambian"], igual["sin_nota_en_el_kit"], igual["otro_primer_puesto"]) == (0, 0, [])
+    al_reves = [informe.Viaje(1, v.opcion, v.polo, v.zona, {"motor": len(viajes) - i}) for i, v in enumerate(viajes)]
+    otro = informe.motor_de_ahora(al_reves, media, datos)
+    assert otro["consultas_que_cambian"] == 1
+    assert otro["otro_primer_puesto"] == [
+        {
+            "consulta": 1,
+            "antes": viajes[-1].zona,
+            "nota_antes": media[(1, viajes[-1].opcion)],
+            "ahora": viajes[0].zona,
+            "nota_ahora": 0.0,
+        }
+    ]

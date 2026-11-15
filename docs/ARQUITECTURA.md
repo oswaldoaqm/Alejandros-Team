@@ -1,6 +1,6 @@
 # Arquitectura, flujos e interfaz
 
-Estado al 5 de noviembre de 2026, con el [contrato 1.7](./CONTRATO.md) y los datos `2026.11.1`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
+Estado al 12 de noviembre de 2026, con el [contrato 1.8](./CONTRATO.md) y los datos `2026.11.2`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
 
 DreemGO tiene cuatro partes. El pipeline baja fuentes abiertas y las convierte en archivos con versión. El motor carga esos archivos al arrancar y responde desde memoria, detrás de un API. La app web le pregunta al API y muestra los viajes. Y la evaluación mide lo que propone el motor con el mismo código que responde al API.
 
@@ -83,13 +83,13 @@ sequenceDiagram
     Note over M: 3. Puntaje: 70 % calidad (lo visitado, el mes, el presupuesto,<br/>el bus de noche y la noche) y 30 % novedad,<br/>mitad y mitad con «Sorpréndeme»
     Note over M: 4. Tres viajes, cada uno con su base
     Note over M: 5. Cada viaje: días con almuerzo y noche, costo P20 a P80,<br/>clima del mes, fiestas, avisos y motivos
-    M-->>A: JSON del contrato 1.7
+    M-->>A: JSON del contrato 1.8
     A-->>V: tres tarjetas para comparar
     V->>A: abre un viaje
     A-->>V: el plan día por día, el mapa y la hoja de cada lugar
 ```
 
-Los pasos son los de `resolver` en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), y el itinerario, los de [`planificador.py`](../dreemgo/motor/planificador.py). Lo que garantiza cada respuesta son las quince propiedades del [contrato §3](./CONTRATO.md), que las pruebas verifican sobre consultas al azar. Con «A dónde», el paso 1 es una sola zona, y si no cabe, el motor dice qué lo impide y qué cambiar.
+Los pasos son los de `resolver` en [`dreemgo/motor/viaje.py`](../dreemgo/motor/viaje.py), y el itinerario, los de [`planificador.py`](../dreemgo/motor/planificador.py). Lo que garantiza cada respuesta son las dieciocho propiedades del [contrato §3](./CONTRATO.md), que las pruebas verifican sobre consultas al azar. Con «A dónde», el paso 1 es una sola zona, y si no cabe, el motor dice qué lo impide y qué cambiar.
 
 Un municipio sigue otro camino: escribe su evento en la página «Publicar un evento», con su clave, y el API lo guarda. Desde ese momento sale en el calendario y en los viajes que pasan cerca en esas fechas, sin cambiar ninguno ([decisión 0011](./decisiones/0011-eventos-publicados.md)).
 
@@ -100,7 +100,7 @@ flowchart TD
     a["pipeline/adquisicion/<br/>descargas, fuera de git"] --> b["pipeline.maestro y pipeline.eventos<br/>las fichas leídas campo por campo"]
     b --> c["pipeline.tiempos y pipeline.vuelos<br/>la red vial, el tren, los botes y el avión"]
     c --> d["pipeline.elevacion, clima, noche, cielo y comida"]
-    d --> e["pipeline.artefactos --version 2026.11.1<br/>dreemgo/datos/"]
+    d --> e["pipeline.artefactos --version 2026.11.2<br/>dreemgo/datos/"]
     e --> f["pytest: las propiedades sobre<br/>1 000 consultas al azar"]
     a --> g["pipeline.fotos y pipeline.destinos<br/>app/public/"]
 ```

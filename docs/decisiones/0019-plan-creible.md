@@ -1,6 +1,6 @@
 # 0019 · Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre
 
-**Fecha:** 19 de octubre de 2026 · **Estado:** vigente · Amplía la [0009](./0009-viaje-en-estrella.md) y la [0014](./0014-dia-de-solo-viaje.md), precisa la [0016](./0016-vuelos.md), cierra lo que la [0017](./0017-quiero-ir-a.md) dejó abierto y suma `Dia.almuerzo` y `traslado.bus_de_noche` al [contrato](../CONTRATO.md) (versión 1.6)
+**Fecha:** 19 de octubre de 2026 · **Estado:** vigente; desde la [0027](./0027-tope-del-bus-de-noche.md), el tope del bus de noche es el 30 % · Amplía la [0009](./0009-viaje-en-estrella.md) y la [0014](./0014-dia-de-solo-viaje.md), precisa la [0016](./0016-vuelos.md), cierra lo que la [0017](./0017-quiero-ir-a.md) dejó abierto y suma `Dia.almuerzo` y `traslado.bus_de_noche` al [contrato](../CONTRATO.md) (versión 1.6)
 
 ## Contexto
 

@@ -1,6 +1,8 @@
 # Auditoría del motor: lo que un jurado podría objetar
 
-El 5 de noviembre de 2026 revisamos el motor como lo haría un jurado que busca razones para bajarnos la nota: cada supuesto, con una prueba y su cifra. La rejilla es la del informe de la semana 10: los 24 orígenes; 2, 4, 6 y 9 días; los doce meses, sin intereses. Son 1 152 consultas y 3 444 viajes. Las cifras salen de `python -m evaluacion.auditoria`: «antes» es el motor con los datos `2026.10.8` ([`auditoria_2026.10.8.json`](../data/evaluacion/resultados/auditoria_2026.10.8.json)), y «después», con los `2026.11.1` ([`auditoria.json`](../data/evaluacion/resultados/auditoria.json)).
+El 5 de noviembre de 2026 revisamos el motor como lo haría un jurado que busca razones para bajarnos la nota: cada supuesto, con una prueba y su cifra. La rejilla es la del informe de la semana 10: los 24 orígenes; 2, 4, 6 y 9 días; los doce meses, sin intereses. Son 1 152 consultas y 3 444 viajes. Las cifras salen de `python -m evaluacion.auditoria`: «antes» es el motor con los datos `2026.10.8` ([`auditoria_2026.10.8.json`](../data/evaluacion/resultados/auditoria_2026.10.8.json)), y «después», con los `2026.11.1` ([`auditoria_2026.11.1.json`](../data/evaluacion/resultados/auditoria_2026.11.1.json)).
+
+El 12 de noviembre se arreglaron cuatro puntos de lo pendiente y la mitad de otros dos, con el contrato 1.8 y los datos `2026.11.2`, más dos cosas que salieron después: el tope del bus de noche y los Uros. Para esos, «antes» es el motor de `main` del 10 de noviembre con los datos `2026.11.1`, y «después», la `2026.11.2` ([`auditoria.json`](../data/evaluacion/resultados/auditoria.json)). Desde entonces, la auditoría mide también el bus de noche y los avisos de cada viaje.
 
 ## Lo que se arregló
 
@@ -26,7 +28,35 @@ Una cifra queda peor. El motor da una sola hora de llegada al bus de noche, y lo
 
 ### «Siempre propone los mismos sitios»
 
-Las diez zonas más propuestas se llevan el 80 % de los viajes, y Miraflores sola el 18 %. La variante del kit de evaluación pasa a ser la raíz de la calidad ([decisión 0021](decisiones/0021-evaluacion-semana-12.md)): la anterior coincidía con el motor en 110 de 120 propuestas, y calificarla no iba a decir casi nada. La nueva coincide en 100. En la rejilla, con ella, las diez zonas más propuestas se llevan el 76 % de los viajes, salen 66 zonas distintas en vez de 56 y Miraflores baja del 19 al 11 % ([`auditoria_variante.json`](../data/evaluacion/resultados/auditoria_variante.json)). Reparte algo más, pero tres de cada cuatro viajes siguen yendo a diez zonas: esta variante sola no resuelve la concentración. Si las calificaciones la favorecen, se despliega.
+Las diez zonas más propuestas se llevan el 80 % de los viajes, y Miraflores sola el 18 %. La variante del kit de evaluación pasa a ser la raíz de la calidad ([decisión 0021](decisiones/0021-evaluacion-semana-12.md)): la anterior coincidía con el motor en 110 de 120 propuestas, y calificarla no iba a decir casi nada. La nueva coincide en 100. En la rejilla, con ella, las diez zonas más propuestas se llevan el 76 % de los viajes, salen 66 zonas distintas en vez de 56 y Miraflores baja del 19 al 11 % ([`auditoria_variante.json`](../data/evaluacion/resultados/auditoria_variante.json)). Reparte algo más, pero tres de cada cuatro viajes siguen yendo a diez zonas: esta variante sola no resuelve la concentración. Se iba a desplegar si las calificaciones la favorecían, y no la favorecen: su nDCG@3 no se distingue del del motor ([`resultados.md`](evaluacion/resultados.md)). Con los datos `2026.11.2`, el motor ya reparte como ella, sin cambiar su puntaje: 67 zonas distintas, el 76 % de los viajes en las diez más propuestas y Miraflores en el 15 %.
+
+### El bus de noche se llevaba hasta el 40 % del viaje
+
+Con dos días, la mitad de los viajes iba en bus de noche, con un tope de 9 h 36 por tramo, y tres días desde el Cusco podían ser Ilo o Nasca, a 14 horas por tramo. Las calificaciones del kit dan menos nota cuanto más del viaje se lleva el bus: 1,25 con menos del 20 %, 0,97 del 20 al 30 % y 0,80 del 30 al 40 %. El tope baja al 30 % ([decisión 0027](decisiones/0027-tope-del-bus-de-noche.md)). En la rejilla, el bus de noche pasa del 50,2 al 6,7 % de los viajes de dos días, y el que más se lleva del viaje, del 39,5 al 29,9 %. Tiene un costo: lo que ya no va de noche va de día, y los viajes de dos días que avisan que el camino se lleva mucho del viaje pasan del 27,9 al 56,8 %.
+
+### El Circuito Mágico, a la hora en que abre
+
+Salía 390 veces en la rejilla, siempre a las 10:51, porque su ficha dice que abre de 7:00 a 22:30. Abre de 15:00 a 22:00, de miércoles a domingo, y las fuentes con luces son a las 19:15, 20:15 y 21:30. Ese horario, con su fuente, manda ahora sobre el de la ficha ([decisión 0028](decisiones/0028-horarios-y-visitas-corregidos.md)): sale 277 veces, y se llega entre las 14:56 y las 15:30. Es la hora en que abre, pero todavía de día. Ponerlo en la noche del viaje queda en lo pendiente, en el punto 3.
+
+### Visitas de 20 minutos a un centro histórico
+
+El 23 % de las visitas a lugares de jerarquía 3, y el 24 % de las de jerarquía 4, duraban 30 minutos o menos: la Biblioteca Municipal Manuel Beingolea, Moray, el templo de Andahuaylillas y el Centro Histórico de Trujillo, este en 20 porque su ficha lo pone en el subtipo «Otros». Ahora las cinco zonas monumentales de «Otros» van con 90 minutos, y desde la jerarquía 3 la visita dura una hora como mínimo, un supuesto que queda escrito como tal (0028). En la rejilla ya no hay ninguna de 30 minutos o menos, y la mediana de la jerarquía 3 sube de 66 a 76 minutos. Tiene un efecto que no buscábamos: con la hora mínima, un lugar de jerarquía 3 rinde por minuto lo mismo que uno de jerarquía 2 de 20 minutos, y el día se llena de lugares menores. En Lima, los días con seis paradas suben del 69 al 87 %.
+
+### Puno sin los Uros
+
+Ningún viaje a Puno iba a los Uros: su ficha no les da jerarquía, y se visitan en lugar de la Reserva Nacional del Titicaca, de jerarquía 4, que no tiene camino. Ahora valen como ella (0028) y van en los viajes a Puno que tienen tiempo, como verifica una prueba de lo conocido. Puno pasa del 8,0 al 12,7 % de los viajes de la rejilla. Con el motor de ahora, Puno queda primero en 7 de las 40 consultas del kit, donde las calificaciones preferían lo que desplaza; esas notas eran de viajes sin los Uros ([`resultados.md`](evaluacion/resultados.md)).
+
+### Los horarios y los días de cierre
+
+El PR 52, de Miguel, llevó el horario de cada lugar al contrato y a su hoja en la app, y sumó un aviso: si el viaje no tiene fecha y alguna parada no abre todos los días, lo dice. Ahora el horario es el corregido cuando la ficha está mal, la fila del plan dice si el lugar cierra algún día de la semana y el plan impreso lo lleva también. Con fecha, el motor no pone una parada fuera de su horario ni un día que cierra: es la propiedad 16 del contrato 1.8, que se prueba con 1 000 consultas al azar. Sin fecha no puede saber el día, y por eso la app lo muestra siempre.
+
+### El VRAEM y el cupo de Machu Picchu
+
+Un viaje que duerme o para en uno de los 37 distritos del VRAEM que delimita el D.S. 133-2022-PCM lo avisa primero, con las alertas de Canadá y Estados Unidos. Hoy son 126 paradas en 9 polos, y 5 bases. Y cada parada con cupo dice cuántas personas entran al día y dónde se compran las entradas: Machu Picchu, 4 500 al día y 5 600 en temporada alta (el 5 de noviembre esta auditoría daba solo la segunda cifra), en tuboleto.cultura.pe y, solo 1 000 al día, en persona en Machu Picchu Pueblo ([decisión 0029](decisiones/0029-avisos-de-seguridad-y-de-entradas.md)). Lo verifican las propiedades 17 y 18. Reemplazan los dos avisos de `acceso` que el PR 52 había sumado para lo mismo (0029).
+
+### En auto o taxi
+
+La app dice ahora, en la hoja de cada lugar y en la letra chica, que entre un lugar y otro del día el plan cuenta en auto o taxi. La letra chica decía además que la visita sale de la ficha de cada lugar, y no es así: es el tiempo típico de cada clase de lugar, un supuesto nuestro. Ya no lo dice. Cuánto sería en transporte público queda en lo pendiente, en el punto 6.
 
 ## Lo que no es un problema, con su prueba
 
@@ -36,21 +66,19 @@ La heurística que elige qué visitar: en los 120 viajes que el motor propone pa
 
 ## Pendiente, en orden
 
+Los números son los de la lista del 5 de noviembre, para que se puedan citar: los que faltan ya se arreglaron, arriba.
+
 | # | Lo que objetaría el jurado | La prueba | Qué hacer | Cuándo |
 |---|---|---|---|---|
 | 1 | «Hay un vuelo, un bus o un tren justo cuando llegas» | A Mazamari hay 2 vuelos por semana, a las 11:20; a Andahuaylas 5, a las 5:55 o a las 6:00; a Huaraz 6, a las 7:10 (FlightConnections, 5 de noviembre). `rutas_aereas.csv` lo dice: «el motor supone que hay uno a la hora en que se llega al aeropuerto». El bus de noche sale a la hora que conviene para llegar a las 6:00 | Las frecuencias y la primera y última salida de las 22 rutas aéreas y de los buses de cada empresa; en las de pocas salidas, el horario de verdad. Y la llegada como un rango | w13e |
 | 2 | El bus te deja en el centro, no en el terminal | La ida va de centro a centro y no cuenta llegar antes al terminal | Los terminales de OpenStreetMap en cada punta, el taxi hasta ellos con el tráfico de la ciudad y la media hora antes que piden las empresas | w13e |
-| 3 | Lo que se ve de noche, puesto de día | El Circuito Mágico del Agua sale 390 veces en la rejilla, siempre a las 10:51, porque su ficha dice que abre de 7:00 a 22:30. Abre a las 15:00, y las fuentes con luces son a las 19:15, 20:15 y 21:30 (Andina, 2024; How to Peru, julio de 2026) | Su horario de verdad, con su fuente, y en la noche del viaje | w13d |
-| 4 | Los horarios y los días de cierre | Sin fecha, que es lo normal en el formulario, el motor no revisa qué días cierra cada lugar, y la app no muestra el horario. Y la ficha puede estar mal, como en el 3 | Mostrar el horario y los días de cierre de cada parada, y avisar si alguna cierra algún día de la semana | w13d |
-| 5 | Tiempos de visita sin fuente | Salen de una tabla por subtipo, «supuesto del equipo»: el Centro Histórico de Trujillo, 20 minutos; Moray, 30; las Líneas de Nasca, 30, sin la avioneta | Corregir los subtipos mal puestos y poner un mínimo por jerarquía, declarado como supuesto | w13d |
-| 6 | Solo taxi | Los tramos del día suponen auto o taxi, y la app no lo dice | Decirlo en la app, y cuánto sería en transporte público, con una fuente | w13d |
+| 3 | Lo que se ve de noche, puesto de día | El Circuito Mágico del Agua se visita ahora a la hora en que abre, entre las 14:56 y las 15:30, pero las fuentes con luces son a las 19:15, 20:15 y 21:30 (Andina, 2024; How to Peru, julio de 2026) | Ponerlo en la noche del viaje | w13e |
+| 6 | Solo taxi | Los tramos del día suponen auto o taxi. La app ya lo dice, pero no cuánto sería en transporte público | Cuánto sería en transporte público, con una fuente por ciudad | después de la entrega |
 | 7 | La hora del día | TomTom mide Lima 17 % más lenta a las 8 de la mañana que en el promedio del día, y el motor usa un solo tiempo por tramo | El ritmo de cada hora en las ciudades, con TomTom | semana 14 |
 | 8 | Las colas | El motor no suma esperas en los lugares más visitados, como la fila del bus de Aguas Calientes a Machu Picchu en temporada alta, ni la espera del taxi. La del taxi la cubre el margen de la 0025, sin una fuente que la mida | Una espera por lugar y temporada donde haya una fuente que la mida; donde no la haya, decirlo en la app | semana 14 |
-| 9 | Zonas peligrosas | Hay polos con paradas en el VRAEM (Satipo: Río Tambo, Mazamari, Pangoa; Kimbiri). No salen en la rejilla sin intereses, pero se pueden elegir como destino y el motor no avisa | Un aviso con las alertas oficiales de viaje | w13d |
 | 10 | ¿Dónde duermo? | El motor elige el pueblo, no el hospedaje | Hospedajes del directorio de MINCETUR y de OpenStreetMap, con su categoría como banda de precio, y la seguridad del distrito (Observatorio de Seguridad Ciudadana del Mininter, INEI) | semana 14 |
 | 11 | Costos viejos | El README de `pipeline/referencia/` dice que ninguno de transporte, hospedaje o comida está calibrado con tarifas de este año | Pasajes, entradas y hospedaje de 2026, con su fuente | semana 14 |
 | 12 | Se califican ellos mismos | Quienes califican el kit hicieron el producto | Ya está declarado en la 0021; sumar calificadores de fuera del equipo | semana 14 |
-| 13 | Entradas con cupo | Machu Picchu vende un número fijo de entradas por día, 5 600 en 2026 según el Ministerio de Cultura (El Peruano), y el motor no lo dice; del tren sí avisa | Un aviso en los polos con entradas con cupo | w13d |
 
 ## Sobre el aprendizaje automático
 
@@ -60,7 +88,7 @@ Agrupar los lugares en zonas (TA-01) es aprendizaje no supervisado: agrupamiento
 
 No usamos aprendizaje profundo, y no por falta de tiempo. Una red neuronal aprende de muchos ejemplos con su respuesta. Para el itinerario no hay ninguno: nadie nos dijo todavía «este viaje estuvo bien». Para los tiempos hay 1 779 filas, que una red profunda memoriza y que una regresión de 11 parámetros explica, con su error medido y cada parámetro a la vista. El enunciado lo permite de forma explícita: no se exige un modelo complejo cuando uno más simple es el adecuado ([0004](decisiones/0004-sin-modelos-supervisados.md)).
 
-Entra más aprendizaje cuando haya datos. Con las calificaciones del kit (196 viajes, cuatro personas) se pueden aprender los pesos del puntaje, la calidad, la novedad y los intereses, con un modelo de preferencias por pares y validación cruzada por consulta. Y si la app llega a tener viajes aceptados por usuarios, se puede sumar la capa de ordenamiento supervisado que la 0004 deja como trabajo futuro.
+Entra más aprendizaje cuando haya datos. Con las calificaciones del kit (196 viajes, tres personas, con un acuerdo bajo) se pueden aprender los pesos del puntaje, la calidad, la novedad y los intereses, con un modelo de preferencias por pares y validación cruzada por consulta. Y si la app llega a tener viajes aceptados por usuarios, se puede sumar la capa de ordenamiento supervisado que la 0004 deja como trabajo futuro.
 
 ## Fuentes
 
@@ -70,5 +98,7 @@ Consultadas el 5 de noviembre de 2026, salvo donde se dice otra cosa.
 - Cruz del Sur: la página de cada una de las 29 rutas, en [`evaluacion/buses.csv`](../evaluacion/buses.csv), consultadas el 26 de octubre.
 - Infobae: [el último recorrido de 2025 del tren turístico Lima–Huancayo](https://www.infobae.com/peru/2025/08/06/tren-turistico-lima-huancayo-realizo-su-ultimo-recorrido-del-2025-evaluan-incrementar-sus-salidas-el-proximo-ano/), 6 de agosto de 2025, y [por qué no se venden pasajes para Semana Santa de 2026](https://www.infobae.com/peru/2026/03/18/tren-lima-huancayo-por-que-no-se-venden-boletos-para-el-viaje-de-semana-santa-2026/), 18 de marzo de 2026.
 - Andina, [el horario del Circuito Mágico del Agua](https://andina.pe/agencia/noticia-circuito-magico-del-agua-te-espera-diversion-y-comida-el-feriado-largo-1007809.aspx), 2024, y How to Peru, [Magic Water Circuit in Lima](https://howtoperu.com/answers/magic-water-circuit-in-lima-worth-it-for-couples-families-or-first-time-visitors/), julio de 2026.
-- El Peruano, [el aforo de Machu Picchu para 2026](https://elperuano.pe/noticia/282176-machu-picchu-ministerio-de-cultura-fija-aforo-maximo-de-5600-visitantes-diarios-para-2026).
+- El Peruano, [el aforo de Machu Picchu para 2026](https://elperuano.pe/noticia/282176-machu-picchu-ministerio-de-cultura-fija-aforo-maximo-de-5600-visitantes-diarios-para-2026), 2 de noviembre de 2025; Andina, [lo que hay que saber para ir a Machu Picchu en 2026](https://andina.pe/agencia/noticia-iras-a-machu-picchu-2026-ten-cuenta-estas-medidas-para-una-optima-visita-1056293.aspx), 25 de diciembre de 2025, y La República, [el aforo de la temporada alta](https://larepublica.pe/sociedad/2026/06/17/machu-picchu-amplia-su-capacidad-para-la-temporada-alta-fechas-aforo-y-que-cambiara-para-los-visitantes-520693), 17 de junio de 2026, consultadas el 10 de noviembre.
+- El Peruano, [el D.S. 133-2022-PCM](https://busquedas.elperuano.pe/normaslegales/decreto-supremo-que-modifica-el-articulo-1-del-decreto-supre-decreto-supremo-n-133-2022-pcm-2121215-1/), que delimita el VRAEM, y el [plan de trabajo 2025-2026 de la comisión del VRAEM del Congreso](https://www.congreso.gob.pe/Docs/comisiones2021/cem-vraem/files/plan_trabajo23_24/plan_de_trabajo_congre_olivos_2025-2026[r].pdf), que trae la lista de sus 37 distritos; las alertas de viaje de [Canadá](https://travel.gc.ca/destinations/peru), del 6 de noviembre de 2026, y de [Estados Unidos](https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/peru-travel-advisory.html), consultadas el 10 de noviembre.
+- Los Uros: Andina, [la Reserva Nacional del Titicaca](https://andina.pe/agencia/noticia-la-excepcional-belleza-altoandina-de-reserva-nacional-del-titicaca-640674.aspx), noviembre de 2016, y las excursiones de [My Guide Peru](https://www.myguideperu.com/experiences/puno-3-hour-trip-to-the-floating-uros-islands) y [Civitatis](https://www.civitatis.com/puno/excursion-isla-uros/), consultadas el 10 de noviembre.
 - FlightConnections, las páginas de cada ruta desde Lima, como la de [Mazamari](https://www.flightconnections.com/flights-from-lim-to-mza).

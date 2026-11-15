@@ -22,13 +22,16 @@ Cada decisión de arquitectura o de método que alguien podría preguntar «¿po
 | [0016](./0016-vuelos.md) | Se vuela solo a lo lejano, y el presupuesto entra a elegir | Vigente; con destino, el 40 % ya no impide volar (0019) |
 | [0017](./0017-quiero-ir-a.md) | «Quiero ir a…»: el viaje a la zona elegida, y si no cabe, qué cambiar | Vigente; con destino se vuela también en viajes cortos (0019) |
 | [0018](./0018-planes-de-noche.md) | De noche: dónde salir, una noche de estrellas y descansar en la altura | Vigente; la regla de la altura la comparte el primer día tranquilo (0020) |
-| [0019](./0019-plan-creible.md) | Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre | Vigente |
+| [0019](./0019-plan-creible.md) | Un plan creíble: el almuerzo, el bus de noche y una jornada que no se corre | Vigente; el bus de noche se lleva como máximo el 30 % del viaje, no el 40 % (0027) |
 | [0020](./0020-primer-dia-tranquilo.md) | Un primer día tranquilo en la altura | Vigente |
-| [0021](./0021-evaluacion-semana-12.md) | Cómo se evalúa lo que propone el motor: 40 consultas, una guía como línea de base y una variante | Vigente |
+| [0021](./0021-evaluacion-semana-12.md) | Cómo se evalúa lo que propone el motor: 40 consultas, una guía como línea de base y una variante | Vigente; califican tres de los cuatro (12 de noviembre) |
 | [0022](./0022-presupuesto-con-margen.md) | El presupuesto avisa cuando el escenario caro lo pasa, y no deja fuera ningún viaje | Vigente |
 | [0023](./0023-ta01-v3-horas-reales.md) | TA-01 v3: los grupos de lugares con las horas de la red | Propuesta, para la semana 14 |
 | [0024](./0024-lugares-menores-cerca.md) | Por un lugar menor no se va lejos | Vigente |
 | [0025](./0025-trafico-de-las-ciudades.md) | El tráfico de las ciudades | Vigente |
 | [0026](./0026-ida-en-bus.md) | La ida a la base va en bus | Vigente |
+| [0027](./0027-tope-del-bus-de-noche.md) | El bus de noche se lleva como máximo el 30 % del viaje | Vigente |
+| [0028](./0028-horarios-y-visitas-corregidos.md) | El horario y la visita, corregidos con su fuente | Vigente |
+| [0029](./0029-avisos-de-seguridad-y-de-entradas.md) | Los avisos de seguridad y de entradas | Vigente |
 
 Formato de cada una: contexto, decisión, alternativas descartadas y consecuencias. Media página como máximo.

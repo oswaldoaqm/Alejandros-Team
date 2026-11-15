@@ -183,6 +183,104 @@ def test_cada_recurso_lleva_el_polo_que_junta_a_su_grupo():
     assert puno["recursos"] == 3 and juli["paradas"] == ["20", "21"]
 
 
+def test_un_recurso_que_se_visita_por_otro_lleva_la_jerarquia_de_ese():
+    """Los Uros valen como la Reserva Nacional del Titicaca, que no tiene camino (decisión 0028)."""
+    maestro = pd.DataFrame(
+        {
+            "codigo": [412, 960, 961],
+            "nombre": ["Reserva Nacional del Titicaca", "Islas Flotantes de los Uros", "Puerto"],
+            "categoria": "Sitios naturales",
+            "tipo": "Cuerpos de agua",
+            "subtipo": ["Reservas Nacionales", "Islas", "Muelles"],
+            "jerarquia": [4.0, np.nan, 2.0],
+            "lat": -15.82,
+            "lon": -69.97,
+            "altitud_m": 3812,
+            "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=960",
+            "descripcion_corta": None,
+            "foto_url": None,
+            "ingreso": "boleto",
+            "tarifa_soles": 10.0,
+            "tarifa_regla": None,
+            "boleto_combinado": False,
+            "polo": 11,
+            "es_parada": True,
+            "intereses": "naturaleza",
+            "visita_min": [180, 90, 30],
+            "caminata_min": 0,
+            "abre": None,
+            "cierra": None,
+            "dias": None,
+            "region": "Puno",
+            "provincia": "Puno",
+            "distrito": "Puno",
+        }
+    )
+    por_codigo = {r["codigo"]: r for r in artefactos.recursos(maestro, por_acceso={"960": "412"})}
+    assert por_codigo["960"]["jerarquia"] is None and por_codigo["960"]["vale_como_jerarquia"] == 4
+    assert por_codigo["412"]["vale_como_jerarquia"] is None and por_codigo["961"]["vale_como_jerarquia"] is None
+    assert artefactos.vale_como() == {"960": "412"}
+
+
+def _maestro(**columnas) -> pd.DataFrame:
+    """Un maestro con las columnas que ``recursos`` lee: las que no se dan, vacías."""
+    vacias = ("categoria", "tipo", "subtipo", "jerarquia", "altitud_m", "url_ficha", "descripcion_corta", "foto_url")
+    vacias += ("tarifa_soles", "tarifa_regla", "visita_min", "caminata_min", "abre", "cierra", "dias")
+    fijas = {"polo": 1, "es_parada": True, "lat": -12.6, "lon": -73.8, "ingreso": "libre", "boleto_combinado": False}
+    return pd.DataFrame({**dict.fromkeys(vacias), **fijas, "intereses": "", **columnas})
+
+
+def test_un_recurso_y_una_base_del_vraem_llevan_su_zona():
+    """El distrito decide, con el nombre que traiga la ficha; la base, si es la capital (decisión 0029)."""
+    maestro = _maestro(
+        codigo=[1, 2, 3, 4],
+        nombre=["Playa de Kimbiri", "Catarata", "Plaza de Huanta", "Playa"],
+        region=["Cusco", "Cusco", "Ayacucho", "Lima"],
+        provincia=["La Convencion", "La Convención", "Huanta", "Lima"],
+        distrito=["Quimbiri", "Union Asháninka", "Huanta", "Santa Rosa"],
+    )
+    # Huanta está en el ámbito de influencia, no en el de intervención directa,
+    # y el Santa Rosa de Lima no es el de La Mar.
+    assert [r["zona"] for r in artefactos.recursos(maestro, por_acceso={})] == ["vraem", "vraem", None, None]
+    tabla = artefactos.zonas_de_seguridad()
+    assert artefactos.zona_de_la_base(-12.620387, -73.78851, tabla) == "vraem"  # Kimbiri, su capital
+    assert artefactos.zona_de_la_base(-12.807733, -73.603867, tabla) == "vraem"  # Chirumpiari, capital de Cielo Punco
+    assert artefactos.zona_de_la_base(-12.939888, -74.247953, tabla) is None  # Huanta
+    assert artefactos.zona_de_la_base(-12.62, -73.75, tabla) is None  # en el valle, pero no en una capital
+
+
+def test_machu_picchu_lleva_el_cupo_de_sus_entradas():
+    """Cuántas entran al día, también en temporada alta, y dónde se compran (decisión 0029)."""
+    cupos = artefactos.entradas_con_cupo()
+    assert cupos["917"] == {
+        "nombre": "Machu Picchu",
+        "por_dia": 4500,
+        "por_dia_alta": 5600,
+        "en_linea": "tuboleto.cultura.pe",
+        "en_persona": "Machu Picchu Pueblo",
+        "en_persona_por_dia": 1000,
+    }
+    maestro = _maestro(codigo=[917, 918], nombre=["Machu Picchu", "Mariposario"], region="Cusco", provincia="Urubamba")
+    maestro = maestro.assign(distrito="Machupicchu")
+    assert [r["cupo"] for r in artefactos.recursos(maestro, por_acceso={})] == [cupos["917"], None]
+
+
+def test_las_zonas_de_seguridad_son_los_37_distritos_del_vraem_con_su_fuente():
+    tabla = artefactos.zonas_de_seguridad()
+    assert len(tabla) == 37 and set(tabla["zona"]) == {"vraem"}
+    assert not tabla.duplicated(["region", "provincia", "distrito"]).any()
+    assert tabla.groupby(["region", "provincia"]).size().to_dict() == {
+        ("Ayacucho", "Huanta"): 9,
+        ("Ayacucho", "La Mar"): 9,
+        ("Cusco", "La Convención"): 8,
+        ("Huancavelica", "Tayacaja"): 5,
+        ("Junín", "Huancayo"): 2,
+        ("Junín", "Satipo"): 4,
+    }
+    assert tabla["fuente"].str.contains("decreto-supremo-n-133-2022-pcm").all()
+    assert tabla["capital"].ne("").all() and not tabla.duplicated(["lat", "lon"]).any()
+
+
 def test_las_tablas_de_antes_de_juntar_no_cambian():
     maestro, bases, *_ = _tablas_de_dos_polos()
     assert artefactos.en_su_polo(maestro, bases)["polo"].tolist() == maestro["polo"].tolist()

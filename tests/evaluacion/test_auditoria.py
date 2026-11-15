@@ -66,9 +66,28 @@ def test_las_cifras_de_una_corrida_a_mano():
         "base": [0.0, 0.0],
         "dias": [{"tipo": "visita", "horas": 5.0, "orden": [10.0, 10.0], "paradas": [_parada(2, 10, 30)]}],
     }
-    corrida = [{"rutas": [lima, campo]}, {"rutas": [lima]}]
+    corrida = [
+        {
+            "dias": 2,
+            "rutas": [
+                {**lima, "bus_de_noche": True, "ida_horas": 8.4, "avisos": ["acceso"], "aviso_del_camino": False},
+                {**campo, "bus_de_noche": False, "avisos": ["acceso", "dias"], "aviso_del_camino": True},
+            ],
+        },
+        # Un aviso de días que no es el del camino, como el de los días libres, no cuenta como tal.
+        {"dias": 4, "rutas": [{**lima, "bus_de_noche": False, "avisos": ["dias"], "aviso_del_camino": False}]},
+    ]
     c = auditoria.cifras(corrida, banda_de, {"metropoli": 16.0, "grande": 17.0})
     assert c["viajes"] == 3
+    # Ida y vuelta de 8,4 horas en un viaje de dos días: 16,8 de 48 horas.
+    assert c["bus_de_noche"] == {
+        "viajes_con_bus_por_dias": {"2": 0.5, "4": 0.0},
+        "horas_mediana": 8.4,
+        "horas_max": 8.4,
+        "parte_del_viaje_max": 0.35,
+        "con_aviso_del_camino_por_dias": {"2": 0.5, "4": 0.0},
+    }
+    assert c["avisos"] == {"acceso": round(2 / 3, 3), "dias": round(2 / 3, 3)}
     # El tramo de menos de 1 km no cuenta, ni el que sale del campo a la ciudad grande.
     assert c["tramos_en_ciudad"] == {
         "metropoli": {

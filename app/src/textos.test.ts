@@ -9,8 +9,10 @@ import {
   comoSeVa,
   conQueSeViaja,
   cuantosLugaresDeNoche,
+  diasDeCierre,
   dondeSeAlmuerza,
   entrada,
+  horario,
   imperdibles,
   nombreDelViaje,
   razonesQueFaltan,
@@ -80,6 +82,41 @@ describe("la entrada de un lugar", () => {
     expect(plano(entrada({ ingreso: "pagado", tarifa_soles: 2.5 }))).toBe("Entrada S/ 2,50");
     expect(entrada({ ingreso: "pagado", tarifa_soles: null })).toBe("Entrada pagada, sin tarifa publicada");
     expect(entrada({ ingreso: "desconocido" })).toBe("La ficha no dice si se paga");
+  });
+});
+
+describe("el horario de un lugar", () => {
+  const SEMANA = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"] as const;
+  const DE_MARTES_A_DOMINGO = SEMANA.slice(1);
+
+  it("dice a qué hora abre y cierra, y qué días cierra", () => {
+    expect(horario({ abre: "09:00", cierra: "16:30", dias: [...DE_MARTES_A_DOMINGO] })).toBe(
+      "De 9:00 a 16:30; cierra los lunes",
+    );
+    expect(horario({ abre: "15:00", cierra: "22:00", dias: ["mie", "jue", "vie", "sab", "dom"] })).toBe(
+      "De 15:00 a 22:00; cierra los lunes y martes",
+    );
+    expect(horario({ abre: "07:00", cierra: "18:00", dias: [...SEMANA] })).toBe(
+      "De 7:00 a 18:00, todos los días",
+    );
+    expect(horario({ abre: "07:00", cierra: "18:00", dias: null })).toBe("De 7:00 a 18:00");
+  });
+
+  it("si abre pocos días, dice cuáles", () => {
+    expect(diasDeCierre(["sab", "dom"])).toBe("Abre solo los sábados y domingos");
+    expect(horario({ abre: null, cierra: null, dias: ["sab", "dom"] })).toBe(
+      "Abre solo los sábados y domingos; su ficha no dice a qué hora",
+    );
+  });
+
+  it("lo que la ficha no dice no se da por sabido", () => {
+    expect(horario({ abre: null, cierra: null, dias: null })).toBeNull();
+    expect(horario({ abre: "09:00", cierra: null, dias: null })).toBeNull();
+    expect(diasDeCierre(null)).toBeNull();
+    expect(diasDeCierre([...SEMANA])).toBeNull();
+    expect(horario({ abre: null, cierra: null, dias: [...SEMANA] })).toBe(
+      "Todos los días; su ficha no dice a qué hora",
+    );
   });
 });
 

@@ -32,7 +32,7 @@ Después, el plan creíble, con el [contrato 1.6](./CONTRATO.md) y los datos `20
 - **una jornada que no se corre**: se vuelve a las 17:00 aunque el primer lugar abra tarde, y no se espera más de una hora en una puerta;
 - **con destino se vuela aunque el viaje sea corto**: el Cusco sale desde Lima con dos días. Así se cierra la pregunta que dejó la 0017.
 
-Para que un fin de semana no salga siempre lejos, el bus no va si se lleva el 40 % del viaje, con sus noches, y sus dos noches pesan en el puntaje como un día más. Está en la [decisión 0019](./decisiones/0019-plan-creible.md).
+Para que un fin de semana no salga siempre lejos, el bus no va si se lleva el 40 % del viaje, con sus noches, y sus dos noches pesan en el puntaje como un día más. Está en la [decisión 0019](./decisiones/0019-plan-creible.md). Desde la [0027](./decisiones/0027-tope-del-bus-de-noche.md), el tope es el 30 %.
 
 Después, el primer día tranquilo en la altura, con el [contrato 1.7](./CONTRATO.md) y los datos `2026.10.8`. El aviso de aclimatación decía «conviene un primer día tranquilo», y ahora el plan lo da: si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la zona tiene medio día de visitas como mucho, sin subir más de 500 m sobre la base ni caminatas largas, y después de un bus de noche empieza a las 9:00. Es la misma regla de la noche de descanso, y sale del Yellow Book del CDC. Las 13 bases que no tenían altura la toman de un modelo de elevación, y con eso la altitud máxima también filtra dónde se duerme. Está en la [decisión 0020](./decisiones/0020-primer-dia-tranquilo.md).
 

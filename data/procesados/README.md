@@ -14,7 +14,7 @@ python -m pipeline.cielo       # después de noche; necesita las luces, las nube
 python -m pipeline.comida      # después de bases; necesita los lugares de Overture
 ```
 
-Estas tablas son las de la versión de datos `2026.11.1`, que suma el tráfico de las ciudades y la ida en bus ([decisiones 0025](../../docs/decisiones/0025-trafico-de-las-ciudades.md) y [0026](../../docs/decisiones/0026-ida-en-bus.md)), sin el Ferrocarril Central y con las mismas bases. La `2026.10.8` sumó la altura de las bases según el modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base; la `2026.10.7` sumó dónde comer, la `2026.10.6`, la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
+Estas tablas son las de la versión de datos `2026.11.2`, que rehace los minutos de visita y los horarios del maestro con sus referencias ([decisión 0028](../../docs/decisiones/0028-horarios-y-visitas-corregidos.md)); las demás tablas no cambian. La `2026.11.1` sumó el tráfico de las ciudades y la ida en bus ([decisiones 0025](../../docs/decisiones/0025-trafico-de-las-ciudades.md) y [0026](../../docs/decisiones/0026-ida-en-bus.md)), sin el Ferrocarril Central y con las mismas bases. La `2026.10.8` sumó la altura de las bases según el modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base; la `2026.10.7` sumó dónde comer, la `2026.10.6`, la noche, y la `2026.10.5`, los vuelos. El clima es el de los 222 grupos, descargados entre el 30 de septiembre y el 9 de octubre ([`pipeline/README.md`](../../pipeline/README.md)).
 
 El maestro se rehízo el 2 de octubre con un filtro de contactos más estricto: cambian 72 celdas de `epoca_observaciones` y una de `dias`. Un recurso figuraba como abierto solo los domingos porque el filtro anterior leía como día el nombre de su encargado; ahora queda sin días, que es lo que dice su ficha. Los artefactos `2026.10.2` todavía traían ese domingo; los `2026.10.3` ya no.
 
@@ -104,12 +104,13 @@ Los 222 grupos del modelo v2 se mantienen, con sus mismos números. Cada uno sig
 | `es_parada`, `motivo_no_parada` | Si puede ser parada de un itinerario, y si no, por qué: `folclore`, `acontecimiento`, `cumbre`, `coordenada_revisar`, `sin_coordenada` o `sin_ficha` | Pipeline |
 | `intereses` | Los chips del contrato que el recurso atiende, separados por `\|` | Categoría, tipo, subtipo y actividades de la ficha, con [`pipeline/referencia/intereses.csv`](../../pipeline/referencia/intereses.csv) |
 | `actividades` | Actividades que registra la ficha, separadas por `\|` | Ficha |
-| `visita_min`, `visita_min_fuente` | Minutos de visita, sin contar el acceso. Es un **supuesto del equipo**, no un dato de la fuente | [`pipeline/referencia/duracion_visita.csv`](../../pipeline/referencia/duracion_visita.csv), por subtipo, tipo o categoría |
+| `visita_min`, `visita_min_fuente` | Minutos de visita, sin contar el acceso. Es un **supuesto del equipo**, no un dato de la fuente. `referencia:codigo` es una fila del propio recurso, y `referencia:minimo_jerarquia`, el piso de una hora de lo que tiene jerarquía 3 o 4 | [`pipeline/referencia/duracion_visita.csv`](../../pipeline/referencia/duracion_visita.csv), por recurso, subtipo, tipo o categoría |
 | `ingreso` | `libre`, `boleto`, `permiso` (semi-restringido) u `otro` | Ficha |
 | `tarifa_soles`, `tarifa_regla` | Entrada de un adulto peruano. 0 si el ingreso es libre. La regla dice cómo se eligió entre los montos del texto (ver `leer_tarifa`) | Ficha, con `leer_tarifa` |
 | `boleto_combinado` | La entrada es parte de un boleto para varios lugares (Boleto Turístico del Cusco, un circuito): se paga una vez por viaje | Ficha |
-| `abre`, `cierra` | Horario en 24 h | Ficha, con `leer_horario` |
-| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (862 lugares) | Ficha, con `leer_dias` |
+| `abre`, `cierra` | Horario en 24 h | Ficha, con `leer_horario`, o la corrección de [`pipeline/referencia/horarios_corregidos.csv`](../../pipeline/referencia/horarios_corregidos.csv) |
+| `dias` | Días de atención (`lun\|mar\|…`), solo si la ficha los dice (862 lugares) o los corrige la referencia | Ficha, con `leer_dias`, o la corrección |
+| `horario_fuente` | De dónde salen `abre`, `cierra` y `dias`: `ficha`, `referencia` o vacío si no se sabe | |
 | `epoca`, `epoca_observaciones` | Época propicia de visita, como la escribe la ficha, sin los datos de contacto ([`pipeline/README.md`](../../pipeline/README.md#datos-personales)) | Ficha |
 
 ### Acceso

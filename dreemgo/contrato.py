@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-VERSION_CONTRATO = "1.7"
+VERSION_CONTRATO = "1.8"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -193,11 +193,19 @@ class Recurso(_Modelo):
     descripcion: str | None = None
     ingreso: Literal["libre", "pagado", "desconocido"] = "desconocido"
     tarifa_soles: float | None = Field(None, ge=0)
-    abre: str | None = Field(None, pattern=HORA, description="Hora de apertura en la ficha, HH:MM; null si no figura.")
-    cierra: str | None = Field(None, pattern=HORA, description="Hora de cierre en la ficha, HH:MM; null si no figura.")
+    abre: str | None = Field(
+        None,
+        pattern=HORA,
+        description="A qué hora abre, HH:MM (desde 1.8): el de la ficha o, si está mal, el corregido con su "
+        "fuente. null si no se sabe.",
+    )
+    cierra: str | None = Field(
+        None, pattern=HORA, description="A qué hora cierra, HH:MM (desde 1.8). null si no se sabe."
+    )
     dias: list[DiaSemana] | None = Field(
         None,
-        description="Días de la semana en que abre según la ficha (lun..dom); null si no figura o abre todos los días.",
+        description="Los días que abre, de lunes a domingo (desde 1.8). null si la ficha no lo dice, que no "
+        "quiere decir que abra todos los días.",
     )
 
 
@@ -486,7 +494,12 @@ class Evento(_Modelo):
 
 
 class Aviso(_Modelo):
-    tipo: Literal["estacionalidad", "altitud", "aclimatacion", "presupuesto", "acceso", "dias", "datos"]
+    tipo: Literal[
+        "estacionalidad", "altitud", "aclimatacion", "presupuesto", "acceso", "dias", "datos", "seguridad", "entradas"
+    ] = Field(
+        description="De qué avisa. Desde 1.8, `seguridad`: una parada o la base están en una zona con alerta oficial "
+        "de viaje; y `entradas`: una parada vende un número fijo de entradas por día."
+    )
     nivel: Literal["info", "advertencia"]
     mensaje: str
 

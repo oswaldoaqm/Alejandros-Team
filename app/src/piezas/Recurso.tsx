@@ -1,11 +1,12 @@
-// Un lugar del inventario, abierto en su hoja: su foto, qué es, a qué altura está, si se paga,
-// qué importancia le da MINCETUR y su descripción. Al pie, su ficha oficial, que es donde se
-// verifica todo lo demás. La usan el plan de un viaje y la lista de lugares de una zona.
+// Un lugar del inventario, abierto en su hoja: su foto, qué es, a qué altura está, si se paga, qué
+// días y a qué hora abre, qué importancia le da MINCETUR y su descripción. Al pie, su ficha oficial,
+// que es donde se verifica todo lo demás. La usan el plan de un viaje y la lista de lugares de una zona.
 
 import type { ReactNode } from "react";
 import type { Recurso } from "../api/tipos";
-import { lista, metros, solesExactos } from "../formato";
+import { metros, solesExactos } from "../formato";
 import type { Foto as DatosDeFoto } from "../fotos";
+import { horario } from "../textos";
 import { EnlaceExterno } from "./Enlace";
 import { Foto } from "./Foto";
 import { Hoja } from "./Hoja";
@@ -15,17 +16,6 @@ import { InsigniaJerarquia } from "./InsigniaJerarquia";
 /** Desde jerarquía 3, MINCETUR lo cuenta entre los lugares más importantes del país. */
 const IMPERDIBLE = 3;
 
-const SEMANA = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"] as const;
-const PLURAL_DIA: Record<(typeof SEMANA)[number], string> = {
-  lun: "lunes",
-  mar: "martes",
-  mie: "miércoles",
-  jue: "jueves",
-  vie: "viernes",
-  sab: "sábados",
-  dom: "domingos",
-};
-
 export function esImperdible(recurso: Pick<Recurso, "jerarquia">): boolean {
   return (recurso.jerarquia ?? 0) >= IMPERDIBLE;
 }
@@ -33,26 +23,6 @@ export function esImperdible(recurso: Pick<Recurso, "jerarquia">): boolean {
 /** «Capilla», «Museos de sitio»: el subtipo de la ficha, o el tipo si el subtipo no dice nada. */
 export function claseDeRecurso(recurso: Pick<Recurso, "tipo" | "subtipo">): string {
   return recurso.subtipo && recurso.subtipo !== "Otros" ? recurso.subtipo : recurso.tipo;
-}
-
-/** «09:00 a 17:00», «09:00 a 16:00 (cierra los lunes)»; null si la ficha no trae horario ni días. */
-export function horarioDeRecurso(recurso: Pick<Recurso, "abre" | "cierra" | "dias">): string | null {
-  const horas = recurso.abre && recurso.cierra ? `${recurso.abre} a ${recurso.cierra}` : null;
-  const abiertos = recurso.dias ? SEMANA.filter((d) => recurso.dias?.includes(d)) : [];
-  let notaDias: string | null = null;
-  if (abiertos.length > 0 && abiertos.length < SEMANA.length) {
-    const cerrados = SEMANA.filter((d) => !abiertos.includes(d));
-    if (cerrados.length === 1 && cerrados[0]) {
-      notaDias = `cierra los ${PLURAL_DIA[cerrados[0]]}`;
-    } else if (cerrados.length === 2) {
-      notaDias = `cierra ${lista(cerrados.map((d) => PLURAL_DIA[d]))}`;
-    } else {
-      notaDias = `abre ${lista(abiertos.map((d) => PLURAL_DIA[d]))}`;
-    }
-  }
-  if (horas && notaDias) return `${horas} (${notaDias})`;
-  if (horas) return horas;
-  return notaDias ? notaDias.charAt(0).toUpperCase() + notaDias.slice(1) : null;
 }
 
 function precioDeEntrada(recurso: Pick<Recurso, "ingreso" | "tarifa_soles">): string {
@@ -85,7 +55,6 @@ interface Props {
 }
 
 export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
-  const horario = recurso ? horarioDeRecurso(recurso) : null;
   return (
     <Hoja
       abierta={recurso !== null}
@@ -129,12 +98,6 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
             </h3>
             <dl className="lugar-hoja__datos">
               {visita}
-              {horario ? (
-                <div>
-                  <dt>Horario</dt>
-                  <dd>{horario}</dd>
-                </div>
-              ) : null}
               {recurso.altitud_m != null ? (
                 <div>
                   <dt>Altura</dt>
@@ -144,6 +107,10 @@ export function HojaDeRecurso({ recurso, foto, visita, alCerrar }: Props) {
               <div>
                 <dt>Entrada</dt>
                 <dd>{precioDeEntrada(recurso)}</dd>
+              </div>
+              <div>
+                <dt>Horario</dt>
+                <dd>{horario(recurso) ?? "Su ficha no lo dice"}</dd>
               </div>
               <div>
                 <dt>Importancia</dt>

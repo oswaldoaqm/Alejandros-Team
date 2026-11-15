@@ -30,11 +30,16 @@ def test_a_que_hora_sale_y_llega(horas, sale, llega):
 @pytest.mark.parametrize(
     "dias, horas, tren, bote, va",
     [
-        (2, 8, 0, 0, True),
-        (2, 9.5, 0, 0, True),  # 19 de las 48 horas del viaje: menos del 40 %
-        (2, 9.7, 0, 0, False),  # Arequipa desde el Cusco: dos días son muy poco
-        (3, 9.7, 0, 0, True),
-        (4, 16, 0, 0, True),
+        (2, 7.1, 0, 0, True),  # 14,2 de las 48 horas del viaje: menos del 30 %
+        (2, 7.3, 0, 0, False),  # Puno desde el Cusco: en dos días ya pesa (decisión 0027)
+        (2, 8, 0, 0, False),  # Huaraz desde Lima, en un fin de semana: tampoco
+        (3, 9.7, 0, 0, True),  # Arequipa desde el Cusco
+        (3, 10.7, 0, 0, True),
+        (3, 10.9, 0, 0, False),  # 21,8 de las 72 horas: más del 30 %
+        (3, 14, 0, 0, False),  # Ilo desde el Cusco: con el 40 % iba
+        (4, 14.3, 0, 0, True),
+        (4, 14.5, 0, 0, False),
+        (5, 16, 0, 0, True),
         (1, 8, 0, 0, False),  # en un día no: entre dos noches de bus no hay hotel
         (4, 6.9, 0, 0, False),  # llegaría de madrugada
         (4, 16.1, 0, 0, False),  # más lejos, se vuela o se duerme en el camino
@@ -112,7 +117,7 @@ def test_cada_dia_con_visitas_almuerza_a_su_hora():
     for d in ruta.dias:
         if d.almuerzo is None:
             # Como dice el contrato: no almuerza el día que termina antes de la hora. Su última visita acaba
-            # antes de las 12:30 (con los datos 2026.11.1, el primer día, tranquilo, termina a las 12:21).
+            # antes de las 12:30 (con los datos 2026.11.2, el primer día, tranquilo, termina a las 12:21).
             ultima = d.paradas[-1]
             h, m = (int(x) for x in ultima.llegada.split(":"))
             assert h * H + m + ultima.minutos_visita < 12 * H + 30

@@ -85,3 +85,10 @@ subtipo;Mariposarios;45;
 subtipo;Acuarios;60;
 subtipo;Represas;30;
 subtipo;Puentes Modernos;15;
+minimo_jerarquia;3;60;Un lugar de jerarquía 3 o 4 se visita al menos una hora, aunque su subtipo diga menos. Supuesto del equipo (decisión 0028)
+codigo;960;90;Islas Flotantes de los Uros. Las excursiones desde Puno duran de 3 horas a 3 y media, con unos 30 minutos de bote por tramo (My Guide Peru: https://www.myguideperu.com/experiences/puno-3-hour-trip-to-the-floating-uros-islands; Civitatis: https://www.civitatis.com/puno/excursion-isla-uros/): en las islas, hora y media. El bote va aparte, en la red
+codigo;2585;90;Centro Histórico de Trujillo. Su ficha lo pone en el subtipo «Otros», que da 20 minutos; es un centro histórico y lleva los 90 de los centros históricos
+codigo;1312;90;Zona Monumental del Callao. Su ficha lo pone en el subtipo «Otros», que da 20 minutos; es un centro histórico y lleva los 90 de los centros históricos
+codigo;3314;90;Zona Monumental de Pueblo Libre. Su ficha lo pone en el subtipo «Otros», que da 20 minutos; es un centro histórico y lleva los 90 de los centros históricos
+codigo;12139;90;Zona Monumental de Ancón. Su ficha lo pone en el subtipo «Otros», que da 20 minutos; es un centro histórico y lleva los 90 de los centros históricos
+codigo;12735;90;Zona Monumental de Yanahuara. Su ficha lo pone en el subtipo «Otros», que da 20 minutos; es un centro histórico y lleva los 90 de los centros históricos

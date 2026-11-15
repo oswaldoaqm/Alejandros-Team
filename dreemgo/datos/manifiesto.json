@@ -97,8 +97,8 @@
     "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
     "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
     "origenes.json.gz": "64aa28c8d97295bd255b0ade3e503a5d809c9e93d2798ed43283e9c721e25c4c",
-    "polos.json.gz": "b7068b511c0b8831f6818bc2f354e777c6b5ef59af30cb3b519fde517e284cd7",
-    "recursos.json.gz": "c318bc17082e03ef9e4e6e8bec69ce8b51c3908c85ef25b93d1bd773f4f947df"
+    "polos.json.gz": "39ef2aa3f972923715995bc1a753ad09bdc720d705c8b0c38b2c64d465ccb544",
+    "recursos.json.gz": "e2daf461a8c368c76aa550c97495d6d48125d518a15b359b7d5500b1c04c6694"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
@@ -372,5 +372,5 @@
       "paradas": 0
     }
   },
-  "version_datos": "2026.11.1"
+  "version_datos": "2026.11.2"
 }

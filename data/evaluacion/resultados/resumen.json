@@ -1,0 +1,310 @@
+{
+  "calificadores": 3,
+  "viajes": 196,
+  "acuerdo": {
+    "viajes_con_todas_las_notas": 196,
+    "kappa_fleiss": 0.21765104988148623,
+    "alfa_krippendorff_ordinal": 0.4123326960486088,
+    "alfa_krippendorff_nominal": 0.2189815753068579,
+    "coinciden_todos": 0.27040816326530615,
+    "notas_por_calificador": {
+      "CP": {
+        "0": 55,
+        "1": 62,
+        "2": 79
+      },
+      "ME": {
+        "0": 39,
+        "1": 83,
+        "2": 74
+      },
+      "OAQM": {
+        "0": 64,
+        "1": 96,
+        "2": 36
+      }
+    }
+  },
+  "por_sistema": {
+    "motor": {
+      "ndcg3": 0.8119629372334914,
+      "p3": 0.31666666666666665,
+      "rr": 0.5916666666666667,
+      "no_encajan": 0.14166666666666666
+    },
+    "guia": {
+      "ndcg3": 0.7140980807336781,
+      "p3": 0.3,
+      "rr": 0.4958333333333333,
+      "no_encajan": 0.25
+    },
+    "variante": {
+      "ndcg3": 0.8212446845036281,
+      "p3": 0.31666666666666665,
+      "rr": 0.5583333333333333,
+      "no_encajan": 0.13333333333333333
+    }
+  },
+  "comparaciones": {
+    "motor_menos_guia": {
+      "ndcg3": {
+        "media": 0.09786485649981339,
+        "ic95": [
+          0.020017880654581828,
+          0.17551315448565888
+        ],
+        "gana": 23,
+        "pierde": 14,
+        "empata": 3,
+        "wilcoxon_p": 0.018893992484663613
+      },
+      "p3": {
+        "media": 0.016666666666666663,
+        "ic95": [
+          -0.04166666666666667,
+          0.075
+        ],
+        "gana": 8,
+        "pierde": 6,
+        "empata": 26,
+        "wilcoxon_p": 0.8083651559145103
+      }
+    },
+    "variante_menos_motor": {
+      "ndcg3": {
+        "media": 0.009281747270136633,
+        "ic95": [
+          -0.03038530548071846,
+          0.04845725540474479
+        ],
+        "gana": 11,
+        "pierde": 14,
+        "empata": 15,
+        "wilcoxon_p": 0.6915188431739807
+      },
+      "p3": {
+        "media": -1.3877787807814458e-18,
+        "ic95": [
+          -0.041666666666666664,
+          0.041666666666666664
+        ],
+        "gana": 3,
+        "pierde": 3,
+        "empata": 34,
+        "wilcoxon_p": 1.0
+      }
+    }
+  },
+  "cobertura": {
+    "motor": {
+      "zonas_distintas": 29,
+      "de": 194,
+      "fuera_del_circuito": 0.75,
+      "novedad_media": 0.42701666666666666
+    },
+    "guia": {
+      "zonas_distintas": 36,
+      "de": 194,
+      "fuera_del_circuito": 0.6,
+      "novedad_media": 0.37323833333333334
+    },
+    "variante": {
+      "zonas_distintas": 33,
+      "de": 194,
+      "fuera_del_circuito": 0.8,
+      "novedad_media": 0.45969
+    }
+  },
+  "ndcg3_por_interes": {
+    "arquitectura": {
+      "consultas": 3,
+      "motor": 0.8835666666666667,
+      "guia": 0.9323666666666667,
+      "variante": 0.9242666666666667
+    },
+    "aventura": {
+      "consultas": 5,
+      "motor": 0.9109399999999999,
+      "guia": 0.7254799999999999,
+      "variante": 0.8431799999999999
+    },
+    "caminatas": {
+      "consultas": 5,
+      "motor": 0.711,
+      "guia": 0.72246,
+      "variante": 0.72682
+    },
+    "fiestas": {
+      "consultas": 3,
+      "motor": 0.8104666666666667,
+      "guia": 0.8156,
+      "variante": 0.7869
+    },
+    "gastronomia": {
+      "consultas": 4,
+      "motor": 0.90745,
+      "guia": 0.7835,
+      "variante": 0.8792249999999999
+    },
+    "historia": {
+      "consultas": 13,
+      "motor": 0.857923076923077,
+      "guia": 0.8358538461538461,
+      "variante": 0.8730923076923076
+    },
+    "naturaleza": {
+      "consultas": 14,
+      "motor": 0.8181357142857142,
+      "guia": 0.6565071428571428,
+      "variante": 0.8415857142857143
+    },
+    "playa": {
+      "consultas": 6,
+      "motor": 0.7249666666666666,
+      "guia": 0.7087333333333333,
+      "variante": 0.8309000000000001
+    },
+    "sin_intereses": {
+      "consultas": 5,
+      "motor": 0.8195,
+      "guia": 0.48746,
+      "variante": 0.7220799999999999
+    },
+    "vida_nocturna": {
+      "consultas": 2,
+      "motor": 0.9321999999999999,
+      "guia": 0.75025,
+      "variante": 0.87575
+    }
+  },
+  "nota_por_parte_en_bus": {
+    "del_20_al_30": {
+      "viajes": 37,
+      "media": 0.972972972972973,
+      "no_encajan": 0.1891891891891892
+    },
+    "del_30_al_40": {
+      "viajes": 29,
+      "media": 0.8045977011494252,
+      "no_encajan": 0.27586206896551724
+    },
+    "menos_del_20": {
+      "viajes": 28,
+      "media": 1.25,
+      "no_encajan": 0.07142857142857142
+    },
+    "sin_bus_de_noche": {
+      "viajes": 102,
+      "media": 1.0980392156862746,
+      "no_encajan": 0.24509803921568626
+    }
+  },
+  "motor_de_ahora": {
+    "version_datos": "2026.11.2",
+    "consultas_que_cambian": 29,
+    "propuestas": 120,
+    "sin_nota_en_el_kit": 13,
+    "media_con_nota": 1.236760124610592,
+    "media_del_kit": 1.1666666666666667,
+    "otro_primer_puesto": [
+      {
+        "consulta": 6,
+        "antes": "Huaraz",
+        "nota_antes": 2.0,
+        "ahora": "Puno",
+        "nota_ahora": 0.6666666666666666
+      },
+      {
+        "consulta": 11,
+        "antes": "Íllimo",
+        "nota_antes": 1.0,
+        "ahora": "Huaraz",
+        "nota_ahora": 1.0
+      },
+      {
+        "consulta": 13,
+        "antes": "Yanque",
+        "nota_antes": 1.3333333333333333,
+        "ahora": "Puno",
+        "nota_ahora": 0.6666666666666666
+      },
+      {
+        "consulta": 16,
+        "antes": "Trujillo",
+        "nota_antes": 1.3333333333333333,
+        "ahora": "Puno",
+        "nota_ahora": 1.0
+      },
+      {
+        "consulta": 17,
+        "antes": "Puno",
+        "nota_antes": 0.6666666666666666,
+        "ahora": "Machupicchu Pueblo",
+        "nota_ahora": 2.0
+      },
+      {
+        "consulta": 18,
+        "antes": "Yanque",
+        "nota_antes": 1.6666666666666667,
+        "ahora": "Puno",
+        "nota_ahora": 1.3333333333333333
+      },
+      {
+        "consulta": 19,
+        "antes": "Nasca",
+        "nota_antes": 1.0,
+        "ahora": "Puno",
+        "nota_ahora": 0.3333333333333333
+      },
+      {
+        "consulta": 20,
+        "antes": "Miraflores",
+        "nota_antes": 2.0,
+        "ahora": "Puno",
+        "nota_ahora": null
+      },
+      {
+        "consulta": 23,
+        "antes": "Ilo",
+        "nota_antes": 1.3333333333333333,
+        "ahora": "Mollendo",
+        "nota_ahora": 1.6666666666666667
+      },
+      {
+        "consulta": 29,
+        "antes": "Trujillo",
+        "nota_antes": 0.6666666666666666,
+        "ahora": "Los Órganos",
+        "nota_ahora": 1.3333333333333333
+      },
+      {
+        "consulta": 30,
+        "antes": "Huaraz",
+        "nota_antes": 1.6666666666666667,
+        "ahora": "Íllimo",
+        "nota_ahora": 1.0
+      },
+      {
+        "consulta": 35,
+        "antes": "Ilo",
+        "nota_antes": 1.3333333333333333,
+        "ahora": "Puno",
+        "nota_ahora": 1.0
+      },
+      {
+        "consulta": 37,
+        "antes": "Huaraz",
+        "nota_antes": 1.6666666666666667,
+        "ahora": "Íllimo",
+        "nota_ahora": 1.3333333333333333
+      },
+      {
+        "consulta": 40,
+        "antes": "Puno",
+        "nota_antes": 0.3333333333333333,
+        "ahora": "Cuzco",
+        "nota_ahora": 1.3333333333333333
+      }
+    ]
+  }
+}

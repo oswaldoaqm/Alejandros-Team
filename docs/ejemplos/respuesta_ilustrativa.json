@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.7",
-  "version_datos": "2026.11.1",
+  "version_contrato": "1.8",
+  "version_datos": "2026.11.2",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -34,7 +34,7 @@
         "recursos": 59,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.477,
+      "puntaje": 0.499,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo",
         "14 de sus 24 paradas son de historia y arqueología o naturaleza",
@@ -87,69 +87,36 @@
           "numero": 1,
           "fecha": null,
           "tipo": "ida_y_visita",
-          "horas": 7.6,
-          "km": 33.9,
+          "horas": 7.2,
+          "km": 29.7,
           "paradas": [
             {
               "orden": 1,
               "recurso": {
-                "codigo": "101",
-                "nombre": "Basílica Menor Catedral de Santa María - Catedral de Trujillo",
+                "codigo": "2585",
+                "nombre": "Centro Histórico de Trujillo",
                 "categoria": "Manifestaciones culturales",
                 "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Basílica",
-                "jerarquia": 2,
-                "lat": -8.110904,
-                "lon": -79.028346,
-                "altitud_m": 38,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=101",
-                "descripcion": "La Basílica Menor Catedral de Santa María, conocida como Catedral de Trujillo, es el principal templo católico de la ciudad y sede de la Arquidiócesis Metropolitana de Trujillo. A lo largo de su historia ha contado con tres edificaciones sucesivas.",
+                "subtipo": "Otros",
+                "jerarquia": 3,
+                "lat": -8.111799,
+                "lon": -79.028585,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
+                "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
                 "ingreso": "libre",
                 "tarifa_soles": 0.0,
                 "abre": "08:00",
-                "cierra": "12:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
+                "cierra": "23:30",
+                "dias": null
               },
               "llegada": "08:04",
               "minutos_traslado": 4,
               "km_desde_anterior": 0.2,
-              "minutos_visita": 34
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "14233",
-                "nombre": "Cerro Cabras - Sector La Esperanza",
-                "categoria": "Sitios naturales",
-                "tipo": "Montañas",
-                "subtipo": "Cerros",
-                "jerarquia": null,
-                "lat": -8.054216,
-                "lon": -79.035626,
-                "altitud_m": 663,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14233",
-                "descripcion": "El Cerro Cabras se ubica en el distrito de La Esperanza, provincia de Trujillo, departamento de La Libertad, con una altitud aproximada de 663 m.s.n.m.; el acceso principal se realiza desde el centro poblado Nueva Jerusalén (Sector Nueva Jerusalén), donde se inicia el ascenso…",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "06:00",
-                "cierra": "18:00",
-                "dias": null
-              },
-              "llegada": "09:09",
-              "minutos_traslado": 31,
-              "km_desde_anterior": 7.9,
               "minutos_visita": 90
             },
             {
-              "orden": 3,
+              "orden": 2,
               "recurso": {
                 "codigo": "122",
                 "nombre": "Museo de Sitio Chan Chan",
@@ -175,13 +142,13 @@
                   "dom"
                 ]
               },
-              "llegada": "11:07",
-              "minutos_traslado": 28,
-              "km_desde_anterior": 8.8,
+              "llegada": "09:54",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 4.7,
               "minutos_visita": 45
             },
             {
-              "orden": 4,
+              "orden": 3,
               "recurso": {
                 "codigo": "96",
                 "nombre": "Complejo Arqueológico Chan Chan",
@@ -208,10 +175,35 @@
                   "dom"
                 ]
               },
-              "llegada": "11:57",
+              "llegada": "10:44",
               "minutos_traslado": 5,
               "km_desde_anterior": 0.7,
               "minutos_visita": 90
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "13197",
+                "nombre": "Muelle de Huanchaco",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Muelles",
+                "jerarquia": 2,
+                "lat": -8.078347,
+                "lon": -79.121645,
+                "altitud_m": 2,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13197",
+                "descripcion": "El muelle fue construido por don José Saa & Cía. en el año 1886. En 1891, don Víctor Larco Herrera lo adquirió y lo modernizó, agregando 30 metros más.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "20:00",
+                "dias": null
+              },
+              "llegada": "12:39",
+              "minutos_traslado": 25,
+              "km_desde_anterior": 8.3,
+              "minutos_visita": 20
             },
             {
               "orden": 5,
@@ -233,9 +225,9 @@
                 "cierra": "17:00",
                 "dias": null
               },
-              "llegada": "14:45",
+              "llegada": "14:17",
               "minutos_traslado": 18,
-              "km_desde_anterior": 7.0,
+              "km_desde_anterior": 6.5,
               "minutos_visita": 60
             },
             {
@@ -258,7 +250,7 @@
                 "cierra": "18:00",
                 "dias": null
               },
-              "llegada": "16:08",
+              "llegada": "15:40",
               "minutos_traslado": 23,
               "km_desde_anterior": 7.6,
               "minutos_visita": 20
@@ -266,9 +258,9 @@
           ],
           "nota": "El bus de noche sale de Lima a las 20:00 de la noche anterior y llega a Trujillo a las 06:00: 9 h 57 por carretera.",
           "almuerzo": {
-            "hora": "13:27",
+            "hora": "12:59",
             "despues_de": 4,
-            "lugar": "Complejo Arqueológico Chan Chan",
+            "lugar": "Muelle de Huanchaco",
             "en_la_base": false,
             "hay_donde_comer": true
           },
@@ -470,138 +462,11 @@
           "numero": 3,
           "fecha": null,
           "tipo": "visita",
-          "horas": 6.5,
-          "km": 43.2,
+          "horas": 7.1,
+          "km": 27.8,
           "paradas": [
             {
               "orden": 1,
-              "recurso": {
-                "codigo": "118",
-                "nombre": "Plaza Mayor de Trujillo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Plazas",
-                "jerarquia": 2,
-                "lat": -8.111469,
-                "lon": -79.028624,
-                "altitud_m": 34,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=118",
-                "descripcion": "La Plaza Mayor de Trujillo constituye un escenario histórico de gran importancia, pues desde este lugar Martín de Estete inició el trazado de la ciudad por encargo del fundador Diego de Almagro, en diciembre de 1534.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "07:00",
-                "cierra": "23:00",
-                "dias": null
-              },
-              "llegada": "08:04",
-              "minutos_traslado": 4,
-              "km_desde_anterior": 0.1,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "2585",
-                "nombre": "Centro Histórico de Trujillo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Otros",
-                "jerarquia": 3,
-                "lat": -8.111799,
-                "lon": -79.028585,
-                "altitud_m": 34,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2585",
-                "descripcion": "Trujillo es una ciudad fundada el 5 de marzo de 1535, y es conocida como la Ciudad de la Eterna Primavera, esto ha llevado a la creación de un histórico y muy alegre festival que se realiza entre los días finales de septiembre y los primeros días de octubre de cada año.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "08:00",
-                "cierra": "23:30",
-                "dias": null
-              },
-              "llegada": "08:28",
-              "minutos_traslado": 4,
-              "km_desde_anterior": 0.2,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "2186",
-                "nombre": "Museo de Zoología “Juan Ormea Rodríguez” de la Universidad Nacional de Trujillo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": 2,
-                "lat": -8.11138,
-                "lon": -79.030597,
-                "altitud_m": 31,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2186",
-                "descripcion": "El Museo de Zoología \"Juan Ormea Rodríguez\" fue fundado el 25 de julio de 1939 por iniciativa del entonces rector de la Universidad Nacional de Trujillo, el Dr.",
-                "ingreso": "pagado",
-                "tarifa_soles": 3.0,
-                "abre": "08:00",
-                "cierra": "19:00",
-                "dias": [
-                  "sab"
-                ]
-              },
-              "llegada": "08:53",
-              "minutos_traslado": 5,
-              "km_desde_anterior": 0.4,
-              "minutos_visita": 81
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "13736",
-                "nombre": "Seminario de San Carlos y San Marcelo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Escuela o Colegio",
-                "jerarquia": 2,
-                "lat": -8.161423,
-                "lon": -79.01104,
-                "altitud_m": 4,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13736",
-                "descripcion": "El Seminario Mayor San Carlos y San Marcelo de Trujillo es una de las instituciones formativas más antiguas del norte peruano, creado en el siglo XVII como parte de la misión evangelizadora y educativa impulsada por la Iglesia Católica en el virreinato del Perú.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "07:00",
-                "cierra": "18:00",
-                "dias": null
-              },
-              "llegada": "10:35",
-              "minutos_traslado": 21,
-              "km_desde_anterior": 6.5,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "13197",
-                "nombre": "Muelle de Huanchaco",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Muelles",
-                "jerarquia": 2,
-                "lat": -8.078347,
-                "lon": -79.121645,
-                "altitud_m": 2,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13197",
-                "descripcion": "El muelle fue construido por don José Saa & Cía. en el año 1886. En 1891, don Víctor Larco Herrera lo adquirió y lo modernizó, agregando 30 metros más.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "06:00",
-                "cierra": "20:00",
-                "dias": null
-              },
-              "llegada": "11:40",
-              "minutos_traslado": 45,
-              "km_desde_anterior": 19.3,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 6,
               "recurso": {
                 "codigo": "99",
                 "nombre": "Huaca Arco Iris",
@@ -626,17 +491,159 @@
                   "sab"
                 ]
               },
-              "llegada": "13:37",
-              "minutos_traslado": 37,
-              "km_desde_anterior": 12.0,
+              "llegada": "09:00",
+              "minutos_traslado": 20,
+              "km_desde_anterior": 4.7,
               "minutos_visita": 90
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "2528",
+                "nombre": "Museo de Arte Moderno Gerardo Chávez",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -8.110057,
+                "lon": -78.995079,
+                "altitud_m": 95,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2528",
+                "descripcion": "El Museo de Arte Moderno de Trujillo (MAM) es uno de los espacios culturales más importantes del norte del Perú.",
+                "ingreso": "pagado",
+                "tarifa_soles": 20.0,
+                "abre": "11:00",
+                "cierra": "19:00",
+                "dias": [
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "11:01",
+              "minutos_traslado": 31,
+              "km_desde_anterior": 7.8,
+              "minutos_visita": 75
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "14622",
+                "nombre": "Paseo Temático “Fertilidad Moche”",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Paseos peatonales",
+                "jerarquia": 2,
+                "lat": -8.121868,
+                "lon": -79.000454,
+                "altitud_m": 43,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14622",
+                "descripcion": "El Paseo Temático \"Fertilidad Moche\" es un espacio público abierto ubicado en la Carretera Panamericana Norte, sector Santa Rosa, en el ingreso a la Campiña de Moche, distrito de Moche, Trujillo.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "18:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "12:26",
+              "minutos_traslado": 10,
+              "km_desde_anterior": 1.9,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "13736",
+                "nombre": "Seminario de San Carlos y San Marcelo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Escuela o Colegio",
+                "jerarquia": 2,
+                "lat": -8.161423,
+                "lon": -79.01104,
+                "altitud_m": 4,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13736",
+                "descripcion": "El Seminario Mayor San Carlos y San Marcelo de Trujillo es una de las instituciones formativas más antiguas del norte peruano, creado en el siglo XVII como parte de la misión evangelizadora y educativa impulsada por la Iglesia Católica en el virreinato del Perú.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": null
+              },
+              "llegada": "14:11",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 5.7,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "13709",
+                "nombre": "Iglesia Santa Rita de Cascia - Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": 2,
+                "lat": -8.126304,
+                "lon": -79.018063,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13709",
+                "descripcion": "Durante los primeros años del siglo XXI, en un contexto de expansión urbana en Trujillo, surgió la necesidad de una presencia pastoral en la zona de Santa María, un nuevo asentamiento habitacional sin infraestructura eclesial establecida.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "07:00",
+                "cierra": "19:00",
+                "dias": null
+              },
+              "llegada": "14:45",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 4.7,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "2186",
+                "nombre": "Museo de Zoología “Juan Ormea Rodríguez” de la Universidad Nacional de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": 2,
+                "lat": -8.11138,
+                "lon": -79.030597,
+                "altitud_m": 31,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2186",
+                "descripcion": "El Museo de Zoología \"Juan Ormea Rodríguez\" fue fundado el 25 de julio de 1939 por iniciativa del entonces rector de la Universidad Nacional de Trujillo, el Dr.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.0,
+                "abre": "08:00",
+                "cierra": "19:00",
+                "dias": [
+                  "sab"
+                ]
+              },
+              "llegada": "15:18",
+              "minutos_traslado": 13,
+              "km_desde_anterior": 2.7,
+              "minutos_visita": 81
             }
           ],
           "nota": null,
           "almuerzo": {
-            "hora": "12:37",
-            "despues_de": 5,
-            "lugar": "Huaca Arco Iris",
+            "hora": "12:56",
+            "despues_de": 3,
+            "lugar": "Paseo Temático “Fertilidad Moche”",
             "en_la_base": false,
             "hay_donde_comer": true
           },
@@ -647,8 +654,8 @@
           "numero": 4,
           "fecha": null,
           "tipo": "visita_y_vuelta",
-          "horas": 5.6,
-          "km": 12.7,
+          "horas": 6.3,
+          "km": 18.0,
           "paradas": [
             {
               "orden": 1,
@@ -678,6 +685,64 @@
             {
               "orden": 2,
               "recurso": {
+                "codigo": "101",
+                "nombre": "Basílica Menor Catedral de Santa María - Catedral de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Basílica",
+                "jerarquia": 2,
+                "lat": -8.110904,
+                "lon": -79.028346,
+                "altitud_m": 38,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=101",
+                "descripcion": "La Basílica Menor Catedral de Santa María, conocida como Catedral de Trujillo, es el principal templo católico de la ciudad y sede de la Arquidiócesis Metropolitana de Trujillo. A lo largo de su historia ha contado con tres edificaciones sucesivas.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "12:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "09:27",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.3,
+              "minutos_visita": 34
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "14233",
+                "nombre": "Cerro Cabras - Sector La Esperanza",
+                "categoria": "Sitios naturales",
+                "tipo": "Montañas",
+                "subtipo": "Cerros",
+                "jerarquia": null,
+                "lat": -8.054216,
+                "lon": -79.035626,
+                "altitud_m": 663,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14233",
+                "descripcion": "El Cerro Cabras se ubica en el distrito de La Esperanza, provincia de Trujillo, departamento de La Libertad, con una altitud aproximada de 663 m.s.n.m.; el acceso principal se realiza desde el centro poblado Nueva Jerusalén (Sector Nueva Jerusalén), donde se inicia el ascenso…",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "06:00",
+                "cierra": "18:00",
+                "dias": null
+              },
+              "llegada": "10:32",
+              "minutos_traslado": 31,
+              "km_desde_anterior": 7.9,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 4,
+              "recurso": {
                 "codigo": "120",
                 "nombre": "Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco)",
                 "categoria": "Manifestaciones culturales",
@@ -701,103 +766,13 @@
                   "sab"
                 ]
               },
-              "llegada": "09:28",
-              "minutos_traslado": 6,
-              "km_desde_anterior": 0.7,
+              "llegada": "12:33",
+              "minutos_traslado": 31,
+              "km_desde_anterior": 8.0,
               "minutos_visita": 75
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "2528",
-                "nombre": "Museo de Arte Moderno Gerardo Chávez",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": 2,
-                "lat": -8.110057,
-                "lon": -78.995079,
-                "altitud_m": 95,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=2528",
-                "descripcion": "El Museo de Arte Moderno de Trujillo (MAM) es uno de los espacios culturales más importantes del norte del Perú.",
-                "ingreso": "pagado",
-                "tarifa_soles": 20.0,
-                "abre": "11:00",
-                "cierra": "19:00",
-                "dias": [
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "11:00",
-              "minutos_traslado": 17,
-              "km_desde_anterior": 4.0,
-              "minutos_visita": 75
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "14622",
-                "nombre": "Paseo Temático “Fertilidad Moche”",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Paseos peatonales",
-                "jerarquia": 2,
-                "lat": -8.121868,
-                "lon": -79.000454,
-                "altitud_m": 43,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14622",
-                "descripcion": "El Paseo Temático \"Fertilidad Moche\" es un espacio público abierto ubicado en la Carretera Panamericana Norte, sector Santa Rosa, en el ingreso a la Campiña de Moche, distrito de Moche, Trujillo.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "09:00",
-                "cierra": "18:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "12:25",
-              "minutos_traslado": 10,
-              "km_desde_anterior": 1.9,
-              "minutos_visita": 30
             },
             {
               "orden": 5,
-              "recurso": {
-                "codigo": "13709",
-                "nombre": "Iglesia Santa Rita de Cascia - Trujillo",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": 2,
-                "lat": -8.126304,
-                "lon": -79.018063,
-                "altitud_m": 34,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13709",
-                "descripcion": "Durante los primeros años del siglo XXI, en un contexto de expansión urbana en Trujillo, surgió la necesidad de una presencia pastoral en la zona de Santa María, un nuevo asentamiento habitacional sin infraestructura eclesial establecida.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "07:00",
-                "cierra": "19:00",
-                "dias": null
-              },
-              "llegada": "14:09",
-              "minutos_traslado": 14,
-              "km_desde_anterior": 2.8,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 6,
               "recurso": {
                 "codigo": "113",
                 "nombre": "Casa Urquiaga o Calonge",
@@ -822,17 +797,42 @@
                   "vie"
                 ]
               },
-              "llegada": "14:41",
-              "minutos_traslado": 12,
-              "km_desde_anterior": 2.5,
+              "llegada": "14:55",
+              "minutos_traslado": 7,
+              "km_desde_anterior": 0.9,
               "minutos_visita": 47
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "118",
+                "nombre": "Plaza Mayor de Trujillo",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 2,
+                "lat": -8.111469,
+                "lon": -79.028624,
+                "altitud_m": 34,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=118",
+                "descripcion": "La Plaza Mayor de Trujillo constituye un escenario histórico de gran importancia, pues desde este lugar Martín de Estete inició el trazado de la ciudad por encargo del fundador Diego de Almagro, en diciembre de 1534.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "23:00",
+                "dias": null
+              },
+              "llegada": "15:47",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 20
             }
           ],
           "nota": "En la noche, el bus de vuelta: sale de Trujillo a las 20:00 y llega a Lima a las 06:00 del día siguiente.",
           "almuerzo": {
-            "hora": "12:55",
+            "hora": "13:48",
             "despues_de": 4,
-            "lugar": "Paseo Temático “Fertilidad Moche”",
+            "lugar": "Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco)",
             "en_la_base": false,
             "hay_donde_comer": true
           },
@@ -842,20 +842,20 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 722,
-        "p50": 837,
-        "p80": 948,
+        "p20": 713,
+        "p50": 827,
+        "p80": 938,
         "desglose": {
-          "transporte": 224,
-          "alojamiento": 244,
+          "transporte": 215,
+          "alojamiento": 243,
           "alimentacion": 232,
           "entradas": 137
         },
         "dentro_del_presupuesto": false,
-        "exceso": 137,
+        "exceso": 127,
         "supuestos": [
           "Bus de noche de ida y vuelta: 1 115 km, a la misma tarifa por km que de día",
-          "Movilidad local en colectivo o taxi: 135 km",
+          "Movilidad local en colectivo o taxi: 121 km",
           "Hospedaje económico en Trujillo, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
           "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
@@ -866,7 +866,7 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 837) pasa tu presupuesto por S/ 137."
+          "mensaje": "El costo central (S/ 827) pasa tu presupuesto por S/ 127."
         },
         {
           "tipo": "acceso",
@@ -884,7 +884,7 @@
         "jerarquia_media": 2.18,
         "paradas_jerarquia_alta": 3,
         "altitud_max_m": 663,
-        "km_total": 1249.8,
+        "km_total": 1235.5,
         "valor_capturado": 0.857
       }
     },
@@ -905,7 +905,7 @@
         "recursos": 53,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.438,
+      "puntaje": 0.448,
       "motivos": [
         "Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto, de jerarquía 3",
         "17 de sus 22 paradas son de historia y arqueología o naturaleza",
@@ -1802,7 +1802,7 @@
         "recursos": 68,
         "fuera_del_circuito": false
       },
-      "puntaje": 0.419,
+      "puntaje": 0.436,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral, Fortaleza de Paramonga y Sitio Arqueológico de Vichama",
         "10 de sus 16 paradas son de historia y arqueología o naturaleza",

@@ -11,7 +11,10 @@ meses, 1 152 consultas. De cada viaje guarda sus días y sus paradas, y de ahí 
   posible de esas mismas paradas, por fuerza bruta y sin mirar horarios, que es una cota de lo que el orden podría
   mejorar;
 - cuánto dura la visita a los lugares de jerarquía 3 y 4;
-- lo que se ve de noche, puesto de día, por su nombre;
+- lo que se ve de noche, puesto de día, por su nombre, con la hora en que se llega;
+- cuántos viajes van en bus de noche según sus días, cuánto del viaje se lleva el bus (decisión 0027) y cuántos
+  avisan que el camino se lleva mucho del viaje;
+- qué parte de los viajes lleva cada tipo de aviso;
 - qué tan concentrados están los viajes en pocas zonas.
 
 La ciudad de un punto es la mancha de la red (``pipeline.red_vial.manchas_urbanas``) en su vértice más cercano, así
@@ -122,6 +125,12 @@ def correr(consulta: tuple[str, int, int]) -> dict:
                 "polo": ruta.polo.id,
                 "nombre": ruta.polo.nombre,
                 "base": [polo.base["lat"], polo.base["lon"]],
+                "bus_de_noche": ruta.traslado.bus_de_noche is not None,
+                "ida_horas": ruta.traslado.horas,
+                "avisos": sorted({a.tipo for a in ruta.avisos}),
+                # «La ida y la vuelta se llevan…»: el único aviso de días que es advertencia. Los otros dos, los
+                # días libres y, sin fecha, las paradas que no abren todos los días, son de nivel info.
+                "aviso_del_camino": any(a.tipo == "dias" and a.nivel == "advertencia" for a in ruta.avisos),
                 "dias": dias_,
             }
         )
@@ -208,6 +217,29 @@ def cifras(corrida: list[dict], banda_de, tomtom_kmh: dict[str, float]) -> dict:
 
     noche = [(p["nombre"], p["llegada"]) for p in paradas if de_noche(p["nombre"])]
     zonas = Counter(r["nombre"] for r in viajes)
+
+    # El bus de noche: la parte de los viajes que lo usa según sus días y la parte del viaje que se lleva, ida y
+    # vuelta, contra las horas de esos días (la regla de la decisión 0027). Un detalle viejo no lo trae.
+    por_dias: dict[int, list[dict]] = {}
+    for q in corrida:
+        if "dias" in q:
+            por_dias.setdefault(q["dias"], []).extend(r for r in q["rutas"] if "bus_de_noche" in r)
+    con_bus = [(n, r) for n, rs in por_dias.items() for r in rs if r["bus_de_noche"]]
+    partes = [2 * r["ida_horas"] / (n * 24) for n, r in con_bus]
+    bus = {
+        "viajes_con_bus_por_dias": {
+            str(n): _parte(sum(r["bus_de_noche"] for r in rs), len(rs)) for n, rs in sorted(por_dias.items())
+        },
+        "horas_mediana": round(statistics.median(r["ida_horas"] for _, r in con_bus), 1) if con_bus else None,
+        "horas_max": round(max(r["ida_horas"] for _, r in con_bus), 1) if con_bus else None,
+        "parte_del_viaje_max": round(max(partes), 3) if partes else None,
+        "con_aviso_del_camino_por_dias": {
+            str(n): _parte(sum(r.get("aviso_del_camino", False) for r in rs), len(rs))
+            for n, rs in sorted(por_dias.items())
+        },
+    }
+    con_avisos = [r for r in viajes if "avisos" in r]
+    avisos = Counter(t for r in con_avisos for t in r["avisos"])
     return {
         "consultas": len(corrida),
         "viajes": len(viajes),
@@ -219,6 +251,8 @@ def cifras(corrida: list[dict], banda_de, tomtom_kmh: dict[str, float]) -> dict:
             "paradas": len(noche),
             "las_mas_frecuentes": [[n, h, k] for (n, h), k in Counter(noche).most_common(6)],
         },
+        "bus_de_noche": bus,
+        "avisos": {t: _parte(k, len(con_avisos)) for t, k in sorted(avisos.items())},
         "concentracion": {
             "zonas_distintas": len(zonas),
             "las_5_mas_propuestas": [[n, _parte(k, len(viajes))] for n, k in zonas.most_common(5)],
