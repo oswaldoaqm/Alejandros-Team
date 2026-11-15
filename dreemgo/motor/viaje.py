@@ -1266,7 +1266,7 @@ def preparar(
         polo=polo,
         plan=plan,
         candidatas=cands,
-        tiempos=Tiempos(desde, polo.entre_minutos),
+        tiempos=Tiempos(desde, polo.entre_minutos, polo.ritmo),
         minutos_ida=float(minutos_ida),
         km_ida=float(km_ida),
         temporada=FACTOR_TEMPORADA[veredicto],

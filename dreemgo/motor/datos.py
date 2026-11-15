@@ -43,6 +43,9 @@ class Polo:
     # Su noche (desde 2026.10.6): los lugares para salir cerca de la base, de pipeline/noche.py,
     # y su cielo para ver estrellas, de pipeline/cielo.py. Vacía si los datos no la traen.
     noche: dict = field(default_factory=dict)
+    # Desde 2026.11.4, si la base está en una ciudad que mide TomTom: [[minuto del día, factor], …], cuánto más
+    # lento se va a cada hora que en el promedio del día (decisión 0031). Vacío si no.
+    ritmo: tuple = ()
 
     def indice(self) -> dict[str, int]:
         return {c: i for i, c in enumerate(self.paradas)}
@@ -138,6 +141,7 @@ def _polo(p: dict) -> Polo:
         entre_km_tren=_en_capa(p, "entre_km_tren", (n, n)),
         entre_km_bote=_en_capa(p, "entre_km_bote", (n, n)),
         noche=p.get("noche", {}),
+        ritmo=tuple(tuple(x) for x in p.get("ritmo") or ()),
     )
 
 
