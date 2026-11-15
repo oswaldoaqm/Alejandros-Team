@@ -54,6 +54,7 @@ from dreemgo.contrato import DE_NOCHE, ETIQUETAS_INTERES, Interes
 from pipeline import elevacion
 from pipeline.bases import polo_de_cada_grupo
 from pipeline.maestro import PROCESADOS, RAIZ, REFERENCIA, haversine_km
+from pipeline.terminales import sumar_terminales
 from pipeline.texto import sin_tildes
 
 DESTINO = RAIZ / "dreemgo" / "datos"
@@ -597,6 +598,9 @@ def construir(entrada: Path, destino: Path, version: str) -> dict:
     if hay_noche:
         lugares_de_noche = leer("noche_lugares.csv", keep_default_na=False, dtype={"osm": str, "horario": str})
         noche = noches(lugares_de_noche, leer("cielo_polos.csv", dtype={"oscuro_osm": str, "astro_osm": str}))
+
+    if (entrada / "terminales.csv").exists():  # la ida en bus, de terminal a terminal (pipeline/terminales.py)
+        tiempos_origen_base = sumar_terminales(tiempos_origen_base, leer("terminales.csv"))
 
     destino.mkdir(parents=True, exist_ok=True)
     huellas = {
