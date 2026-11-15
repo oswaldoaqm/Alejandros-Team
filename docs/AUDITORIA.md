@@ -8,6 +8,8 @@ El 15 de noviembre se arreglaron los tres puntos que quedaban para w13e, con el 
 
 El mismo día, con los datos `2026.11.4`, se sumó el tráfico de cada hora en Lima, Arequipa y Trujillo, y la app dice que no cuenta colas ([decisión 0031](decisiones/0031-la-hora-del-dia.md)). Para eso, «antes» es la `2026.11.3` ([`auditoria_2026.11.3.json`](../data/evaluacion/resultados/auditoria_2026.11.3.json)).
 
+Y con los datos `2026.11.5` y el contrato 1.10, el techo del bus salió de las tarifas de Cruz del Sur, y cada base dice qué hospedajes tiene cerca ([decisión 0032](decisiones/0032-costo-del-bus-y-donde-dormir.md)).
+
 ## Lo que se arregló
 
 ### En la ciudad se iba a velocidad de carretera
@@ -74,6 +76,14 @@ El motor usaba el mismo tiempo para un tramo a cualquier hora, y TomTom mide Lim
 
 No hay una fuente que mida la espera por lugar y por temporada, ni la del bus de Aguas Calientes a Machu Picchu. El motor no inventa una: la app dice en la letra chica que no cuenta colas ni esperas.
 
+### El bus, con tarifas de 2026
+
+Ninguna tarifa de transporte, hospedaje o comida estaba calibrada con precios de este año. Para el bus, la tarifa más baja de Cruz del Sur en sus 18 rutas desde Lima, vista a mano en la página de cada una, queda 1,75 veces sobre el valor central del motor en la mediana, y en 11 de las 18 pasaba el máximo de la banda. Cruz del Sur es la empresa cara, así que esas tarifas fijan el techo: 84 soles por tramo más 0,10 por km, que las cubre a todas. El central y el mínimo siguen siendo los de las empresas más baratas. El hospedaje, la comida y la movilidad local siguen sin calibrar: quedan en lo pendiente.
+
+### Dónde dormir
+
+El motor elige el pueblo, no el hospedaje. Ahora cada base lleva hasta tres hospedajes con nombre de OpenStreetMap a 2 km o menos, y la app los muestra junto a dónde se duerme: 162 de las 194 bases tienen alguno. No llevan precio, ni categoría, ni la seguridad del distrito: eso queda en lo pendiente.
+
 ### En auto o taxi
 
 La app dice ahora, en la hoja de cada lugar y en la letra chica, que entre un lugar y otro del día el plan cuenta en auto o taxi. La letra chica decía además que la visita sale de la ficha de cada lugar, y no es así: es el tiempo típico de cada clase de lugar, un supuesto nuestro. Ya no lo dice. Cuánto sería en transporte público queda en lo pendiente, en el punto 6.
@@ -91,9 +101,9 @@ Los números son los de la lista del 5 de noviembre, para que se puedan citar: l
 | # | Lo que objetaría el jurado | La prueba | Qué hacer | Cuándo |
 |---|---|---|---|---|
 | 6 | Solo taxi | Los tramos del día suponen auto o taxi. La app ya lo dice, pero no cuánto sería en transporte público | Cuánto sería en transporte público, con una fuente por ciudad | después de la entrega |
-| 10 | ¿Dónde duermo? | El motor elige el pueblo, no el hospedaje | Hospedajes del directorio de MINCETUR y de OpenStreetMap, con su categoría como banda de precio, y la seguridad del distrito (Observatorio de Seguridad Ciudadana del Mininter, INEI) | semana 14 |
-| 11 | Costos viejos | El README de `pipeline/referencia/` dice que ninguno de transporte, hospedaje o comida está calibrado con tarifas de este año | Pasajes, entradas y hospedaje de 2026, con su fuente | semana 14 |
-| 12 | Se califican ellos mismos | Quienes califican el kit hicieron el producto | Ya está declarado en la 0021; sumar calificadores de fuera del equipo | semana 14 |
+| 10 | La categoría del hospedaje y la seguridad del distrito | La app dice qué hospedajes hay cerca, pero no cuánto cuestan ni qué tan seguro es el distrito | El directorio de prestadores de MINCETUR, con su categoría como banda de precio, y el Observatorio de Seguridad Ciudadana del Mininter | después de la entrega |
+| 11 | El hospedaje, la comida y la movilidad de 2026 | Solo el bus se calibró con tarifas de este año | Una fuente de 2026 por zona para cada uno | después de la entrega |
+| 12 | Se califican ellos mismos | Quienes califican el kit hicieron el producto | Un kit corto de 10 consultas para 3 a 5 personas de fuera, y la comparación con el equipo en los mismos viajes ([decisión 0033](decisiones/0033-calificadores-de-fuera.md)) | antes del 17 de noviembre |
 
 ## Sobre el aprendizaje automático
 
