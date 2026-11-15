@@ -642,6 +642,12 @@
   color: var(--tinta-3);
 }
 
+/* Un lugar que cierra algún día de la semana: se lee antes de ir, sin abrir su hoja. */
+.lugar-fila__cierre {
+  font-weight: 600;
+  color: var(--aviso-tinta);
+}
+
 /* La hora del almuerzo, en el mismo hilo: sin número, con un tenedor, y no se toca. */
 .almuerzo-fila {
   display: grid;

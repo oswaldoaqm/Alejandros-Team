@@ -46,6 +46,9 @@ const DIAS: Dia[] = [
           ingreso: "libre",
           tarifa_soles: 0,
           subtipo: "Capilla",
+          abre: "09:00",
+          cierra: "17:00",
+          dias: ["mar", "mie", "jue", "vie", "sab", "dom"],
         }),
       },
       {
@@ -253,6 +256,22 @@ describe("un día", () => {
     expect(plano(catedral?.textContent)).toBe("09:00 1Catedral de Huancayo Visita de 20 min");
   });
 
+  it("un lugar que cierra algún día de la semana lo dice en su fila", () => {
+    pintar(1);
+    const [capilla, memoria] = within(screen.getByRole("list")).getAllByRole("button");
+    expect(plano(capilla?.textContent)).toBe("13:11 1Capilla de la Merced Visita de 25 min Cierra los lunes");
+    expect(plano(memoria?.textContent)).not.toContain("Cierra");
+  });
+
+  it("el plan impreso dice el horario de cada lugar que lo tiene", () => {
+    const { container } = render(<PlanParaImprimir dias={numerar(DIAS)} />);
+    const [capilla, memoria] = container.querySelectorAll(".plan-impreso__dia li");
+    expect(plano(capilla?.textContent)).toContain(
+      "Entrada libre. Horario: de 9:00 a 17:00; cierra los lunes.",
+    );
+    expect(plano(memoria?.textContent)).not.toContain("Horario");
+  });
+
   it("marca los imperdibles", () => {
     const conImperdible = DIAS.map((d) =>
       d.numero === 1
@@ -335,7 +354,7 @@ describe("el almuerzo", () => {
     );
     const filas = within(screen.getByRole("list", { name: "Lugares del día 1" })).getAllByRole("listitem");
     expect(filas.map((f) => plano(f.textContent))).toEqual([
-      "13:11 1Capilla de la Merced Visita de 25 min",
+      "13:11 1Capilla de la Merced Visita de 25 min Cierra los lunes",
       "13:45 Almuerzo Cerca de Lugar de la Memoria",
       "13:46 2Lugar de la Memoria Visita de 1 h",
     ]);
@@ -414,6 +433,7 @@ describe("la hoja de un lugar", () => {
       "Desde Huancayo: 8 min, 0,6 km",
       "Altura: 3 250 m",
       "Entrada: Libre",
+      "Horario: De 9:00 a 17:00; cierra los lunes",
       "Importancia: 2 de 4, según MINCETUR",
     ]);
     expect(within(hoja).getByText("Qué es Capilla de la Merced.")).toBeDefined();
@@ -425,6 +445,7 @@ describe("la hoja de un lugar", () => {
     expect(within(hoja).getByText("MINCETUR no la ha calificado")).toBeDefined();
     const entrada = within(hoja).getByText("Entrada").nextElementSibling;
     expect(plano(entrada?.textContent)).toBe("S/ 5");
+    expect(within(hoja).getByText("Horario").nextElementSibling?.textContent).toBe("Su ficha no lo dice");
     const ficha = within(hoja).getByRole("link", { name: /Ver la ficha oficial/ });
     expect(ficha.getAttribute("href")).toBe(memoria?.recurso.url_ficha);
     expect(ficha.getAttribute("rel")).toContain("noopener");
@@ -464,7 +485,7 @@ describe("la hoja de un lugar", () => {
     abrir({ parada: conHorario, numero: 1, dia: 1, desde: "Trujillo", foto: null });
     const hoja = screen.getByRole("dialog", { name: "Museo de Sitio Chan Chan" });
     const horario = within(hoja).getByText("Horario").nextElementSibling;
-    expect(plano(horario?.textContent)).toBe("09:00 a 16:00 (cierra los lunes)");
+    expect(plano(horario?.textContent)).toBe("De 9:00 a 16:00; cierra los lunes");
   });
 
   it("cerrada no muestra nada, y la cruz la cierra", async () => {

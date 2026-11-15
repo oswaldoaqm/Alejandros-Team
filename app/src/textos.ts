@@ -68,6 +68,51 @@ export function dondeSeAlmuerza(
 /** Lo que se dice cuando cerca del almuerzo no hay registrado dónde comer. */
 export const LLEVA_TU_ALMUERZO = "Lleva tu almuerzo: no tenemos registrado dónde comer cerca.";
 
+// ── El horario de un lugar ─────────────────────────────────────────────────────────
+
+type DiaDeLaSemana = NonNullable<Recurso["dias"]>[number];
+const SEMANA: DiaDeLaSemana[] = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
+const LOS_DIAS: Record<DiaDeLaSemana, string> = {
+  lun: "lunes",
+  mar: "martes",
+  mie: "miércoles",
+  jue: "jueves",
+  vie: "viernes",
+  sab: "sábados",
+  dom: "domingos",
+};
+
+/** "09:00" → «9:00». */
+function hora(hhmm: string): string {
+  return hhmm.replace(/^0(\d)/, "$1");
+}
+
+/**
+ * Los días que cierra un lugar, si su ficha dice cuáles abre: «Cierra los lunes». Si abre cuatro días o menos, se
+ * dicen esos: «Abre solo los sábados y domingos». null si abre todos los días o no se sabe.
+ */
+export function diasDeCierre(dias: readonly DiaDeLaSemana[] | null | undefined): string | null {
+  if (!dias || dias.length === 0 || dias.length === SEMANA.length) return null;
+  const cierra = SEMANA.filter((d) => !dias.includes(d));
+  if (cierra.length <= 3) return `Cierra los ${lista(cierra.map((d) => LOS_DIAS[d]))}`;
+  return `Abre solo los ${lista(SEMANA.filter((d) => dias.includes(d)).map((d) => LOS_DIAS[d]))}`;
+}
+
+/**
+ * El horario de un lugar: «De 9:00 a 16:00; cierra los lunes». null si su ficha no dice nada: lo que no dice no se
+ * da por sabido.
+ */
+export function horario(recurso: Pick<Recurso, "abre" | "cierra" | "dias">): string | null {
+  const horas = recurso.abre && recurso.cierra ? `De ${hora(recurso.abre)} a ${hora(recurso.cierra)}` : null;
+  const todos = recurso.dias?.length === SEMANA.length;
+  const cierre = diasDeCierre(recurso.dias);
+  if (horas && todos) return `${horas}, todos los días`;
+  if (horas && cierre) return `${horas}; ${cierre.toLowerCase()}`;
+  if (horas) return horas;
+  if (cierre) return `${cierre}; su ficha no dice a qué hora`;
+  return todos ? "Todos los días; su ficha no dice a qué hora" : null;
+}
+
 /** El primer día en la altura (desde el contrato 1.7): cómo es, lo dice el aviso del motor. */
 export const DIA_TRANQUILO = "Día tranquilo para acostumbrarte a la altura";
 
