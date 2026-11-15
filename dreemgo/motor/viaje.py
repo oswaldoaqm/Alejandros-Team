@@ -11,8 +11,8 @@ El motor: de una consulta a hasta tres viajes (docs/CONTRATO.md).
    se usan para visitar si, con el viaje, sobran al menos 90 minutos de una jornada de 8.
    Un viaje que pasaría más días solo viajando que días con visitas no se propone. Lo que
    por tierra toma de 7 a 16 horas, sin tren ni bote, va en bus de noche si ida y vuelta no
-   se llevan el 40 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
-   días: se sale la noche antes del día 1 y se vuelve la noche del último (decisión 0019).
+   se llevan el 30 % de las horas del viaje, contadas sus noches; sus noches van fuera de los
+   días: se sale la noche antes del día 1 y se vuelve la noche del último (decisiones 0019 y 0027).
    Cada día con visitas lleva una hora de almuerzo, que no cuenta en las 8. Si se duerme a
    2 500 m o más y se llega desde 1 000 m o más abajo, el primer día en la base es tranquilo:
    medio día como mucho, sin subir más de 500 m sobre la base ni nada exigente
@@ -118,10 +118,13 @@ CAMINO_QUE_PESA = 0.4  # la parte del viaje que, en ir y volver, ya pesa: el avi
 # El bus de noche (decisión 0019): lo que por tierra toma de 7 a 16 horas, sin tren ni bote, en un viaje
 # de dos días o más. Sale a las 19:00 o más tarde, para llegar a eso de las 6:00, y después del bus hay
 # una hora para dejar las cosas y desayunar. Con menos de 7 horas llegaría de madrugada. No va si ida y
-# vuelta se llevan el 40 % de las horas del viaje, con sus noches: en dos días, hasta unas 9 horas y media
-# por tramo. Y sus dos noches pesan en el puntaje como un día más del viaje: sin eso, todo viaje corto
-# salía lejos, como dos días en Ilo desde el Cusco, a 14 horas. Es un supuesto del producto, por calibrar.
+# vuelta se llevan el 30 % de las horas del viaje, con sus noches: en dos días, hasta 7 horas y 12 minutos
+# por tramo, y en tres, hasta 10 horas y 48. Hasta la decisión 0027 era el 40 %, y dejaba tres días con 14
+# horas de bus por tramo, como Ilo o Nasca desde el Cusco. Y sus dos noches pesan en el puntaje como un día
+# más del viaje: sin eso, todo viaje corto salía lejos. Es un supuesto del producto, por calibrar con las
+# calificaciones del kit.
 NOCHE_MIN = 7 * 60
+TOPE_BUS_DE_NOCHE = 0.3  # la parte del viaje, con sus noches, que pueden llevarse la ida y la vuelta en bus
 SALIDA_DE_NOCHE = 19 * 60
 LLEGADA_DE_NOCHE = 30 * 60  # las 6:00 del día siguiente
 DESCANSO_AL_LLEGAR = 60
@@ -321,13 +324,13 @@ def bus_de_noche(minutos_ida: float) -> tuple[int, int]:
 
 def va_de_noche(dias: int, minutos_ida: float, km_tren: float, km_bote: float, vuelo: Vuelo | None) -> bool:
     """Si la ida y la vuelta van en bus de noche: por tierra, sin avión, tren ni bote, de 7 a 16 horas,
-    en un viaje de dos días o más, y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus
-    noches. En uno de un día no: entre dos noches de bus no hay hotel."""
+    en un viaje de dos días o más, y si ida y vuelta no se llevan el 30 % de las horas del viaje, con sus
+    noches (decisión 0027). En uno de un día no: entre dos noches de bus no hay hotel."""
     return (
         vuelo is None
         and dias >= 2
         and NOCHE_MIN <= minutos_ida <= LEJOS_PARA_VOLAR_MIN
-        and 2 * minutos_ida < CAMINO_QUE_PESA * dias * 24 * 60
+        and 2 * minutos_ida < TOPE_BUS_DE_NOCHE * dias * 24 * 60
         and _numero(km_tren) < KM_CARRETERA_MIN
         and _numero(km_bote) < KM_CARRETERA_MIN
     )

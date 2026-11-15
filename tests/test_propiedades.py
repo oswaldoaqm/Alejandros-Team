@@ -112,7 +112,7 @@ def _el_almuerzo(consulta: Consulta, ruta) -> None:
 
 def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
     """13. El bus de noche (desde 1.6): solo por carretera, de 7 a 16 horas, en un viaje de dos días o
-    más y si ida y vuelta no se llevan el 40 % de las horas del viaje, con sus noches. Sus noches van
+    más y si ida y vuelta no se llevan el 30 % de las horas del viaje, con sus noches. Sus noches van
     fuera de los días: sale a las 19:00 o después, ningún día lleva horas de camino y el día 1 se visita
     desde una hora después de llegar. Y lo que cumple todo eso va en bus de noche."""
     t = ruta.traslado
@@ -120,9 +120,9 @@ def _el_bus_de_noche(consulta: Consulta, ruta) -> None:
     if t.bus_de_noche is None:
         # Las horas vienen redondeadas a la décima: en los bordes manda la cuenta del motor.
         adentro = solo_carretera and 7.1 <= t.horas <= 15.9
-        assert not (adentro and 2 * t.horas < 0.4 * 24 * consulta.dias - 0.2)
+        assert not (adentro and 2 * t.horas < 0.3 * 24 * consulta.dias - 0.2)
         return
-    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.4 * 24 * consulta.dias + 0.2
+    assert solo_carretera and 7.0 <= t.horas <= 16.0 and 2 * t.horas < 0.3 * 24 * consulta.dias + 0.2
     assert t.dias_de_viaje == 0
     event("alguna ruta en bus de noche")
     assert _hhmm(t.bus_de_noche.sale) >= 19 * 60 and _hhmm(t.bus_de_noche.llega) < 12 * 60
