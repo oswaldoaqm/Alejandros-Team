@@ -1,6 +1,6 @@
 {
-  "version_contrato": "1.8",
-  "version_datos": "2026.11.2",
+  "version_contrato": "1.9",
+  "version_datos": "2026.11.3",
   "consulta": {
     "origen": "lima",
     "mes": 7,
@@ -34,7 +34,7 @@
         "recursos": 59,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.499,
+      "puntaje": 0.498,
       "motivos": [
         "3 lugares de jerarquía 3 o 4: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo",
         "14 de sus 24 paradas son de historia y arqueología o naturaleza",
@@ -67,7 +67,7 @@
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 9.95,
+        "horas": 10.95,
         "dias_de_viaje": 0,
         "medios": [
           "carretera"
@@ -76,9 +76,9 @@
         "acceso": "terrestre",
         "fuente": "red_vial",
         "bus_de_noche": {
-          "sale": "20:00",
+          "sale": "19:00",
           "llega": "06:00",
-          "sale_vuelta": "20:00",
+          "sale_vuelta": "19:00",
           "llega_vuelta": "06:00"
         }
       },
@@ -256,7 +256,7 @@
               "minutos_visita": 20
             }
           ],
-          "nota": "El bus de noche sale de Lima a las 20:00 de la noche anterior y llega a Trujillo a las 06:00: 9 h 57 por carretera.",
+          "nota": "El bus de noche sale de Lima a las 19:00 de la noche anterior y llega a Trujillo a las 06:00: 10 h 57 por carretera.",
           "almuerzo": {
             "hora": "12:59",
             "despues_de": 4,
@@ -828,7 +828,7 @@
               "minutos_visita": 20
             }
           ],
-          "nota": "En la noche, el bus de vuelta: sale de Trujillo a las 20:00 y llega a Lima a las 06:00 del día siguiente.",
+          "nota": "En la noche, el bus de vuelta: sale de Trujillo a las 19:00 y llega a Lima a las 06:00 del día siguiente.",
           "almuerzo": {
             "hora": "13:48",
             "despues_de": 4,
@@ -842,19 +842,19 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 713,
-        "p50": 827,
-        "p80": 938,
+        "p20": 714,
+        "p50": 828,
+        "p80": 939,
         "desglose": {
-          "transporte": 215,
+          "transporte": 216,
           "alojamiento": 243,
           "alimentacion": 232,
           "entradas": 137
         },
         "dentro_del_presupuesto": false,
-        "exceso": 127,
+        "exceso": 128,
         "supuestos": [
-          "Bus de noche de ida y vuelta: 1 115 km, a la misma tarifa por km que de día",
+          "Bus de noche de ida y vuelta: 1 126 km, a la misma tarifa por km que de día",
           "Movilidad local en colectivo o taxi: 121 km",
           "Hospedaje económico en Trujillo, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
@@ -866,12 +866,12 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 827) pasa tu presupuesto por S/ 127."
+          "mensaje": "El costo central (S/ 828) pasa tu presupuesto por S/ 128."
         },
         {
           "tipo": "acceso",
           "nivel": "info",
-          "mensaje": "La ida y la vuelta van en bus de noche, 9 h 57 por carretera: sales de Lima a las 20:00 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
+          "mensaje": "La ida y la vuelta van en bus de noche, 10 h 57 por carretera: sales de Lima a las 19:00 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
         },
         {
           "tipo": "dias",
@@ -884,8 +884,614 @@
         "jerarquia_media": 2.18,
         "paradas_jerarquia_alta": 3,
         "altitud_max_m": 663,
-        "km_total": 1235.5,
+        "km_total": 1246.9,
         "valor_capturado": 0.857
+      }
+    },
+    {
+      "polo": {
+        "id": 70,
+        "nombre": "Huacho",
+        "region": "Lima",
+        "regiones": [
+          "Lima"
+        ],
+        "base": {
+          "nombre": "Huacho",
+          "lat": -11.108524,
+          "lon": -77.61033,
+          "altitud_m": 35
+        },
+        "recursos": 68,
+        "fuera_del_circuito": false
+      },
+      "puntaje": 0.481,
+      "motivos": [
+        "3 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral, Fortaleza de Paramonga y Sitio Arqueológico de Vichama",
+        "10 de sus 14 paradas son de historia y arqueología o naturaleza",
+        "Julio es temporada seca aquí",
+        "Coincide con Expo - Feria Luriama (del 1 al 31 de julio)"
+      ],
+      "estacionalidad": {
+        "mes": 7,
+        "veredicto": "viable",
+        "lluvia_mm": 0.7,
+        "dias_con_lluvia": 0.1,
+        "horas_sol": null,
+        "temp_min_c": 14.8,
+        "temp_max_c": 20.7,
+        "explicacion": "Julio es temporada seca: 1 mm de lluvia en el mes.",
+        "mejores_meses": [
+          7,
+          5,
+          6,
+          10,
+          8,
+          9,
+          11,
+          4,
+          12,
+          2,
+          1,
+          3
+        ]
+      },
+      "traslado": {
+        "desde": "Lima",
+        "horas": 4.7,
+        "dias_de_viaje": 2,
+        "medios": [
+          "carretera"
+        ],
+        "vuelos": [],
+        "acceso": "terrestre",
+        "fuente": "red_vial",
+        "bus_de_noche": null
+      },
+      "dias": [
+        {
+          "numero": 1,
+          "fecha": null,
+          "tipo": "ida_y_visita",
+          "horas": 7.9,
+          "km": 159.7,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "14521",
+                "nombre": "Balcón y Museo Histórico de Huaura",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": null,
+                "lat": -11.070314,
+                "lon": -77.598847,
+                "altitud_m": 69,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14521",
+                "descripcion": "El Balcón de Huaura es un monumento histórico ubicado en la Plaza de Armas de Huaura, en el departamento de Lima.",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0,
+                "abre": "08:00",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "11:57",
+              "minutos_traslado": 15,
+              "km_desde_anterior": 5.3,
+              "minutos_visita": 75
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "3439",
+                "nombre": "Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Museos",
+                "jerarquia": null,
+                "lat": -11.108999,
+                "lon": -77.613252,
+                "altitud_m": 29,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3439",
+                "descripcion": "El Museo Arqueológico \"Arturo Ruiz Estrada\" constituye un eje fundamental para la investigación y la salvaguarda del patrimonio en la provincia de Huaura.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "08:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "14:26",
+              "minutos_traslado": 14,
+              "km_desde_anterior": 5.0,
+              "minutos_visita": 85
+            }
+          ],
+          "nota": "Salida de Lima a las 07:00; 4 h 42 por carretera hasta Huacho.",
+          "almuerzo": {
+            "hora": "13:12",
+            "despues_de": 1,
+            "lugar": "Balcón y Museo Histórico de Huaura",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null,
+          "tranquilo": false
+        },
+        {
+          "numero": 2,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.9,
+          "km": 152.9,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "3486",
+                "nombre": "Sitio Arqueológico de Vichama",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 3,
+                "lat": -11.030155,
+                "lon": -77.629975,
+                "altitud_m": 75,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
+                "descripcion": "Este sitio arqueológico cuenta con una extensión de 136.37 hectáreas y con un perímetro de 69670 metros, el área monumental pertenece al periodo arcaico tardío con una antigüedad de 3800 años de ideología de nuestros ancestros, con un área de 25 hectáreas ubicado en los cerros…",
+                "ingreso": "pagado",
+                "tarifa_soles": 11.0,
+                "abre": "08:00",
+                "cierra": "15:00",
+                "dias": null
+              },
+              "llegada": "08:26",
+              "minutos_traslado": 26,
+              "km_desde_anterior": 12.4,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "1298",
+                "nombre": "Fortaleza de Paramonga",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": 3,
+                "lat": -10.653176,
+                "lon": -77.841393,
+                "altitud_m": 26,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298",
+                "descripcion": "Está construida sobre una colina en el valle del río Fortaleza, es el monumento de mayor importancia que conserva su estructura arquitectónica, presenta una pirámide construida íntegramente en adobe formada por cuatro plataformas macizas con recintos en la parte alta, con un…",
+                "ingreso": "pagado",
+                "tarifa_soles": 5.0,
+                "abre": "09:30",
+                "cierra": "17:00",
+                "dias": null
+              },
+              "llegada": "10:15",
+              "minutos_traslado": 49,
+              "km_desde_anterior": 55.0,
+              "minutos_visita": 60
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "1237",
+                "nombre": "Ciudad Sagrada de Caral",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Zonas arqueológicas",
+                "jerarquia": 4,
+                "lat": -10.892818,
+                "lon": -77.523228,
+                "altitud_m": 350,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
+                "descripcion": "La Ciudad Sagrada de Caral está a 184 km al norte de Lima y entre 23 km y 25 km desde el litoral, en la sección Media-Baja del valle de Supe y en la margen izquierda de este río, a 365 metros sobre el nivel del mar.",
+                "ingreso": "pagado",
+                "tarifa_soles": 11.0,
+                "abre": "10:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "12:03",
+              "minutos_traslado": 48,
+              "km_desde_anterior": 48.6,
+              "minutos_visita": 90
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "11211",
+                "nombre": "Museo Municipal de Hualmay",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Museos y otros",
+                "subtipo": "Salas de Exhibición",
+                "jerarquia": null,
+                "lat": -11.09665,
+                "lon": -77.613158,
+                "altitud_m": 40,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211",
+                "descripcion": "Este museo fue creado en el mes de diciembre del 2019, está bajo el cargo de la Oficina de Cultura de la Municipalidad distrital de Hualmay.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "10:00",
+                "cierra": "16:00",
+                "dias": [
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "15:29",
+              "minutos_traslado": 56,
+              "km_desde_anterior": 34.6,
+              "minutos_visita": 30
+            },
+            {
+              "orden": 5,
+              "recurso": {
+                "codigo": "3375",
+                "nombre": "Club Casino Huacho",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": 2,
+                "lat": -11.108972,
+                "lon": -77.610426,
+                "altitud_m": 32,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375",
+                "descripcion": "Casona construida antes de 1878. El 20 de noviembre de 1938, el Dr. Pedro Luna Arrieta, Alcalde de Huacho, inauguró la construcción de la carretera Panamericana Norte, en el tramo Lima - Huacho, desde el Balcón del Club Casino Huacho contando con la presencia del Gral.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "09:00",
+                "cierra": "20:00",
+                "dias": null
+              },
+              "llegada": "16:07",
+              "minutos_traslado": 8,
+              "km_desde_anterior": 2.0,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 6,
+              "recurso": {
+                "codigo": "3379",
+                "nombre": "Plaza de Armas de Huacho",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Plazas",
+                "jerarquia": 2,
+                "lat": -11.108528,
+                "lon": -77.610338,
+                "altitud_m": 30,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379",
+                "descripcion": "Plaza de Armas pública ubicada en el centro de la ciudad, considerada como punto principal para toda serie de eventos y acontecimientos.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "00:00",
+                "cierra": "23:30",
+                "dias": null
+              },
+              "llegada": "16:31",
+              "minutos_traslado": 4,
+              "km_desde_anterior": 0.2,
+              "minutos_visita": 20
+            }
+          ],
+          "nota": null,
+          "almuerzo": {
+            "hora": "13:33",
+            "despues_de": 3,
+            "lugar": "Ciudad Sagrada de Caral",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null,
+          "tranquilo": false
+        },
+        {
+          "numero": 3,
+          "fecha": null,
+          "tipo": "visita",
+          "horas": 7.9,
+          "km": 89.4,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "11107",
+                "nombre": "Playa Chorrillos de Huacho",
+                "categoria": "Sitios naturales",
+                "tipo": "Costas",
+                "subtipo": "Playas",
+                "jerarquia": 2,
+                "lat": -11.110495,
+                "lon": -77.615647,
+                "altitud_m": 3,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11107",
+                "descripcion": "La playa Chorrillos es importante por las actividades económicas que genera en comercio, recreación, pesca artesanal e industrial, que se desarrollan a lo largo de 3 km de extensión.",
+                "ingreso": "libre",
+                "tarifa_soles": 0.0,
+                "abre": "07:00",
+                "cierra": "18:00",
+                "dias": null
+              },
+              "llegada": "08:07",
+              "minutos_traslado": 7,
+              "km_desde_anterior": 1.3,
+              "minutos_visita": 180
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "3499",
+                "nombre": "Iglesia San Pedro Apóstol",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Iglesias",
+                "jerarquia": null,
+                "lat": -11.09192,
+                "lon": -77.628178,
+                "altitud_m": 15,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3499",
+                "descripcion": "La iglesia San Pedro Apostol no cuenta con fecha exacta de construcción, pero data del siglo XIX, tiene una antigüedad de 200 años aproximadamente y pertenece a la época colonial – republicana.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie"
+                ]
+              },
+              "llegada": "11:19",
+              "minutos_traslado": 12,
+              "km_desde_anterior": 3.4,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 3,
+              "recurso": {
+                "codigo": "3484",
+                "nombre": "Zona Arqueológica Monumental Los Huacos",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Templos",
+                "jerarquia": null,
+                "lat": -11.097041,
+                "lon": -77.615168,
+                "altitud_m": 32,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3484",
+                "descripcion": "La Zona Arqueológica Monumental Los Huacos se ubica en el distrito de Hualmay, Provincia de Huaura, departamento de Lima.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "11:50",
+              "minutos_traslado": 11,
+              "km_desde_anterior": 2.9,
+              "minutos_visita": 66
+            },
+            {
+              "orden": 4,
+              "recurso": {
+                "codigo": "11873",
+                "nombre": "Zona Arqueológica Monumental de Peñico",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Otros",
+                "jerarquia": 2,
+                "lat": -10.930475,
+                "lon": -77.430751,
+                "altitud_m": 600,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11873",
+                "descripcion": "La Zona Arqueológica Monumental de Peñico pertenece políticamente al departamento de Lima, provincia de Huaura, distrito de Huaura.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
+              },
+              "llegada": "15:02",
+              "minutos_traslado": 66,
+              "km_desde_anterior": 40.2,
+              "minutos_visita": 45
+            }
+          ],
+          "nota": null,
+          "almuerzo": {
+            "hora": "12:56",
+            "despues_de": 3,
+            "lugar": "Zona Arqueológica Monumental Los Huacos",
+            "en_la_base": false,
+            "hay_donde_comer": true
+          },
+          "noche": null,
+          "tranquilo": false
+        },
+        {
+          "numero": 4,
+          "fecha": null,
+          "tipo": "visita_y_vuelta",
+          "horas": 7.9,
+          "km": 173.7,
+          "paradas": [
+            {
+              "orden": 1,
+              "recurso": {
+                "codigo": "3373",
+                "nombre": "Casona Pittaluga",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Arquitectura y Espacios Urbanos",
+                "subtipo": "Casa de Valor Arquitectónico",
+                "jerarquia": 2,
+                "lat": -11.108392,
+                "lon": -77.612601,
+                "altitud_m": 30,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3373",
+                "descripcion": "Este Monumento Histórico – Artístico, es de la Época y de estilo Republicano, con líneas neoclásicas y afrancesadas, de las que son comunes en Barranco, Chorrillos, La punta y en la Lima de los años de 1920.",
+                "ingreso": "desconocido",
+                "tarifa_soles": null,
+                "abre": "09:00",
+                "cierra": "16:00",
+                "dias": null
+              },
+              "llegada": "09:00",
+              "minutos_traslado": 5,
+              "km_desde_anterior": 0.4,
+              "minutos_visita": 20
+            },
+            {
+              "orden": 2,
+              "recurso": {
+                "codigo": "3369",
+                "nombre": "Zona Arqueológica Monumental Bandurria",
+                "categoria": "Manifestaciones culturales",
+                "tipo": "Sitios Arqueológicos",
+                "subtipo": "Zonas arqueológicas",
+                "jerarquia": 2,
+                "lat": -11.186866,
+                "lon": -77.588466,
+                "altitud_m": 30,
+                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3369",
+                "descripcion": "Este sitio arqueológico se encuentra en un sector de la costa Norcentral donde el relieve es complejo, con cerros aislados y parte de la cadena Costanera. Ubicado exactamente a la altura del kilómetro 141 de la carretera Panamericana Norte.",
+                "ingreso": "pagado",
+                "tarifa_soles": 3.5,
+                "abre": "09:00",
+                "cierra": "17:00",
+                "dias": [
+                  "lun",
+                  "mar",
+                  "mie",
+                  "jue",
+                  "vie",
+                  "sab",
+                  "dom"
+                ]
+              },
+              "llegada": "09:44",
+              "minutos_traslado": 24,
+              "km_desde_anterior": 12.3,
+              "minutos_visita": 120
+            }
+          ],
+          "nota": "Vuelta a Lima: 4 h 42 por carretera.",
+          "almuerzo": null,
+          "noche": null,
+          "tranquilo": false
+        }
+      ],
+      "costo": {
+        "moneda": "PEN",
+        "p20": 652,
+        "p50": 771,
+        "p80": 885,
+        "desglose": {
+          "transporte": 241,
+          "alojamiento": 250,
+          "alimentacion": 238,
+          "entradas": 42
+        },
+        "dentro_del_presupuesto": false,
+        "exceso": 71,
+        "supuestos": [
+          "Bus interprovincial de ida y vuelta: 298 km",
+          "Movilidad local en colectivo o taxi: 278 km",
+          "Hospedaje económico en Huacho, 3 noches",
+          "Entradas de adulto peruano según la ficha oficial de cada lugar",
+          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
+        ]
+      },
+      "eventos": [
+        {
+          "id": "3457",
+          "nombre": "Expo - Feria Luriama",
+          "tipo": "Ferias (no Artesanales)",
+          "fecha_inicio": "2027-07-01",
+          "fecha_fin": "2027-07-31",
+          "precision_fecha": "aproximada",
+          "distrito": "Santa María",
+          "provincia": "Huaura",
+          "region": "Lima",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3457",
+          "polo": 70
+        },
+        {
+          "id": "11833",
+          "nombre": "Festividad de la Santísima Virgen del Carmen",
+          "tipo": "Fiestas religiosas-patronales",
+          "fecha_inicio": "2027-07-16",
+          "fecha_fin": "2027-07-16",
+          "precision_fecha": "exacta",
+          "distrito": "Huaura",
+          "provincia": "Huaura",
+          "region": "Lima",
+          "fuente": "mincetur",
+          "publicado_por": null,
+          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11833",
+          "polo": 70
+        }
+      ],
+      "avisos": [
+        {
+          "tipo": "presupuesto",
+          "nivel": "advertencia",
+          "mensaje": "El costo central (S/ 771) pasa tu presupuesto por S/ 71."
+        },
+        {
+          "tipo": "dias",
+          "nivel": "info",
+          "mensaje": "Sin fecha exacta no sabemos qué día de la semana cae cada visita, y Museo Municipal de Hualmay y Iglesia San Pedro Apóstol no abren todos los días: elige una fecha de inicio o revisa su horario."
+        }
+      ],
+      "indicadores": {
+        "paradas": 14,
+        "jerarquia_media": 2.44,
+        "paradas_jerarquia_alta": 3,
+        "altitud_max_m": 600,
+        "km_total": 575.7,
+        "valor_capturado": 0.652
       }
     },
     {
@@ -905,7 +1511,7 @@
         "recursos": 53,
         "fuera_del_circuito": true
       },
-      "puntaje": 0.448,
+      "puntaje": 0.452,
       "motivos": [
         "Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto, de jerarquía 3",
         "17 de sus 22 paradas son de historia y arqueología o naturaleza",
@@ -929,7 +1535,7 @@
       },
       "traslado": {
         "desde": "Lima",
-        "horas": 10.28,
+        "horas": 11.22,
         "dias_de_viaje": 0,
         "medios": [
           "carretera"
@@ -938,10 +1544,10 @@
         "acceso": "terrestre",
         "fuente": "red_vial",
         "bus_de_noche": {
-          "sale": "19:30",
-          "llega": "05:50",
-          "sale_vuelta": "19:30",
-          "llega_vuelta": "05:50"
+          "sale": "19:00",
+          "llega": "06:15",
+          "sale_vuelta": "19:00",
+          "llega_vuelta": "06:15"
         }
       },
       "dias": [
@@ -1110,7 +1716,7 @@
               "minutos_visita": 22
             }
           ],
-          "nota": "El bus de noche sale de Lima a las 19:30 de la noche anterior y llega a Oxapampa a las 05:50: 10 h 17 por carretera.",
+          "nota": "El bus de noche sale de Lima a las 19:00 de la noche anterior y llega a Oxapampa a las 06:15: 11 h 13 por carretera.",
           "almuerzo": {
             "hora": "11:34",
             "despues_de": 3,
@@ -1337,7 +1943,8 @@
                 "2027-07-03"
               ],
               "temp_min_c": 11.6
-            }
+            },
+            "funciones": []
           },
           "tranquilo": false
         },
@@ -1694,7 +2301,7 @@
               "minutos_visita": 45
             }
           ],
-          "nota": "En la noche, el bus de vuelta: sale de Oxapampa a las 19:30 y llega a Lima a las 05:50 del día siguiente.",
+          "nota": "En la noche, el bus de vuelta: sale de Oxapampa a las 19:00 y llega a Lima a las 06:15 del día siguiente.",
           "almuerzo": {
             "hora": "13:29",
             "despues_de": 3,
@@ -1708,19 +2315,19 @@
       ],
       "costo": {
         "moneda": "PEN",
-        "p20": 663,
-        "p50": 779,
-        "p80": 890,
+        "p20": 664,
+        "p50": 780,
+        "p80": 891,
         "desglose": {
-          "transporte": 220,
+          "transporte": 221,
           "alojamiento": 247,
           "alimentacion": 236,
           "entradas": 76
         },
         "dentro_del_presupuesto": false,
-        "exceso": 79,
+        "exceso": 80,
         "supuestos": [
-          "Bus de noche de ida y vuelta: 759 km, a la misma tarifa por km que de día",
+          "Bus de noche de ida y vuelta: 770 km, a la misma tarifa por km que de día",
           "Movilidad local en colectivo o taxi: 179 km",
           "Hospedaje económico en Oxapampa, 3 noches",
           "Entradas de adulto peruano según la ficha oficial de cada lugar",
@@ -1763,12 +2370,12 @@
         {
           "tipo": "presupuesto",
           "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 779) pasa tu presupuesto por S/ 79."
+          "mensaje": "El costo central (S/ 780) pasa tu presupuesto por S/ 80."
         },
         {
           "tipo": "acceso",
           "nivel": "info",
-          "mensaje": "La ida y la vuelta van en bus de noche, 10 h 17 por carretera: sales de Lima a las 19:30 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
+          "mensaje": "La ida y la vuelta van en bus de noche, 11 h 13 por carretera: sales de Lima a las 19:00 la noche antes del día 1 y vuelves la noche del día 4. Esas dos noches no cuentan en tus días ni en el hospedaje."
         },
         {
           "tipo": "dias",
@@ -1781,671 +2388,8 @@
         "jerarquia_media": 1.86,
         "paradas_jerarquia_alta": 1,
         "altitud_max_m": 2445,
-        "km_total": 938.0,
+        "km_total": 948.8,
         "valor_capturado": 0.71
-      }
-    },
-    {
-      "polo": {
-        "id": 70,
-        "nombre": "Huacho",
-        "region": "Lima",
-        "regiones": [
-          "Lima"
-        ],
-        "base": {
-          "nombre": "Huacho",
-          "lat": -11.108524,
-          "lon": -77.61033,
-          "altitud_m": 35
-        },
-        "recursos": 68,
-        "fuera_del_circuito": false
-      },
-      "puntaje": 0.436,
-      "motivos": [
-        "3 lugares de jerarquía 3 o 4: Ciudad Sagrada de Caral, Fortaleza de Paramonga y Sitio Arqueológico de Vichama",
-        "10 de sus 16 paradas son de historia y arqueología o naturaleza",
-        "Julio es temporada seca aquí",
-        "Coincide con Expo - Feria Luriama (del 1 al 31 de julio)"
-      ],
-      "estacionalidad": {
-        "mes": 7,
-        "veredicto": "viable",
-        "lluvia_mm": 0.7,
-        "dias_con_lluvia": 0.1,
-        "horas_sol": null,
-        "temp_min_c": 14.8,
-        "temp_max_c": 20.7,
-        "explicacion": "Julio es temporada seca: 1 mm de lluvia en el mes.",
-        "mejores_meses": [
-          7,
-          5,
-          6,
-          10,
-          8,
-          9,
-          11,
-          4,
-          12,
-          2,
-          1,
-          3
-        ]
-      },
-      "traslado": {
-        "desde": "Lima",
-        "horas": 3.73,
-        "dias_de_viaje": 2,
-        "medios": [
-          "carretera"
-        ],
-        "vuelos": [],
-        "acceso": "terrestre",
-        "fuente": "red_vial",
-        "bus_de_noche": null
-      },
-      "dias": [
-        {
-          "numero": 1,
-          "fecha": null,
-          "tipo": "ida_y_visita",
-          "horas": 7.7,
-          "km": 219.1,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "3499",
-                "nombre": "Iglesia San Pedro Apóstol",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": null,
-                "lat": -11.09192,
-                "lon": -77.628178,
-                "altitud_m": 15,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3499",
-                "descripcion": "La iglesia San Pedro Apostol no cuenta con fecha exacta de construcción, pero data del siglo XIX, tiene una antigüedad de 200 años aproximadamente y pertenece a la época colonial – republicana.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "09:00",
-                "cierra": "17:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie"
-                ]
-              },
-              "llegada": "10:55",
-              "minutos_traslado": 11,
-              "km_desde_anterior": 3.3,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "1237",
-                "nombre": "Ciudad Sagrada de Caral",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Zonas arqueológicas",
-                "jerarquia": 4,
-                "lat": -10.892818,
-                "lon": -77.523228,
-                "altitud_m": 350,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
-                "descripcion": "La Ciudad Sagrada de Caral está a 184 km al norte de Lima y entre 23 km y 25 km desde el litoral, en la sección Media-Baja del valle de Supe y en la margen izquierda de este río, a 365 metros sobre el nivel del mar.",
-                "ingreso": "pagado",
-                "tarifa_soles": 11.0,
-                "abre": "10:00",
-                "cierra": "16:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "12:15",
-              "minutos_traslado": 60,
-              "km_desde_anterior": 36.3,
-              "minutos_visita": 90
-            }
-          ],
-          "nota": "Salida de Lima a las 07:00; 3 h 44 por carretera hasta Huacho.",
-          "almuerzo": {
-            "hora": "13:45",
-            "despues_de": 2,
-            "lugar": "Ciudad Sagrada de Caral",
-            "en_la_base": false,
-            "hay_donde_comer": true
-          },
-          "noche": null,
-          "tranquilo": false
-        },
-        {
-          "numero": 2,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.3,
-          "km": 133.5,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "1298",
-                "nombre": "Fortaleza de Paramonga",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": 3,
-                "lat": -10.653176,
-                "lon": -77.841393,
-                "altitud_m": 26,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1298",
-                "descripcion": "Está construida sobre una colina en el valle del río Fortaleza, es el monumento de mayor importancia que conserva su estructura arquitectónica, presenta una pirámide construida íntegramente en adobe formada por cuatro plataformas macizas con recintos en la parte alta, con un…",
-                "ingreso": "pagado",
-                "tarifa_soles": 5.0,
-                "abre": "09:30",
-                "cierra": "17:00",
-                "dias": null
-              },
-              "llegada": "09:30",
-              "minutos_traslado": 57,
-              "km_desde_anterior": 65.2,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "3486",
-                "nombre": "Sitio Arqueológico de Vichama",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": 3,
-                "lat": -11.030155,
-                "lon": -77.629975,
-                "altitud_m": 75,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3486",
-                "descripcion": "Este sitio arqueológico cuenta con una extensión de 136.37 hectáreas y con un perímetro de 69670 metros, el área monumental pertenece al periodo arcaico tardío con una antigüedad de 3800 años de ideología de nuestros ancestros, con un área de 25 hectáreas ubicado en los cerros…",
-                "ingreso": "pagado",
-                "tarifa_soles": 11.0,
-                "abre": "08:00",
-                "cierra": "15:00",
-                "dias": null
-              },
-              "llegada": "11:19",
-              "minutos_traslado": 49,
-              "km_desde_anterior": 55.0,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "14521",
-                "nombre": "Balcón y Museo Histórico de Huaura",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": null,
-                "lat": -11.070314,
-                "lon": -77.598847,
-                "altitud_m": 69,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=14521",
-                "descripcion": "El Balcón de Huaura es un monumento histórico ubicado en la Plaza de Armas de Huaura, en el departamento de Lima.",
-                "ingreso": "pagado",
-                "tarifa_soles": 5.0,
-                "abre": "08:00",
-                "cierra": "17:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "12:34",
-              "minutos_traslado": 15,
-              "km_desde_anterior": 7.1,
-              "minutos_visita": 75
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "11211",
-                "nombre": "Museo Municipal de Hualmay",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Salas de Exhibición",
-                "jerarquia": null,
-                "lat": -11.09665,
-                "lon": -77.613158,
-                "altitud_m": 40,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11211",
-                "descripcion": "Este museo fue creado en el mes de diciembre del 2019, está bajo el cargo de la Oficina de Cultura de la Municipalidad distrital de Hualmay.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "10:00",
-                "cierra": "16:00",
-                "dias": [
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "15:02",
-              "minutos_traslado": 13,
-              "km_desde_anterior": 4.0,
-              "minutos_visita": 30
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "3373",
-                "nombre": "Casona Pittaluga",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Casa de Valor Arquitectónico",
-                "jerarquia": 2,
-                "lat": -11.108392,
-                "lon": -77.612601,
-                "altitud_m": 30,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3373",
-                "descripcion": "Este Monumento Histórico – Artístico, es de la Época y de estilo Republicano, con líneas neoclásicas y afrancesadas, de las que son comunes en Barranco, Chorrillos, La punta y en la Lima de los años de 1920.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "09:00",
-                "cierra": "16:00",
-                "dias": null
-              },
-              "llegada": "15:40",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 1.7,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 6,
-              "recurso": {
-                "codigo": "13931",
-                "nombre": "Taller Artesanal Chankay Namú",
-                "categoria": "Realizaciones técnicas, científicas y artísticas contemporáneas",
-                "tipo": "Centros Científicos y Técnicos",
-                "subtipo": "Otros",
-                "jerarquia": null,
-                "lat": -11.108524,
-                "lon": -77.61033,
-                "altitud_m": 43,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=13931",
-                "descripcion": "El distrito de Huacho, reconocido como la “Capital de la Hospitalidad”, es uno de los doce distritos que conforman la provincia de Huaura.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "08:00",
-                "cierra": "20:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "16:05",
-              "minutos_traslado": 5,
-              "km_desde_anterior": 0.4,
-              "minutos_visita": 45
-            }
-          ],
-          "nota": null,
-          "almuerzo": {
-            "hora": "13:49",
-            "despues_de": 3,
-            "lugar": "Balcón y Museo Histórico de Huaura",
-            "en_la_base": false,
-            "hay_donde_comer": true
-          },
-          "noche": null,
-          "tranquilo": false
-        },
-        {
-          "numero": 3,
-          "fecha": null,
-          "tipo": "visita",
-          "horas": 7.8,
-          "km": 118.5,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "11873",
-                "nombre": "Zona Arqueológica Monumental de Peñico",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Otros",
-                "jerarquia": 2,
-                "lat": -10.930475,
-                "lon": -77.430751,
-                "altitud_m": 600,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11873",
-                "descripcion": "La Zona Arqueológica Monumental de Peñico pertenece políticamente al departamento de Lima, provincia de Huaura, distrito de Huaura.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "09:00",
-                "cierra": "16:00",
-                "dias": null
-              },
-              "llegada": "09:05",
-              "minutos_traslado": 65,
-              "km_desde_anterior": 41.6,
-              "minutos_visita": 45
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "4545",
-                "nombre": "Sitio Arqueológico Miraya",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": 2,
-                "lat": -10.882305,
-                "lon": -77.539772,
-                "altitud_m": 349,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=4545",
-                "descripcion": "Miraya es uno de los asentamientos arcaicos que rodean a la Ciudad Sagrada de Caral, ocupa aproximadamente 43 hectáreas y tiene una antigüedad de 3,000 a 1,800 años A.C.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "09:00",
-                "cierra": "16:00",
-                "dias": null
-              },
-              "llegada": "10:18",
-              "minutos_traslado": 28,
-              "km_desde_anterior": 17.0,
-              "minutos_visita": 60
-            },
-            {
-              "orden": 3,
-              "recurso": {
-                "codigo": "3484",
-                "nombre": "Zona Arqueológica Monumental Los Huacos",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Sitios Arqueológicos",
-                "subtipo": "Templos",
-                "jerarquia": null,
-                "lat": -11.097041,
-                "lon": -77.615168,
-                "altitud_m": 32,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3484",
-                "descripcion": "La Zona Arqueológica Monumental Los Huacos se ubica en el distrito de Hualmay, Provincia de Huaura, departamento de Lima.",
-                "ingreso": "desconocido",
-                "tarifa_soles": null,
-                "abre": "09:00",
-                "cierra": "16:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "12:16",
-              "minutos_traslado": 58,
-              "km_desde_anterior": 57.3,
-              "minutos_visita": 66
-            },
-            {
-              "orden": 4,
-              "recurso": {
-                "codigo": "3439",
-                "nombre": "Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Museos y otros",
-                "subtipo": "Museos",
-                "jerarquia": null,
-                "lat": -11.108999,
-                "lon": -77.613252,
-                "altitud_m": 29,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3439",
-                "descripcion": "El Museo Arqueológico \"Arturo Ruiz Estrada\" constituye un eje fundamental para la investigación y la salvaguarda del patrimonio en la provincia de Huaura.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "08:00",
-                "cierra": "16:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "sab",
-                  "dom"
-                ]
-              },
-              "llegada": "14:30",
-              "minutos_traslado": 8,
-              "km_desde_anterior": 1.9,
-              "minutos_visita": 85
-            },
-            {
-              "orden": 5,
-              "recurso": {
-                "codigo": "3375",
-                "nombre": "Club Casino Huacho",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Casa de Valor Arquitectónico",
-                "jerarquia": 2,
-                "lat": -11.108972,
-                "lon": -77.610426,
-                "altitud_m": 32,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3375",
-                "descripcion": "Casona construida antes de 1878. El 20 de noviembre de 1938, el Dr. Pedro Luna Arrieta, Alcalde de Huacho, inauguró la construcción de la carretera Panamericana Norte, en el tramo Lima - Huacho, desde el Balcón del Club Casino Huacho contando con la presencia del Gral.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "09:00",
-                "cierra": "20:00",
-                "dias": null
-              },
-              "llegada": "16:00",
-              "minutos_traslado": 5,
-              "km_desde_anterior": 0.4,
-              "minutos_visita": 20
-            },
-            {
-              "orden": 6,
-              "recurso": {
-                "codigo": "3379",
-                "nombre": "Plaza de Armas de Huacho",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Plazas",
-                "jerarquia": 2,
-                "lat": -11.108528,
-                "lon": -77.610338,
-                "altitud_m": 30,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3379",
-                "descripcion": "Plaza de Armas pública ubicada en el centro de la ciudad, considerada como punto principal para toda serie de eventos y acontecimientos.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "00:00",
-                "cierra": "23:30",
-                "dias": null
-              },
-              "llegada": "16:24",
-              "minutos_traslado": 4,
-              "km_desde_anterior": 0.2,
-              "minutos_visita": 20
-            }
-          ],
-          "nota": null,
-          "almuerzo": {
-            "hora": "13:22",
-            "despues_de": 3,
-            "lugar": "Zona Arqueológica Monumental Los Huacos",
-            "en_la_base": false,
-            "hay_donde_comer": true
-          },
-          "noche": null,
-          "tranquilo": false
-        },
-        {
-          "numero": 4,
-          "fecha": null,
-          "tipo": "visita_y_vuelta",
-          "horas": 7.7,
-          "km": 154.1,
-          "paradas": [
-            {
-              "orden": 1,
-              "recurso": {
-                "codigo": "11107",
-                "nombre": "Playa Chorrillos de Huacho",
-                "categoria": "Sitios naturales",
-                "tipo": "Costas",
-                "subtipo": "Playas",
-                "jerarquia": 2,
-                "lat": -11.110495,
-                "lon": -77.615647,
-                "altitud_m": 3,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11107",
-                "descripcion": "La playa Chorrillos es importante por las actividades económicas que genera en comercio, recreación, pesca artesanal e industrial, que se desarrollan a lo largo de 3 km de extensión.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "07:00",
-                "cierra": "18:00",
-                "dias": null
-              },
-              "llegada": "08:07",
-              "minutos_traslado": 7,
-              "km_desde_anterior": 1.3,
-              "minutos_visita": 180
-            },
-            {
-              "orden": 2,
-              "recurso": {
-                "codigo": "3456",
-                "nombre": "Iglesia de Santa María",
-                "categoria": "Manifestaciones culturales",
-                "tipo": "Arquitectura y Espacios Urbanos",
-                "subtipo": "Iglesias",
-                "jerarquia": 1,
-                "lat": -11.086349,
-                "lon": -77.586702,
-                "altitud_m": 81,
-                "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3456",
-                "descripcion": "Esta Iglesia está construida de adobe y madera, como se menciona en el inventario mandado hacer por el Arzobispo de Lima, Javier de Luna Pizarro en 1848. Esta iglesia es de época Republicana de los años 1848.",
-                "ingreso": "libre",
-                "tarifa_soles": 0.0,
-                "abre": "10:00",
-                "cierra": "13:00",
-                "dias": [
-                  "lun",
-                  "mar",
-                  "mie",
-                  "jue",
-                  "vie",
-                  "dom"
-                ]
-              },
-              "llegada": "11:23",
-              "minutos_traslado": 16,
-              "km_desde_anterior": 5.3,
-              "minutos_visita": 20
-            }
-          ],
-          "nota": "Vuelta a Lima: 3 h 44 por carretera.",
-          "almuerzo": null,
-          "noche": null,
-          "tranquilo": false
-        }
-      ],
-      "costo": {
-        "moneda": "PEN",
-        "p20": 682,
-        "p50": 804,
-        "p80": 922,
-        "desglose": {
-          "transporte": 278,
-          "alojamiento": 250,
-          "alimentacion": 238,
-          "entradas": 38
-        },
-        "dentro_del_presupuesto": false,
-        "exceso": 104,
-        "supuestos": [
-          "Bus interprovincial de ida y vuelta: 285 km",
-          "Movilidad local en colectivo o taxi: 339 km",
-          "Hospedaje económico en Huacho, 3 noches",
-          "Entradas de adulto peruano según la ficha oficial de cada lugar",
-          "Banda del percentil 20 al 80: transporte, hospedaje y comida en su rango, sin calibrar"
-        ]
-      },
-      "eventos": [
-        {
-          "id": "3457",
-          "nombre": "Expo - Feria Luriama",
-          "tipo": "Ferias (no Artesanales)",
-          "fecha_inicio": "2027-07-01",
-          "fecha_fin": "2027-07-31",
-          "precision_fecha": "aproximada",
-          "distrito": "Santa María",
-          "provincia": "Huaura",
-          "region": "Lima",
-          "fuente": "mincetur",
-          "publicado_por": null,
-          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=3457",
-          "polo": 70
-        },
-        {
-          "id": "11833",
-          "nombre": "Festividad de la Santísima Virgen del Carmen",
-          "tipo": "Fiestas religiosas-patronales",
-          "fecha_inicio": "2027-07-16",
-          "fecha_fin": "2027-07-16",
-          "precision_fecha": "exacta",
-          "distrito": "Huaura",
-          "provincia": "Huaura",
-          "region": "Lima",
-          "fuente": "mincetur",
-          "publicado_por": null,
-          "url": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=11833",
-          "polo": 70
-        }
-      ],
-      "avisos": [
-        {
-          "tipo": "presupuesto",
-          "nivel": "advertencia",
-          "mensaje": "El costo central (S/ 804) pasa tu presupuesto por S/ 104."
-        },
-        {
-          "tipo": "dias",
-          "nivel": "info",
-          "mensaje": "Sin fecha exacta no sabemos qué día de la semana cae cada visita, y Iglesia San Pedro Apóstol, Museo Municipal de Hualmay y Iglesia de Santa María no abren todos los días: elige una fecha de inicio o revisa su horario."
-        }
-      ],
-      "indicadores": {
-        "paradas": 16,
-        "jerarquia_media": 2.3,
-        "paradas_jerarquia_alta": 3,
-        "altitud_max_m": 600,
-        "km_total": 625.2,
-        "valor_capturado": 0.661
       }
     }
   ],

@@ -2,51 +2,63 @@
   "aeropuertos": {
     "ANS": {
       "ciudad": "Andahuaylas",
-      "minutos_a_lima": 70
+      "minutos_a_lima": 70,
+      "vuelos_al_mes": 22
     },
     "AQP": {
       "ciudad": "Arequipa",
-      "minutos_a_lima": 90
+      "minutos_a_lima": 90,
+      "vuelos_al_mes": 620
     },
     "ATA": {
       "ciudad": "Huaraz",
-      "minutos_a_lima": 60
+      "minutos_a_lima": 60,
+      "vuelos_al_mes": 25
     },
     "AYP": {
       "ciudad": "Ayacucho",
-      "minutos_a_lima": 60
+      "minutos_a_lima": 60,
+      "vuelos_al_mes": 156
     },
     "CHH": {
       "ciudad": "Chachapoyas",
-      "minutos_a_lima": 90
+      "minutos_a_lima": 90,
+      "vuelos_al_mes": 34
     },
     "CIX": {
       "ciudad": "Chiclayo",
-      "minutos_a_lima": 95
+      "minutos_a_lima": 95,
+      "vuelos_al_mes": 371
     },
     "CJA": {
       "ciudad": "Cajamarca",
-      "minutos_a_lima": 85
+      "minutos_a_lima": 85,
+      "vuelos_al_mes": 266
     },
     "CUZ": {
       "ciudad": "Cusco",
-      "minutos_a_lima": 80
+      "minutos_a_lima": 80,
+      "vuelos_al_mes": 1006
     },
     "HUU": {
       "ciudad": "Huánuco",
-      "minutos_a_lima": 45
+      "minutos_a_lima": 45,
+      "vuelos_al_mes": 94
     },
     "IQT": {
       "ciudad": "Iquitos",
-      "minutos_a_lima": 110
+      "minutos_a_lima": 110,
+      "vuelos_al_mes": 272
     },
     "JAU": {
       "ciudad": "Jauja",
-      "minutos_a_lima": 55
+      "minutos_a_lima": 55,
+      "vuelos_al_mes": 90
     },
     "JUL": {
       "ciudad": "Juliaca",
-      "minutos_a_lima": 90
+      "minutos_a_lima": 90,
+      "vuelos_al_mes": 205
     },
     "LIM": {
       "ciudad": "Lima",
@@ -54,51 +66,61 @@
     },
     "MZA": {
       "ciudad": "Mazamari",
-      "minutos_a_lima": 65
+      "minutos_a_lima": 65,
+      "vuelos_al_mes": 9
     },
     "PCL": {
       "ciudad": "Pucallpa",
-      "minutos_a_lima": 70
+      "minutos_a_lima": 70,
+      "vuelos_al_mes": 227
     },
     "PEM": {
       "ciudad": "Puerto Maldonado",
-      "minutos_a_lima": 100
+      "minutos_a_lima": 100,
+      "vuelos_al_mes": 116
     },
     "PIU": {
       "ciudad": "Piura",
-      "minutos_a_lima": 105
+      "minutos_a_lima": 105,
+      "vuelos_al_mes": 303
     },
     "TBP": {
       "ciudad": "Tumbes",
-      "minutos_a_lima": 115
+      "minutos_a_lima": 115,
+      "vuelos_al_mes": 125
     },
     "TCQ": {
       "ciudad": "Tacna",
-      "minutos_a_lima": 110
+      "minutos_a_lima": 110,
+      "vuelos_al_mes": 195
     },
     "TGI": {
       "ciudad": "Tingo María",
-      "minutos_a_lima": 60
+      "minutos_a_lima": 60,
+      "vuelos_al_mes": 17
     },
     "TPP": {
       "ciudad": "Tarapoto",
-      "minutos_a_lima": 85
+      "minutos_a_lima": 85,
+      "vuelos_al_mes": 349
     },
     "TRU": {
       "ciudad": "Trujillo",
-      "minutos_a_lima": 75
+      "minutos_a_lima": 75,
+      "vuelos_al_mes": 286
     },
     "TYL": {
       "ciudad": "Talara",
-      "minutos_a_lima": 110
+      "minutos_a_lima": 110,
+      "vuelos_al_mes": 90
     }
   },
   "archivos": {
     "costos.json": "9b31bc0c68a7bb972009433c9d8d90324a00f7a2de4074573c86988cb0af16e1",
     "eventos.json.gz": "6b7979beaa0a4af853894672107e37556bdf4a904b0d3855dd3562d66d272cd9",
-    "origenes.json.gz": "64aa28c8d97295bd255b0ade3e503a5d809c9e93d2798ed43283e9c721e25c4c",
-    "polos.json.gz": "39ef2aa3f972923715995bc1a753ad09bdc720d705c8b0c38b2c64d465ccb544",
-    "recursos.json.gz": "e2daf461a8c368c76aa550c97495d6d48125d518a15b359b7d5500b1c04c6694"
+    "origenes.json.gz": "e09f2b8d9f414a54f5a4b0defb99fd84f7e1adcbe93adbcdfa66ec9688669e09",
+    "polos.json.gz": "5274fdf31c52a9098bd4d976c50848a782114b1e962e99027043479683e5343a",
+    "recursos.json.gz": "a6137f2c64f769601f9812c8080329839c4dc1d31c8931eab92eb0e5dc365a9d"
   },
   "atribucion": [
     "Inventario Nacional de Recursos Turísticos y fichas oficiales · MINCETUR",
@@ -372,5 +394,5 @@
       "paradas": 0
     }
   },
-  "version_datos": "2026.11.2"
+  "version_datos": "2026.11.3"
 }

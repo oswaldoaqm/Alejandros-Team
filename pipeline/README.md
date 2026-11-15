@@ -9,19 +9,20 @@ python -m pipeline.maestro   # unos 30 segundos
 python -m pipeline.eventos   # después del maestro, unos 10 segundos
 python -m pipeline.tiempos   # después del maestro, unos 9 minutos; necesita el extracto de OpenStreetMap
 python -m pipeline.vuelos    # después de tiempos, unos 3 minutos: la misma red y la misma calibración
+python -m pipeline.terminales # después de tiempos, unos 6 minutos: el terminal de bus de cada punta y el taxi hasta él
 python -m pipeline.elevacion # después de tiempos y de descargar_elevacion.py, unos segundos
 python -m pipeline.clima     # después de elevacion, unos segundos
 python -m pipeline.noche     # después de tiempos y de descargar_overture.py, unos 10 segundos
 python -m pipeline.cielo     # después de noche y de las descargas del cielo, unos 3 minutos
 python -m pipeline.comida    # después de bases y de descargar_overture.py, unos 2 minutos
-python -m pipeline.artefactos --version 2026.11.2   # al final: lo que carga el motor
+python -m pipeline.artefactos --version 2026.11.3   # al final: lo que carga el motor
 python -m pipeline.fotos     # después de los artefactos y de descargar_fotos.py: unos segundos
 python -m pipeline.destinos  # después de los artefactos: unos segundos
 ```
 
 Antes de publicar una corrida nueva de `tiempos`, se compara con la anterior: `python -m pipeline.comparar_tiempos data/procesados <carpeta de la corrida nueva>` lista lo que empeora y si tiene explicación.
 
-La versión `2026.11.2` rehace los minutos de visita y los horarios del maestro con sus referencias, sin las fichas (`python -m pipeline.maestro --solo-referencias`): el horario corregido del Circuito Mágico del Agua, una hora de visita como mínimo en jerarquía 3 o 4 y los Uros, que valen como la Reserva Nacional del Titicaca ([decisión 0028](../docs/decisiones/0028-horarios-y-visitas-corregidos.md)). También marca los recursos y las bases del VRAEM y el cupo de entradas de Machu Picchu ([decisión 0029](../docs/decisiones/0029-avisos-de-seguridad-y-de-entradas.md)). La `2026.11.1` sumó el tráfico de las ciudades y la ida en bus ([más abajo](#qué-tan-bien-estima-los-tiempos-de-viaje), decisiones [0025](../docs/decisiones/0025-trafico-de-las-ciudades.md) y [0026](../docs/decisiones/0026-ida-en-bus.md)), y la red deja de usar el Ferrocarril Central; las bases de los polos son las de antes. La `2026.10.8` sumó la altura de las bases según un modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base ([más abajo](#la-altura-de-las-bases)). La `2026.10.7` sumó dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)), la `2026.10.6`, la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
+La versión `2026.11.3` cuenta cuántos vuelos hay al mes en cada ruta, suma a la ida en bus el taxi a los terminales y el embarque, y marca el Circuito Mágico del Agua como algo que se ve de noche ([decisión 0030](../docs/decisiones/0030-a-su-hora-y-desde-el-terminal.md)). La `2026.11.2` rehízo los minutos de visita y los horarios del maestro con sus referencias, sin las fichas (`python -m pipeline.maestro --solo-referencias`): el horario corregido del Circuito Mágico del Agua, una hora de visita como mínimo en jerarquía 3 o 4 y los Uros, que valen como la Reserva Nacional del Titicaca ([decisión 0028](../docs/decisiones/0028-horarios-y-visitas-corregidos.md)). También marca los recursos y las bases del VRAEM y el cupo de entradas de Machu Picchu ([decisión 0029](../docs/decisiones/0029-avisos-de-seguridad-y-de-entradas.md)). La `2026.11.1` sumó el tráfico de las ciudades y la ida en bus ([más abajo](#qué-tan-bien-estima-los-tiempos-de-viaje), decisiones [0025](../docs/decisiones/0025-trafico-de-las-ciudades.md) y [0026](../docs/decisiones/0026-ida-en-bus.md)), y la red deja de usar el Ferrocarril Central; las bases de los polos son las de antes. La `2026.10.8` sumó la altura de las bases según un modelo de elevación, y con ella el clima de 23 polos llevado a la altura de su base ([más abajo](#la-altura-de-las-bases)). La `2026.10.7` sumó dónde comer cerca de cada lugar y de cada base ([más abajo](#dónde-comer)), la `2026.10.6`, la noche ([más abajo](#de-noche)), y la `2026.10.5`, los vuelos ([más abajo](#los-vuelos)); las demás tablas son las de la `2026.10.4`, que usa el clima de los 222 grupos, que se terminó de descargar el 9 de octubre. La `2026.10.3` usó los 36 que había el 30 de septiembre, copiados aparte para que la descarga en curso no cambiara el resultado: `python -m pipeline.clima --crudo data/externos/clima/congelado_2026.10.1`.
 
 ## Módulos
 
@@ -169,7 +170,7 @@ El pasaje de cada ruta es una banda por tramo: de la tarifa más baja publicada 
 
 Lo que queda fuera:
 
-- **Los horarios y las frecuencias.** El motor supone que hay un vuelo cuando se llega al aeropuerto. Las rutas con pocos vuelos por semana, como Huaraz, Chachapoyas o Mazamari, cuentan como si salieran todos los días.
+- **Los horarios.** El motor supone que hay un vuelo cuando se llega al aeropuerto. Desde la `2026.11.3`, cada ruta lleva cuántos vuelos tiene al mes, de FlightConnections, y un viaje a una punta con menos de uno por día, como Mazamari, Andahuaylas o Chachapoyas, lo avisa ([decisión 0030](../docs/decisiones/0030-a-su-hora-y-desde-el-terminal.md)).
 - **Las rutas sin escala entre regiones**, como Arequipa–Cusco o Cusco–Puerto Maldonado: las fuentes que las nombran son de 2020 a 2022 y no se pudo confirmar que sigan.
 - **Las avionetas** y los aeródromos sin vuelos regulares, como el de Nasca.
 

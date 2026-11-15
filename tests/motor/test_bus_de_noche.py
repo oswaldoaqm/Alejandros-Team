@@ -85,12 +85,12 @@ def test_a_huaraz_en_bus_de_noche():
     assert (t.medios, t.dias_de_viaje, t.bus_de_noche.sale, t.bus_de_noche.sale_vuelta) == (
         ["carretera"],
         0,
-        "21:30",
-        "21:30",
+        "20:30",
+        "20:30",
     )
     assert [d.tipo for d in ruta.dias] == ["ida_y_visita", "visita", "visita_y_vuelta"]
     assert ruta.dias[0].fecha == date(2026, 7, 24)  # el día 1 es el día en que se llega
-    assert ruta.dias[0].nota.startswith("El bus de noche sale de Lima a las 21:30 de la noche anterior")
+    assert ruta.dias[0].nota.startswith("El bus de noche sale de Lima a las 20:30 de la noche anterior")
     assert ruta.dias[-1].nota.startswith("En la noche, el bus de vuelta")
     # Ningún día lleva las horas del bus; los km del bus van en el total.
     assert all(d.horas <= 8 for d in ruta.dias)

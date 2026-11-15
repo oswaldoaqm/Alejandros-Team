@@ -1,0 +1,112 @@
+﻿punta;id;terminal;osm;lat_terminal;lon_terminal;minutos;km
+origen;lima;Terminal Terrestre Yerbateros;way/405206668;-12.064502366666666;-76.99633242222221;21.1;4.4
+origen;arequipa;Terminal Terrestre de Arequipa;way/198666186;-16.42342381777778;-71.54448370222224;16.0;3.47
+origen;trujillo;Flores terminal;node/4246243787;-8.1038288;-79.0225289;6.6;0.76
+origen;chiclayo;Terminal Flores Hermanos;node/4269774796;-6.776197;-79.8434199;6.6;0.78
+origen;piura;Terminal Terrestre San Miguel de Aymara;way/1547303959;-5.201726266666666;-80.63100726666666;8.4;1.29
+origen;cusco;Terminal Terrestre de Cusco;way/319188892;-13.5344019625;-71.966090125;8.1;1.72
+origen;huancayo;Terminal Terrestre Los Andes;way/430214605;-12.0602240125;-75.2089787;6.8;0.89
+origen;iquitos;Terminal terrestre San Juan;node/4279099893;-3.799982;-73.3078152;24.4;9.93
+origen;pucallpa;Terminal terrestre de Pucallpa Km 6;node/13147932628;-8.4040564;-74.5787141;15.3;5.41
+origen;tacna;Terminal Terrestre Nacional Manuel Odría;way/407630616;-18.00524819285714;-70.25788342142856;8.7;1.39
+origen;ica;Terminal de Ica;way/441527176;-14.063890697435896;-75.73320140000001;7.2;0.93
+origen;cajamarca;Cajamarca Nuevo terminal terrestre;node/13818700501;-7.1664686;-78.501179;5.7;0.67
+origen;puno;Terminal Terrestre de Puno;way/245233060;-15.843653977272728;-70.01718738636363;6.4;0.92
+origen;ayacucho;Terminal San Juan Bautista;way/250191808;-13.170971325;-74.214664475;10.3;2.28
+origen;huaraz;Terminal Terrestre (Catac, Chiquian);node/4199677716;-9.5320758;-77.532149;5.4;0.96
+origen;huanuco;Terminal Etnasa;node/4143759633;-9.9244901;-76.233026;8.7;1.93
+origen;tarapoto;Terminal de buses Morales;node/4332805889;-6.4831241;-76.381483;10.9;3.24
+origen;chachapoyas;Terminal Terrestre Chachapoyas;node/4267162189;-6.2316967;-77.8626227;6.0;1.39
+origen;abancay;Terminal Terrestre de Abancay;way/1069352422;-13.639398666666668;-72.88524234;6.3;1.14
+origen;huancavelica;Terminal Pampa Amarilla;way/773664705;-12.784957042105262;-74.97181485789476;5.1;0.66
+origen;puerto-maldonado;Terminal Terrestre de Puerto Maldonado;way/513749831;-12.578560905555555;-69.20054773333332;10.3;2.9
+origen;moquegua;Terminal Terrestre Moquegua;node/4179533894;-17.1914198;-70.9479144;8.8;1.92
+origen;cerro-de-pasco;Terminal Terrestre Cerro de Pasco;way/421212464;-10.6864054;-76.25647201428572;9.0;3.06
+origen;tumbes;trasporte CIVA;node/4391357290;-3.5647108;-80.4563073;6.6;0.87
+base;0;San Juan;node/6305914130;-9.2971276;-76.0021039;4.5;0.26
+base;2;Cajamarca Nuevo terminal terrestre;node/13818700501;-7.1664686;-78.501179;10.2;2.55
+base;3;Terminal Terrestre de Challhuahuacho;node/7283368185;-14.1223951;-72.2554794;5.3;1.15
+base;4;Santuario;node/4472448189;-13.1658344;-72.5429781;33.1;9.03
+base;6;Oltursa;node/4425063289;-4.1063158;-81.0484876;5.1;0.58
+base;7;Terminal Terrestre Chachapoyas;node/4267162189;-6.2316967;-77.8626227;5.7;1.51
+base;8;Sandoval;node/5170086035;-9.5263721;-77.1571823;4.8;0.39
+base;9;Terminal Municipal - Paucartambo;way/611923045;-10.775597033333332;-75.81129829999999;4.8;0.44
+base;10;Terminal San Juan Bautista;way/250191808;-13.170971325;-74.214664475;9.9;2.19
+base;11;Terminal Terrestre de Puno;way/245233060;-15.843653977272728;-70.01718738636363;9.0;1.97
+base;12;Terminal Terrestre;node/4195329380;-14.0644741;-70.4352649;4.9;0.74
+base;14;Terminal Terrestre Sur Catac Huaraz;node/5752490129;-9.5321723;-77.5320578;4.9;0.6
+base;15;Terminal Etnasa;node/4143759633;-9.9244901;-76.233026;7.4;1.41
+base;18;Terminal Terrestre de Abancay;way/1069352422;-13.639398666666668;-72.88524234;6.5;1.17
+base;19;Tunesa Express;node/14177200876;-7.8143711;-78.0475722;4.6;0.35
+base;21;Terminal de buses Morales;node/4332805889;-6.4831241;-76.381483;10.7;3.16
+base;27;Terminal Terrestre de Nazca;way/421880893;-14.82820345;-74.94250635;5.2;0.74
+base;30;Terminal Terrestre Cerro de Pasco;way/421212464;-10.6864054;-76.25647201428572;4.9;0.54
+base;31;Estación Ricardo Palma;node/4437314087;-12.1189574;-77.0259296;7.8;1.2
+base;32;"Agencia ""Los Casmeños""";node/4683854894;-9.1361984;-78.5223718;8.8;2.36
+base;33;Terminal Terrestre Los Andes;way/430214605;-12.0602240125;-75.2089787;7.9;1.2
+base;34;Terminal Terrestre Moquegua;node/4179533894;-17.1914198;-70.9479144;8.1;1.82
+base;36;Terminal Terrestre UTRASIC;way/399052001;-13.526280125;-71.98538508749999;8.5;1.57
+base;37;Terminal Terrestre de Huarmey;way/481406226;-10.070558775;-78.1556145125;4.7;0.64
+base;38;Terminal Terrestre Ayaviri;way/298026736;-14.88464281875;-70.59630721875;5.4;1.12
+base;40;Terminal Terrestre de Arequipa;way/198666186;-16.42342381777778;-71.54448370222224;16.2;3.55
+base;41;Turismo Cajamarca;node/4453894192;-5.9431994;-77.9781909;5.1;0.66
+base;46;Terminal privado interprovincial de pasajeros Yunguyo;node/10554766519;-16.2477617;-69.0987871;5.9;1.26
+base;54;Terminal Pampa Amarilla;way/773664705;-12.784957042105262;-74.97181485789476;4.8;0.46
+base;60;Transportes Dora;node/12149265047;-5.1076573;-80.1703721;6.2;2.04
+base;61;Turismo Yurimaguas;node/5762119819;-5.9015209;-76.1113134;5.6;1.26
+base;62;Terminal Terrestre de Puerto Maldonado;way/513749831;-12.578560905555555;-69.20054773333332;10.7;3.11
+base;63;Terminal Terrestre Chavín de Huántar;way/542008422;-9.5853785;-77.17587276428571;4.8;0.6
+base;65;Turismo Expreso Sol Del Oriente;node/4696050091;-8.3832919;-74.5343714;5.4;0.68
+base;67;Terminal Terrestre de Cascas;way/241001858;-7.481075925;-78.820383475;4.6;0.51
+base;68;Terminal Terrestre Nacional Manuel Odría;way/407630616;-18.00524819285714;-70.25788342142856;8.8;1.43
+base;70;Terminal Terrestre de Huacho;node/6818475586;-11.1089712;-77.595477;7.8;1.9
+base;72;Transporte Julio César;node/4499357593;-9.2809921;-77.6464658;4.4;0.31
+base;74;Terminal zonal de Jaén;node/6818449985;-5.7133451;-78.8054062;5.6;0.67
+base;79;Terminal terrestre Pacucha;node/5962988985;-13.6542493;-73.3867321;5.3;0.7
+base;83;Terminal Terrestre de Urcos;way/1551140159;-13.6837867;-71.6249821;5.5;1.23
+base;85;Eppo;node/4463422395;-4.1793052;-81.1296388;4.3;0.16
+base;86;Terminal Terrestre de Moyobamba;way/309159810;-6.045180575000001;-76.970359;6.3;1.77
+base;87;Terminal terrestre Lampa;node/13807880501;-15.3687971;-70.3689022;5.7;0.84
+base;89;Main Bus Terminal;node/4736130526;-6.8704662;-78.1444677;5.2;0.88
+base;92;Empresa Manantial;node/4705108189;-6.6792886;-78.5208842;4.6;0.32
+base;96;Terminal Terrestre de Oxapampa;way/624094291;-10.577922733333333;-75.39837161666667;5.3;1.02
+base;99;Terminal Flores Hermanos;node/4269774796;-6.776197;-79.8434199;7.4;0.99
+base;103;Terminal Terrestre Ollantaytambo;node/9152394517;-13.2609162;-72.2625202;4.7;0.51
+base;106;Terminal Terrestre de Camaná;way/1084281509;-16.63325447777778;-72.69163624444444;7.3;2.64
+base;114;Terminal Terrestre de Tarma;node/4240812790;-11.4203472;-75.6934292;5.1;0.9
+base;121;Cruz del Sur;node/6502743687;-3.5680941;-80.4589583;4.9;0.4
+base;125;Terminal Terrestre San Miguel de Aymara;way/1547303959;-5.201726266666666;-80.63100726666666;7.8;1.13
+base;126;Turismo Cavassa;node/5135636827;-9.8285197;-76.8023081;4.3;0.17
+base;132;Transportes Vegas E.I.R.L.;node/6593462480;-4.6400607;-79.7145358;4.3;0.13
+base;133;TERMINAL TERRESTRE;way/1560063727;-5.140949019999999;-78.99618332000001;5.9;1.55
+base;134;Turismo Nazario;node/5748068122;-10.1526036;-77.1571664;4.3;0.18
+base;138;Terminal terrestre Sicuani;way/1134974529;-14.260876985714289;-71.23085114285716;7.9;2.46
+base;139;Flores terminal;node/4246243787;-8.1038288;-79.0225289;8.3;1.27
+base;140;Terminal Terrestre de Juli;way/776721003;-16.219603688235296;-69.47116424117647;6.5;1.96
+base;148;chuaca;node/4386295594;-14.2976662;-73.2405832;5.3;0.82
+base;150;Terminal Turistico de Iquitos;node/4255503891;-3.761048;-73.2523274;8.5;2.07
+base;151;Terminal terrestre Molina;way/312135799;-11.058833875;-75.33004919999999;5.8;0.73
+base;153;Terminal Terrestre Huancabamba;node/9084544789;-5.2365915;-79.4526459;4.9;0.6
+base;160;Transporte Huacrachuco;node/5200660425;-8.6066059;-77.1485107;4.8;0.5
+base;161;Estación;node/4681045589;-7.3970976;-79.5672036;5.4;1.01
+base;166;Terminal Emp.Transportes Ángel Divino;node/4229175199;-6.6267367;-78.9457113;4.6;0.32
+base;167;Terminal;node/14120983503;-14.3850752;-73.960281;4.5;0.49
+base;169;Terminal Terrestre Qhapaq Ñan - Caraz;way/454128376;-9.051022016666668;-77.80670713611113;5.1;0.64
+base;171;Terminal Terrestre de Huanta;way/1550210407;-12.945218564705884;-74.24542092352941;5.7;1.03
+base;172;Terminal de Jauja;way/374777057;-11.78103788;-75.49633103000001;5.7;1.03
+base;173;Terminal Terrestre Urubamba;node/11126522588;-13.3049484;-72.1211241;5.8;1.23
+base;177;Terminal Terrestre de Mollendo;way/462119445;-17.012996445454544;-72.0223233909091;8.3;2.92
+base;178;Terminal Hnos Flores;way/1523095578;-13.4160212;-76.13951275000001;5.9;0.94
+base;180;Cruz del Sur;node/872650759;-13.829537;-76.2453149;5.5;0.89
+base;184;Terminal Tulumayo;node/4350100604;-11.9142592;-75.3148402;5.0;0.66
+base;187;Terminal Terrestre;way/135703287;-17.661562682352937;-71.3306262235294;12.4;3.61
+base;188;Terminal de buses;node/5693010121;-8.5573214;-77.6279654;4.7;0.57
+base;199;Terminal Terrestre de Mala;way/406526942;-12.65330805;-76.63986336666667;5.9;1.35
+base;205;Gran Terminal Acho;node/9342143271;-12.0408962;-77.0200161;9.8;1.6
+base;214;Empresa de transporte y turismo Santa Inés;node/11051643995;-11.5642415;-77.2693955;4.9;0.55
+base;218;Terminal Lima;way/396642472;-4.9116333;-80.69696627500001;11.5;3.18
+base;233;Chicche;node/4813654629;-12.2961316;-75.2976829;11.8;3.42
+base;235;Terminal Terrestre de Quillabamba;way/1077566456;-12.86116566;-72.68995975333334;6.7;1.38
+base;238;Terminal Terrestre Máximo Luna Jiménez;way/1556475589;-10.810549220000002;-76.87584272000001;5.2;0.71
+base;240;Terminal del Tepsa;node/4476066990;-14.0624689;-75.732128;6.4;0.71
+base;265;Terminal Terrestre de Cotahuasi;way/421003546;-15.208461416666667;-72.89472383333333;6.1;1.0
