@@ -222,26 +222,22 @@ def test_un_recurso_que_se_visita_por_otro_lleva_la_jerarquia_de_ese():
     assert artefactos.vale_como() == {"960": "412"}
 
 
+def _maestro(**columnas) -> pd.DataFrame:
+    """Un maestro con las columnas que ``recursos`` lee: las que no se dan, vacías."""
+    vacias = ("categoria", "tipo", "subtipo", "jerarquia", "altitud_m", "url_ficha", "descripcion_corta", "foto_url")
+    vacias += ("tarifa_soles", "tarifa_regla", "visita_min", "caminata_min", "abre", "cierra", "dias")
+    fijas = {"polo": 1, "es_parada": True, "lat": -12.6, "lon": -73.8, "ingreso": "libre", "boleto_combinado": False}
+    return pd.DataFrame({**dict.fromkeys(vacias), **fijas, "intereses": "", **columnas})
+
+
 def test_un_recurso_y_una_base_del_vraem_llevan_su_zona():
     """El distrito decide, con el nombre que traiga la ficha; la base, si es la capital (decisión 0029)."""
-    maestro = pd.DataFrame(
-        {
-            "codigo": [1, 2, 3, 4],
-            "nombre": ["Playa de Kimbiri", "Catarata", "Plaza de Huanta", "Playa"],
-            "region": ["Cusco", "Cusco", "Ayacucho", "Lima"],
-            "provincia": ["La Convencion", "La Convención", "Huanta", "Lima"],
-            "distrito": ["Quimbiri", "Union Asháninka", "Huanta", "Santa Rosa"],
-            "polo": 1,
-            "es_parada": True,
-            "lat": -12.6,
-            "lon": -73.8,
-            "ingreso": "libre",
-            "boleto_combinado": False,
-            "intereses": "",
-            **dict.fromkeys(("categoria", "tipo", "subtipo", "jerarquia", "altitud_m", "url_ficha"), None),
-            **dict.fromkeys(("descripcion_corta", "foto_url", "tarifa_soles", "tarifa_regla"), None),
-            **dict.fromkeys(("visita_min", "caminata_min", "abre", "cierra", "dias"), None),
-        }
+    maestro = _maestro(
+        codigo=[1, 2, 3, 4],
+        nombre=["Playa de Kimbiri", "Catarata", "Plaza de Huanta", "Playa"],
+        region=["Cusco", "Cusco", "Ayacucho", "Lima"],
+        provincia=["La Convencion", "La Convención", "Huanta", "Lima"],
+        distrito=["Quimbiri", "Union Asháninka", "Huanta", "Santa Rosa"],
     )
     # Huanta está en el ámbito de influencia, no en el de intervención directa,
     # y el Santa Rosa de Lima no es el de La Mar.
@@ -251,6 +247,22 @@ def test_un_recurso_y_una_base_del_vraem_llevan_su_zona():
     assert artefactos.zona_de_la_base(-12.807733, -73.603867, tabla) == "vraem"  # Chirumpiari, capital de Cielo Punco
     assert artefactos.zona_de_la_base(-12.939888, -74.247953, tabla) is None  # Huanta
     assert artefactos.zona_de_la_base(-12.62, -73.75, tabla) is None  # en el valle, pero no en una capital
+
+
+def test_machu_picchu_lleva_el_cupo_de_sus_entradas():
+    """Cuántas entran al día, también en temporada alta, y dónde se compran (decisión 0029)."""
+    cupos = artefactos.entradas_con_cupo()
+    assert cupos["917"] == {
+        "nombre": "Machu Picchu",
+        "por_dia": 4500,
+        "por_dia_alta": 5600,
+        "en_linea": "tuboleto.cultura.pe",
+        "en_persona": "Machu Picchu Pueblo",
+        "en_persona_por_dia": 1000,
+    }
+    maestro = _maestro(codigo=[917, 918], nombre=["Machu Picchu", "Mariposario"], region="Cusco", provincia="Urubamba")
+    maestro = maestro.assign(distrito="Machupicchu")
+    assert [r["cupo"] for r in artefactos.recursos(maestro, por_acceso={})] == [cupos["917"], None]
 
 
 def test_las_zonas_de_seguridad_son_los_37_distritos_del_vraem_con_su_fuente():
