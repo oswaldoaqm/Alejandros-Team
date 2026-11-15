@@ -199,3 +199,27 @@ def test_avisos_de_cupo_vraem_y_dias_de_cierre():
         Consulta(origen="lima", fecha_inicio=date(2027, 7, 20), dias=4, destino=139, intereses=["historia"]), datos
     ).rutas
     assert not any("Sin fecha exacta" in a.mensaje for a in ruta_con_fecha.avisos)
+
+
+def test_la_parada_trae_su_horario():
+    """Desde 1.8. Un horario que cierra a la hora en que abre está mal escrito y viaja en null."""
+    base = {
+        "codigo": "1237",
+        "nombre": "Ciudad Sagrada de Caral",
+        "categoria": "Manifestaciones culturales",
+        "tipo": "Sitios Arqueológicos",
+        "subtipo": "Ciudadelas",
+        "jerarquia": 4,
+        "lat": -10.89,
+        "lon": -77.52,
+        "altitud_m": 350,
+        "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=1237",
+        "descripcion": None,
+        "ingreso": "pagado",
+        "tarifa_soles": 11.0,
+    }
+    caral = viaje.recurso(base | {"abre": "10:00", "cierra": "16:00", "dias": ["mar", "mie", "jue"]})
+    assert (caral.abre, caral.cierra, caral.dias) == ("10:00", "16:00", ["mar", "mie", "jue"])
+    mal = viaje.recurso(base | {"abre": "09:00", "cierra": "09:00", "dias": None})
+    assert (mal.abre, mal.cierra, mal.dias) == (None, None, None)
+    assert viaje.recurso(base).abre is None

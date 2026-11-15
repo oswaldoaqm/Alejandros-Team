@@ -8,7 +8,7 @@ Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el mod
 - **Dos avisos nuevos.** `seguridad`, cuando una parada o la base están en una zona con alerta oficial de viaje, y `entradas`, cuando una parada vende un número fijo de entradas por día;
 - **El bus de noche, con un tope más bajo.** Ida y vuelta no pueden llevarse más del 30 % de las horas del viaje; hasta la 1.7, el 40 % ([decisión 0027](./decisiones/0027-tope-del-bus-de-noche.md)). Cambia la propiedad 13.
 
-No quita nada de la 1.7.
+No quita nada de la 1.7. Suma una propiedad, la 16: cada parada se visita a su hora.
 
 La 1.7, del 20 de octubre, hizo tranquilo el primer día en la altura ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)), como ya lo prometía el aviso de aclimatación:
 
@@ -151,10 +151,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 13. El bus de noche va cuando debe: solo por carretera, de 7 a 16 horas, en un viaje de dos días o más, y si ida y vuelta no se llevan el 30 % de las horas del viaje, con sus noches (el 40 % hasta la 1.7); y lo que cumple todo eso va en él. Sale a las 19:00 o después, ningún día lleva horas de camino, el día 1 es de ida y el último de vuelta, y el día 1 se visita desde una hora después de llegar (desde 1.6).
 14. El primer día en la altura es tranquilo. Si se duerme a 2 500 m o más y se llega desde 1 000 m o más abajo, un día y solo uno trae `tranquilo`, y es el primero en la base: sus visitas y traslados no pasan de 4 horas, ninguna parada sube más de 500 m sobre la base, ninguna tiene una caminata de acceso de más de 30 minutos ni una visita de más de 2 horas, y después de un bus de noche se sale desde las 9:00; el aviso de aclimatación dice qué día es. Si no, ningún día lo trae. Y no hay noche de descanso donde la altura no pesa (desde 1.7).
 15. Por un lugar menor no se va lejos. Una parada de jerarquía 1 o 2, o sin jerarquía, queda a 90 minutos o menos de la parada anterior, o de la base si es la primera del día, y de la que sigue. Si en la zona no queda nada cerca que valga el camino, el día queda libre y la respuesta lo avisa ([decisión 0024](./decisiones/0024-lugares-menores-cerca.md)).
+16. Cada parada se visita a su hora (desde 1.8). Si trae horario, la visita empieza cuando el lugar abre, o después, y termina antes de que cierre; y con `fecha_inicio`, ninguna cae en un día en que el lugar cierra. Lo que la ficha no dice no se da por sabido: sin horario, el motor no restringe nada.
 
 Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
-Con eventos publicados valen las quince, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
+Con eventos publicados valen las dieciséis, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 

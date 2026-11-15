@@ -19,6 +19,7 @@ import pytest
 from hypothesis import HealthCheck, event, given, settings
 from hypothesis import strategies as st
 
+from dreemgo.calendario import DIAS
 from dreemgo.contrato import (
     ALTITUD_MAX_M,
     DIAS_MAX,
@@ -176,6 +177,19 @@ def _el_dia_tranquilo(consulta: Consulta, ruta, datos) -> None:
         assert d.numero == 1 and sale >= 9 * 60
 
 
+def _a_su_hora(consulta: Consulta, ruta) -> None:
+    """16. Cada parada se visita a su hora (desde 1.8): si trae horario, la visita empieza cuando abre o
+    después y termina antes de que cierre; y con fecha, el día no es uno en que cierra."""
+    for d in ruta.dias:
+        for p in d.paradas:
+            if p.recurso.abre is not None and p.recurso.cierra is not None:
+                inicio = max(_hhmm(p.llegada), _hhmm(p.recurso.abre))
+                assert inicio + p.minutos_visita <= _hhmm(p.recurso.cierra)
+                event("alguna parada con horario")
+            if d.fecha is not None and p.recurso.dias is not None:
+                assert DIAS[d.fecha.weekday()] in p.recurso.dias
+
+
 def _los_lugares_menores_cerca(ruta) -> None:
     """15. Por un lugar menor no se va lejos (decisión 0024): una parada de jerarquía 1 o 2, o sin jerarquía, queda
     a TRAMO_MENOR_MAX minutos o menos de la anterior, o de la base si es la primera, y de la que sigue."""
@@ -242,6 +256,7 @@ def test_las_propiedades(consulta):
         _el_bus_de_noche(consulta, ruta)
         _el_dia_tranquilo(consulta, ruta, datos)
         _los_lugares_menores_cerca(ruta)
+        _a_su_hora(consulta, ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

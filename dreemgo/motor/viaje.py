@@ -493,9 +493,11 @@ def eventos_del_polo(polo: PoloDatos, desde: date, hasta: date, datos: Datos) ->
 
 
 def recurso(r: dict) -> Recurso:
+    """La parada como la ve el viajero, con su horario (desde 1.8). Un horario que cierra a la hora en que abre,
+    o antes, está mal escrito en la ficha, y el motor no lo usa: viaja en null, como lo que no se sabe."""
     abre, cierra = r.get("abre"), r.get("cierra")
-    if not (abre and cierra and abre < cierra):
-        abre, cierra = None, None
+    if abre and cierra and cierra <= abre:
+        abre = cierra = None
     return Recurso(
         codigo=r["codigo"],
         nombre=r["nombre"],
