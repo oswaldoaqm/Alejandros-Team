@@ -317,6 +317,13 @@ describe("un viaje abierto", () => {
     expect(razones).toContain("14 de sus 24 paradas son de historia y arqueología o naturaleza.");
   });
 
+  it("la letra chica dice que entre un lugar y otro se va en auto o taxi", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    const letraChica = screen.getByRole("heading", { name: "Sobre estos datos" }).parentElement;
+    expect(plano(letraChica?.textContent)).toContain("entre un lugar y otro del día, en auto o taxi");
+  });
+
   it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {
     await abrir(`/?${CONSULTA}#/ruta/1`);
     await viajeAbierto();

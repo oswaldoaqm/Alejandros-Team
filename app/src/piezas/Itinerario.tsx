@@ -347,7 +347,7 @@ export function HojaDeLugar({ lugar, alCerrar }: { lugar: LugarAbierto | null; a
             <div>
               <dt>Desde {lugar.desde}</dt>
               <dd>
-                {duracion(lugar.parada.minutos_traslado)}, {km(lugar.parada.km_desde_anterior)}
+                {duracion(lugar.parada.minutos_traslado)} en auto o taxi, {km(lugar.parada.km_desde_anterior)}
               </dd>
             </div>
           </>

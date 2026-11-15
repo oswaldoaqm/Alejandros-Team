@@ -430,7 +430,7 @@ describe("la hoja de un lugar", () => {
     expect(filas).toEqual([
       "Llegas: 13:11, día 1",
       "Visita: 25 min",
-      "Desde Huancayo: 8 min, 0,6 km",
+      "Desde Huancayo: 8 min en auto o taxi, 0,6 km",
       "Altura: 3 250 m",
       "Entrada: Libre",
       "Horario: De 9:00 a 17:00; cierra los lunes",
