@@ -2,13 +2,15 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.8** · 10 de noviembre de 2026. La 1.8 suma lo que la [auditoría](./AUDITORIA.md) pidió mostrar en cada viaje:
+**Versión 1.9** · 15 de noviembre de 2026. La 1.9 suma un tipo de noche, `espectaculo`, para un lugar que se ve de noche, como el Circuito Mágico del Agua, con sus funciones en `noche.funciones` ([decisión 0030](./decisiones/0030-a-su-hora-y-desde-el-terminal.md)). Ese lugar ya no es parada del día: va en una noche que se duerme en la base, con fecha en una noche con función. No quita nada de la 1.8. Suma la propiedad 19.
+
+La 1.8, del 10 de noviembre, sumó lo que la [auditoría](./AUDITORIA.md) pidió mostrar en cada viaje:
 
 - **El horario de cada parada.** `recurso.abre`, `recurso.cierra` y `recurso.dias`: lo que dice la ficha o, si la ficha está mal, el horario corregido con su fuente. Vienen en `null` cuando no se sabe, y un `dias` en `null` no quiere decir que abra todos los días. Sin `fecha_inicio`, si alguna parada no abre todos los días, lo dice un aviso de `dias`;
 - **Dos avisos nuevos.** `seguridad`, cuando una parada o la base están en una zona con alerta oficial de viaje, y `entradas`, cuando una parada vende un número fijo de entradas por día;
 - **El bus de noche, con un tope más bajo.** Ida y vuelta no pueden llevarse más del 30 % de las horas del viaje; hasta la 1.7, el 40 % ([decisión 0027](./decisiones/0027-tope-del-bus-de-noche.md)). Cambia la propiedad 13.
 
-No quita nada de la 1.7. Suma tres propiedades: la 16, cada parada se visita a su hora; la 17, un viaje a una zona con alerta oficial de viaje lo avisa primero, y la 18, cada parada con cupo de entradas lo avisa.
+No quitó nada de la 1.7. Sumó tres propiedades: la 16, cada parada se visita a su hora; la 17, un viaje a una zona con alerta oficial de viaje lo avisa primero, y la 18, cada parada con cupo de entradas lo avisa.
 
 La 1.7, del 20 de octubre, hizo tranquilo el primer día en la altura ([decisión 0020](./decisiones/0020-primer-dia-tranquilo.md)), como ya lo prometía el aviso de aclimatación:
 
@@ -29,11 +31,12 @@ La 1.6, del 19 de octubre, hizo creíble el plan ([decisión 0019](./decisiones/
 
 No quitó nada de la 1.5. Sumó dos propiedades: la 12, del almuerzo, y la 13, del bus de noche.
 
-La 1.5, del 18 de octubre, sumó la noche ([decisión 0018](./decisiones/0018-planes-de-noche.md)). Hay un interés nuevo, `vida_nocturna`, que no elige paradas: elige dónde salir. Cada día que se duerme en la zona puede traer `noche`, de uno de tres tipos:
+La 1.5, del 18 de octubre, sumó la noche ([decisión 0018](./decisiones/0018-planes-de-noche.md)). Hay un interés nuevo, `vida_nocturna`, que no elige paradas: elige dónde salir. Cada día que se duerme en la zona puede traer `noche`, de uno de tres tipos (cuatro desde la 1.9):
 
 - `salir`: hasta tres lugares a pie de la base;
 - `estrellas`: desde dónde, cuántas noches salen despejadas ese mes y, con fecha, la luna de esa noche;
 - `descanso`: la primera noche en la altura.
+- `espectaculo` (desde 1.9): un lugar que se ve de noche, con las horas de sus funciones.
 
 `/v1/opciones` dice qué intereses son de noche (`de_noche`), y `/v1/polos/{id}` trae la noche de la zona (`noche`). No quitó nada de la 1.4. Nada de la noche cambia los días: las paradas, sus horas, el traslado y el costo son los mismos con plan de noche o sin él (propiedad 11, §3).
 
@@ -154,10 +157,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 16. Cada parada se visita a su hora (desde 1.8). Si trae horario, la visita empieza cuando el lugar abre, o después, y termina antes de que cierre; y con `fecha_inicio`, ninguna cae en un día en que el lugar cierra. Lo que la ficha no dice no se da por sabido: sin horario, el motor no restringe nada.
 17. Un viaje a una zona con alerta oficial de viaje lo avisa primero (desde 1.8). Si se duerme en ella, o alguna parada lo está, el primer aviso es de `seguridad`, con nivel `advertencia`, y dice dónde; si no, no hay aviso de `seguridad`. En una excursión de un día no se duerme en la base, así que la base no cuenta. Hoy la zona es el VRAEM, con los 37 distritos del D.S. 133-2022-PCM ([decisión 0029](./decisiones/0029-avisos-de-seguridad-y-de-entradas.md)).
 18. Cada parada que vende un número fijo de entradas por día trae un aviso de `entradas`, con nivel `info`, que dice cuántas personas entran al día y dónde se compran; ninguna otra parada lo trae (desde 1.8). Hoy, Machu Picchu.
+19. Un lugar que se ve de noche no es parada del día (desde 1.9). Va, a lo más una vez, en la noche de un día que se duerme en la base, con `tipo` `espectaculo` y sus `funciones`; con `fecha_inicio`, en un día en que hay función. Hoy, el Circuito Mágico del Agua.
 
 Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
-Con eventos publicados valen las dieciocho, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
+Con eventos publicados valen las diecinueve, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 

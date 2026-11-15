@@ -984,7 +984,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.8",
+            "default": "1.9",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1324,6 +1324,15 @@
             ],
             "description": "Con estrellas."
           },
+          "funciones": {
+            "description": "Con espectaculo (desde 1.9): a qué horas empieza, HH:MM.",
+            "items": {
+              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+              "type": "string"
+            },
+            "title": "Funciones",
+            "type": "array"
+          },
           "lugares": {
             "description": "Con salir: los que se proponen esa noche.",
             "items": {
@@ -1337,11 +1346,12 @@
             "type": "string"
           },
           "tipo": {
-            "description": "salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna.",
+            "description": "salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna. espectaculo (desde 1.9): un lugar que se ve de noche, como el Circuito Mágico del Agua, que no es parada del día.",
             "enum": [
               "salir",
               "estrellas",
-              "descanso"
+              "descanso",
+              "espectaculo"
             ],
             "title": "Tipo",
             "type": "string"
@@ -1466,7 +1476,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.8",
+            "default": "1.9",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1634,7 +1644,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.8",
+            "default": "1.9",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1932,7 +1942,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.8",
+            "default": "1.9",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2032,7 +2042,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.8",
+            "default": "1.9",
             "title": "Version Contrato",
             "type": "string"
           },

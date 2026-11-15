@@ -87,6 +87,22 @@ describe("la noche de un día", () => {
     expect(texto).toContain("Vía Láctea");
     expect(within(noche).queryByRole("list")).toBeNull();
   });
+
+  it("un espectáculo: a qué horas empieza y dónde queda, sin cielo ni bares", () => {
+    const espectaculo: Noche = {
+      tipo: "espectaculo",
+      titulo: "Circuito Mágico del Agua de noche",
+      nota: "Se ve de noche: las funciones empiezan a las 19:15, las 20:15 y las 21:30, de miércoles a domingo. Queda a 20 min de donde duermes, en auto o taxi.",
+      lugares: [],
+      cielo: null,
+      funciones: ["19:15", "20:15", "21:30"],
+    };
+    const { container } = render(<NocheDelDia noche={espectaculo} />);
+    const noche = screen.getByRole("region", { name: "De noche: Circuito Mágico del Agua de noche" });
+    expect(plano(noche.textContent)).toContain("las 19:15, las 20:15 y las 21:30");
+    expect(within(noche).queryByRole("list")).toBeNull();
+    expect(container.querySelector(".noche--espectaculo")).not.toBeNull();
+  });
 });
 
 describe("la luna", () => {

@@ -513,7 +513,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.8
+             * @default 1.9
              */
             version_contrato: string;
             /** Version Datos */
@@ -669,6 +669,11 @@ export interface components {
             /** @description Con estrellas. */
             cielo?: components["schemas"]["Cielo"] | null;
             /**
+             * Funciones
+             * @description Con espectaculo (desde 1.9): a qué horas empieza, HH:MM.
+             */
+            funciones?: string[];
+            /**
              * Lugares
              * @description Con salir: los que se proponen esa noche.
              */
@@ -677,10 +682,10 @@ export interface components {
             nota: string;
             /**
              * Tipo
-             * @description salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna.
+             * @description salir: bares, pubs, discotecas y peñas cerca, con vida_nocturna. estrellas: con naturaleza o sin intereses, si se ven. descanso: la primera noche en la altura, con vida_nocturna. espectaculo (desde 1.9): un lugar que se ve de noche, como el Circuito Mágico del Agua, que no es parada del día.
              * @enum {string}
              */
-            tipo: "salir" | "estrellas" | "descanso";
+            tipo: "salir" | "estrellas" | "descanso" | "espectaculo";
             /** Titulo */
             titulo: string;
         };
@@ -739,7 +744,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.8
+             * @default 1.9
              */
             version_contrato: string;
             /** Version Datos */
@@ -824,7 +829,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.8
+             * @default 1.9
              */
             version_contrato: string;
             /** Version Datos */
@@ -929,7 +934,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.8
+             * @default 1.9
              */
             version_contrato: string;
             /**
@@ -971,7 +976,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.8
+             * @default 1.9
              */
             version_contrato: string;
             /**
