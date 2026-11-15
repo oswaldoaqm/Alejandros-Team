@@ -281,7 +281,7 @@ python pipeline/adquisicion/descargar_metar.py         # METAR de los aeropuerto
 python -m pipeline.noche       # dónde salir cerca de cada base
 python -m pipeline.cielo       # el cielo de cada base, unos 3 minutos
 python -m pipeline.comida      # dónde comer cerca de cada lugar y de cada base, unos 2 minutos
-python -m pipeline.artefactos --version 2026.11.3   # dreemgo/datos/
+python -m pipeline.artefactos --version 2026.11.4   # dreemgo/datos/
 python pipeline/adquisicion/descargar_fotos.py         # qué fotos hay en Wikidata y Wikimedia Commons, unos 15 minutos
 python -m pipeline.fotos       # app/public/fotos.json: qué foto va con cada lugar
 python -m pipeline.destinos    # app/public/destinos.json: las zonas que busca «A dónde»

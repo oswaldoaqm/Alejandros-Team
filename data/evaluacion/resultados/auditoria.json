@@ -1,55 +1,56 @@
 {
-  "version_datos": "2026.11.3",
+  "version_datos": "2026.11.4",
   "con": "el motor",
   "consultas": 1152,
   "viajes": 3432,
   "tramos_en_ciudad": {
     "metropoli": {
-      "tramos": 6702,
+      "tramos": 6754,
       "km_mediana": 3.5,
-      "minutos_mediana": 16.0,
-      "kmh_mediana": 13.5,
+      "minutos_mediana": 17.0,
+      "kmh_mediana": 11.7,
       "tomtom_kmh": 16.0,
-      "mas_rapidos_que_tomtom": 0.233
+      "mas_rapidos_que_tomtom": 0.219
     },
     "grande": {
-      "tramos": 7161,
-      "km_mediana": 3.0,
-      "minutos_mediana": 14,
-      "kmh_mediana": 12.9,
+      "tramos": 7472,
+      "km_mediana": 3.9,
+      "minutos_mediana": 17.0,
+      "kmh_mediana": 13.3,
       "tomtom_kmh": 17.1,
-      "mas_rapidos_que_tomtom": 0.132
+      "mas_rapidos_que_tomtom": 0.142
     }
   },
   "dias": {
     "de_visita": 10574,
-    "con_7_5_horas_o_mas": 0.309,
-    "con_7_horas_o_mas": 0.535,
-    "con_6_paradas": 0.605,
+    "con_7_5_horas_o_mas": 0.307,
+    "con_7_horas_o_mas": 0.534,
+    "con_6_paradas": 0.603,
     "paradas_por_dia": {
-      "1": 63,
-      "2": 650,
-      "3": 726,
-      "4": 834,
-      "5": 1908,
-      "6": 6393
+      "1": 67,
+      "2": 634,
+      "3": 732,
+      "4": 832,
+      "5": 1928,
+      "6": 6381
     },
     "en_lima": {
       "dias": 1510,
       "paradas_mediana": 6.0,
-      "con_6_paradas": 0.782,
+      "con_6_paradas": 0.781,
       "paradas_por_dia": {
-        "2": 16,
-        "3": 68,
-        "5": 245,
-        "6": 1181
+        "1": 4,
+        "3": 77,
+        "4": 3,
+        "5": 247,
+        "6": 1179
       }
     }
   },
   "orden": {
-    "dias": 9861,
-    "el_mejor": 0.59,
-    "a_mas_de_5_por_ciento": 0.02
+    "dias": 9873,
+    "el_mejor": 0.537,
+    "a_mas_de_5_por_ciento": 0.029
   },
   "visitas_por_jerarquia": {
     "4": {
@@ -59,8 +60,8 @@
       "las_mas_frecuentes_de_30_o_menos": []
     },
     "3": {
-      "paradas": 10729,
-      "minutos_mediana": 80,
+      "paradas": 10736,
+      "minutos_mediana": 80.0,
       "de_30_o_menos": 0.0,
       "las_mas_frecuentes_de_30_o_menos": []
     }
@@ -88,8 +89,8 @@
   },
   "avisos": {
     "acceso": 0.644,
-    "aclimatacion": 0.388,
-    "altitud": 0.346,
+    "aclimatacion": 0.386,
+    "altitud": 0.344,
     "dias": 0.937,
     "entradas": 0.003,
     "estacionalidad": 0.109,
@@ -116,10 +117,10 @@
       ],
       [
         "Arequipa",
-        0.061
+        0.063
       ]
     ],
     "las_10_mas_propuestas": 0.746,
-    "con_base_en_ciudad_grande_o_lima": 0.386
+    "con_base_en_ciudad_grande_o_lima": 0.388
   }
 }

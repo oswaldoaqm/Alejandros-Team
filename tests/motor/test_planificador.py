@@ -149,3 +149,21 @@ def test_ni_se_sigue_lejos_desde_un_lugar_menor():
     # Si los dos valen lo mismo y ninguno es menor, entran los dos: 10 + 60 + 100 + 60 + 110.
     (r,) = planificar([Candidata(0, valor=2.0, visita=60), otro], [Jornada(480, OCHO)], t)
     assert sorted(v.candidata.i for v in r.visitas) == [0, 1] and r.minutos == 340
+
+
+def test_a_la_hora_punta_cada_tramo_tarda_mas():
+    """Con el ritmo de la ciudad (decisión 0031), un tramo que sale a las 8:00 en Lima tarda 18 % más, y entre dos
+    horas medidas el factor va en línea recta."""
+    ritmo = [(6 * 60, 0.65), (8 * 60, 1.175), (10 * 60, 1.016), (18 * 60, 1.366), (20 * 60, 0.98)]
+    t = Tiempos(np.array([20.0]), np.array([[0.0]]), ritmo)
+    assert t.factor(8 * 60) == 1.175 and t.a_la_hora(-1, 0, 8 * 60) == 20 * 1.175
+    assert abs(t.factor(9 * 60) - (1.175 + 1.016) / 2) < 1e-9
+    assert Tiempos(np.array([20.0]), np.array([[0.0]])).factor(8 * 60) == 1.0
+
+
+def test_el_horario_cuenta_cada_tramo_a_la_hora_en_que_sale():
+    c = [Candidata(0, valor=1.0, visita=60)]
+    sin_ritmo = horario(c, Jornada(8 * 60, OCHO), Tiempos(np.array([30.0]), np.array([[0.0]])))
+    con_ritmo = horario(c, Jornada(8 * 60, OCHO), Tiempos(np.array([30.0]), np.array([[0.0]]), [(0, 2.0), (1439, 2.0)]))
+    assert sin_ritmo.visitas[0].llegada == 8 * 60 + 30 and con_ritmo.visitas[0].llegada == 8 * 60 + 60
+    assert con_ritmo.regreso == 2 * sin_ritmo.regreso

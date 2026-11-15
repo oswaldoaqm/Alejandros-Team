@@ -310,11 +310,11 @@ describe("un viaje abierto", () => {
       .getAllByRole("listitem")
       .map((r) => plano(r.textContent));
     expect(razones[0]).toBe(
-      "3 imperdibles: Complejo Arqueológico Chan Chan, Centro Histórico de Trujillo y Huacas del Sol y la Luna.",
+      "3 imperdibles: Complejo Arqueológico Chan Chan, Huacas del Sol y la Luna y Centro Histórico de Trujillo.",
     );
     // El clima ya está en los datos de arriba, y la jerarquía, en los imperdibles.
     expect(razones.some((r) => /temporada seca|jerarquía/.test(r))).toBe(false);
-    expect(razones).toContain("14 de sus 24 paradas son de historia y arqueología o naturaleza.");
+    expect(razones).toContain("15 de sus 22 paradas son de historia y arqueología o naturaleza.");
   });
 
   it("la letra chica dice cómo se cuentan el camino y la visita", async () => {
@@ -325,6 +325,9 @@ describe("un viaje abierto", () => {
     // La visita no sale de la ficha: es un tiempo típico por clase de lugar (pipeline/referencia/duracion_visita.csv).
     expect(plano(letraChica?.textContent)).toContain("la visita, con lo que suele tomar cada clase de lugar");
     expect(plano(letraChica?.textContent)).not.toContain("la visita, según la ficha");
+    // Desde los datos 2026.11.4, el tráfico de la hora en tres ciudades; las colas no tienen fuente (decisión 0031).
+    expect(plano(letraChica?.textContent)).toContain("el camino cuenta el tráfico de la hora");
+    expect(plano(letraChica?.textContent)).toContain("No cuenta colas ni esperas");
   });
 
   it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {

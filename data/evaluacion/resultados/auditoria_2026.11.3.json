@@ -1,0 +1,125 @@
+{
+  "version_datos": "2026.11.3",
+  "con": "el motor",
+  "consultas": 1152,
+  "viajes": 3432,
+  "tramos_en_ciudad": {
+    "metropoli": {
+      "tramos": 6702,
+      "km_mediana": 3.5,
+      "minutos_mediana": 16.0,
+      "kmh_mediana": 13.5,
+      "tomtom_kmh": 16.0,
+      "mas_rapidos_que_tomtom": 0.233
+    },
+    "grande": {
+      "tramos": 7161,
+      "km_mediana": 3.0,
+      "minutos_mediana": 14,
+      "kmh_mediana": 12.9,
+      "tomtom_kmh": 17.1,
+      "mas_rapidos_que_tomtom": 0.132
+    }
+  },
+  "dias": {
+    "de_visita": 10574,
+    "con_7_5_horas_o_mas": 0.309,
+    "con_7_horas_o_mas": 0.535,
+    "con_6_paradas": 0.605,
+    "paradas_por_dia": {
+      "1": 63,
+      "2": 650,
+      "3": 726,
+      "4": 834,
+      "5": 1908,
+      "6": 6393
+    },
+    "en_lima": {
+      "dias": 1510,
+      "paradas_mediana": 6.0,
+      "con_6_paradas": 0.782,
+      "paradas_por_dia": {
+        "2": 16,
+        "3": 68,
+        "5": 245,
+        "6": 1181
+      }
+    }
+  },
+  "orden": {
+    "dias": 9861,
+    "el_mejor": 0.59,
+    "a_mas_de_5_por_ciento": 0.02
+  },
+  "visitas_por_jerarquia": {
+    "4": {
+      "paradas": 1596,
+      "minutos_mediana": 90.0,
+      "de_30_o_menos": 0.0,
+      "las_mas_frecuentes_de_30_o_menos": []
+    },
+    "3": {
+      "paradas": 10729,
+      "minutos_mediana": 80,
+      "de_30_o_menos": 0.0,
+      "las_mas_frecuentes_de_30_o_menos": []
+    }
+  },
+  "de_noche_en_el_dia": {
+    "paradas": 0,
+    "las_mas_frecuentes": []
+  },
+  "bus_de_noche": {
+    "viajes_con_bus_por_dias": {
+      "2": 0.08,
+      "4": 0.546,
+      "6": 0.284,
+      "9": 0.138
+    },
+    "horas_mediana": 10.9,
+    "horas_max": 15.8,
+    "parte_del_viaje_max": 0.3,
+    "con_aviso_del_camino_por_dias": {
+      "2": 0.507,
+      "4": 0.058,
+      "6": 0.0,
+      "9": 0.005
+    }
+  },
+  "avisos": {
+    "acceso": 0.644,
+    "aclimatacion": 0.388,
+    "altitud": 0.346,
+    "dias": 0.937,
+    "entradas": 0.003,
+    "estacionalidad": 0.109,
+    "seguridad": 0.001
+  },
+  "concentracion": {
+    "zonas_distintas": 68,
+    "las_5_mas_propuestas": [
+      [
+        "Trujillo",
+        0.157
+      ],
+      [
+        "Miraflores",
+        0.132
+      ],
+      [
+        "Puno",
+        0.124
+      ],
+      [
+        "Cuzco",
+        0.121
+      ],
+      [
+        "Arequipa",
+        0.061
+      ]
+    ],
+    "las_10_mas_propuestas": 0.746,
+    "con_base_en_ciudad_grande_o_lima": 0.386
+  }
+}

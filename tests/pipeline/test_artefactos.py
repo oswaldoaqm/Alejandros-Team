@@ -317,3 +317,13 @@ def test_cada_aeropuerto_lleva_cuantos_vuelos_hay_al_mes():
     aeropuertos = artefactos.aeropuertos_(rutas)
     assert aeropuertos["MZA"]["vuelos_al_mes"] == 9 and aeropuertos["CUZ"]["minutos_a_lima"] == 80
     assert "vuelos_al_mes" not in aeropuertos["LIM"]
+
+
+def test_una_base_en_lima_lleva_el_ritmo_de_cada_hora():
+    """De TomTom, un miércoles: a las 8:00, 44 min por 10 km, contra 37,6 en el promedio de 10:00 a 16:00 (decisión
+    0031). Una base fuera de las tres ciudades que mide no lleva ritmo."""
+    ciudades = artefactos.ritmos_por_hora()
+    assert {c["ciudad"] for c in ciudades} == {"Lima", "Arequipa", "Trujillo"}
+    lima = artefactos.ritmo_de_la_base(-12.12, -77.03, ciudades)  # Miraflores
+    assert dict(map(tuple, lima))[8 * 60] == 1.175
+    assert artefactos.ritmo_de_la_base(-13.53, -71.97, ciudades) is None  # Cusco

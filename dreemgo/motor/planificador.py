@@ -149,9 +149,11 @@ class Recorrido:
 
 
 class Tiempos:
-    """Minutos de viaje entre el depósito (índice -1) y las paradas."""
+    """Minutos de viaje entre el depósito (índice -1) y las paradas. Con ``ritmo`` ([[minuto del día, factor], …],
+    decisión 0031), cada tramo del horario se estira o se acorta según la hora a la que sale: en Lima, a las 8:00
+    se va 18 % más lento que en el promedio del día. Sin ritmo, el factor es 1."""
 
-    def __init__(self, desde_deposito: np.ndarray, entre: np.ndarray):
+    def __init__(self, desde_deposito: np.ndarray, entre: np.ndarray, ritmo=()):
         n = len(desde_deposito)
         m = np.full((n + 1, n + 1), np.inf)
         m[:n, :n] = np.where(np.isfinite(entre), entre, np.inf)
@@ -159,6 +161,18 @@ class Tiempos:
         m[n, n] = 0.0
         self.m = m
         self.deposito = n
+        self.ritmo = tuple(ritmo)
+
+    def factor(self, minuto: float) -> float:
+        """Cuánto más lento se va a esa hora del día: entre dos horas medidas, en línea recta."""
+        if not self.ritmo:
+            return 1.0
+        minutos, factores = zip(*self.ritmo, strict=True)
+        return float(np.interp(minuto % (24 * 60), minutos, factores, period=24 * 60))
+
+    def a_la_hora(self, a: int, b: int, minuto: float) -> float:
+        """Los minutos del tramo saliendo a esa hora."""
+        return self(a, b) * self.factor(minuto)
 
     def __call__(self, a: int, b: int) -> float:
         return self.m[self.deposito if a < 0 else a, self.deposito if b < 0 else b]
@@ -175,7 +189,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
     primera = ruta[0]
     salida = max(jornada.inicio, primera.abre - int(round(t(-1, primera.i))))
     almuerzo = None
-    llega_a_la_primera = salida + t(-1, primera.i)
+    llega_a_la_primera = salida + t.a_la_hora(-1, primera.i, salida)
     if salida >= ALMUERZO_DESDE or (salida >= ALMUERZO_TEMPRANO and llega_a_la_primera > ALMUERZO_HASTA):
         # Antes de salir, en el depósito: a la hora, si antes de salir hay una hora libre; si no, al salir.
         a_la_hora = max(jornada.inicio, ALMUERZO_DESDE if salida >= ALMUERZO_DESDE else ALMUERZO_TEMPRANO)
@@ -186,7 +200,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
             salida += ALMUERZO_MIN
     ahora, anterior, visitas, al_llegar = salida, -1, [], False
     for k, c in enumerate(ruta):
-        traslado = t(anterior, c.i)
+        traslado = t.a_la_hora(anterior, c.i, ahora)
         if not np.isfinite(traslado):
             return None
         if traslado > TRAMO_MENOR_MAX and (c.menor or (k > 0 and ruta[k - 1].menor)):
@@ -211,7 +225,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
         anterior = c.i
         if almuerzo is None and ahora >= ALMUERZO_TEMPRANO:
             siguiente = ruta[k + 1] if k + 1 < len(ruta) else None
-            hasta_siguiente = t(c.i, siguiente.i if siguiente is not None else -1)
+            hasta_siguiente = t.a_la_hora(c.i, siguiente.i if siguiente is not None else -1, ahora)
             llega_alla = ahora + (int(round(hasta_siguiente)) if np.isfinite(hasta_siguiente) else 0)
             if siguiente is None:  # se vuelve al depósito
                 alla, cabe_alla, termina_alla = jornada.comida_en_deposito, True, llega_alla
@@ -231,7 +245,7 @@ def horario(ruta: list[Candidata], jornada: Jornada, t: Tiempos) -> Recorrido | 
                 almuerzo = Almuerzo(k + 1, ahora, c.i, dentro=True)
             if almuerzo is not None:
                 ahora += ALMUERZO_MIN
-    regreso = t(anterior, -1)
+    regreso = t.a_la_hora(anterior, -1, ahora)
     if not np.isfinite(regreso) or (regreso > TRAMO_MENOR_MAX and ruta[-1].menor):
         return None
     vuelta = ahora + int(round(regreso))

@@ -191,6 +191,43 @@ def entradas_con_cupo() -> dict[str, dict]:
     }
 
 
+RADIO_DE_LA_CIUDAD_KM = {"metropoli": 20.0, "grande": 8.0}  # una base a menos de esto está en la ciudad
+
+
+def ritmos_por_hora() -> list[dict]:
+    """Las ciudades que mide TomTom, con su centro, su radio y cuánto más lento o más rápido se va a cada hora de un
+    miércoles que en el promedio de 10:00 a 16:00, que es a lo que se ajustó la red (decisión 0025): [[minuto del
+    día, factor], …], de ``trafico_por_hora.csv`` (decisión 0031)."""
+    ciudades = pd.read_csv(REFERENCIA / "trafico_ciudades.csv", sep=";")
+    horas = pd.read_csv(REFERENCIA / "trafico_por_hora.csv", sep=";")
+    salida = []
+    for c in ciudades.itertuples():
+        mias = horas[horas["ciudad"] == c.ciudad].sort_values("hora")
+        if mias.empty or c.banda not in RADIO_DE_LA_CIUDAD_KM:
+            continue
+        de_dia = mias[mias["hora"].isin(["10:00", "12:00", "14:00", "16:00"])]["min_10km"].mean()
+        minuto = [int(h[:2]) * 60 + int(h[3:]) for h in mias["hora"]]
+        factor = [round(float(m / de_dia), 3) for m in mias["min_10km"]]
+        salida.append(
+            {
+                "ciudad": c.ciudad,
+                "lat": c.lat,
+                "lon": c.lon,
+                "radio_km": RADIO_DE_LA_CIUDAD_KM[c.banda],
+                "ritmo": [[m, f] for m, f in zip(minuto, factor, strict=True)],
+            }
+        )
+    return salida
+
+
+def ritmo_de_la_base(lat: float, lon: float, ciudades: list[dict]) -> list | None:
+    """El ritmo por hora de la ciudad en la que está la base, o None si no está en una que mida TomTom."""
+    for c in ciudades:
+        if float(haversine_km(lat, lon, c["lat"], c["lon"])) <= c["radio_km"]:
+            return c["ritmo"]
+    return None
+
+
 def de_noche() -> dict[str, dict]:
     """Código → un lugar que se ve de noche (``de_noche.csv``, decisión 0030): cómo se lo nombra y las horas de sus
     funciones. El motor no lo pone en el día, sino en la noche del viaje."""
@@ -281,12 +318,15 @@ def polos(
     noche: dict[int, dict] | None = None,
     comida: pd.DataFrame | None = None,
     zonas: pd.DataFrame | None = None,
+    ciudades: list[dict] | None = None,
 ) -> list[dict]:
     """Cada polo con lo que el motor necesita para resolver una consulta sin otra tabla. La base lleva
     su ``zona`` si es la capital de un distrito con alerta oficial de viaje (``zonas``, por defecto
-    ``zonas_de_seguridad()``), o null."""
+    ``zonas_de_seguridad()``), o null. Si la base está en una ciudad que mide TomTom, el polo lleva su
+    ``ritmo`` por hora (``ciudades``, por defecto ``ritmos_por_hora()``); si no, null."""
     comida_en_base = _comida(comida, "base")
     zonas = zonas_de_seguridad() if zonas is None else zonas
+    ciudades = ritmos_por_hora() if ciudades is None else ciudades
     en_polo = maestro[maestro["polo"] >= 0]
     paradas = en_polo[en_polo["es_parada"].astype(bool)]
 
@@ -376,6 +416,7 @@ def polos(
                     "zona": zona_de_la_base(b.lat, b.lon, zonas),
                 }
                 | ({} if comida_en_base is None else {"comida_m": comida_en_base.get(str(int(b.polo)))}),
+                "ritmo": ritmo_de_la_base(b.lat, b.lon, ciudades),
                 "paradas": [str(c) for c in codigos],
                 "base_minutos": [_redondo(desde_base["minutos"].get(c)) for c in codigos],
                 "base_km": [_redondo(desde_base["km"].get(c)) for c in codigos],
