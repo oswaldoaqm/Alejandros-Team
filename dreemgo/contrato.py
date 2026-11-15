@@ -21,7 +21,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, StringConstraints, field_validator, model_validator
 
-VERSION_CONTRATO = "1.9"
+VERSION_CONTRATO = "1.10"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -165,6 +165,17 @@ class Punto(_Modelo):
     lat: float = Field(ge=-90, le=90)
     lon: float = Field(ge=-180, le=180)
     altitud_m: int | None = None
+
+
+class Hospedaje(_Modelo):
+    """Un hospedaje con nombre cerca de la base, de OpenStreetMap (desde 1.10). Sin precio ni categoría."""
+
+    nombre: str
+    tipo: Literal["hotel", "albergue", "hospedaje", "motel", "departamento"]
+    km: float = Field(ge=0, le=2, description="En línea recta desde la base.")
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    osm: str = Field(pattern=r"^(node|way)/\d+$", description="El objeto de OpenStreetMap, para buscarlo.")
 
 
 HORA = r"^([01]\d|2[0-3]):[0-5]\d$"
@@ -516,6 +527,11 @@ class Polo(_Modelo):
     base: Punto = Field(description="Dónde se duerme: el punto de partida de cada día.")
     recursos: int = Field(ge=1, description="Recursos del inventario dentro del polo.")
     fuera_del_circuito: bool = Field(description="Ningún recurso del polo está en Lima ni en Cusco.")
+    hospedajes: list[Hospedaje] = Field(
+        default_factory=list,
+        description="Desde 1.10: hasta tres hospedajes con nombre a 2 km o menos de la base, del más cercano al más "
+        "lejano. Vacía si OpenStreetMap no tiene ninguno.",
+    )
 
 
 class Indicadores(_Modelo):

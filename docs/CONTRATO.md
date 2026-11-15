@@ -2,7 +2,9 @@
 
 Qué recibe el motor, qué devuelve y cómo encaja eso con el formulario, el modelo de datos y la arquitectura que el equipo diseñó hasta la Delivery 1. La definición ejecutable está en [`dreemgo/contrato.py`](../dreemgo/contrato.py): de ahí sale el esquema OpenAPI (`/v1/openapi.json`, con documentación interactiva en `/v1/docs`), que se guarda en [`docs/openapi.json`](./openapi.json), y de ese archivo salen los tipos de la [app](../app/). Si este documento y el código no coinciden, manda el código y este documento tiene un error.
 
-**Versión 1.9** · 15 de noviembre de 2026. La 1.9 suma un tipo de noche, `espectaculo`, para un lugar que se ve de noche, como el Circuito Mágico del Agua, con sus funciones en `noche.funciones` ([decisión 0030](./decisiones/0030-a-su-hora-y-desde-el-terminal.md)). Ese lugar ya no es parada del día: va en una noche que se duerme en la base, con fecha en una noche con función. No quita nada de la 1.8. Suma la propiedad 19.
+**Versión 1.10** · 15 de noviembre de 2026. La 1.10 suma `polo.hospedajes`: hasta tres hospedajes con nombre de OpenStreetMap a 2 km o menos de la base, del más cercano al más lejano, con su tipo y su objeto de OSM, sin precio ni categoría ([decisión 0032](./decisiones/0032-costo-del-bus-y-donde-dormir.md)). No quita nada de la 1.9. Suma la propiedad 20.
+
+La 1.9, del mismo día, sumó un tipo de noche, `espectaculo`, para un lugar que se ve de noche, como el Circuito Mágico del Agua, con sus funciones en `noche.funciones` ([decisión 0030](./decisiones/0030-a-su-hora-y-desde-el-terminal.md)). Ese lugar ya no es parada del día: va en una noche que se duerme en la base, con fecha en una noche con función. No quitó nada de la 1.8. Sumó la propiedad 19.
 
 La 1.8, del 10 de noviembre, sumó lo que la [auditoría](./AUDITORIA.md) pidió mostrar en cada viaje:
 
@@ -158,10 +160,11 @@ Son propiedades, no intenciones: desde que el motor se conecta, las pruebas las 
 17. Un viaje a una zona con alerta oficial de viaje lo avisa primero (desde 1.8). Si se duerme en ella, o alguna parada lo está, el primer aviso es de `seguridad`, con nivel `advertencia`, y dice dónde; si no, no hay aviso de `seguridad`. En una excursión de un día no se duerme en la base, así que la base no cuenta. Hoy la zona es el VRAEM, con los 37 distritos del D.S. 133-2022-PCM ([decisión 0029](./decisiones/0029-avisos-de-seguridad-y-de-entradas.md)).
 18. Cada parada que vende un número fijo de entradas por día trae un aviso de `entradas`, con nivel `info`, que dice cuántas personas entran al día y dónde se compran; ninguna otra parada lo trae (desde 1.8). Hoy, Machu Picchu.
 19. Un lugar que se ve de noche no es parada del día (desde 1.9). Va, a lo más una vez, en la noche de un día que se duerme en la base, con `tipo` `espectaculo` y sus `funciones`; con `fecha_inicio`, en un día en que hay función. Hoy, el Circuito Mágico del Agua.
+20. `polo.hospedajes` trae a lo más tres, todos a 2 km o menos de la base y del más cercano al más lejano (desde 1.10).
 
 Las pruebas verifican además que, cuando no hay rutas, cada sugerencia de `sin_resultado`, aceptada sola, hace salir algún viaje.
 
-Con eventos publicados valen las diecinueve, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
+Con eventos publicados valen las veinte, y las pruebas verifican una cosa más: lo publicado se suma a `eventos[]` de las rutas a las que les toca y no cambia nada más de la respuesta. Ni qué polos se proponen, ni su orden, ni sus motivos, sus días o su costo.
 
 ## 4 · Endpoints
 

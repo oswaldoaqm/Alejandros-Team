@@ -984,7 +984,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.9",
+            "default": "1.10",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1013,6 +1013,62 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Hospedaje": {
+        "additionalProperties": false,
+        "description": "Un hospedaje con nombre cerca de la base, de OpenStreetMap (desde 1.10). Sin precio ni categoría.",
+        "properties": {
+          "km": {
+            "description": "En línea recta desde la base.",
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Km",
+            "type": "number"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "osm": {
+            "description": "El objeto de OpenStreetMap, para buscarlo.",
+            "pattern": "^(node|way)/\\d+$",
+            "title": "Osm",
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "hotel",
+              "albergue",
+              "hospedaje",
+              "motel",
+              "departamento"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "tipo",
+          "km",
+          "lat",
+          "lon",
+          "osm"
+        ],
+        "title": "Hospedaje",
         "type": "object"
       },
       "Indicadores": {
@@ -1476,7 +1532,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.9",
+            "default": "1.10",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1553,6 +1609,14 @@
             "description": "Ningún recurso del polo está en Lima ni en Cusco.",
             "title": "Fuera Del Circuito",
             "type": "boolean"
+          },
+          "hospedajes": {
+            "description": "Desde 1.10: hasta tres hospedajes con nombre a 2 km o menos de la base, del más cercano al más lejano. Vacía si OpenStreetMap no tiene ninguno.",
+            "items": {
+              "$ref": "#/components/schemas/Hospedaje"
+            },
+            "title": "Hospedajes",
+            "type": "array"
           },
           "id": {
             "title": "Id",
@@ -1644,7 +1708,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.9",
+            "default": "1.10",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1942,7 +2006,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.9",
+            "default": "1.10",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2042,7 +2106,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.9",
+            "default": "1.10",
             "title": "Version Contrato",
             "type": "string"
           },
