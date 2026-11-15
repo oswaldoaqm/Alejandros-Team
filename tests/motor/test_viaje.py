@@ -11,6 +11,9 @@ def test_valor_de_una_parada():
     r = {"jerarquia": 4, "intereses": ["historia"]}
     assert [viaje.valor({"jerarquia": j, "intereses": []}, set()) for j in (1, 2, 3, 4)] == [1, 2, 6, 24]
     assert viaje.valor({"jerarquia": None, "intereses": []}, set()) == viaje.VALOR_SIN_JERARQUIA == 2
+    uros = {"jerarquia": None, "vale_como_jerarquia": 4, "intereses": ["naturaleza"]}  # decisión 0028
+    assert viaje.valor(uros, set()) == 24 and viaje.valor(uros, {"historia"}) == 24 * viaje.FACTOR_SIN_INTERES
+    assert viaje.valor({"jerarquia": 4, "vale_como_jerarquia": 2, "intereses": []}, set()) == 24
     assert viaje.valor(r, {"historia", "playa"}) == 24
     assert viaje.valor(r, {"playa"}) == 24 * viaje.FACTOR_SIN_INTERES
 

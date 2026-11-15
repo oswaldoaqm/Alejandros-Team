@@ -6,8 +6,9 @@ que entran a la imagen del API:
 
   manifiesto.json     versión de los datos, de dónde sale cada cosa y la huella de cada archivo
   recursos.json.gz    los recursos de cada polo: lo que la respuesta muestra de ellos, lo que
-                      el motor necesita para programarlos y a cuántos metros hay dónde comer
-                      (pipeline/comida.py)
+                      el motor necesita para programarlos, a cuántos metros hay dónde comer
+                      (pipeline/comida.py) y, si se visitan en lugar de otro que no tiene camino,
+                      la jerarquía de ese (pipeline/referencia/valor_por_acceso.csv)
   polos.json.gz       cada polo: base, con su altura (la de OpenStreetMap o, si no la tiene, la
                       del modelo de elevación: pipeline/elevacion.py), novedad, clima mes a mes,
                       sus paradas y los tiempos entre ellas y desde la base; si algún camino va en
@@ -127,11 +128,24 @@ def _comida(comida: pd.DataFrame | None, tipo: str) -> dict[str, int | None] | N
     return {str(k): _entero(m) for k, m in zip(filas["clave"], filas["mas_cerca_m"], strict=True)}
 
 
-def recursos(maestro: pd.DataFrame, comida: pd.DataFrame | None = None) -> list[dict]:
+def vale_como() -> dict[str, str]:
+    """Los recursos que se visitan en lugar de otro que no tiene camino en la red, como los Uros por la
+    Reserva Nacional del Titicaca (``valor_por_acceso.csv``, decisión 0028): código → código."""
+    tabla = pd.read_csv(REFERENCIA / "valor_por_acceso.csv", sep=";", dtype=str)
+    return dict(zip(tabla["codigo"], tabla["vale_como"], strict=True))
+
+
+def recursos(
+    maestro: pd.DataFrame, comida: pd.DataFrame | None = None, por_acceso: dict[str, str] | None = None
+) -> list[dict]:
     """Los recursos que están en un polo, ordenados por código. Con la tabla de comida, cada uno
     lleva a cuántos metros queda el lugar de comida más cercano (``comida_m``, null si no hay a
-    menos de 1,5 km)."""
+    menos de 1,5 km). ``vale_como_jerarquia`` es la jerarquía del recurso que se visita yendo a este,
+    si lo hay (``por_acceso``, por defecto ``vale_como()``): el motor la usa para su valor, y la
+    jerarquía oficial no cambia."""
     cerca = _comida(comida, "recurso")
+    por_acceso = vale_como() if por_acceso is None else por_acceso
+    jerarquia = {str(c): _entero(j) for c, j in zip(maestro["codigo"], maestro["jerarquia"], strict=True)}
     filas = []
     for f in maestro[maestro["polo"] >= 0].sort_values("codigo").to_dict("records"):
         con_comida = {} if cerca is None else {"comida_m": cerca.get(str(f["codigo"]))}
@@ -144,6 +158,7 @@ def recursos(maestro: pd.DataFrame, comida: pd.DataFrame | None = None) -> list[
                 "tipo": f["tipo"],
                 "subtipo": _limpio(f["subtipo"]),
                 "jerarquia": _entero(f["jerarquia"]),
+                "vale_como_jerarquia": jerarquia.get(por_acceso.get(str(f["codigo"]), "")),
                 "lat": round(float(f["lat"]), 6),
                 "lon": round(float(f["lon"]), 6),
                 "altitud_m": _entero(f["altitud_m"]),

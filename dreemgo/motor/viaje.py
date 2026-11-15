@@ -143,7 +143,11 @@ class DestinoDesconocido(ValueError):
 
 
 def valor(recurso: dict, intereses: set[str]) -> float:
-    v = VALOR_SIN_JERARQUIA if recurso["jerarquia"] is None else VALOR_POR_JERARQUIA[recurso["jerarquia"]]
+    """Lo que vale una parada: por su jerarquía o, si se la visita en lugar de un recurso que no tiene camino,
+    por la de ese, si es más alta (``vale_como_jerarquia``: los Uros por la Reserva Nacional del Titicaca,
+    decisión 0028). Y la cuarta parte si no atiende ningún interés de la consulta."""
+    jerarquias = [j for j in (recurso["jerarquia"], recurso.get("vale_como_jerarquia")) if j is not None]
+    v = VALOR_POR_JERARQUIA[max(jerarquias)] if jerarquias else VALOR_SIN_JERARQUIA
     if intereses and not intereses & set(recurso["intereses"]):
         v *= FACTOR_SIN_INTERES
     return v

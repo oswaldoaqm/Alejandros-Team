@@ -183,6 +183,42 @@ def test_cada_recurso_lleva_el_polo_que_junta_a_su_grupo():
     assert puno["recursos"] == 3 and juli["paradas"] == ["20", "21"]
 
 
+def test_un_recurso_que_se_visita_por_otro_lleva_la_jerarquia_de_ese():
+    """Los Uros valen como la Reserva Nacional del Titicaca, que no tiene camino (decisión 0028)."""
+    maestro = pd.DataFrame(
+        {
+            "codigo": [412, 960, 961],
+            "nombre": ["Reserva Nacional del Titicaca", "Islas Flotantes de los Uros", "Puerto"],
+            "categoria": "Sitios naturales",
+            "tipo": "Cuerpos de agua",
+            "subtipo": ["Reservas Nacionales", "Islas", "Muelles"],
+            "jerarquia": [4.0, np.nan, 2.0],
+            "lat": -15.82,
+            "lon": -69.97,
+            "altitud_m": 3812,
+            "url_ficha": "https://consultasenlinea.mincetur.gob.pe/fichaInventario/index.aspx?cod_Ficha=960",
+            "descripcion_corta": None,
+            "foto_url": None,
+            "ingreso": "boleto",
+            "tarifa_soles": 10.0,
+            "tarifa_regla": None,
+            "boleto_combinado": False,
+            "polo": 11,
+            "es_parada": True,
+            "intereses": "naturaleza",
+            "visita_min": [180, 90, 30],
+            "caminata_min": 0,
+            "abre": None,
+            "cierra": None,
+            "dias": None,
+        }
+    )
+    por_codigo = {r["codigo"]: r for r in artefactos.recursos(maestro, por_acceso={"960": "412"})}
+    assert por_codigo["960"]["jerarquia"] is None and por_codigo["960"]["vale_como_jerarquia"] == 4
+    assert por_codigo["412"]["vale_como_jerarquia"] is None and por_codigo["961"]["vale_como_jerarquia"] is None
+    assert artefactos.vale_como() == {"960": "412"}
+
+
 def test_las_tablas_de_antes_de_juntar_no_cambian():
     maestro, bases, *_ = _tablas_de_dos_polos()
     assert artefactos.en_su_polo(maestro, bases)["polo"].tolist() == maestro["polo"].tolist()
