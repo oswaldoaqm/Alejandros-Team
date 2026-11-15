@@ -8,7 +8,7 @@ Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide s
 | `planilla.csv` | Las mismas filas, para calificar en una hoja de cálculo | `python -m evaluacion.kit` |
 | `clave.csv` | De dónde sale cada viaje: el puesto que le dan el motor, la guía y la variante. **Quien califica no la abre** | `python -m evaluacion.kit` |
 | `calificaciones/` | Las calificaciones de cada quien, una planilla por persona con sus iniciales como nombre (`AB.csv`) | El cuadernillo, al descargar |
-| `resultados/notas.csv`, `metricas.csv` y `resumen.json` | Cada viaje con sus notas, las métricas por consulta y el resumen | `python -m evaluacion.informe` |
+| `resultados/notas.csv`, `metricas.csv` y `resumen.json` | Cada viaje con sus notas, las métricas por consulta y el resumen, con las calificaciones de tres de los cuatro. Lo que dicen está en [`resultados.md`](../../docs/evaluacion/resultados.md) | `python -m evaluacion.informe` |
 | `resultados/optimo.csv` y `optimo.json` | Lo que junta la heurística del itinerario contra el óptimo exacto, en los 120 viajes que propone el motor | `python -m evaluacion.optimo`, unos 10 minutos |
 | `resultados/buses.csv` y `buses.json` | Los tiempos por tierra del motor contra los de Cruz del Sur, en 29 rutas | `python -m evaluacion.buses` |
 | `resultados/presupuesto.csv` y `presupuesto.json` | Qué cambia si el presupuesto deja fuera lo que no cabe en el P50 o en el P80 | `python -m evaluacion.presupuesto`, unos 5 minutos |
