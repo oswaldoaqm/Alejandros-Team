@@ -104,7 +104,7 @@ Los 222 grupos del modelo v2 se mantienen, con sus mismos números. Cada uno sig
 | `es_parada`, `motivo_no_parada` | Si puede ser parada de un itinerario, y si no, por qué: `folclore`, `acontecimiento`, `cumbre`, `coordenada_revisar`, `sin_coordenada` o `sin_ficha` | Pipeline |
 | `intereses` | Los chips del contrato que el recurso atiende, separados por `\|` | Categoría, tipo, subtipo y actividades de la ficha, con [`pipeline/referencia/intereses.csv`](../../pipeline/referencia/intereses.csv) |
 | `actividades` | Actividades que registra la ficha, separadas por `\|` | Ficha |
-| `visita_min`, `visita_min_fuente` | Minutos de visita, sin contar el acceso. Es un **supuesto del equipo**, no un dato de la fuente | [`pipeline/referencia/duracion_visita.csv`](../../pipeline/referencia/duracion_visita.csv), por subtipo, tipo o categoría |
+| `visita_min`, `visita_min_fuente` | Minutos de visita, sin contar el acceso. Es un **supuesto del equipo**, no un dato de la fuente. `referencia:codigo` es una fila del propio recurso, y `referencia:minimo_jerarquia`, el piso de una hora de lo que tiene jerarquía 3 o 4 | [`pipeline/referencia/duracion_visita.csv`](../../pipeline/referencia/duracion_visita.csv), por recurso, subtipo, tipo o categoría |
 | `ingreso` | `libre`, `boleto`, `permiso` (semi-restringido) u `otro` | Ficha |
 | `tarifa_soles`, `tarifa_regla` | Entrada de un adulto peruano. 0 si el ingreso es libre. La regla dice cómo se eligió entre los montos del texto (ver `leer_tarifa`) | Ficha, con `leer_tarifa` |
 | `boleto_combinado` | La entrada es parte de un boleto para varios lugares (Boleto Turístico del Cusco, un circuito): se paga una vez por viaje | Ficha |

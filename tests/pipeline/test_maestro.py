@@ -115,6 +115,19 @@ def test_duracion_de_lo_especifico_a_lo_general():
         assert all(int(fila["minutos"]) > 0 for fila in csv.DictReader(f, delimiter=";"))
 
 
+def test_duracion_con_su_codigo_y_con_el_minimo_de_su_jerarquia():
+    """Decisión 0028: una fila del código manda, y lo de jerarquía 3 o 4 no baja de una hora."""
+    reglas = ReglasDuracion.cargar()
+    assert reglas.de(1, "Cuerpos de agua", "Islas", 960) == (90, "referencia:codigo")  # los Uros
+    assert reglas.de(1, "Cuerpos de agua", "Islas", 11781) == (180, "referencia:subtipo")
+    centro = (2, "Arquitectura y Espacios Urbanos", "Plazas")
+    assert reglas.de(*centro, jerarquia=2) == (20, "referencia:subtipo")
+    assert reglas.de(*centro, jerarquia=3) == (60, "referencia:minimo_jerarquia")
+    assert reglas.de(*centro, jerarquia=4) == (60, "referencia:minimo_jerarquia")
+    assert reglas.de(2, "Museos y otros", "Museos", jerarquia=4) == (75, "referencia:subtipo")  # ya pasa del mínimo
+    assert reglas.de(3, "Gastronomía", "Platos Típicos", jerarquia=3) == (None, None)  # el folclore no se visita
+
+
 def test_horarios_corregidos_mandan_sobre_la_ficha():
     horarios = HorariosCorregidos.cargar()
     assert horarios.de(4033, "07:00", "22:30", None) == ("15:00", "22:00", "mie|jue|vie|sab|dom", "referencia")
@@ -136,7 +149,7 @@ def test_rehacer_solo_las_referencias_no_toca_lo_demas():
     despues = con_referencias(antes)
     assert list(despues.columns) == columnas[:10] + ["horario_fuente"] + columnas[10:]
     circuito, plaza = despues.to_dict("records")
-    assert (circuito["visita_min"], circuito["visita_min_fuente"]) == ("30", "referencia:subtipo")
+    assert (circuito["visita_min"], circuito["visita_min_fuente"]) == ("60", "referencia:minimo_jerarquia")
     assert (circuito["abre"], circuito["cierra"], circuito["dias"]) == ("15:00", "22:00", "mie|jue|vie|sab|dom")
     assert (circuito["horario_fuente"], circuito["descripcion_corta"]) == ("referencia", "Fuentes; luces")
     assert (plaza["visita_min"], plaza["abre"], plaza["horario_fuente"]) == ("20", "", "")

@@ -129,12 +129,33 @@ class ReglasDuracion:
     def cargar(cls) -> ReglasDuracion:
         return cls({(f["campo"], f["valor"]): int(f["minutos"]) for f in _referencia("duracion_visita.csv")})
 
-    def de(self, categoria_num: int | None, tipo: str | None, subtipo: str | None) -> tuple[int | None, str | None]:
-        """Minutos de visita y la regla que los dio, de la más específica a la más general."""
+    def de(
+        self,
+        categoria_num: int | None,
+        tipo: str | None,
+        subtipo: str | None,
+        codigo: int | None = None,
+        jerarquia: int | None = None,
+    ) -> tuple[int | None, str | None]:
+        """Minutos de visita y la regla que los dio. Una fila del ``codigo`` del recurso manda; si no hay,
+        la regla más específica, de subtipo a categoría. Y un lugar de jerarquía alta que se visita no baja
+        del mínimo de la suya: la tabla de subtipos le daba 20 minutos al Centro Histórico de Trujillo
+        (decisión 0028). Lo que no tiene regla, como el folclore, sigue sin minutos."""
+        if codigo is not None and ("codigo", str(codigo)) in self.minutos:
+            return self.minutos[("codigo", str(codigo))], "referencia:codigo"
+        minutos, fuente = None, None
         for campo, valor in (("subtipo", subtipo), ("tipo", tipo), ("categoria", str(categoria_num))):
             if valor and (campo, valor) in self.minutos:
-                return self.minutos[(campo, valor)], f"referencia:{campo}"
-        return None, None
+                minutos, fuente = self.minutos[(campo, valor)], f"referencia:{campo}"
+                break
+        pisos = [
+            m
+            for (campo, valor), m in self.minutos.items()
+            if campo == "minimo_jerarquia" and (jerarquia or 0) >= int(valor)
+        ]
+        if pisos and minutos is not None and minutos < max(pisos):
+            return max(pisos), "referencia:minimo_jerarquia"
+        return minutos, fuente
 
 
 @dataclass(frozen=True)
@@ -602,7 +623,10 @@ def construir(inventario: pd.DataFrame, fichas: dict[int, Ficha], v2: pd.DataFra
     ]
     tabla["actividades"] = actividades.map("|".join)
     visita = [
-        duracion.de(c, t, s) for c, t, s in zip(tabla["categoria_num"], tabla["tipo"], tabla["subtipo"], strict=True)
+        duracion.de(c, t, s, k, None if pd.isna(j) else int(j))
+        for c, t, s, k, j in zip(
+            tabla["categoria_num"], tabla["tipo"], tabla["subtipo"], tabla["codigo"], tabla["jerarquia"], strict=True
+        )
     ]
     tabla["visita_min"] = [m for m, _ in visita]
     tabla["visita_min_fuente"] = [f for _, f in visita]
@@ -658,18 +682,23 @@ def resumen(maestro: pd.DataFrame) -> dict[str, object]:
 
 def con_referencias(maestro: pd.DataFrame) -> pd.DataFrame:
     """Rehace lo del maestro que sale de las tablas de referencia escritas a mano, sin volver a leer las
-    fichas: los horarios corregidos (``--solo-referencias``). ``maestro`` es el CSV leído como texto, y lo
-    demás queda igual, byte por byte. Una corrección que se quita de la tabla no devuelve el horario de la
-    ficha: para eso se vuelve a correr el maestro entero."""
-    horarios = HorariosCorregidos.cargar()
+    fichas: los minutos de visita y los horarios corregidos (``--solo-referencias``). ``maestro`` es el CSV
+    leído como texto, y lo demás queda igual, byte por byte. Una corrección que se quita de la tabla no
+    devuelve el horario de la ficha: para eso se vuelve a correr el maestro entero."""
+    duracion, horarios = ReglasDuracion.cargar(), HorariosCorregidos.cargar()
     tabla = maestro.copy()
     if "horario_fuente" not in tabla:
         tabla.insert(tabla.columns.get_loc("dias") + 1, "horario_fuente", "")
-    horario = []
+    visita, horario = [], []
     for f in tabla.itertuples(index=False):
+        jerarquia = int(f.jerarquia) if f.jerarquia else None
+        categoria = int(f.categoria_num) if f.categoria_num else None
+        minutos, regla = duracion.de(categoria, _texto(f.tipo), _texto(f.subtipo), int(f.codigo), jerarquia)
+        visita.append(("" if minutos is None else str(minutos), regla or ""))
         horario.append(
             tuple(x or "" for x in horarios.de(int(f.codigo), _texto(f.abre), _texto(f.cierra), _texto(f.dias)))
         )
+    tabla["visita_min"], tabla["visita_min_fuente"] = [m for m, _ in visita], [r for _, r in visita]
     for i, columna in enumerate(("abre", "cierra", "dias", "horario_fuente")):
         tabla[columna] = [h[i] for h in horario]
     return tabla
@@ -695,7 +724,8 @@ def main() -> None:
     ap.add_argument(
         "--solo-referencias",
         action="store_true",
-        help="Rehace solo los horarios corregidos del maestro que ya está en --salida, sin leer las fichas",
+        help="Rehace solo los minutos de visita y los horarios corregidos del maestro que ya está en --salida, "
+        "sin leer las fichas",
     )
     a = ap.parse_args()
 
@@ -703,7 +733,7 @@ def main() -> None:
         ruta = a.salida / "maestro_v3.csv"
         maestro = pd.read_csv(ruta, sep=";", dtype=str, keep_default_na=False, encoding="utf-8-sig")
         con_referencias(maestro).to_csv(ruta, sep=";", index=False, encoding="utf-8-sig", lineterminator="\n")
-        print(f"Horarios rehechos en {ruta}")
+        print(f"Minutos de visita y horarios rehechos en {ruta}")
         return
 
     inventario = leer_inventario(a.inventario)
