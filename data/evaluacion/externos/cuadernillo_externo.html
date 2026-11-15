@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang='es'><head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Calificar los viajes · DreemGO</title><style>
+:root { color-scheme: light dark; --tinta: #13202b; --tinta-2: #4b5a66; --linea: #d5dde2; --fondo: #f4f6f7;
+  --papel: #fff; --acento: #0b6e4f; --foco: #1d4ed8; }
+@media (prefers-color-scheme: dark) {
+  :root { --tinta: #e6edf1; --tinta-2: #a9b6bf; --linea: #33424d; --fondo: #0f171d; --papel: #172229;
+    --acento: #5fd3a6; --foco: #93b4ff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--tinta);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.barra { position: sticky; top: 0; z-index: 2; background: var(--papel); border-bottom: 1px solid var(--linea); }
+.barra__dentro { max-width: 1040px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap;
+  gap: 6px 10px; align-items: center; }
+#progreso { margin-right: auto; color: var(--tinta-2); font-size: .92rem; }
+.tuyo { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 12px 0; }
+.tuyo > label:first-child { font-weight: 600; }
+#iniciales { width: 5.5em; font: inherit; padding: 4px 8px; border: 1px solid var(--linea); border-radius: 8px;
+  background: var(--fondo); color: var(--tinta); text-transform: uppercase; }
+@media (max-width: 600px) { .ancho { display: none; } }
+button, .boton { font: inherit; font-size: .92rem; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+  cursor: pointer; border: 1px solid var(--acento); background: var(--papel); color: var(--acento);
+  position: relative; }
+button.principal { background: var(--acento); color: var(--papel); }
+.boton input { position: absolute; inset: 0; opacity: 0; width: 100%; cursor: pointer; }
+:focus-visible, .boton:focus-within { outline: 3px solid var(--foco); outline-offset: 2px; }
+#mensaje { flex-basis: 100%; margin: 0; color: var(--tinta-2); font-size: .9rem; }
+#mensaje:empty { display: none; }
+main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.6rem; margin: 0 0 8px; }
+.guia { background: var(--papel); border-radius: 16px; padding: 4px 20px; margin-bottom: 24px; }
+.consulta { margin: 40px 0; scroll-margin-top: 110px; }
+.consulta h2 { font-size: 1.15rem; margin: 0 0 4px; }
+.pidio { color: var(--tinta-2); margin: 0 0 12px; }
+.opciones { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.opcion { background: var(--papel); border: 1px solid var(--linea); border-radius: 14px; padding: 14px 16px;
+  display: flex; flex-direction: column; scroll-margin-top: 110px; }
+.opcion.calificada { border-color: var(--acento); box-shadow: inset 4px 0 0 var(--acento); }
+.opcion h3 { font-size: 1.05rem; margin: 0 0 6px; }
+.opcion p, .opcion li { font-size: .92rem; margin: 4px 0; }
+.opcion ul { padding-left: 18px; margin: 6px 0; }
+.nota { color: var(--tinta-2); }
+fieldset { margin: auto 0 0; padding: 4px 0 0; border: 0; border-top: 1px solid var(--linea); }
+legend { font-weight: 600; font-size: .92rem; padding: 10px 0 2px; float: left; width: 100%; }
+fieldset label { display: flex; gap: 10px; align-items: center; padding: 5px 0; font-size: .95rem; clear: left;
+  cursor: pointer; }
+fieldset input[type=radio] { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--acento); }
+fieldset textarea { width: 100%; font: inherit; font-size: .9rem; padding: 6px 8px; margin-top: 4px;
+  border: 1px solid var(--linea); border-radius: 8px; background: var(--fondo); color: var(--tinta); }
+fieldset label.comentario { flex-direction: column; align-items: stretch; gap: 0; color: var(--tinta-2);
+  font-size: .9rem; cursor: auto; }
+@media print {
+  .barra { display: none; }
+  body { background: #fff; color: #000; }
+  .opcion { break-inside: avoid; }
+  .consulta h2 { break-after: avoid; }
+}
+</style></head><body>
+<header class='barra'><div class='barra__dentro'>
+<span id='progreso' role='status'>0 de 50 calificados</span>
+<button type='button' id='siguiente'>Siguiente<span class='ancho'> sin calificar</span></button>
+<button type='button' id='descargar' class='principal'>Descargar<span class='ancho'> mis calificaciones</span></button>
+<p id='mensaje' role='status'></p>
+</div></header><main>
+<h1>Calificar los viajes</h1>
+<div class='guia'>
+<p>Gracias por ayudarnos. Somos un equipo de UTEC que arma viajes por el Perú. Abajo hay 10 personas con un viaje en mente y, para cada una, de 3 a 7 viajes posibles: 50 en total, unos 20 minutos. Lee quién viaja y lo que pidió, y califica cada viaje por separado, pensando en esa persona: <b>2</b> si se lo recomendarías tal cual, <b>1</b> si podría servirle pero con reparos, <b>0</b> si no encaja. No hay respuestas correctas: nos importa tu opinión.</p>
+<p>Califica por tu cuenta, sin buscar los lugares en internet. El avance se guarda en este navegador. Cuando termines, pon tus iniciales, descarga tus calificaciones y mándanos el archivo.</p>
+<div class='tuyo'><label for='iniciales'>Tus iniciales</label>
+<input id='iniciales' maxlength='4' autocomplete='off' spellcheck='false'>
+<label class='boton'>Cargar un archivo<input type='file' id='cargar' accept='.csv,text/csv'></label>
+</div>
+<p class='nota'>★ imperdible: un lugar de jerarquía 3 o 4. Datos 2026.11.1, contrato 1.7, kit 490ffe47ecb4.</p>
+</div>
+<section class='consulta' id='c3'>
+<h2>3. Una familia de Lima con cuatro días en julio, que quiere historia y naturaleza, con S/ 700 por persona y un abuelo que no debe pasar de 3 500 m</h2>
+<p class='pidio'>Desde Lima · 4 días · julio · Historia y arqueología, Naturaleza · hasta S/ 700 por persona · sin pasar de 3 500 m</p>
+<div class='opciones'>
+<article class='opcion' id='c3-A'>
+<h3>A · Huancayo <span class='nota'>(Junín)</span></h3>
+<p>Se duerme en Huancayo, a 3 256 m. En bus de noche: sale a las 21:15 y llega a las 05:50, 8 h 33 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: ★ Convento de Santa Rosa de Ocopa, ★ Santuario Arqueológico de Wariwillka.</li>
+<li><b>Día 2</b>: El Paseo de los Héroes de Concepción, Plaza de Armas de Concepción, Museo Salesiano Vicente Rasetto, Museo de Sitio Wariwillka, Museo Casa Histórica Campaña de la Breña Pucará, Lugar de la Memoria Yalpana Wasi - Wiñay Yalpanapa. De noche: Estrellas en Observatorio Discovery.</li>
+<li><b>Día 3</b>: Puente Las Balsas de Concepción – Heroinas Toledo, Humedal de Kulta Kucha, Casa de Arte Leo Hilario, Mirador de la Zona Arqueológica de Shutoc, Mirador de Jerusalén de Orcotuna, Las Pampas de Sicaya.</li>
+<li><b>Día 4</b>: Plaza Huamanmarca, Las Siete Pozas de Shutoc, Museo Regional de Arqueología de Junín, Sitio Arqueológico de Arwaturo, Plaza Principal de Huayucachi.</li>
+</ul><p>De S/ 707 a S/ 945 por persona; lo más probable, S/ 829. Pasa el presupuesto por S/ 129.</p><p>Buen mes. Julio es temporada seca: 8 mm de lluvia en el mes.</p>
+<p>En esas fechas: Concurso Regional de Enfrenadura de Caballos Peruanos de Paso de Muqui; Escenificación de los Hechos Heroicos del 11 de Julio en Matahuasi; Fiesta de la Octava del Santiago Sicaíno.</p>
+<p class='nota'>Se duerme a 3 256 m en Huancayo. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Huancayo ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='3' data-opcion='A' data-zona='Huancayo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-B'>
+<h3>B · Cuzco <span class='nota'>(Cusco)</span></h3>
+<p>Se duerme en Cuzco, a 3 400 m. En avión (Lima–Cusco), 4 h 47 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: ★ Museo Histórico Regional, ★ Centro Histórico del Cusco.</li>
+<li><b>Día 2</b>: ★ Calle Hatunrumiyoc, ★ Sitio Arqueológico de Qoricancha, ★ Templo de San Pedro Apóstol de Andahuaylillas, ★ Zona Arqueologica de Moray. De noche: Estrellas en Planetarium Cusco.</li>
+<li><b>Día 3</b>: Monumento a Pachacuteq, Cementerio Museo Patrimonial de la Almudena Cusco, ★ Templo de la Compañía de Jesús, Andenes de Patata, Casa Hacienda del Marquez de Valleumbroso, ★ Parque Arqueológico de Tipon.</li>
+<li><b>Día 4</b>: Sitio Arqueológico de Kusicancha, Museo de Sitio Qoricancha.</li>
+</ul><p>De S/ 1 220 a S/ 1 513 por persona; lo más probable, S/ 1 369. Pasa el presupuesto por S/ 669.</p><p>Buen mes. Julio es temporada seca: 10 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festividad de la Virgen del Carmen de Huarocondo.</p>
+<p class='nota'>Se duerme a 3 400 m en Cuzco, y en avión se sube de golpe. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Cuzco ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='3' data-opcion='B' data-zona='Cuzco'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-C'>
+<h3>C · Huacho <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Huacho, a 35 m. Por carretera, 3 h 44 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Iglesia San Pedro Apóstol, ★ Ciudad Sagrada de Caral.</li>
+<li><b>Día 2</b>: ★ Fortaleza de Paramonga, ★ Sitio Arqueológico de Vichama, Balcón y Museo Histórico de Huaura, Museo Municipal de Hualmay, Casona Pittaluga, Taller Artesanal Chankay Namú.</li>
+<li><b>Día 3</b>: Zona Arqueológica Monumental de Peñico, Sitio Arqueológico Miraya, Zona Arqueológica Monumental Los Huacos, Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión, Club Casino Huacho, Plaza de Armas de Huacho.</li>
+<li><b>Día 4</b>: Playa Chorrillos de Huacho, Iglesia de Santa María.</li>
+</ul><p>De S/ 682 a S/ 922 por persona; lo más probable, S/ 804. Pasa el presupuesto por S/ 104.</p><p>Buen mes. Julio es temporada seca: 1 mm de lluvia en el mes.</p>
+<p>En esas fechas: Expo - Feria Luriama; Festividad de la Santísima Virgen del Carmen.</p>
+<fieldset data-consulta='3' data-opcion='C' data-zona='Huacho'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-D'>
+<h3>D · Oxapampa <span class='nota'>(Pasco)</span></h3>
+<p>Se duerme en Oxapampa, a 1 814 m. En bus de noche: sale a las 19:30 y llega a las 05:50, 10 h 17 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Parque Ecológico Ex Campo de Aterrizaje, Parque Temático de la Miel La Abeja Reina, Fundo Margarita, ★ Parque Nacional Yanachaga Chemillén Zona de Uso Turístico San Alberto, Casa Tradicional Hassinger Baumann Haus.</li>
+<li><b>Día 2</b>: Iglesia Matriz Santa Rosa de Oxapampa, Reserva de Biosfera Oxapampa-Asháninka-Yánesha, Taller de Artesanías La Collpa - Porre, Parque Temático Yanesha El Wakon, Plaza Principal de Oxapampa, Malecón Turístico del Río Chorobamba. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Catarata Río Tigre, Parque de Miraflores - Oxapampa, Mirador Centro Histórico Cultural Asháninka - Yánesha, Cementerio Los Colonos - Huancabamba, Plaza Principal de Huancabamba, Centro Yanachaga.</li>
+<li><b>Día 4</b>: Área de Conservación Privada Bosque de Churumazú, Museo Vintage Años Dorados, Maripoxa Parque Ecobiologico de Oxapampa, Casa Museo Schlaefli, Manantial de la Virgen.</li>
+</ul><p>De S/ 663 a S/ 890 por persona; lo más probable, S/ 779. Pasa el presupuesto por S/ 79.</p><p>Buen mes. Julio trae algo de lluvia (114 mm), sin ser de los meses más lluviosos de la zona.</p>
+<p>En esas fechas: Fiestas Patronales en Honor a San Pedro y San Pablo; Fiesta Patronal en Honor a la Virgen del Carmen de Huancabamba.</p>
+<fieldset data-consulta='3' data-opcion='D' data-zona='Oxapampa'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-E'>
+<h3>E · Huaraz <span class='nota'>(Áncash)</span></h3>
+<p>Se duerme en Huaraz, a 3 061 m. En bus de noche: sale a las 21:30 y llega a las 06:00, 8 h 26 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: Piscicultura de la Dirección Sub-Regional de Producción - Huaraz, Mirador Natural 24 de Junio, ★ Museo Arqueológico de Áncash Augusto Soriano Infante.</li>
+<li><b>Día 2</b>: Monumento Histórico Puente Calicanto “San Gerónimo” - Huaraz, Rocódromo de los Olivos - Independencia, Baños Termales de Monterrey, Monumento Arquológico de Willkawain, Complejo Arqueológico Ichic Willcawain, Monumento Arqueológico Intangible Waullac.</li>
+<li><b>Día 3</b>: Plaza de Armas de Huaraz, Calle José Olaya - Huaraz, Cascada de Chekza - Independencia, Quebrada Honda.</li>
+<li><b>Día 4</b>: Baños Termales de Olleros, Gruta de San Patricio, Mirador de Rataquenua, Sitio Arqueológico Pumacayán - Huaraz, Catedral de Huaraz.</li>
+</ul><p>De S/ 683 a S/ 912 por persona; lo más probable, S/ 799. Pasa el presupuesto por S/ 99.</p><p>Buen mes. Julio es temporada seca: 30 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festival Ticapampa Pisco Sour Town.</p>
+<p class='nota'>Se duerme a 3 061 m en Huaraz. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Huaraz ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='3' data-opcion='E' data-zona='Huaraz'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-E' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-E' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-E' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-F'>
+<h3>F · Paracas <span class='nota'>(Ica)</span></h3>
+<p>Se duerme en Paracas, a 8 m. Por carretera, 4 h 17 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plazuela del Desembarco de Don José de San Martín, Humedales de Pisco Playa 2-Alameda., Sala de Exhibición del Sitio Arqueológico “Tambo Colorado”, ★ Museo de Sitio Julio C. Tello de Paracas.</li>
+<li><b>Día 2</b>: Bahía de Paracas, El Candelabro de Paracas, ★ Reserva Nacional de Paracas.</li>
+<li><b>Día 3</b>: ★ Islas Ballestas - Rnsiipg.</li>
+<li><b>Día 4</b>: Playa Yumaque-Paracas.</li>
+</ul><p>De S/ 665 a S/ 890 por persona; lo más probable, S/ 780. Pasa el presupuesto por S/ 80.</p><p>Buen mes. Julio es temporada seca: 0 mm de lluvia en el mes.</p>
+<fieldset data-consulta='3' data-opcion='F' data-zona='Paracas'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-F' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-F' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-F' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c3-G'>
+<h3>G · Trujillo <span class='nota'>(La Libertad)</span></h3>
+<p>Se duerme en Trujillo, a 37 m. En bus de noche: sale a las 20:00 y llega a las 06:00, 9 h 57 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Basílica Menor Catedral de Santa María - Catedral de Trujillo, Cerro Cabras - Sector La Esperanza, Museo de Sitio Chan Chan, ★ Complejo Arqueológico Chan Chan, Los Totorales de Huanchaco, Iglesia Nuestra Señora de Monserrat.</li>
+<li><b>Día 2</b>: Santuario de Nuestra Señora del Socorro de Huanchaco, Campiña de Moche, ★ Huacas del Sol y la Luna, Museo Santiago Uceda Castillo, Convento Santo Tomás de Villanueva de Trujillo, Casa Natal de Victor Raúl Haya de la Torre – Centro Cultural del Banco de la Nación.</li>
+<li><b>Día 3</b>: Plaza Mayor de Trujillo, ★ Centro Histórico de Trujillo, Museo de Zoología “Juan Ormea Rodríguez” de la Universidad Nacional de Trujillo, Seminario de San Carlos y San Marcelo, Muelle de Huanchaco, Huaca Arco Iris.</li>
+<li><b>Día 4</b>: Arzobispado de Trujillo, Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco), Museo de Arte Moderno Gerardo Chávez, Paseo Temático “Fertilidad Moche”, Iglesia Santa Rita de Cascia - Trujillo, Casa Urquiaga o Calonge.</li>
+</ul><p>De S/ 722 a S/ 948 por persona; lo más probable, S/ 837. Pasa el presupuesto por S/ 137.</p><p>Buen mes. Julio es temporada seca: 0 mm de lluvia en el mes.</p>
+<fieldset data-consulta='3' data-opcion='G' data-zona='Trujillo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c3-G' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c3-G' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c3-G' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c14'>
+<h2>14. Una señora de Lima a la que la altura le cae mal: tres días de arquitectura e historia en noviembre, sin pasar de 2 500 m</h2>
+<p class='pidio'>Desde Lima · 3 días · noviembre · Arquitectura urbana, Historia y arqueología · sin pasar de 2 500 m</p>
+<div class='opciones'>
+<article class='opcion' id='c14-A'>
+<h3>A · Huacho <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Huacho, a 35 m. Por carretera, 3 h 44 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plaza de Armas de Huacho, Club Casino Huacho, ★ Ciudad Sagrada de Caral.</li>
+<li><b>Día 2</b>: Mirador Cristo Redentor de Barranca, ★ Fortaleza de Paramonga, ★ Sitio Arqueológico de Vichama, Museo Municipal de Hualmay, Iglesia San Pedro Apóstol, Casona Pittaluga.</li>
+<li><b>Día 3</b>: Taller Artesanal Chankay Namú, Museo Arqueológico “Arturo Ruiz Estrada” - Universidad Nacional José Faustino Sánchez Carrión, Iglesia de Vilca-Huaura, Iglesia de Santa María.</li>
+</ul><p>De S/ 517 a S/ 688 por persona; lo más probable, S/ 605.</p><p>Buen mes. Noviembre es temporada seca: 2 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festival de la Salchicha Huachana.</p>
+<fieldset data-consulta='14' data-opcion='A' data-zona='Huacho'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c14-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c14-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c14-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c14-B'>
+<h3>B · Nasca <span class='nota'>(Ica)</span></h3>
+<p>Se duerme en Nasca, a 593 m. En bus de noche: sale a las 22:00 y llega a las 05:55, 7 h 53 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Centro Ceremonial Cahuachi, ★ Líneas y Geoglifos de Nasca y Palpa, Acueducto de Achaco, Geoglifos Las Agujas de Cantayoq, Acueducto de Cantayo.</li>
+<li><b>Día 2</b>: Acueducto de Aja o Puquio de Aja, Líneas y Geoglifos de Palpa, Museo de Palpa, Puente Colgante Inca, Complejo Arqueológico Tumbas de la Muña, Museo Maria Reiche.</li>
+<li><b>Día 3</b>: Acueducto de Ocongalla, Geoglifos El Telar de Buena Fe, Centro Administrativo Inca Los Paredones, Necrópolis de Chauchilla.</li>
+</ul><p>De S/ 619 a S/ 795 por persona; lo más probable, S/ 711.</p><p>Buen mes. Noviembre es temporada seca: 0 mm de lluvia en el mes.</p>
+<fieldset data-consulta='14' data-opcion='B' data-zona='Nasca'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c14-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c14-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c14-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c14-C'>
+<h3>C · Trujillo <span class='nota'>(La Libertad)</span></h3>
+<p>Se duerme en Trujillo, a 37 m. En bus de noche: sale a las 20:00 y llega a las 06:00, 9 h 57 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Basílica Menor Catedral de Santa María - Catedral de Trujillo, Museo de Sitio Chan Chan, ★ Complejo Arqueológico Chan Chan, Muelle de Huanchaco, Convento Santo Tomás de Villanueva de Trujillo, Casa Urquiaga o Calonge.</li>
+<li><b>Día 2</b>: Museo de Arqueologia, Antropologia e Historia de la Universidad Nacional de Trujillo (Casa Risco), Museo Santiago Uceda Castillo, Museo de Arte Moderno Gerardo Chávez, Casa Natal de Victor Raúl Haya de la Torre – Centro Cultural del Banco de la Nación, Plaza Mayor de Trujillo, ★ Centro Histórico de Trujillo.</li>
+<li><b>Día 3</b>: Arzobispado de Trujillo, Paseo Temático “Fertilidad Moche”, ★ Huacas del Sol y la Luna, Seminario de San Carlos y San Marcelo, Iglesia Santa Rita de Cascia - Trujillo, Iglesia Nuestra Señora de Monserrat.</li>
+</ul><p>De S/ 559 a S/ 719 por persona; lo más probable, S/ 640.</p><p>Buen mes. Noviembre es temporada seca: 3 mm de lluvia en el mes.</p>
+<p>En esas fechas: Fiesta Patronal en Honor a la Santísima Virgen María Inmaculada Concepción, Reina, Patrona y Alcaldesa Perpetua de Salaverry.</p>
+<fieldset data-consulta='14' data-opcion='C' data-zona='Trujillo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c14-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c14-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c14-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c14-D'>
+<h3>D · Chiclayo <span class='nota'>(Lambayeque)</span></h3>
+<p>Se duerme en Chiclayo, a 35 m. En bus de noche: sale a las 19:00 y llega a las 08:45, 13 h 44 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Palacio Municipal de Chiclayo, Parque Principal de Chiclayo, Plaza de Armas de Lambayeque, Iglesia San Pedro de Lambayeque, Capilla de San Francisco de Asís, ★ Museo Tumbas Reales de Sipán.</li>
+<li><b>Día 2</b>: Catedral de Chiclayo, Plazuela Elías Aguirre, Muelle de Pimentel, Casa Museo Jose Abelardo Quiñones Gonzáles, Iglesia San Pedro de Monsefú, Santuario del Divino Niño del Milagro.</li>
+<li><b>Día 3</b>: Portada de la Iglesia de Nuestra Señora de las Mercedes de Saña, Capilla del Santuario Santo Toribio de Mogrovejo de Saña, Convento San Agustín., Ex Casa Hacienda de Cayalti, Complejo Arqueológico Huaca Rajada - Sipán, Sitio Arqueológico Huaca Ventarrón.</li>
+</ul><p>De S/ 584 a S/ 754 por persona; lo más probable, S/ 669.</p><p>Buen mes. Noviembre es temporada seca: 6 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festividad Patronal en Honor al Señor de los Milagros; Escenificación de la Travesía y Desembargo de Ñaimlap; Festival de la Yuca de Nueva Arica y 1 más.</p>
+<fieldset data-consulta='14' data-opcion='D' data-zona='Chiclayo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c14-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c14-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c14-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c15'>
+<h2>15. Unos amigos de Lima que quieren playa un fin de semana de enero</h2>
+<p class='pidio'>Desde Lima · 2 días · enero · Playa</p>
+<div class='opciones'>
+<article class='opcion' id='c15-A'>
+<h3>A · Huacho <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Huacho, a 35 m. Por carretera, 3 h 44 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plaza de Armas de Huacho, Club Casino Huacho, ★ Ciudad Sagrada de Caral.</li>
+<li><b>Día 2</b>: Casona Pittaluga, Iglesia San Pedro Apóstol, Museo Municipal de Hualmay, Iglesia de Santa María, ★ Sitio Arqueológico de Vichama.</li>
+</ul><p>De S/ 302 a S/ 400 por persona; lo más probable, S/ 352.</p><p>Buen mes. Enero es temporada seca: 11 mm de lluvia en el mes.</p>
+<p class='nota'>La ida y la vuelta se llevan 7 h 28 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='15' data-opcion='A' data-zona='Huacho'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c15-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c15-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c15-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c15-B'>
+<h3>B · Huarmey <span class='nota'>(Áncash)</span></h3>
+<p>Se duerme en Huarmey, a 11 m. Por carretera, 5 h 38 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Monumento Arqueológico: Mausoleo Imperial El Castillo de Huarmey.</li>
+<li><b>Día 2</b>: Mirador La Catedral (Cachemero).</li>
+</ul><p>De S/ 261 a S/ 357 por persona; lo más probable, S/ 309.</p><p>Buen mes. Enero es temporada seca: 9 mm de lluvia en el mes.</p>
+<p class='nota'>La ida y la vuelta se llevan 11 h 16 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='15' data-opcion='B' data-zona='Huarmey'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c15-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c15-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c15-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c15-C'>
+<h3>C · Paracas <span class='nota'>(Ica)</span></h3>
+<p>Se duerme en Paracas, a 8 m. Por carretera, 4 h 17 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: El Muelle Fiscal de Pisco, Boulevard Turístico de San Andrés, ★ Museo de Sitio Julio C. Tello de Paracas., Bahía de Paracas.</li>
+<li><b>Día 2</b>: Playa El Chaco - Paracas.</li>
+</ul><p>De S/ 282 a S/ 377 por persona; lo más probable, S/ 330.</p><p>Buen mes. Enero es temporada seca: 4 mm de lluvia en el mes.</p>
+<p class='nota'>La ida y la vuelta se llevan 8 h 34 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='15' data-opcion='C' data-zona='Paracas'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c15-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c15-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c15-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c15-D'>
+<h3>D · Nasca <span class='nota'>(Ica)</span></h3>
+<p>Se duerme en Nasca, a 593 m. En bus de noche: sale a las 22:00 y llega a las 05:55, 7 h 53 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Centro Ceremonial Cahuachi, ★ Líneas y Geoglifos de Nasca y Palpa, Acueducto de Achaco, Geoglifos Las Agujas de Cantayoq, Acueducto de Cantayo.</li>
+<li><b>Día 2</b>: Palpa, Pueblo Histórico y Tradicional, El Manantial de la Maquina, Complejo Arqueológico Tumbas de la Muña, Puente Colgante Inca, Líneas y Geoglifos de Palpa, Museo Maria Reiche.</li>
+</ul><p>De S/ 445 a S/ 559 por persona; lo más probable, S/ 504.</p><p>Buen mes. Enero es temporada seca: 26 mm de lluvia en el mes.</p>
+<fieldset data-consulta='15' data-opcion='D' data-zona='Nasca'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c15-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c15-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c15-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c18'>
+<h2>18. Una pareja en el Cusco con cuatro días de agosto para naturaleza y caminatas</h2>
+<p class='pidio'>Desde Cusco · 4 días · agosto · Naturaleza, Caminatas</p>
+<div class='opciones'>
+<article class='opcion' id='c18-A'>
+<h3>A · Ilo <span class='nota'>(Moquegua)</span></h3>
+<p>Se duerme en Ilo, a 22 m. En bus de noche: sale a las 19:00 y llega a las 09:05, 14 h 01 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Muelle Fiscal - Ilo, Glorieta José Gálvez - Ilo, ★ Malecón Costero- Ilo, ★ Fundo de Olivos Poquera, Bodega Lapenta Sac, ★ Fundo de Olivos Olive Corp (Chiviquina).</li>
+<li><b>Día 2</b>: ★ Iglesia de San Jerónimo - Ilo, Caleta Puerto Inglés - Ilo, ★ Punta Coles - Rnsiipg, Fundo La Pampita de el Algarrobal - D&#x27;Ilo, Bodega Mendoza.</li>
+<li><b>Día 3</b>: Dunas Pampa Salinas - Ilo, Valle El Algarrobal, Fundo Chucarapi, Fundo El Algodonal - Chiriwasi.</li>
+<li><b>Día 4</b>: Playa Boca del Río - Ilo, Fundo La Huerta, Playa del Diablo - Ilo.</li>
+</ul><p>De S/ 659 a S/ 889 por persona; lo más probable, S/ 775.</p><p>Buen mes. Agosto es temporada seca: 2 mm de lluvia en el mes.</p>
+<fieldset data-consulta='18' data-opcion='A' data-zona='Ilo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c18-B'>
+<h3>B · Yanque <span class='nota'>(Arequipa)</span></h3>
+<p>Se duerme en Yanque, a 3 428 m. En bus de noche: sale a las 21:30 y llega a las 05:50, 8 h 17 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Mirador de la Cruz del Condor, Mirador de Tapay, Mirador de Antahuilque Bajo, Pueblo de Chivay, Puente Inca, ★ Valle del Colca.</li>
+<li><b>Día 2</b>: Rio Colca-Sector Yanque, Tumbas de Lamparashi, Pueblo de Yanque, Anfiteatro de Occolle, Templo de los Santos Reyes, Plaza Principal de Yanque. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Mirador de Tapay, Laguna de Tres Colores, Pueblo de Madrigal, Baños Termales de Chacapi.</li>
+<li><b>Día 4</b>: Tumbas Shininea, Pueblo de Coporaque, Capilla San Sebastian, Complejo Arqueologico de Uyo Uyo.</li>
+</ul><p>De S/ 702 a S/ 936 por persona; lo más probable, S/ 821.</p><p>Buen mes. Agosto es temporada seca: 4 mm de lluvia en el mes.</p>
+<p>En esas fechas: La Q’Ocha Fiesta.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Mirador de la Cruz del Condor, a 3 780 m.</p>
+<p class='nota'>Se duerme a 3 428 m en Yanque. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.</p>
+<fieldset data-consulta='18' data-opcion='B' data-zona='Yanque'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c18-C'>
+<h3>C · Arequipa <span class='nota'>(Arequipa)</span></h3>
+<p>Se duerme en Arequipa, a 2 347 m. En bus de noche: sale a las 20:00 y llega a las 06:00, 9 h 57 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: La Mansión del Fundador, Bodega Don Fito, Canteras de Sillar de Añashuayco, Mirador de Yanahuara, Zona Monumental de Yanahuara, ★ Centro Historico de Arequipa.</li>
+<li><b>Día 2</b>: Plaza de Armas de Arequipa, Iglesia y Museo de la Recoleta, Iglesia San Juan Bautista de Yanahuara, Valle de Chilina, Parque Ecologico de las Rocas de Chilina, ★ Monasterio de Santa Catalina.</li>
+<li><b>Día 3</b>: Petroglifos de Curlaca, Santuario de la Virgen de Chapi, Complejo Arqueológico de Churajón, Mirador del Cerro Sonccomarca, Casa Tristan del Pozo.</li>
+<li><b>Día 4</b>: Basílica Catedral de Arequipa, Mirador de Sachaca, Pueblo de Uchumayo, Bodega Torre de la Gala, Petroglifos de la Caldera, Puente de Fierro.</li>
+</ul><p>De S/ 772 a S/ 1 012 por persona; lo más probable, S/ 894.</p><p>Buen mes. Agosto es temporada seca: 0 mm de lluvia en el mes.</p>
+<p>En esas fechas: Tradicional Entrada de Ccapo del Distrito de Cayma; Festival de la Sencca; La Fiesta de la Chicha.</p>
+<fieldset data-consulta='18' data-opcion='C' data-zona='Arequipa'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c18-D'>
+<h3>D · Puno <span class='nota'>(Puno)</span></h3>
+<p>Se duerme en Puno, a 3 830 m. En bus de noche: sale a las 22:30 y llega a las 05:55, 7 h 21 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Mirador Natural Cerro Azoguini, Laguna Umayo, ★ Complejo Arqueológico de Sillustani, Mirador Puma Uta, ★ Parque Pino, La Casa del Corregidor.</li>
+<li><b>Día 2</b>: ★ Arco Deustua, Peninsula de Capachica, Putucos, ★ Cerrito Huajsapata.</li>
+<li><b>Día 3</b>: Sitio Arqueológico de Molloco, Chullpa de Qinariri- Comunidad Thunco, Piscicultura de Chucuito - Centro de Investigación y Producción Pesquera de Chucuito., Mercado Artesanal del Puerto Muelle de Puno, Puerto Muelle de Puno, Iglesia San Juan Bautista - Santuario Virgen de la Candelaria.</li>
+<li><b>Día 4</b>: Basilica Menor de la Catedral de Puno, ★ Museo Municipal Carlos Dreyer, Mirador Kuntur Wasi, Chucuito Ciudad de las Cajas Reales, Centro de Interpretación de Eco Artesanías de Totora Titikaka Chimu, ★ Plaza Mayor de Puno.</li>
+</ul><p>De S/ 783 a S/ 1 030 por persona; lo más probable, S/ 911.</p><p>Buen mes. Agosto es temporada seca: 8 mm de lluvia en el mes. Las noches bajan de cero en la base (-0 °C).</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Mirador Natural Cerro Azoguini, a 4 075 m.</p>
+<p class='nota'>Se duerme a 3 830 m en Puno. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.</p>
+<fieldset data-consulta='18' data-opcion='D' data-zona='Puno'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c18-E'>
+<h3>E · Miraflores <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Miraflores, a 94 m. En avión (Cusco–Lima), 5 h 03 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Museo de Historia Natural de la Universidad Nacional Mayor de San Marcos, ★ Parque de la Reserva - Circuito Mágico del Agua.</li>
+<li><b>Día 2</b>: Parque El Olivar, Parque de la Exposición de Lima, ★ Iglesia y Convento de Santo Domingo de Lima, ★ Plaza Mayor de Lima, ★ Centro Histórico de Lima, Malecón de la Reserva de Miraflores.</li>
+<li><b>Día 3</b>: ★ Centro Comercial Larcomar, Parque Bicentenario de Miraflores, ★ Paseo Sáenz Peña, Plazuela Chabuca Granda, ★ Biblioteca Municipal Manuel Beingolea, ★ Humedales de los Pantanos de Villa.</li>
+<li><b>Día 4</b>: Zona Arqueológica Monumental Huaca Pucllana, Puente de los Suspiros.</li>
+</ul><p>De S/ 1 004 a S/ 1 284 por persona; lo más probable, S/ 1 147.</p><p>Buen mes. Agosto es temporada seca: 1 mm de lluvia en el mes.</p>
+<p>En esas fechas: Fiesta Patronal del Santísimo Salvador de Pachacámac; Festividad de Santa Rosa de Lima.</p>
+<fieldset data-consulta='18' data-opcion='E' data-zona='Miraflores'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-E' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-E' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-E' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c18-F'>
+<h3>F · Kimbiri <span class='nota'>(Cusco)</span></h3>
+<p>Se duerme en Kimbiri, a 580 m. En bus de noche: sale a las 19:00 y llega a las 07:50, 12 h 50 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: El Río Apurímac - Sector Kimbiri, Rio Kimbiri, Piscigranja Municipal de Sibayllohuato., Pacaq Rumi, Mirador Natural de Anaro, Museo de Insectos “ a María y José”.</li>
+<li><b>Día 2</b>: Plaza Mayor de la Pacificación de Kimbiri, Catarata Esmeralda del Vraem, Cascada El Amor, Piscigranja Municipal de Pichari, Cañon del Diablo - Valle Kimpiri, Mirador Villa Real. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Rio Pichari, Cascada Inka Paqcha, Bosque de Bambú, Mirador Natural de Buenos Aires, Sitio Paleontológico de Nueva Alianza.</li>
+<li><b>Día 4</b>: Plaza de Armas de Pichari, Cascada El Mirador, Catarata Victoria, Balneario de Omaya.</li>
+</ul><p>De S/ 641 a S/ 870 por persona; lo más probable, S/ 757.</p><p>Buen mes. Agosto trae algo de lluvia (74 mm), sin ser de los meses más lluviosos de la zona.</p>
+<p>En esas fechas: Aniversario de Creación Política de Pichari y Festival Internacional de la Coca - Vrae.</p>
+<fieldset data-consulta='18' data-opcion='F' data-zona='Kimbiri'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c18-F' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c18-F' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c18-F' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c21'>
+<h2>21. Una familia de Arequipa con tres días de julio para la naturaleza</h2>
+<p class='pidio'>Desde Arequipa · 3 días · julio · Naturaleza</p>
+<div class='opciones'>
+<article class='opcion' id='c21-A'>
+<h3>A · Puno <span class='nota'>(Puno)</span></h3>
+<p>Se duerme en Puno, a 3 830 m. Por carretera, 5 h 56 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: ★ Plaza Mayor de Puno, Mercado Artesanal del Puerto Muelle de Puno, Puerto Muelle de Puno.</li>
+<li><b>Día 2</b>: ★ Parque Pino, Peninsula de Capachica, ★ Cerrito Huajsapata, ★ Complejo Arqueológico de Sillustani, ★ Arco Deustua.</li>
+<li><b>Día 3</b>: La Casa del Corregidor, Mirador Natural Cerro Azoguini.</li>
+</ul><p>De S/ 478 a S/ 642 por persona; lo más probable, S/ 562.</p><p>Buen mes. Julio es temporada seca: 9 mm de lluvia en el mes. Las noches bajan de cero en la base (-1 °C).</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Mirador Natural Cerro Azoguini, a 4 075 m.</p>
+<p class='nota'>Se duerme a 3 830 m en Puno. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Puno ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<p class='nota'>La ida y la vuelta se llevan 11 h 52 de tus 3 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='21' data-opcion='A' data-zona='Puno'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c21-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c21-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c21-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c21-B'>
+<h3>B · Yanque <span class='nota'>(Arequipa)</span></h3>
+<p>Se duerme en Yanque, a 3 428 m. Por carretera, 3 h 55 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: Mirador de Antahuilque Bajo, Templo Nuestra Señora de la Asuncion, Puente Inca, ★ Valle del Colca.</li>
+<li><b>Día 2</b>: Pueblo de Chivay, Plaza Principal de Chivay, Mirador de Tapay, Mirador de Tapay, Mirador de la Cruz del Condor, Baños Termales de Chacapi. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Tumbas de Lamparashi, Rio Colca-Sector Yanque, Plaza Principal de Yanque.</li>
+</ul><p>De S/ 499 a S/ 663 por persona; lo más probable, S/ 582.</p><p>Buen mes. Julio es temporada seca: 6 mm de lluvia en el mes.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Mirador de la Cruz del Condor, a 3 780 m.</p>
+<p class='nota'>Se duerme a 3 428 m en Yanque. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Yanque ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='21' data-opcion='B' data-zona='Yanque'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c21-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c21-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c21-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c21-C'>
+<h3>C · Ilo <span class='nota'>(Moquegua)</span></h3>
+<p>Se duerme en Ilo, a 22 m. Por carretera, 4 h 35 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Fundo Chucarapi, ★ Fundo de Olivos Poquera.</li>
+<li><b>Día 2</b>: ★ Iglesia de San Jerónimo - Ilo, Muelle Fiscal - Ilo, Glorieta José Gálvez - Ilo, ★ Malecón Costero- Ilo, Caleta Puerto Inglés - Ilo, ★ Punta Coles - Rnsiipg.</li>
+<li><b>Día 3</b>: Bodega Lapenta Sac, ★ Fundo de Olivos Olive Corp (Chiviquina).</li>
+</ul><p>De S/ 403 a S/ 560 por persona; lo más probable, S/ 484.</p><p>Buen mes. Julio es temporada seca: 2 mm de lluvia en el mes.</p>
+<fieldset data-consulta='21' data-opcion='C' data-zona='Ilo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c21-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c21-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c21-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c21-D'>
+<h3>D · Cuzco <span class='nota'>(Cusco)</span></h3>
+<p>Se duerme en Cuzco, a 3 400 m. En bus de noche: sale a las 20:00 y llega a las 06:00, 10 h de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: Plaza de Armas del Cusco, ★ Parque Arqueológico Nacional de Saqsaywaman, ★ Centro Histórico del Cusco.</li>
+<li><b>Día 2</b>: Andenes de Larapa, Andenes de Patata, Humedal de Lucre- Huacarpay, ★ Templo de San Pedro Apóstol de Andahuaylillas, Río Vilcanota Tramo Ccachabamba - Piñipampa, ★ Templo San Juan Bautista de Huaro. De noche: Estrellas en Planetarium Cusco.</li>
+<li><b>Día 3</b>: ★ Templo de la Compañía de Jesús, ★ Calle Hatunrumiyoc, Sitio Arqueológico de Pukapukara, Cascada Pajchayoq, Pachacútec Bosque Andino – Observatorio de Picaflores, ★ Templo y Convento de la Merced.</li>
+</ul><p>De S/ 676 a S/ 840 por persona; lo más probable, S/ 759.</p><p>Buen mes. Julio es temporada seca: 10 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festividad de la Virgen del Carmen de Huarocondo.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Sitio Arqueológico de Pukapukara, a 3 764 m.</p>
+<p class='nota'>Se duerme a 3 400 m en Cuzco. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Cuzco ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='21' data-opcion='D' data-zona='Cuzco'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c21-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c21-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c21-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c24'>
+<h2>24. Un aventurero de Arequipa con seis días de mayo, que no quiere pasar de 4 000 m</h2>
+<p class='pidio'>Desde Arequipa · 6 días · mayo · Aventura · sin pasar de 4 000 m</p>
+<div class='opciones'>
+<article class='opcion' id='c24-A'>
+<h3>A · Miraflores <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Miraflores, a 94 m. En avión (Arequipa–Lima), 5 h 28 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Centro Histórico de Lima.</li>
+<li><b>Día 2</b>: ★ Islas Cavinzas e Islotes Palomino - Rnsiipg.</li>
+<li><b>Día 3</b>: ★ Zona Arqueológica Monumental Huaca Huallamarca, ★ Parque de la Reserva - Circuito Mágico del Agua, Plaza Manco Cápac, Mirador del Cerro San Cristóbal, Malecón Cisneros de Miraflores, Casa de Raul Porras Barrenechea.</li>
+<li><b>Día 4</b>: Templo de San Francisco de Asís, Plazuela Chabuca Granda, Puente de los Suspiros, Mirador Catalina Recavarren, Malecón de la Reserva de Miraflores, Parque Raimondi de Miraflores.</li>
+<li><b>Día 5</b>: ★ Iglesia y Convento de Santo Domingo de Lima, ★ Plaza Mayor de Lima, Zona Monumental de Pueblo Libre, ★ Paseo Sáenz Peña, ★ Centro Comercial Larcomar, Parque Alfredo Salazar.</li>
+<li><b>Día 6</b>: Plaza San Francisco, ★ Biblioteca Municipal Manuel Beingolea, Malecón de Barranco, Parque Domodossola.</li>
+</ul><p>De S/ 1 525 a S/ 1 995 por persona; lo más probable, S/ 1 757.</p><p>Buen mes. Mayo es temporada seca: 1 mm de lluvia en el mes.</p>
+<p>En esas fechas: Fiestas de las Cruces de Carabayllo; Feria de Museos de Lima.</p>
+<fieldset data-consulta='24' data-opcion='A' data-zona='Miraflores'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c24-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c24-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c24-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c24-B'>
+<h3>B · Nasca <span class='nota'>(Ica)</span></h3>
+<p>Se duerme en Nasca, a 593 m. En bus de noche: sale a las 19:45 y llega a las 06:00, 10 h 11 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Museo de Palpa, Acueducto de Ocongalla, ★ Líneas y Geoglifos de Nasca y Palpa.</li>
+<li><b>Día 2</b>: Acueducto de Cantayo, Geoglifos Las Agujas de Cantayoq, Centro Administrativo Inca Los Paredones, Museo Maria Reiche, Palpa, Pueblo Histórico y Tradicional.</li>
+<li><b>Día 3</b>: Líneas y Geoglifos de Palpa, Complejo Arqueológico Tumbas de la Muña, El Manantial de la Maquina, Cañón de los Perdidos, Puente Colgante Inca.</li>
+<li><b>Día 4</b>: Geoglifos El Telar de Buena Fe, Necrópolis de Chauchilla, ★ Centro Ceremonial Cahuachi.</li>
+<li><b>Día 5</b>: Cara del Inca., Reserva Nacional San Fernando - Sector Puerto Caballa.</li>
+<li><b>Día 6</b>: Acueducto de Aja o Puquio de Aja, Acueducto de Achaco, Paisaje Arqueológico Santuario del Dios Paracas, Petroglifos de Chichictara, Paisaje Arqueologico Telar de Sacramento - Reloj Solar.</li>
+</ul><p>De S/ 1 305 a S/ 1 728 por persona; lo más probable, S/ 1 526.</p><p>Buen mes. Mayo es temporada seca: 1 mm de lluvia en el mes.</p>
+<fieldset data-consulta='24' data-opcion='B' data-zona='Nasca'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c24-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c24-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c24-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c24-C'>
+<h3>C · Yanque <span class='nota'>(Arequipa)</span></h3>
+<p>Se duerme en Yanque, a 3 428 m. Por carretera, 3 h 55 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: Pueblo de Yanque, Puente Inca, ★ Valle del Colca.</li>
+<li><b>Día 2</b>: Laguna de Tres Colores, Mirador de Tapay, Mirador de Tapay, Iglesia Santa Ana de Maca, Pueblo de Chivay, Plaza Principal de Yanque.</li>
+<li><b>Día 3</b>: Templo de los Santos Reyes, Plaza Principal de Maca, Pueblo de Cabanaconde, Mirador de Antahuilque Bajo, Templo Nuestra Señora de la Asuncion, Pueblo de Sacsayhuaman.</li>
+<li><b>Día 4</b>: Templo de la Inmaculada Concepción, Anfiteatro de Occolle, Plaza Principal de Chivay, Chullpas de Sacsayhuaman, Capilla San Sebastian, Rio Colca-Sector Yanque.</li>
+<li><b>Día 5</b>: Museo Juanita, Mirador de la Cruz del Condor, Tumbas de Lamparashi, Templo San Juan Bautista de Ichupampa, Templo Apostol Santiago de Coporaque, Centro Cultural Colca de Coporaque.</li>
+<li><b>Día 6</b>: Complejo Arqueologico de Uyo Uyo.</li>
+</ul><p>De S/ 976 a S/ 1 346 por persona; lo más probable, S/ 1 162.</p><p>Buen mes. Mayo es temporada seca: 18 mm de lluvia en el mes.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Mirador de la Cruz del Condor, a 3 780 m.</p>
+<p class='nota'>Se duerme a 3 428 m en Yanque. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Yanque ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='24' data-opcion='C' data-zona='Yanque'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c24-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c24-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c24-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c24-D'>
+<h3>D · Íllimo <span class='nota'>(Lambayeque)</span></h3>
+<p>Se duerme en Íllimo, a 56 m. En avión (Arequipa–Lima, Lima–Chiclayo), 9 h 10 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Salida de Arequipa a las 07:00: 8 h 05 hasta Chiclayo, con los vuelos Arequipa–Lima y Lima–Chiclayo; se duerme en Chiclayo.</li>
+<li><b>Día 2</b>: Casa de Don Federico Villarreal, Julián Bravo Taller Artesanal, ★ Museo de Sitio Túcume, ★ Santuario Histórico Bosque de Pómac.</li>
+<li><b>Día 3</b>: Iglesia Santa Lucía de Ferreñafe, Plaza de Armas de Ferreñafe, ★ Reserva Ecológica de Chaparrí.</li>
+<li><b>Día 4</b>: Parque Principal de Pacora Alfredo Bilmer Paz Solis, Iglesia Matriz de Jayanca, ★ Complejo Arqueológico Túcume, Taller de Susana Bances, Complejo Arqueologico Sicán.</li>
+<li><b>Día 5</b>: Iglesia San Pedro de Túcume, Iglesia San Pablo de Pacora, Ex Casa Hacienda de la Viña, Complejo Arqueológico Jotoro, Taller Artesanal y Casa Vivencial Fibras Nativas, Taller Arte Ancestral.</li>
+<li><b>Día 6</b>: Vuelta a Arequipa: 8 h 05, con los vuelos Chiclayo–Lima y Lima–Arequipa.</li>
+</ul><p>De S/ 2 322 a S/ 2 858 por persona; lo más probable, S/ 2 594.</p><p>Buen mes. Mayo es temporada seca: 9 mm de lluvia en el mes.</p>
+<p>En esas fechas: Fiesta de San Isidro El Labrador de Ferreñafe.</p>
+<fieldset data-consulta='24' data-opcion='D' data-zona='Íllimo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c24-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c24-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c24-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c24-E'>
+<h3>E · Huaraz <span class='nota'>(Áncash)</span></h3>
+<p>Se duerme en Huaraz, a 3 061 m. En avión (Arequipa–Lima, Lima–Huaraz), 8 h de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Salida de Arequipa a las 07:00; 8 h de puerta a puerta hasta Huaraz: con los vuelos Arequipa–Lima y Lima–Huaraz, y el resto por carretera.</li>
+<li><b>Día 2</b>: Santuario del Señor de la Soledad - Huaraz, ★ Quebrada Quilcayhuanca, Calle José Olaya - Huaraz, Mirador de Rataquenua, Plaza de Armas de Huaraz, ★ Museo Arqueológico de Áncash Augusto Soriano Infante.</li>
+<li><b>Día 3</b>: Monumento Histórico Puente Calicanto “San Gerónimo” - Huaraz, Rocódromo de los Olivos - Independencia, ★ Quebrada Ulta, Monumento Arqueológico Intangible Waullac.</li>
+<li><b>Día 4</b>: Mirador Natural 24 de Junio, Piscicultura de la Dirección Sub-Regional de Producción - Huaraz, Complejo Arqueológico Ichic Willcawain, Monumento Arquológico de Willkawain, Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan, Cerro Hualón.</li>
+<li><b>Día 5</b>: Catedral de Huaraz, Laguna Antacocha - Recuay, Pueblo de Recuay, Mirador de Montebello, Gruta de San Patricio.</li>
+<li><b>Día 6</b>: Vuelta a Arequipa: 8 h de puerta a puerta, con los vuelos Huaraz–Lima y Lima–Arequipa.</li>
+</ul><p>De S/ 2 357 a S/ 2 900 por persona; lo más probable, S/ 2 632.</p><p>Buen mes. Mayo trae algo de lluvia (84 mm), sin ser de los meses más lluviosos de la zona.</p>
+<p>En esas fechas: Festividad del Señor de la Soledad - Huaraz.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan, a 3 996 m.</p>
+<p class='nota'>Se duerme a 3 061 m en Huaraz. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse, y en avión se nota más: conviene un primer día tranquilo.</p>
+<fieldset data-consulta='24' data-opcion='E' data-zona='Huaraz'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c24-E' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c24-E' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c24-E' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c29'>
+<h2>29. Unos amigos de Piura que quieren playa un fin de semana de febrero</h2>
+<p class='pidio'>Desde Piura · 2 días · febrero · Playa</p>
+<div class='opciones'>
+<article class='opcion' id='c29-A'>
+<h3>A · Máncora <span class='nota'>(Tumbes)</span></h3>
+<p>Se duerme en Máncora, a 8 m. Por carretera, 3 h 38 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Playa Punta Sal.</li>
+<li><b>Día 2</b>: ★ Playa Cancas.</li>
+</ul><p>De S/ 288 a S/ 385 por persona; lo más probable, S/ 337.</p><p>Mes desaconsejado. Febrero es plena temporada de lluvias: 224 mm, de los tres meses más lluviosos de la zona.</p>
+<p>En esas fechas: Los Carnavales de Cancas.</p>
+<p class='nota'>La ida y la vuelta se llevan 7 h 16 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='29' data-opcion='A' data-zona='Máncora'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c29-B'>
+<h3>B · Íllimo <span class='nota'>(Lambayeque)</span></h3>
+<p>Se duerme en Íllimo, a 56 m. Por carretera, 3 h 41 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Santuario Histórico Bosque de Pómac.</li>
+<li><b>Día 2</b>: Iglesia Matriz de Jayanca, ★ Complejo Arqueológico Túcume, ★ Museo de Sitio Túcume.</li>
+</ul><p>De S/ 297 a S/ 392 por persona; lo más probable, S/ 346.</p><p>Mes con advertencia. Febrero es de los tres meses más lluviosos de la zona (68 mm), aunque llueve poco.</p>
+<p>En esas fechas: Danza La Divina Estrella; Carnaval de Illimo y Sus Yunzas; Carnaval Costeño Pacorano Antiguo y 3 más.</p>
+<p class='nota'>La ida y la vuelta se llevan 7 h 22 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='29' data-opcion='B' data-zona='Íllimo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c29-C'>
+<h3>C · Colán <span class='nota'>(Piura)</span></h3>
+<p>Se duerme en Colán, a 7 m. Por carretera, 1 h 33 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Playa Colán, Iglesia San Lucas de Colán, Puerto de Paita, Plaza de Armas de Paita, Santuario de Nuestra Señora de las Mercedes.</li>
+<li><b>Día 2</b>: Caleta La Islilla, Edificio Ex Aduana de Paita, Mirador Turistico Rinconada, Mirador Turístico La Cruz, Los Molinos de Viento de Miramar, Iglesia Matriz de Sagrado Corazón de Jesús.</li>
+</ul><p>De S/ 294 a S/ 398 por persona; lo más probable, S/ 348.</p><p>Buen mes. Febrero es temporada seca: 34 mm de lluvia en el mes.</p>
+<fieldset data-consulta='29' data-opcion='C' data-zona='Colán'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c29-D'>
+<h3>D · Los Órganos <span class='nota'>(Piura)</span></h3>
+<p>Se duerme en Los Órganos, a 9 m. Por carretera, 3 h 23 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Bulevar Turistico de Máncora, Malecón Turístico Los Órganos, ★ Playa Los Órganos.</li>
+<li><b>Día 2</b>: ★ Playa Punta Balcones.</li>
+</ul><p>De S/ 332 a S/ 443 por persona; lo más probable, S/ 391.</p><p>Mes con advertencia. Febrero es de los tres meses más lluviosos de la zona (65 mm), aunque llueve poco.</p>
+<p class='nota'>La ida y la vuelta se llevan 6 h 46 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='29' data-opcion='D' data-zona='Los Órganos'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c29-E'>
+<h3>E · Tumbes <span class='nota'>(Tumbes)</span></h3>
+<p>Se duerme en Tumbes, a 9 m. Por carretera, 5 h 19 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Sala de Exhibición - Salón de la Victoria., Mirador Natural Cerro Blanco - Tumbes.</li>
+<li><b>Día 2</b>: Paseo Jerusalén, Plazuela Bolognesi de Tumbes, Boulevard de la Madre, Plaza Mayor de Tumbes, Iglesia Matriz San Nicolas de Tolentino.</li>
+</ul><p>De S/ 283 a S/ 380 por persona; lo más probable, S/ 333.</p><p>Mes desaconsejado. Febrero es plena temporada de lluvias: 169 mm, de los tres meses más lluviosos de la zona.</p>
+<p class='nota'>La ida y la vuelta se llevan 10 h 38 de tus 2 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='29' data-opcion='E' data-zona='Tumbes'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-E' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-E' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-E' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c29-F'>
+<h3>F · Trujillo <span class='nota'>(La Libertad)</span></h3>
+<p>Se duerme en Trujillo, a 37 m. En bus de noche: sale a las 22:00 y llega a las 05:50, 7 h 50 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plaza Mayor de Trujillo, ★ Centro Histórico de Trujillo, ★ Complejo Arqueológico Chan Chan, Muelle de Huanchaco, ★ Balneario de Huanchaco, Iglesia Nuestra Señora de Monserrat.</li>
+<li><b>Día 2</b>: Basílica Menor Catedral de Santa María - Catedral de Trujillo, Iglesia Santa Rita de Cascia - Trujillo, Seminario de San Carlos y San Marcelo, Playa Las Delicias, ★ Huacas del Sol y la Luna, Arzobispado de Trujillo.</li>
+</ul><p>De S/ 319 a S/ 417 por persona; lo más probable, S/ 367.</p><p>Buen mes. Febrero es temporada seca: 26 mm de lluvia en el mes.</p>
+<p>En esas fechas: El Carnaval de Conache.</p>
+<fieldset data-consulta='29' data-opcion='F' data-zona='Trujillo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c29-F' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c29-F' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c29-F' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c31'>
+<h2>31. Una familia de Iquitos con cuatro días de setiembre para la naturaleza</h2>
+<p class='pidio'>Desde Iquitos · 4 días · setiembre · Naturaleza</p>
+<div class='opciones'>
+<article class='opcion' id='c31-A'>
+<h3>A · Nauta <span class='nota'>(Loreto)</span></h3>
+<p>Se duerme en Nauta, a 101 m. Por carretera, 1 h 57 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Centro Poblado San Juaquin de Omaguas, Laguna de Sapi Sapi.</li>
+<li><b>Día 2</b>: Quebrada Zaragoza, Quebrada Playa del Amor. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Día libre en Nauta.</li>
+<li><b>Día 4</b>: Vuelta a Iquitos: 1 h 57 por carretera.</li>
+</ul><p>De S/ 505 a S/ 725 por persona; lo más probable, S/ 618.</p><p>Mes con advertencia. Setiembre es lluvioso aquí (156 mm), aunque no de los peores meses de la zona.</p>
+<p class='nota'>Queda un día libre en Nauta: no hay más paradas que quepan con lo que pediste.</p>
+<fieldset data-consulta='31' data-opcion='A' data-zona='Nauta'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c31-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c31-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c31-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c31-B'>
+<h3>B · Miraflores <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Miraflores, a 94 m. En avión (Iquitos–Lima), 5 h 42 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Biblioteca Municipal Manuel Beingolea, Plaza San Francisco, ★ Parque de la Reserva - Circuito Mágico del Agua.</li>
+<li><b>Día 2</b>: Parque El Olivar, Parque de la Exposición de Lima, ★ Iglesia y Convento de Santo Domingo de Lima, ★ Plaza Mayor de Lima, ★ Centro Histórico de Lima, ★ Centro Comercial Larcomar.</li>
+<li><b>Día 3</b>: Parque Bicentenario de Miraflores, Malecón Armendáriz de Miraflores, ★ Paseo Sáenz Peña, Puente de los Suspiros, ★ Humedales de los Pantanos de Villa.</li>
+<li><b>Día 4</b>: Museo de Historia Natural de la Universidad Nacional Mayor de San Marcos.</li>
+</ul><p>De S/ 1 271 a S/ 1 677 por persona; lo más probable, S/ 1 473.</p><p>Buen mes. Setiembre es temporada seca: 2 mm de lluvia en el mes.</p>
+<fieldset data-consulta='31' data-opcion='B' data-zona='Miraflores'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c31-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c31-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c31-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c31-C'>
+<h3>C · Mazán <span class='nota'>(Loreto)</span></h3>
+<p>Se duerme en Mazán, a 94 m. Por carretera y en bote, 2 h 54 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Pueblo de Mazan.</li>
+<li><b>Día 2</b>: Pueblo de Indiana, Isla de los Monos. De noche: Noche de estrellas.</li>
+<li><b>Día 3</b>: Día libre en Mazán.</li>
+<li><b>Día 4</b>: Vuelta a Iquitos: 2 h 54 por carretera y en bote.</li>
+</ul><p>De S/ 530 a S/ 752 por persona; lo más probable, S/ 642.</p><p>Mes con advertencia. Setiembre es lluvioso aquí (160 mm), aunque no de los peores meses de la zona.</p>
+<p class='nota'>Queda un día libre en Mazán: no hay más paradas que quepan con lo que pediste.</p>
+<fieldset data-consulta='31' data-opcion='C' data-zona='Mazán'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c31-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c31-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c31-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c33'>
+<h2>33. Una pareja de Huancayo con cuatro días de noviembre para naturaleza y caminatas</h2>
+<p class='pidio'>Desde Huancayo · 4 días · noviembre · Naturaleza, Caminatas</p>
+<div class='opciones'>
+<article class='opcion' id='c33-A'>
+<h3>A · Huaraz <span class='nota'>(Áncash)</span></h3>
+<p>Se duerme en Huaraz, a 3 061 m. En bus de noche: sale a las 19:00 y llega a las 09:30, 14 h 26 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Mirador de Rataquenua, ★ Parque Nacional Huascarán.</li>
+<li><b>Día 2</b>: Plaza de Armas de Huaraz, Monumento Histórico Puente Calicanto “San Gerónimo” - Huaraz, Rocódromo de los Olivos - Independencia, Piscicultura de la Dirección Sub-Regional de Producción - Huaraz, ★ Quebrada Quilcayhuanca, Mirador Natural 24 de Junio.</li>
+<li><b>Día 3</b>: ★ Quebrada Ulta, Monumento Arqueológico Intangible Waullac, Catedral de Huaraz, ★ Museo Arqueológico de Áncash Augusto Soriano Infante.</li>
+<li><b>Día 4</b>: Laguna Willcacocha Huaraz, Cerro Hualón, Camino Prehispánico: Segmentos Urpay - Acopampa, Huilca - Punta Callán, Tramo Huaraz – Casma del Qhapac Ñan, Mirador Natural Punta Callan, Calle José Olaya - Huaraz, Santuario del Señor de la Soledad - Huaraz.</li>
+</ul><p>De S/ 771 a S/ 1 013 por persona; lo más probable, S/ 896.</p><p>Mes con advertencia. Noviembre es lluvioso aquí (186 mm), aunque no de los peores meses de la zona.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Parque Nacional Huascarán, a 4 453 m.</p>
+<p class='nota'>Se duerme a 3 061 m en Huaraz. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.</p>
+<fieldset data-consulta='33' data-opcion='A' data-zona='Huaraz'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-B'>
+<h3>B · Ayacucho <span class='nota'>(Ayacucho)</span></h3>
+<p>Se duerme en Ayacucho, a 2 750 m. Por carretera, 6 h 24 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Capilla del Panteon, Mirador Turístico Acuchimay, Templo Colonial de San Juan Bautista.</li>
+<li><b>Día 2</b>: Don Sapo, ★ Complejo Arqueológico Wari, ★ Santuario Histórico de la Pampa de Ayacucho.</li>
+<li><b>Día 3</b>: Casa Castilla y Zamora, El Túnel del Tren de la Asociación Agroforestal de Huaranjales, Mirador 3 Cruces de Vueltaccpata, Plaza de Armas de Huanta, Bosque de Usqu Willka.</li>
+<li><b>Día 4</b>: Plaza Mayor de Ayacucho, Mirador Cruz de la Paz.</li>
+</ul><p>De S/ 597 a S/ 824 por persona; lo más probable, S/ 714.</p><p>Buen mes. Noviembre trae algo de lluvia (63 mm), sin ser de los meses más lluviosos de la zona.</p>
+<p>En esas fechas: Wawa Pampay; Feria de Todos Los Santos.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Bosque de Usqu Willka, a 3 640 m.</p>
+<p class='nota'>Se duerme a 2 750 m en Ayacucho. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.</p>
+<p class='nota'>La ida y la vuelta se llevan 12 h 48 de tus 4 días: con más días, el viaje rinde más.</p>
+<fieldset data-consulta='33' data-opcion='B' data-zona='Ayacucho'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-C'>
+<h3>C · Kimbiri <span class='nota'>(Cusco)</span></h3>
+<p>Se duerme en Kimbiri, a 580 m. En bus de noche: sale a las 20:00 y llega a las 05:55, 9 h 52 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plaza Mayor de la Pacificación de Kimbiri, Rio Pichari, Plaza de Armas de Pichari, Catarata Ángela, Sitio Paleontológico de Nueva Alianza, Rio Kimbiri.</li>
+<li><b>Día 2</b>: Cascada La Encantada, Cascada Piscina Natural de Nogalpampa, Bosque de Bambú, Rio Apurimac Sector Pichari, El Río Apurímac - Sector Kimbiri.</li>
+<li><b>Día 3</b>: Catarata Esmeralda del Vraem, Piscigranja Municipal de Sibayllohuato., Cascada Inka Paqcha, Mirador Natural de Buenos Aires, Museo de Insectos “ a María y José”.</li>
+<li><b>Día 4</b>: Cañon del Diablo - Valle Kimpiri, Mirador Villa Real, Cascada El Amor, Piscigranja Municipal de Pichari, Pacaq Rumi, Mirador Natural de Anaro.</li>
+</ul><p>De S/ 651 a S/ 885 por persona; lo más probable, S/ 770.</p><p>Mes con advertencia. Noviembre es lluvioso aquí (212 mm), aunque no de los peores meses de la zona.</p>
+<fieldset data-consulta='33' data-opcion='C' data-zona='Kimbiri'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-D'>
+<h3>D · Jauja <span class='nota'>(Junín)</span></h3>
+<p>Se duerme en Jauja, a 3 392 m. Por carretera, 1 h 11 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Laguna de Paca, Mirador de la Moneda de Tunan Marca, Plaza Principal de Tunan Marca, Qhapaq Ñan - Sección de Camino Hatun Xauxa-Hatun Chaka, Mirador Cerro Bandera de Muqui, Puente Histórico de Turumanya.</li>
+<li><b>Día 2</b>: Sais Tupac Amaru de Pachacayo, ★ Reserva Paisajística Nor Yauyos Cochas, Museo y Centro Holístico Cultural Musuq Kausay, Iglesia Matriz de Jauja.</li>
+<li><b>Día 3</b>: Quebrada de Tranka, Catarata del Tingo, Paraje de Punku Machay y Hornos de Catalina Wanka, Cascada de Quero.</li>
+<li><b>Día 4</b>: Zona Arqueológica Jisse – Hatun Malka, Caverna de Tambo Machay, Sitio Arqueológico de Tunan Marca.</li>
+</ul><p>De S/ 619 a S/ 856 por persona; lo más probable, S/ 741.</p><p>Buen mes. Noviembre trae algo de lluvia (121 mm), sin ser de los meses más lluviosos de la zona.</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Paraje de Punku Machay y Hornos de Catalina Wanka, a 4 056 m.</p>
+<p class='nota'>Se duerme a 3 392 m en Jauja. Si llegas desde la costa, el cuerpo tarda uno o dos días en acostumbrarse: conviene un primer día tranquilo.</p>
+<fieldset data-consulta='33' data-opcion='D' data-zona='Jauja'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-E'>
+<h3>E · Miraflores <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Miraflores, a 94 m. En bus de noche: sale a las 21:15 y llega a las 06:00, 8 h 43 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Malecón de la Reserva de Miraflores, Malecón Armendáriz de Miraflores, Puente de los Suspiros, ★ Parque de la Reserva - Circuito Mágico del Agua, Museo de Historia Natural de la Universidad Nacional Mayor de San Marcos, Zona Arqueológica Monumental Huaca Pucllana.</li>
+<li><b>Día 2</b>: Parque El Olivar, Parque de la Exposición de Lima, ★ Iglesia y Convento de Santo Domingo de Lima, ★ Plaza Mayor de Lima, Mirador del Cerro San Cristóbal, ★ Centro Histórico de Lima. De noche: Estrellas en Observatorio Víctor Estremadoyro.</li>
+<li><b>Día 3</b>: ★ Centro Comercial Larcomar, Parque Bicentenario de Miraflores, ★ Paseo Sáenz Peña, Plazuela Chabuca Granda, ★ Biblioteca Municipal Manuel Beingolea, ★ Humedales de los Pantanos de Villa.</li>
+<li><b>Día 4</b>: ★ Islas Cavinzas e Islotes Palomino - Rnsiipg.</li>
+</ul><p>De S/ 641 a S/ 863 por persona; lo más probable, S/ 755.</p><p>Buen mes. Noviembre es temporada seca: 1 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festival de la Fresa.</p>
+<fieldset data-consulta='33' data-opcion='E' data-zona='Miraflores'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-E' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-E' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-E' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-F'>
+<h3>F · Huacho <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Huacho, a 35 m. En bus de noche: sale a las 19:45 y llega a las 05:50, 10 h 05 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Plaza de Armas de Huacho, Mirador Cristo Redentor de Barranca, ★ Fortaleza de Paramonga, ★ Ciudad Sagrada de Caral, Casona Pittaluga, Club Casino Huacho.</li>
+<li><b>Día 2</b>: ★ Sitio Arqueológico de Vichama, Caleta San Martín de Végueta, Iglesia de Santa María, Museo Municipal de Hualmay, Iglesia San Pedro Apóstol, Balneario Ecoturístico La Costanera.</li>
+<li><b>Día 3</b>: Taller Artesanal Chankay Namú, Playa Hornillos, Albúfera El Paraíso, Zona Arqueológica Monumental Bandurria.</li>
+<li><b>Día 4</b>: Reserva Nacional Sistema de Islas, Islotes y Puntas Guaneras – Isla Don Martín, Área de Conservación Regional Albufera de Medio Mundo.</li>
+</ul><p>De S/ 729 a S/ 968 por persona; lo más probable, S/ 851.</p><p>Buen mes. Noviembre es temporada seca: 2 mm de lluvia en el mes.</p>
+<p>En esas fechas: Festival de la Salchicha Huachana.</p>
+<fieldset data-consulta='33' data-opcion='F' data-zona='Huacho'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-F' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-F' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-F' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c33-G'>
+<h3>G · La Merced <span class='nota'>(Junín)</span></h3>
+<p>Se duerme en La Merced, a 777 m. Por carretera, 3 h 45 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Casa Hacienda El Naranjal, Mirador Montañas de Bosques Encantados, Catarata La Borgoña.</li>
+<li><b>Día 2</b>: Jardín Botánico El Perezoso, Parque Temático El Duende, Plaza Principal de Villa Rica, Finca Aroma de Montaña, ★ Cascada El León.</li>
+<li><b>Día 3</b>: Plaza Mayor de San Ramón, Jardín Etnobotánico Semilla Bendita, Fundo D&#x27;Fortuna, Piscina Natural de Palmapata, Comunidad Nativa Shipibo Konibo Shawan Rama.</li>
+<li><b>Día 4</b>: Catedral de San Ramón, Zoologico Zhaveta Yard.</li>
+</ul><p>De S/ 722 a S/ 957 por persona; lo más probable, S/ 843.</p><p>Mes con advertencia. Noviembre es lluvioso aquí (228 mm), aunque no de los peores meses de la zona.</p>
+<fieldset data-consulta='33' data-opcion='G' data-zona='La Merced'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c33-G' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c33-G' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c33-G' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+<section class='consulta' id='c39'>
+<h2>39. Una pareja de Tarapoto con cuatro días de agosto para naturaleza y aventura</h2>
+<p class='pidio'>Desde Tarapoto · 4 días · agosto · Naturaleza, Aventura</p>
+<div class='opciones'>
+<article class='opcion' id='c39-A'>
+<h3>A · Cerro de Pasco <span class='nota'>(Pasco)</span></h3>
+<p>Se duerme en Cerro de Pasco, a 4 340 m. En bus de noche: sale a las 19:00 y llega a las 09:30, 14 h 28 de puerta a puerta.</p><ul>
+<li><b>Día 1 (tranquilo, por la altura)</b>: Monumento a la Columna de Pasco (Soldado Desconocido), Templo San Juan Pampa, Virgen del Carmen de Tingo Palca, Gruta del Señor de Puncuy, Capilla del Señor de Exaltación.</li>
+<li><b>Día 2</b>: Lagunas de Cuchis de Quiulacocha, Fundición Minera Colonial de Kuchis, Iglesia Inmaculada Concepción de Vicco, ★ Santuario Nacional de Huayllay, Torre de Reloj de Campana de Yanacancha, Parque Universitario de Yanacancha.</li>
+<li><b>Día 3</b>: ★ Reserva Nacional de Junín, Cerro Ratarmachay, Capilla Virgen del Tránsito, Centro Interpretativo Minera de Pasco.</li>
+<li><b>Día 4</b>: Centro de Producción Agropecuaria San Antonio de Rancas, Laguna Malanincocha y Su Isla de los Conejos, ★ Sitio Arqueológico Prehispánico Huarautambo.</li>
+</ul><p>De S/ 786 a S/ 1 034 por persona; lo más probable, S/ 915.</p><p>Buen mes. Agosto es temporada seca: 35 mm de lluvia en el mes. Las noches bajan de cero en la base (-2 °C).</p>
+<p class='nota'>Hay paradas a más de 3 500 m: la más alta, Santuario Nacional de Huayllay, a 4 546 m.</p>
+<p class='nota'>Se duerme a 4 340 m en Cerro de Pasco. El día 1 es tranquilo: medio día de visitas como mucho, sin subir más de 500 m sobre Cerro de Pasco ni caminatas largas, para que el cuerpo se acostumbre.</p>
+<fieldset data-consulta='39' data-opcion='A' data-zona='Cerro de Pasco'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c39-A' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c39-A' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c39-A' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c39-B'>
+<h3>B · Moyobamba <span class='nota'>(San Martín)</span></h3>
+<p>Se duerme en Moyobamba, a 874 m. Por carretera, 2 h 22 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Embarcadero Turístico de Tahuishco, Mirador Punta de Tahuishco, Casa del Artesano de Rioja, Boulevard Turístico Quillosisa, ★ Morro de Calzada.</li>
+<li><b>Día 2</b>: Las Pozas de Juningue, Jardín Zoobotánico Amazonía, ★ Reserva Ecológica Tingana.</li>
+<li><b>Día 3</b>: Plaza de Armas de Moyobamba, Centro Cultural Moyobamba (Cumo), Sendero Quiscarrumi, Centro de Conservación Waqanki, Cascada de Asnacyacu, El Aguajal Laguna El Doreo.</li>
+<li><b>Día 4</b>: Plaza de la Cultura de Nueva Cajamarca, Mariposario Morpho Azul, Cueva de Palestina, Naciente del Río Tioyacu.</li>
+</ul><p>De S/ 700 a S/ 940 por persona; lo más probable, S/ 822.</p><p>Buen mes. Agosto trae algo de lluvia (53 mm), sin ser de los meses más lluviosos de la zona.</p>
+<fieldset data-consulta='39' data-opcion='B' data-zona='Moyobamba'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c39-B' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c39-B' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c39-B' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c39-C'>
+<h3>C · Miraflores <span class='nota'>(Lima)</span></h3>
+<p>Se duerme en Miraflores, a 94 m. En avión (Tarapoto–Lima), 5 h 04 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: Parque El Olivar, Zona Monumental de Pueblo Libre, ★ Parque de la Reserva - Circuito Mágico del Agua.</li>
+<li><b>Día 2</b>: ★ Centro Comercial Larcomar, Museo de Historia Natural de la Universidad Nacional Mayor de San Marcos, Parque de la Exposición de Lima, ★ Iglesia y Convento de Santo Domingo de Lima, ★ Plaza Mayor de Lima, ★ Centro Histórico de Lima.</li>
+<li><b>Día 3</b>: Parque Domodossola, Parque Bicentenario de Miraflores, Malecón de Barranco, ★ Paseo Sáenz Peña, ★ Biblioteca Municipal Manuel Beingolea, ★ Humedales de los Pantanos de Villa.</li>
+<li><b>Día 4</b>: Malecón de la Reserva de Miraflores, Malecón Cisneros de Miraflores.</li>
+</ul><p>De S/ 1 163 a S/ 1 521 por persona; lo más probable, S/ 1 343.</p><p>Buen mes. Agosto es temporada seca: 1 mm de lluvia en el mes.</p>
+<p>En esas fechas: Fiesta Patronal del Santísimo Salvador de Pachacámac; Festividad de Santa Rosa de Lima.</p>
+<fieldset data-consulta='39' data-opcion='C' data-zona='Miraflores'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c39-C' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c39-C' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c39-C' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+<article class='opcion' id='c39-D'>
+<h3>D · Íllimo <span class='nota'>(Lambayeque)</span></h3>
+<p>Se duerme en Íllimo, a 56 m. En bus de noche: sale a las 19:00 y llega a las 08:20, 13 h 19 de puerta a puerta.</p><ul>
+<li><b>Día 1</b>: ★ Complejo Arqueológico Túcume, ★ Santuario Histórico Bosque de Pómac.</li>
+<li><b>Día 2</b>: Iglesia Matriz de Jayanca, Complejo Arqueológico Huaca Bandera, Parque Principal de Pacora Alfredo Bilmer Paz Solis, Complejo Arqueologico Sicán, ★ Museo de Sitio Túcume.</li>
+<li><b>Día 3</b>: Reservorio Tinajones, ★ Reserva Ecológica de Chaparrí, Plaza de Armas de Ferreñafe.</li>
+<li><b>Día 4</b>: Refugio de Vida Silvestre de Laquipampa, Taller de Susana Bances, Julián Bravo Taller Artesanal.</li>
+</ul><p>De S/ 836 a S/ 1 091 por persona; lo más probable, S/ 969.</p><p>Buen mes. Agosto es temporada seca: 0 mm de lluvia en el mes.</p>
+<fieldset data-consulta='39' data-opcion='D' data-zona='Íllimo'><legend>¿Se lo recomendarías?</legend>
+<label><input type='radio' name='c39-D' value='2'> <b>2</b> · Sí, tal cual</label>
+<label><input type='radio' name='c39-D' value='1'> <b>1</b> · Puede servirle, con reparos</label>
+<label><input type='radio' name='c39-D' value='0'> <b>0</b> · No encaja</label>
+<label class='comentario'>Comentario, si quieres<textarea rows='2'></textarea></label>
+</fieldset></article>
+</div></section>
+</main><script type='application/json' id='kit'>{"huella": "490ffe47ecb4", "columnas": ["consulta", "opcion", "zona", "calificacion", "comentario"]}</script>
+<script>
+(function () {
+  "use strict";
+  var kit = JSON.parse(document.getElementById("kit").textContent);
+  var CLAVE = "dreemgo-externos-" + kit.huella;
+  var campos = Array.prototype.slice.call(document.querySelectorAll("fieldset[data-opcion]"));
+  var iniciales = document.getElementById("iniciales");
+  var progreso = document.getElementById("progreso");
+  var mensaje = document.getElementById("mensaje");
+  var estado = { iniciales: "", notas: {} };
+
+  function id(f) { return f.dataset.consulta + "-" + f.dataset.opcion; }
+  function leer() {
+    try { var e = JSON.parse(localStorage.getItem(CLAVE) || "null"); if (e && e.notas) estado = e; } catch (err) {}
+  }
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(estado)); } catch (err) {} }
+  function nota(f) { return estado.notas[id(f)] || { calificacion: "", comentario: "" }; }
+  function pintar(f) {
+    var n = nota(f);
+    f.querySelectorAll("input[type=radio]").forEach(function (r) { r.checked = r.value === n.calificacion; });
+    f.querySelector("textarea").value = n.comentario;
+    f.closest(".opcion").classList.toggle("calificada", n.calificacion !== "");
+  }
+  function contar() {
+    var hechas = campos.filter(function (f) { return nota(f).calificacion !== ""; }).length;
+    progreso.textContent = hechas + " de " + campos.length + " calificados";
+    return hechas;
+  }
+  var reloj = null;
+  function avisar(texto) {
+    mensaje.textContent = texto;
+    clearTimeout(reloj);
+    reloj = setTimeout(function () { mensaje.textContent = ""; }, 12000);
+  }
+  function viajes(n) { return n === 1 ? "1 viaje" : n + " viajes"; }
+  function cambiar(f) {
+    var marcada = f.querySelector("input[type=radio]:checked");
+    estado.notas[id(f)] = { calificacion: marcada ? marcada.value : "", comentario: f.querySelector("textarea").value };
+    f.closest(".opcion").classList.toggle("calificada", !!marcada);
+    guardar();
+    contar();
+  }
+  function celda(v) { v = String(v); return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function csv() {
+    var filas = [kit.columnas.join(";")];
+    campos.forEach(function (f) {
+      var n = nota(f);
+      filas.push([f.dataset.consulta, f.dataset.opcion, f.dataset.zona, n.calificacion, n.comentario.trim()]
+        .map(celda).join(";"));
+    });
+    return "﻿" + filas.join("\n") + "\n";
+  }
+  function quien() { return (estado.iniciales || "").replace(/[^A-Za-z]/g, "").toUpperCase(); }
+  function descargar() {
+    if (!quien()) {
+      avisar("Escribe tus iniciales, arriba de todo: van en el nombre del archivo.");
+      iniciales.scrollIntoView({ behavior: "smooth", block: "center" });
+      iniciales.focus({ preventScroll: true });
+      return;
+    }
+    var url = URL.createObjectURL(new Blob([csv()], { type: "text/csv;charset=utf-8" }));
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "externo_" + quien() + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    var faltan = campos.length - contar();
+    avisar(faltan
+      ? "Descargado. Falta" + (faltan === 1 ? " " : "n ") + viajes(faltan) + " por calificar: cuando termines, " +
+        "descárgalo otra vez."
+      : "Descargado, con todos los viajes calificados. Mándale el archivo a quien junta las planillas.");
+  }
+  function siguiente() {
+    var f = campos.find(function (c) { return nota(c).calificacion === ""; });
+    if (!f) { avisar("Ya calificaste todos los viajes."); return; }
+    f.closest(".opcion").scrollIntoView({ behavior: "smooth", block: "start" });
+    f.querySelector("input[type=radio]").focus({ preventScroll: true });
+  }
+  function filas(texto) {
+    var salida = [], fila = [], v = "", entre = false;
+    texto = texto.replace(/^﻿/, "");
+    for (var i = 0; i < texto.length; i++) {
+      var ch = texto[i];
+      if (entre) {
+        if (ch === '"' && texto[i + 1] === '"') { v += '"'; i++; }
+        else if (ch === '"') entre = false;
+        else v += ch;
+      } else if (ch === '"') entre = true;
+      else if (ch === ";") { fila.push(v); v = ""; }
+      else if (ch === "\n" || ch === "\r") {
+        if (ch === "\r" && texto[i + 1] === "\n") i++;
+        fila.push(v); salida.push(fila); fila = []; v = "";
+      } else v += ch;
+    }
+    if (v !== "" || fila.length) { fila.push(v); salida.push(fila); }
+    return salida;
+  }
+  function cargar(archivo) {
+    var lector = new FileReader();
+    lector.onload = function () {
+      var t = filas(String(lector.result));
+      var col = {};
+      (t.shift() || []).forEach(function (c, k) { col[c.trim()] = k; });
+      if (!kit.columnas.every(function (c) { return c in col; })) {
+        avisar("Ese archivo no es una planilla de este kit: le faltan columnas.");
+        return;
+      }
+      var zonas = {}, puestas = 0, distintas = 0;
+      campos.forEach(function (f) { zonas[id(f)] = f.dataset.zona; });
+      t.forEach(function (fila) {
+        var clave = (fila[col.consulta] || "").trim() + "-" + (fila[col.opcion] || "").trim();
+        if (!(clave in zonas)) return;
+        if (zonas[clave] !== (fila[col.zona] || "").trim()) { distintas++; return; }
+        var c = (fila[col.calificacion] || "").trim();
+        if (c !== "" && ["0", "1", "2"].indexOf(c) < 0) return;
+        estado.notas[clave] = { calificacion: c, comentario: fila[col.comentario] || "" };
+        if (c !== "") puestas++;
+      });
+      guardar();
+      campos.forEach(pintar);
+      contar();
+      var otros = distintas === 1 ? " no coincide y no se cargó." : " no coinciden y no se cargaron.";
+      avisar(distintas
+        ? "Ese archivo es de otro kit: " + viajes(distintas) + otros
+        : "Listo: " + (puestas === 1 ? "1 calificación cargada." : puestas + " calificaciones cargadas."));
+    };
+    lector.readAsText(archivo, "utf-8");
+  }
+
+  leer();
+  iniciales.value = estado.iniciales || "";
+  campos.forEach(function (f) {
+    pintar(f);
+    f.addEventListener("change", function () { cambiar(f); });
+    f.querySelector("textarea").addEventListener("input", function () { cambiar(f); });
+  });
+  iniciales.addEventListener("input", function () { estado.iniciales = iniciales.value.trim(); guardar(); });
+  document.getElementById("descargar").addEventListener("click", descargar);
+  document.getElementById("siguiente").addEventListener("click", siguiente);
+  document.getElementById("cargar").addEventListener("change", function (e) {
+    if (e.target.files[0]) cargar(e.target.files[0]);
+    e.target.value = "";
+  });
+  contar();
+})();
+</script></body></html>
