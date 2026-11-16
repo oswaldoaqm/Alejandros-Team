@@ -100,19 +100,19 @@
       "zonas_distintas": 29,
       "de": 194,
       "fuera_del_circuito": 0.75,
-      "novedad_media": 0.42701666666666666
+      "novedad_media": 0.4307283333333333
     },
     "guia": {
       "zonas_distintas": 36,
       "de": 194,
       "fuera_del_circuito": 0.6,
-      "novedad_media": 0.37323833333333334
+      "novedad_media": 0.3757991666666667
     },
     "variante": {
       "zonas_distintas": 33,
       "de": 194,
       "fuera_del_circuito": 0.8,
-      "novedad_media": 0.45969
+      "novedad_media": 0.463315
     }
   },
   "ndcg3_por_interes": {
@@ -200,19 +200,33 @@
     }
   },
   "motor_de_ahora": {
-    "version_datos": "2026.11.2",
-    "consultas_que_cambian": 29,
+    "version_datos": "2026.11.5",
+    "consultas_que_cambian": 32,
     "propuestas": 120,
-    "sin_nota_en_el_kit": 13,
-    "media_con_nota": 1.236760124610592,
+    "sin_nota_en_el_kit": 31,
+    "media_con_nota": 1.2584269662921348,
     "media_del_kit": 1.1666666666666667,
     "otro_primer_puesto": [
+      {
+        "consulta": 1,
+        "antes": "Huacho",
+        "nota_antes": 2.0,
+        "ahora": "Paracas",
+        "nota_ahora": null
+      },
       {
         "consulta": 6,
         "antes": "Huaraz",
         "nota_antes": 2.0,
         "ahora": "Puno",
         "nota_ahora": 0.6666666666666666
+      },
+      {
+        "consulta": 8,
+        "antes": "Huacho",
+        "nota_antes": 1.3333333333333333,
+        "ahora": "Chincha Alta",
+        "nota_ahora": 1.3333333333333333
       },
       {
         "consulta": 11,
@@ -222,11 +236,18 @@
         "nota_ahora": 1.0
       },
       {
-        "consulta": 13,
-        "antes": "Yanque",
-        "nota_antes": 1.3333333333333333,
-        "ahora": "Puno",
-        "nota_ahora": 0.6666666666666666
+        "consulta": 14,
+        "antes": "Trujillo",
+        "nota_antes": 2.0,
+        "ahora": "Huacho",
+        "nota_ahora": 1.6666666666666667
+      },
+      {
+        "consulta": 15,
+        "antes": "Huacho",
+        "nota_antes": 0.3333333333333333,
+        "ahora": "Paracas",
+        "nota_ahora": 2.0
       },
       {
         "consulta": 16,
@@ -271,18 +292,18 @@
         "nota_ahora": 1.6666666666666667
       },
       {
+        "consulta": 25,
+        "antes": "Miraflores",
+        "nota_antes": 1.6666666666666667,
+        "ahora": "Huacho",
+        "nota_ahora": 1.0
+      },
+      {
         "consulta": 29,
         "antes": "Trujillo",
         "nota_antes": 0.6666666666666666,
         "ahora": "Los Órganos",
         "nota_ahora": 1.3333333333333333
-      },
-      {
-        "consulta": 30,
-        "antes": "Huaraz",
-        "nota_antes": 1.6666666666666667,
-        "ahora": "Íllimo",
-        "nota_ahora": 1.0
       },
       {
         "consulta": 35,
@@ -295,15 +316,22 @@
         "consulta": 37,
         "antes": "Huaraz",
         "nota_antes": 1.6666666666666667,
-        "ahora": "Íllimo",
-        "nota_ahora": 1.3333333333333333
+        "ahora": "Piura",
+        "nota_ahora": null
+      },
+      {
+        "consulta": 38,
+        "antes": "Íllimo",
+        "nota_antes": 0.3333333333333333,
+        "ahora": "Huacho",
+        "nota_ahora": 0.3333333333333333
       },
       {
         "consulta": 40,
         "antes": "Puno",
         "nota_antes": 0.3333333333333333,
-        "ahora": "Cuzco",
-        "nota_ahora": 1.3333333333333333
+        "ahora": "Ayaviri",
+        "nota_ahora": null
       }
     ]
   }
