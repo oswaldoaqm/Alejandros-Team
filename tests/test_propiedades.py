@@ -90,6 +90,15 @@ def _la_noche(consulta: Consulta, ruta) -> None:
     assert sum(1 for d in noches if d.noche.tipo == "espectaculo") <= 1
 
 
+def _hospedajes(ruta) -> None:
+    """20. Hasta tres hospedajes, a 2 km o menos de la base, del más cercano al más lejano (desde 1.10)."""
+    h = ruta.polo.hospedajes
+    assert len(h) <= 3 and all(x.km <= 2 for x in h)
+    assert [x.km for x in h] == sorted(x.km for x in h)
+    if h:
+        event("algún hospedaje cerca")
+
+
 def _de_noche(consulta: Consulta, ruta, datos) -> None:
     """19. Un lugar que se ve de noche no es parada del día; con fecha, su noche cae en un día con función (desde
     1.9, decisión 0030)."""
@@ -303,6 +312,7 @@ def test_las_propiedades(consulta):
         _la_zona(consulta, ruta, datos)
         _las_entradas(ruta, datos)
         _de_noche(consulta, ruta, datos)
+        _hospedajes(ruta)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

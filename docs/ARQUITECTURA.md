@@ -1,6 +1,6 @@
 # Arquitectura, flujos e interfaz
 
-Estado al 15 de noviembre de 2026, con el [contrato 1.9](./CONTRATO.md) y los datos `2026.11.4`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
+Estado al 15 de noviembre de 2026, con el [contrato 1.10](./CONTRATO.md) y los datos `2026.11.5`. Este documento junta lo que antes estaba repartido entre el informe de cada semana, el [`README.md`](../README.md) y los README de cada carpeta, y se actualiza cuando cambia una pieza. El porqué de cada cosa está en las [decisiones](./decisiones/).
 
 DreemGO tiene cuatro partes. El pipeline baja fuentes abiertas y las convierte en archivos con versión. El motor carga esos archivos al arrancar y responde desde memoria, detrás de un API. La app web le pregunta al API y muestra los viajes. Y la evaluación mide lo que propone el motor con el mismo código que responde al API.
 
@@ -83,7 +83,7 @@ sequenceDiagram
     Note over M: 3. Puntaje: 70 % calidad (lo visitado, el mes, el presupuesto,<br/>el bus de noche y la noche) y 30 % novedad,<br/>mitad y mitad con «Sorpréndeme»
     Note over M: 4. Tres viajes, cada uno con su base
     Note over M: 5. Cada viaje: días con almuerzo y noche, costo P20 a P80,<br/>clima del mes, fiestas, avisos y motivos
-    M-->>A: JSON del contrato 1.9
+    M-->>A: JSON del contrato 1.10
     A-->>V: tres tarjetas para comparar
     V->>A: abre un viaje
     A-->>V: el plan día por día, el mapa y la hoja de cada lugar
@@ -100,7 +100,7 @@ flowchart TD
     a["pipeline/adquisicion/<br/>descargas, fuera de git"] --> b["pipeline.maestro y pipeline.eventos<br/>las fichas leídas campo por campo"]
     b --> c["pipeline.tiempos, vuelos y terminales<br/>la red vial, el tren, los botes, el avión y los terminales"]
     c --> d["pipeline.elevacion, clima, noche, cielo y comida"]
-    d --> e["pipeline.artefactos --version 2026.11.4<br/>dreemgo/datos/"]
+    d --> e["pipeline.artefactos --version 2026.11.5<br/>dreemgo/datos/"]
     e --> f["pytest: las propiedades sobre<br/>1 000 consultas al azar"]
     a --> g["pipeline.fotos y pipeline.destinos<br/>app/public/"]
 ```

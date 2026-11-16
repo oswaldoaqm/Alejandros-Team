@@ -513,7 +513,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.9
+             * @default 1.10
              */
             version_contrato: string;
             /** Version Datos */
@@ -523,6 +523,33 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * Hospedaje
+         * @description Un hospedaje con nombre cerca de la base, de OpenStreetMap (desde 1.10). Sin precio ni categoría.
+         */
+        Hospedaje: {
+            /**
+             * Km
+             * @description En línea recta desde la base.
+             */
+            km: number;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Nombre */
+            nombre: string;
+            /**
+             * Osm
+             * @description El objeto de OpenStreetMap, para buscarlo.
+             */
+            osm: string;
+            /**
+             * Tipo
+             * @enum {string}
+             */
+            tipo: "hotel" | "albergue" | "hospedaje" | "motel" | "departamento";
         };
         /** Indicadores */
         Indicadores: {
@@ -744,7 +771,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.9
+             * @default 1.10
              */
             version_contrato: string;
             /** Version Datos */
@@ -782,6 +809,11 @@ export interface components {
              * @description Ningún recurso del polo está en Lima ni en Cusco.
              */
             fuera_del_circuito: boolean;
+            /**
+             * Hospedajes
+             * @description Desde 1.10: hasta tres hospedajes con nombre a 2 km o menos de la base, del más cercano al más lejano. Vacía si OpenStreetMap no tiene ninguno.
+             */
+            hospedajes?: components["schemas"]["Hospedaje"][];
             /** Id */
             id: number;
             /**
@@ -829,7 +861,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.9
+             * @default 1.10
              */
             version_contrato: string;
             /** Version Datos */
@@ -934,7 +966,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.9
+             * @default 1.10
              */
             version_contrato: string;
             /**
@@ -976,7 +1008,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.9
+             * @default 1.10
              */
             version_contrato: string;
             /**

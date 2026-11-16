@@ -63,6 +63,7 @@ from dreemgo.contrato import (
     Dia,
     Estacionalidad,
     Evento,
+    Hospedaje,
     Indicadores,
     Parada,
     Polo,
@@ -540,6 +541,7 @@ def polo_publico(polo: PoloDatos) -> Polo:
         base=Punto(nombre=b["nombre"], lat=b["lat"], lon=b["lon"], altitud_m=b["altitud_m"]),
         recursos=polo.recursos,
         fuera_del_circuito=polo.fuera_del_circuito,
+        hospedajes=[Hospedaje(**h) for h in b.get("hospedajes") or []],
     )
 
 

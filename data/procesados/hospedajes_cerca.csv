@@ -1,0 +1,412 @@
+﻿polo;nombre;tipo;km;lat;lon;osm
+0;Watson;hotel;0.1;-9.297879;-76.001075;node/11782110269
+0;Hotel Eduardo;hotel;0.23;-9.299404;-76.002156;node/7156325899
+0;Hospedaje Mieses;albergue;0.23;-9.300056;-76.001586;node/5479126927
+1;Hospedaje San José;motel;0.03;-5.376638;-79.606275;node/8152055056
+1;Hospedaje Don Félix;motel;0.04;-5.376595;-79.606545;node/8152055057
+1;Hospedaje la Piuranita;hotel;0.04;-5.37616;-79.605945;way/984472437
+2;Hostal Plaza;albergue;0.03;-7.156416;-78.517149;node/1881741390
+2;Hostal Santa Apalonia;albergue;0.04;-7.156485;-78.517044;node/2957251031
+2;Hostal Perú;albergue;0.05;-7.156251;-78.517332;node/4340473991
+4;Rupa Rupa Ecolodge;hotel;0.02;-13.154148;-72.525569;node/11263279737
+4;Destinos Perú Inn;albergue;0.02;-13.154085;-72.525686;node/13302415513
+4;Hospedaje El Parque Lodge;hotel;0.03;-13.154039;-72.525567;node/4392846392
+6;Atlantis;hotel;0.13;-4.103463;-81.049238;node/9818614020
+6;Hotel Mercury;hotel;0.14;-4.101949;-81.048667;node/13607721324
+6;Wally‘s House Mancora;albergue;0.17;-4.102048;-81.049304;node/12323435203
+7;Hostal Karajia;hotel;0.04;-6.229259;-77.871061;node/4267162289
+7;Hostal Plaza;albergue;0.05;-6.229543;-77.871819;node/1872788444
+7;Hostal Revash;hotel;0.05;-6.229203;-77.87188;node/4267137692
+8;Hotel Casona Las Magnolias;hotel;0.03;-9.523839;-77.157153;node/5223230126
+8;Hostal Santa Hilario;motel;0.04;-9.523866;-77.157486;node/5223230127
+8;Casona Las Magnolias;hotel;0.05;-9.523703;-77.157174;node/4329535239
+9;Hotel Municipal;hotel;0.07;-10.775149;-75.813868;way/611925125
+9;Gran Emanuel;albergue;0.33;-10.772233;-75.811683;node/4286097089
+10;La Colmena;hotel;0.13;-13.16026;-74.224537;node/2523277871
+10;Hospedaje El Parque;hotel;0.13;-13.160277;-74.226884;node/4134856589
+10;Hospedaje Asamblea;hotel;0.13;-13.159452;-74.225038;node/3086174114
+11;Colonial Plaza Hotel;hotel;0.04;-15.841141;-70.028445;node/12915743201
+11;Royal Inn Hotel;hotel;0.07;-15.841289;-70.028121;node/4911704126
+11;Hacienda Hotel Plaza de Armas;hotel;0.08;-15.840882;-70.027677;node/4915660343
+12;Hospedaje Grau;albergue;0.04;-14.068804;-70.43125;node/5025232723
+12;Hotel Imperial;hotel;0.07;-14.069048;-70.431031;node/5335117856
+13;Morochucos;hotel;1.8;-13.562406;-74.195713;node/4097770304
+14;Landauro;hotel;0.08;-9.529426;-77.528358;node/5787730285
+14;El Pacífico;albergue;0.15;-9.528498;-77.529143;node/12329796499
+14;Alpamayo;hotel;0.15;-9.52847;-77.528849;node/6018600310
+15;Hotel José Galvez;hotel;0.07;-9.92984;-76.239203;node/4809733355
+15;Grand Hotel Huánuco;hotel;0.07;-9.928923;-76.239032;way/942420822
+15;Kancun;hotel;0.07;-9.929952;-76.239261;node/5905470483
+16;Virgen de Copacabana;hotel;0.06;-14.220489;-69.154083;node/4463131691
+17;Hostal García;albergue;0.08;-13.652394;-73.9535;node/9817350477
+18;Hostal Ocampo;hotel;0.12;-13.636745;-72.879747;node/7689218134
+18;Hotel Imperial;hotel;0.22;-13.635526;-72.879778;node/4983924329
+18;Apurimac Tours Hotel;hotel;0.25;-13.635147;-72.879334;node/4983924327
+19;Hostal Plaza;hotel;0.07;-7.815645;-78.048111;node/5051657521
+19;Hostal San Francisco;hotel;0.12;-7.814849;-78.047822;node/5423449223
+19;Santa Fe;hotel;0.14;-7.814984;-78.049866;node/6351120413
+21;La Posada Inn;hotel;0.09;-6.487358;-76.360616;node/4270694491
+21;Hotel Tarapoto Inn;hotel;0.09;-6.48853;-76.360083;node/4270697496
+21;Hotel San Antonio;hotel;0.1;-6.488485;-76.360272;node/4270697497
+22;Hostal Jurado;motel;0.24;-10.079766;-76.631599;node/6874339585
+22;Hostal Huayhuash;motel;0.26;-10.07998;-76.631579;node/6874339386
+22;Hostal Shalom;motel;0.33;-10.080502;-76.631236;node/6874339485
+23;Chaska Wasi;albergue;0.08;-15.486954;-71.457509;node/4879327423
+23;Astana Wasi;hospedaje;0.09;-15.485617;-71.457033;node/4879333825
+23;Llacta Wasi;hospedaje;0.09;-15.486063;-71.456194;node/4879335221
+26;Hotel Municipal;hotel;1.05;-16.387612;-70.727543;way/1054581796
+27;El Mirador de Nasca;hotel;0.07;-14.827574;-74.936453;node/4208420725
+27;Hospedaje Cóndor;hotel;0.18;-14.826312;-74.937814;node/4761019425
+27;Hostal Buen Pastor Backpackers;albergue;0.19;-14.826065;-74.936796;node/4677462829
+28;Hotel Señor de Muruhuay;hotel;0.03;-11.406474;-76.336184;node/13825654266
+28;Hospedaje Municipal;hotel;0.34;-11.407937;-76.339034;node/4882233022
+29;Casa Hospedage Mayutinkuy;hotel;0.55;-15.013601;-71.644474;node/6016881986
+30;Santa María;hospedaje;0.03;-10.683311;-76.25607;node/4210169889
+30;Hotel Plaza;hotel;0.05;-10.684011;-76.255918;node/6079964122
+30;Hospedaje El Tumi;albergue;0.19;-10.685127;-76.255429;node/6326561092
+31;Flying Dog Hostel;albergue;0.09;-12.120693;-77.030363;way/436481203
+31;Del Pilar Miraflores Hotel;hotel;0.12;-12.119752;-77.030092;node/4214319694
+31;Pariwana Hostel;albergue;0.12;-12.119718;-77.028852;node/3651689281
+32;Hostal Barcelo;albergue;0.13;-9.12319;-78.530512;node/4867356228
+32;Hostal La Casona de Buenos Aires;albergue;0.13;-9.123217;-78.53046;node/4867356227
+32;Hostal Barcelo';albergue;0.14;-9.123197;-78.530337;way/519371356
+33;Blue Star;hotel;0.07;-12.068558;-75.209724;way/516490072
+33;Hotel Kiya;hotel;0.07;-12.068703;-75.209988;way/516204991
+33;Olimpico;hotel;0.08;-12.068371;-75.209414;node/4422284542
+34;Hostal Posada Real;hotel;0.09;-17.194335;-70.935238;node/10684332706
+34;Hotel Arequipa;hotel;0.12;-17.193321;-70.933588;node/4415775492
+34;Hotel Moquegua;hotel;0.15;-17.195063;-70.935003;node/3463611178
+36;Cuzco Plaza Hostel;albergue;0.07;-13.517579;-71.978905;node/12324268640
+36;La Casa de Selenque;albergue;0.08;-13.517275;-71.977791;node/4353135486
+36;El Peregrino;hotel;0.11;-13.517141;-71.97954;node/9325184165
+37;Tampuriari;albergue;0.05;-10.069011;-78.152523;node/5073570828
+37;Hostal Santa Rosa;hotel;0.07;-10.068135;-78.151961;node/3946468713
+37;Jessica Hostal;hotel;0.11;-10.069057;-78.153188;node/3946468714
+38;Hotel Gemely;hotel;0.06;-14.882003;-70.589517;node/12532947202
+38;Hotel Lumonsa;hotel;0.09;-14.881177;-70.590472;node/6663006585
+38;Hostal Copacabana;albergue;0.1;-14.881174;-70.590664;node/12533854801
+39;Hostal Amazonía;albergue;0.13;-12.908743;-71.40342;node/8960289893
+39;Hospedaje Paititi;hotel;0.17;-12.911306;-71.404336;way/814593947
+39;Gallito de las Rocas;hotel;0.2;-12.911605;-71.404223;way/815424480
+40;Katari;hotel;0.07;-16.39933;-71.537349;node/5190876673
+40;Hostal Saryris;albergue;0.08;-16.399016;-71.537711;node/4115229366
+40;La Plaza Arequipa Hotel;hotel;0.08;-16.398259;-71.537421;node/4046035669
+41;Cindy;hotel;0.27;-5.944031;-77.979412;node/5029689121
+41;Aries II;hotel;0.28;-5.943916;-77.979387;node/5033236244
+41;El Gatito;hotel;0.28;-5.943738;-77.979185;node/5031397522
+42;Hospedaje Caribe;hotel;0.15;-7.220911;-78.838451;node/4110620289
+45;Gran Rey;hotel;0.22;-3.906166;-70.517144;node/4519261589
+45;Hospedaje internacional;albergue;0.25;-3.906057;-70.517358;node/5300986929
+46;Hostal Amazonas;albergue;0.11;-16.244835;-69.093347;node/9993409421
+46;Hospedaje San Andrés;hotel;0.36;-16.246789;-69.094671;node/4407533989
+46;Hotel Valparaíso;hotel;0.58;-16.247635;-69.096641;node/9993409223
+47;HOSPEDAJE ABISEO;hotel;0.32;-7.181407;-76.725984;node/13737321442
+48;Hostal Cisne Plaza Principal N 478;hospedaje;0.01;-12.409782;-73.905975;node/4901534722
+48;Hotel El Conquistador;hospedaje;0.08;-12.409081;-73.906188;node/11133118806
+49;Gato;hospedaje;0.08;-16.421723;-73.113857;node/6117234207
+49;Hospedaje Marujita;hotel;1.63;-16.435038;-73.107478;node/9142450223
+51;Albergue Turístico;albergue;0.75;-4.630797;-79.822326;node/4852098654
+52;El Milenio;hotel;0.4;-8.093965;-78.145356;node/5063269523
+52;Hotel de Turistas Cachicadan;hotel;0.41;-8.093175;-78.145547;node/5063304821
+54;Hotel Ascension;hotel;0.04;-12.787194;-74.972733;node/5012369923
+54;El Presidente;hotel;0.05;-12.787615;-74.972852;node/4110047113
+54;hotel Victoria;hotel;0.07;-12.786722;-74.972867;node/5012321121
+56;Hotel Villa de Arma;hotel;1.0;-12.298688;-75.814657;node/4960498068
+60;Hotel Plaza;hotel;0.04;-5.096584;-80.161251;node/8176955413
+60;Hotel Luant - Chulucanas;hotel;0.08;-5.096043;-80.160321;node/9335300035
+60;Hospedaje Diamante;motel;0.09;-5.096931;-80.160281;way/878965787
+61;Hotel Huallaga;hotel;0.1;-5.89434;-76.104336;node/4422529891
+61;Hostal y Restaurante El Naranjo;hotel;0.15;-5.896491;-76.104636;node/4242003404
+61;Yacuruna;albergue;0.15;-5.894984;-76.103311;way/361138307
+62;Helicona's inn;hotel;0.16;-12.592523;-69.187177;node/13307362901
+62;Centenario;hotel;0.49;-12.592396;-69.182406;node/4837725017
+62;BAMBU HOSTEL;hospedaje;0.69;-12.598004;-69.181939;node/3443689504
+63;Hostal Chavin Archeologico;hospedaje;0.06;-9.589074;-77.177411;node/4316472690
+63;Hostal Gantu;hospedaje;0.06;-9.588341;-77.178101;node/4601654080
+63;Hotel Inca;hotel;0.09;-9.58875;-77.178463;node/4601582895
+65;Edery Hoteles;hospedaje;0.12;-8.382889;-74.53799;node/2903239606
+65;La Florida;hotel;0.15;-8.382666;-74.537567;node/4937514222
+65;Hospedaje Meneses;albergue;0.26;-8.383674;-74.536973;node/4298569805
+66;Hotel Las Almendras;hotel;0.13;-10.18327;-75.149119;node/6188001117
+66;Hotel Jorfran;hotel;0.29;-10.186376;-75.151144;node/4559360996
+67;Hotel Lorena's;hotel;0.04;-7.479181;-78.819635;node/4359423991
+67;Augusto Hotel Plaza;hotel;0.04;-7.479619;-78.819075;node/4357887106
+67;Hostal Don Juan;albergue;0.08;-7.478837;-78.819701;node/4359466589
+68;Hostal Atacama;hotel;0.08;-18.013158;-70.251419;way/1027420268
+68;Hotel Mesón;hotel;0.09;-18.013013;-70.251147;way/466214881
+68;Hostal Inclan;hotel;0.1;-18.013422;-70.251893;way/463792770
+69;El mirador;hospedaje;0.04;-7.98222;-78.546439;way/626418394
+70;Garden Hotal;albergue;0.1;-11.107816;-77.609697;way/521594137
+70;Hotel Skorpio's;hotel;0.14;-11.107766;-77.609315;way/521594130
+70;Caral;albergue;0.14;-11.107353;-77.609863;way/521914200
+71;Casa Bella Flor;hospedaje;0.13;-15.648924;-71.65994;node/5310199521
+71;Hospedaje Reyna;hospedaje;0.15;-15.650133;-71.657626;node/5756830221
+71;Kontiki Hospedaje;hotel;0.16;-15.648437;-71.659803;node/4968960423
+72;Albergue Don Bosco 6000;hotel;0.1;-9.280845;-77.646389;node/5745826110
+72;Hostal Señor de Luren;hotel;0.11;-9.281339;-77.647196;node/3912369338
+72;Hostal La Merced;hotel;0.12;-9.282801;-77.646465;node/3798777157
+73;Alojamiento Andino;hotel;0.09;-13.218896;-75.104293;node/4340782691
+74;Hostal Gram Aromos II;hospedaje;0.04;-5.708319;-78.807339;node/5790963855
+74;Hopedaje Chota;hospedaje;0.06;-5.708057;-78.807628;node/12862548434
+74;Hostal JJ;hospedaje;0.06;-5.709166;-78.807729;node/4947954022
+75;Hospedaje Vivencial Seniora;albergue;0.19;-15.500542;-72.355645;node/11534987042
+75;Hospedaje Vivencial de Ulda;albergue;0.21;-15.500767;-72.355613;node/11534936835
+75;Hospedaje Vivencial Ulda;albergue;0.21;-15.500767;-72.355613;node/11535006579
+79;El Eden - Adan y Eva;hotel;0.11;-13.655572;-73.389455;node/4206175992
+79;Cristal Palace;hotel;0.14;-13.655307;-73.389342;node/4206175990
+79;Hotel Adan y Eva;hotel;0.14;-13.657047;-73.388837;node/4979597623
+82;Hospedaje Juan Pablo;hotel;0.17;-9.037178;-75.50892;node/10858958812
+82;Hospedaje Padre Abad;hotel;0.26;-9.036931;-75.507876;node/10863880505
+82;Hospedaje Turistico Harry;albergue;0.3;-9.03673;-75.50755;node/5830805129
+83;Hospedaje Rafael;albergue;0.07;-13.687556;-71.626086;node/4995716426
+83;Hospedaje Luvic;albergue;0.07;-13.68816;-71.626189;node/4995716324
+83;Hospedaje Wiracocha;albergue;0.08;-13.687354;-71.626057;node/4995716223
+85;Hospedaje Restaurant;motel;0.04;-4.179584;-81.128288;node/6734101690
+85;Hospedaje Anyemarke;albergue;0.12;-4.178669;-81.129079;node/3988553309
+85;Hostal Stuart;motel;0.39;-4.177585;-81.125785;node/6717437586
+86;Hospedaje Chamaya;albergue;0.1;-6.034022;-76.97528;node/4267997289
+86;Hospedaje Junior;albergue;0.12;-6.035797;-76.974376;node/4268070591
+86;Hospadaje Olivera;albergue;0.12;-6.033909;-76.97543;node/4267997489
+87;SR ANGEL DIAZ PARI - HOSPEDAJE & COMIDA;hospedaje;0.05;-15.36416;-70.366248;node/4412534189
+87;Casa Romero Lampa;hotel;0.13;-15.365087;-70.36559;node/12527991601
+87;Hotel Fe en Cristo;hotel;0.16;-15.365616;-70.365799;node/12532223804
+88;Hospedaje Ruth & Saraí;albergue;0.15;-14.416057;-73.203849;node/6453355186
+89;Roma;hotel;0.06;-6.865586;-78.146068;node/12884912764
+89;Villa Madrid;hotel;0.08;-6.865726;-78.146227;node/12885046390
+89;Mi Posada;hotel;0.08;-6.865892;-78.146128;node/11390826423
+91;Hospedaje Iñapari;hotel;0.35;-10.944055;-69.576283;node/1312125381
+91;Pousada Renascer;hotel;1.18;-10.942774;-69.566887;node/4172873695
+91;Hotel Dois Irmãos;hospedaje;1.47;-10.938083;-69.566896;node/12055260511
+92;Hotel de Turistas Mi Beita;hotel;0.17;-6.679265;-78.520818;node/11642274969
+92;Hostal Fernandez;motel;0.21;-6.680351;-78.521;node/11642252170
+93;Hospedaje Mavy;hospedaje;0.26;-13.584745;-74.35249;node/4497186289
+93;Hostal Municipal;albergue;0.28;-13.584797;-74.352381;node/4336884894
+93;Hospedaje Huaytita;hotel;0.29;-13.585012;-74.352368;node/4336879792
+94;Leon;hotel;0.87;-10.921164;-74.87934;node/6171433285
+96;Hospedaje Jimenez;albergue;0.08;-10.574282;-75.403726;node/4321956754
+96;hospedaje Oxapampa;hotel;0.11;-10.57417;-75.403473;node/4345347119
+96;Reyna;albergue;0.12;-10.574102;-75.403337;node/4367321990
+99;Eras;hotel;0.14;-6.770396;-79.839143;node/5320524770
+99;Adriático;albergue;0.23;-6.769556;-79.838364;node/5495173031
+99;Sunec Hotel Boutique;hotel;0.25;-6.773285;-79.840209;way/520051223
+100;Hostal 2 de Mayo;hospedaje;0.22;-9.803748;-77.4307;node/3791784804
+100;Central;hospedaje;0.28;-9.804267;-77.43081;node/3791784788
+100;Yadir;hospedaje;0.32;-9.804613;-77.430389;node/3791784803
+101;Residencial Rey;hotel;0.09;-8.18798;-76.510494;node/5203761821
+101;Hotel España;hotel;0.36;-8.187165;-76.513101;node/5269915536
+103;Hostal Pacha Inn;albergue;0.03;-13.258913;-72.26362;node/9602061941
+103;Los Apus Hostel;albergue;0.03;-13.258857;-72.263835;node/5520615238
+103;Puma;albergue;0.04;-13.258381;-72.263421;node/9602061988
+104;Hospedaje de Elena Castillo;hospedaje;0.08;-12.224629;-75.807632;node/4840488440
+104;Hotel Municipal Pariamantan;hotel;0.31;-12.226371;-75.806581;node/6071390168
+105;Los Portales de Lunahuana;hotel;0.08;-12.962878;-76.140751;node/2913410226
+105;Tierra del sol;hospedaje;0.12;-12.962172;-76.140783;node/6068988144
+105;Hotel Casuarinas;hotel;0.13;-12.962413;-76.141154;node/1420503344
+106;Conjunto Habitacional Las Flores;departamento;0.43;-16.611787;-72.696031;node/6467357185
+106;Hotel el Dorado;hotel;1.32;-16.62103;-72.709298;node/3608231465
+106;Karim;hospedaje;1.43;-16.620458;-72.710976;node/6119995940
+107;Pampino;hotel;0.05;-15.279146;-73.34393;node/4272440628
+107;Hotel Rosas;hotel;0.1;-15.278356;-73.345033;node/4271298491
+107;N ***;hotel;0.12;-15.277885;-73.344151;node/4271299189
+108;Gran Real Hotel;hotel;0.2;-7.904058;-78.56482;node/12591634201
+109;Hospedaje florencia;hotel;0.2;-7.352263;-75.0087;node/14136140601
+110;Hostal Comunidad Campesina de Huayllay;albergue;0.03;-11.002453;-76.364976;node/6329827185
+110;Hospedache Maravilla;hotel;0.09;-11.001874;-76.364036;node/5739861417
+110;Hospedaje Santa Ana;albergue;0.11;-11.001943;-76.363805;node/6328014387
+111;El Marquez;hospedaje;0.06;-11.329195;-74.531001;node/4315274863
+111;Divina Montaña;hospedaje;0.08;-11.328227;-74.531184;node/4315274866
+111;Hospedaje El Conquistador;hotel;0.14;-11.327718;-74.531262;node/8332245235
+114;Residencial El Dorado;hotel;0.22;-11.418243;-75.68862;node/4240813289
+114;La Colmena;hotel;0.5;-11.421017;-75.692194;node/13765118201
+114;Los Portales Hotel - Tarma;hotel;0.84;-11.418929;-75.695302;node/8837298574
+117;D'Gustos;hospedaje;0.71;-5.006729;-81.065244;way/776979908
+117;Cocos de Colán;hotel;0.76;-5.008501;-81.065359;node/5262730722
+117;San Felipe;hotel;0.76;-5.008063;-81.065533;node/5262521441
+120;Costa Azul;hospedaje;0.85;-15.668799;-74.530789;node/6109947796
+121;Hotel Roma;hotel;0.08;-3.57062;-80.458946;node/4479542189
+121;Gran Imperial;hotel;0.12;-3.571332;-80.458708;node/13202869403
+121;Hotel Bolognesi;hotel;0.12;-3.570191;-80.458713;node/4840496826
+123;Sol de Atalaya II;hotel;0.37;-10.731522;-73.751895;node/5175737724
+123;Brando 1;hotel;0.43;-10.73099;-73.751062;node/4518440390
+124;El Encanto de Curahuasi;hotel;0.13;-13.541206;-72.696427;node/5465185321
+124;Hospedaje Los Angeles;albergue;0.3;-13.5396;-72.696345;node/4985907926
+124;El Panamericano II;hotel;0.32;-13.539417;-72.696361;node/4985907925
+125;Hotel Los Portales;hotel;0.07;-5.197339;-80.626048;way/201136405
+125;Hostal Suite Plaza;hotel;0.14;-5.19807;-80.627464;node/12482899001
+125;Hotel Sol de Piura;hotel;0.17;-5.198535;-80.627193;node/2936189114
+126;Hostal La Plaza;hospedaje;0.04;-9.828764;-76.801588;node/5136013923
+126;Hostal San Cristobal;hospedaje;0.12;-9.827611;-76.801977;node/5135636833
+126;Hostal Miky;hospedaje;0.12;-9.827448;-76.801801;node/5136014224
+128;Hotel Moho;hotel;0.05;-15.360667;-69.500248;node/5885986690
+132;Hospedaje Alex;albergue;0.03;-4.63982;-79.715131;node/6593462236
+132;Hotel Samanga;hotel;0.03;-4.639769;-79.715289;node/6593462471
+132;Hospedaje San Martin;albergue;0.05;-4.640449;-79.715022;node/6593442259
+133;Santa Rosa II;albergue;0.17;-5.146698;-79.002327;node/4725187689
+133;Gran Hotel San Ignacio;hotel;0.24;-5.147759;-79.002518;way/1418120499
+133;La Posada;hospedaje;0.25;-5.14551;-79.001469;node/4351749878
+134;Alojamiento Luchito;hospedaje;0.07;-10.151684;-77.157369;node/5153907721
+134;La Posada Imperial;hotel;0.09;-10.152276;-77.157624;node/9914987517
+134;Hotel los Nogales;hotel;0.18;-10.153581;-77.15727;node/4487208590
+135;Hostal Queka;hotel;0.1;-6.153996;-79.716307;node/5936655085
+135;Hostal Don Carlos;hotel;0.13;-6.153375;-79.717579;node/9309870977
+135;Madero Hostal;hotel;0.16;-6.153005;-79.716726;node/9309870985
+137;Hostal Yanmarco;hotel;0.08;-13.666792;-71.321993;node/5821527354
+137;Hospedaje Tinkw pm w;hospedaje;0.12;-13.66675;-71.322445;node/6024744385
+137;hostel ausungate;albergue;0.14;-13.667088;-71.322582;node/4117840278
+138;Hostal El Imperador;hotel;0.3;-14.272066;-71.229194;node/4526751090
+138;Hospedaje Qanchi de Oro;albergue;0.33;-14.273915;-71.229456;node/7185256486
+138;Hostsl Sueño Dorado;albergue;0.34;-14.27027;-71.228033;node/4998735430
+139;Enkanta Guest house;albergue;0.15;-8.112226;-79.030015;node/7149566639
+139;Los Corregidores;hotel;0.17;-8.110202;-79.028245;node/4560993390
+139;Yaqta Hostel;albergue;0.2;-8.110211;-79.029795;node/13236244901
+140;Hostal Los Angeles;hotel;0.06;-16.21378;-69.459445;node/443137483
+140;Hostal San Bartolomé;albergue;0.08;-16.213787;-69.459646;node/5012473021
+140;Hostal Brisas del Titicaca;hotel;0.08;-16.213016;-69.458468;node/4536383090
+146;El Imperial;hotel;0.1;-15.362281;-75.166261;way/807023891
+147;Oasis Paraiso Ecolodge;hotel;0.04;-15.596777;-71.975354;node/4164185189
+147;El Cielo;hospedaje;0.05;-15.596833;-71.976153;node/4173364291
+147;Edén Lodge;hotel;0.13;-15.597318;-71.974685;node/6461774285
+148;Hostal Parinacochas;hotel;0.47;-14.293817;-73.248573;node/13924382579
+150;DoubleTree by Hilton Iquitos;hotel;0.06;-3.748896;-73.244143;node/419335237
+150;Casa Chacruna;albergue;0.09;-3.748543;-73.244597;node/4560992894
+150;La Casona Río Grande;hotel;0.11;-3.748415;-73.244263;node/4277464400
+151;Hotel Fundo El Paraiso;hotel;0.05;-11.056059;-75.328694;node/5954037144
+151;Casa Marys;motel;0.65;-11.056684;-75.334202;node/4829549723
+151;Calucho;hotel;1.28;-11.046901;-75.321224;node/4301449693
+152;Hospedaje Cajamarca;hospedaje;0.06;-13.129678;-72.594013;node/6509899481
+152;Hospedaje San José;albergue;0.07;-13.13042;-72.594844;node/3889300228
+152;Hospedaje Las Orquídeas;albergue;0.08;-13.13069;-72.594806;node/3889300229
+153;Hotel Chicuate;hotel;0.1;-5.238856;-79.451547;node/9102037522
+153;Hospedaje Chucao;albergue;0.12;-5.239092;-79.449595;node/4962683322
+153;Hostal Virgen del Carmen;hotel;0.12;-5.237885;-79.450197;node/10926512216
+160;Hostal Santa Rosa;hospedaje;0.06;-8.604444;-77.149833;node/5196582531
+160;Hostal Diaz;hospedaje;0.08;-8.605215;-77.149057;node/5196559648
+160;Hostal Carrera;hospedaje;0.08;-8.604248;-77.149968;node/5196583221
+161;Marcos;hotel;0.18;-7.401375;-79.569051;node/3981080364
+161;Reflejos;hotel;0.25;-7.400725;-79.569008;node/3981080368
+161;Hostal DUBAI Pacasmayo;hotel;0.25;-7.400606;-79.568583;node/12402902076
+165;Hospedaje Mayani;albergue;0.01;-12.000658;-76.474256;node/9356615502
+165;Hospedaje Virgen de la Asunción;albergue;0.11;-11.999917;-76.473395;node/9356681968
+165;Pariacaca;albergue;0.15;-12.001025;-76.475433;node/9356700320
+167;Hotel Misky Puñuy;hotel;0.04;-14.387953;-73.961903;node/4578392796
+167;Hostal vivienda Galindo;albergue;0.14;-14.387531;-73.960726;node/14121068163
+169;Perla de los Andes;hospedaje;0.05;-9.048159;-77.810399;node/3064241081
+169;Hotel Restaurant Spa El Oasis;hospedaje;0.06;-9.04849;-77.809491;node/12351515606
+169;Hospedaje La Plaza;hospedaje;0.07;-9.048763;-77.810598;node/10646506105
+171;Hospedaje Los Andes;albergue;0.06;-12.939668;-74.247451;node/4969352127
+171;Hostal Huguer;albergue;0.08;-12.939219;-74.24786;node/4969320125
+171;Hospedaje Costa Azul;albergue;0.08;-12.939818;-74.248695;node/4969320122
+172;Santa Rosa;hotel;0.08;-11.775037;-75.500764;node/3780197806
+172;Hospedaje Candy;albergue;0.1;-11.774307;-75.499921;node/3780196657
+172;Zavala;hotel;0.1;-11.775189;-75.500959;node/13765468103
+173;Hostal Urubamba;hotel;0.13;-13.305288;-72.115017;node/9322289492
+173;Hospedaje Pino;hotel;0.16;-13.304592;-72.115364;node/5221643825
+173;Hospedaje Capuli;hotel;0.18;-13.304453;-72.115327;node/5221640033
+176;Hostal El Dorado;motel;0.1;-16.673559;-70.970919;node/4220714490
+176;Hostal Mamacocha (de la Municipalidad);motel;0.1;-16.673612;-70.971025;node/4220717589
+177;El Embrujo;hospedaje;0.04;-17.029061;-72.015824;node/6124332129
+177;La Cabaña;hotel;0.05;-17.029208;-72.015075;node/6124332113
+177;Puento;hospedaje;0.07;-17.028744;-72.015119;node/6125815616
+178;Prince;hotel;0.08;-13.418077;-76.133207;node/4319885593
+178;El Condado;hotel;0.15;-13.418382;-76.131534;node/4968481921
+178;Hotel Lima;hotel;0.19;-13.419126;-76.133529;node/4319886101
+180;Hostel Backpacker House El Buen Samaritano;albergue;0.04;-13.834338;-76.248626;way/512407814
+180;Santa María;albergue;0.04;-13.833819;-76.248682;node/4018045253
+180;Backpacker House Soler;albergue;0.04;-13.83432;-76.248559;way/512407815
+183;Hospedaje Anaconda;hospedaje;0.7;-9.384651;-74.966073;node/14120452072
+184;Hotel Museo Casa Ugarte Leon;hotel;0.1;-11.917568;-75.313004;way/517800818
+184;Satélite Hospedaje;hotel;0.13;-11.9196;-75.312738;way/517800825
+184;Hospedaje Yomys;hotel;0.24;-11.919809;-75.314768;node/5051815806
+187;Hostal Central;hotel;0.13;-17.644985;-71.344451;node/4526631096
+187;Hospedaje Christian;hotel;0.17;-17.647374;-71.344994;node/5400246721
+187;Santa Bárbara;hotel;0.17;-17.647245;-71.346001;node/4436918189
+188;Hostal Milagritos;albergue;0.21;-8.555414;-77.629549;node/3770694302
+188;Hostal El Señorial;hotel;0.22;-8.556326;-77.63021;node/5129476621
+188;Hostal Franchesca;hotel;0.29;-8.555801;-77.628892;node/3770668479
+189;Hospedaje Rocío;motel;0.05;-4.506848;-73.573581;node/4255476489
+189;Hostal Henry;hotel;0.08;-4.506427;-73.573677;node/4358936895
+189;Hospedaje Shelomit;motel;0.84;-4.503044;-73.580379;node/4255505389
+190;Los Ángeles;albergue;0.04;-16.741734;-69.715899;node/5166663213
+190;3 de mayo;albergue;0.05;-16.741654;-69.716795;node/5166663226
+193;Restaurant Hospedaje Piscis;hotel;0.04;-7.801975;-77.984045;node/5051657121
+193;Hostal Restaurant Puerto Lago;hotel;0.06;-7.801879;-77.984047;node/5051657321
+194;Casa Blanca;hotel;0.11;-13.439953;-74.194693;way/944885874
+198;Sonia’s;albergue;0.19;-12.2642;-70.910792;node/6175104885
+199;Hostal Casoua Real;albergue;0.09;-12.657418;-76.633072;way/512599046
+199;Hospedaje Marchand;albergue;0.48;-12.656812;-76.636655;way/512117686
+199;Chifa Hostal Met Kim;albergue;0.69;-12.660953;-76.637792;way/512117732
+201;Hotel Clarita;hotel;0.05;-10.06914;-75.550362;node/4367302291
+201;D'Ruiz;hotel;0.07;-10.069297;-75.550286;node/9964987392
+201;Judit;hotel;0.08;-10.069424;-75.550309;node/9965185589
+205;Hotel Presidente;hotel;0.08;-12.046339;-77.031241;node/4451121561
+205;Hostal Plaza Mayor;albergue;0.12;-12.046051;-77.031678;way/435675770
+205;Hospedaje Lima;hospedaje;0.16;-12.045286;-77.029277;node/4381425632
+206;Baptist Centre Valle Azul;hotel;0.57;-17.880928;-70.974642;node/9015734836
+208;Hostal La Mar;hotel;0.19;-12.620891;-73.786849;node/6008113690
+208;Hostal El Puerto WIFI;hotel;0.37;-12.623665;-73.788905;node/3717704905
+208;Hostal La Selva;hotel;0.37;-12.623723;-73.788749;node/6008113687
+211;Otel Franco;motel;0.03;-17.474539;-70.03183;node/11811758650
+211;Hostal Don Lorenzo;hotel;0.11;-17.475098;-70.031116;node/8789857100
+211;Hospedaje Real Plaza Tarata;albergue;0.11;-17.475479;-70.032797;node/5747975821
+214;Villa de Arnedo;albergue;0.09;-11.562675;-77.270787;way/518444288
+214;Casa Chancay;hospedaje;0.13;-11.562152;-77.270988;node/4638685890
+214;Hospedaje Hawaii;albergue;0.19;-11.563804;-77.271355;way/518403162
+217;Hospedaje Micaela;hospedaje;0.27;-11.899263;-76.662684;node/8792368269
+217;Parque Acuatico KisKas;hotel;1.58;-11.915296;-76.666275;way/429725419
+218;Hospedaje Turismo;hotel;1.63;-4.901217;-80.696915;node/11560265474
+218;Hospedaje La Posada;albergue;1.8;-4.902535;-80.697701;node/4846677123
+218;Hotel La Siesta;hotel;1.92;-4.903858;-80.69772;way/1394007441
+219;Hotel Cancay;hotel;0.35;-11.466274;-76.621404;node/4137525671
+223;Hostal Palermo;albergue;0.11;-13.533699;-73.677501;node/4976346924
+223;Hotel La Luz;hotel;0.12;-13.533305;-73.678872;node/4976345225
+223;Hospedaje Pérez;albergue;0.14;-13.534003;-73.677453;node/4976347823
+224;Hotel Plaza;albergue;0.16;-12.297446;-72.865172;node/12631992001
+225;Sepahua Inn;hotel;0.88;-11.145025;-73.04183;node/8231173317
+225;Hospedaje Magy;albergue;1.12;-11.147927;-73.045661;node/7133185691
+225;Hospedaje Imperial;albergue;1.15;-11.148176;-73.046309;node/7133185589
+226;Caminos del Inca;hotel;1.3;-12.326272;-75.072593;node/13278735605
+227;Pisac Inn;hotel;0.03;-13.421216;-71.850745;node/1519922746
+227;Casona del Carmen;hotel;0.12;-13.422012;-71.850915;node/9910672479
+227;Enli;albergue;0.12;-13.42204;-71.850842;node/9910655539
+232;PerúInka Hotel;hotel;0.14;-14.915303;-69.868726;way/428835317
+232;Hotel Posada del Puente Putina;hotel;0.2;-14.915733;-69.867612;node/4279513039
+232;Hostal Shalea;hotel;0.21;-14.915803;-69.867679;node/4279513038
+234;Hotel Diaz;hotel;0.03;-8.19505;-77.895482;node/5010286332
+234;Hotel Bermudez;hotel;0.08;-8.195313;-77.896465;node/5009936795
+234;Hotel Imperial;hotel;0.17;-8.195957;-77.897041;way/512366124
+235;Los Álamos;hotel;0.1;-12.8626;-72.693484;node/9118339599
+235;Vila Santa Anna;hotel;0.1;-12.862751;-72.693697;node/10897780905
+235;Hostal Don Carlos;hotel;0.13;-12.863976;-72.69404;node/1990578181
+238;Hostal Chunca;hotel;0.08;-10.810595;-76.874976;node/5154303321
+238;Hotel Dulce Amanecer;hotel;0.08;-10.81135;-76.874283;node/2986546823
+238;Hostal Turiky's;hotel;0.18;-10.80974;-76.875385;node/4401234192
+239;Hotel La Casa Blanca;hotel;0.08;-11.428347;-74.487849;node/5540968724
+239;Hospedaje Fortuna;hotel;0.1;-11.427785;-74.489259;node/5564205239
+240;Hotel Colon Plaza;hotel;0.09;-14.063501;-75.728467;way/512639667
+240;Terra Sol;albergue;0.1;-14.06339;-75.729611;way/764223327
+240;The Desert of Ica;hotel;0.1;-14.06496;-75.729197;node/5012914518
+244;Qorpa Wahi;hotel;0.04;-9.161727;-77.365976;node/6131499785
+244;Hostal Asunción;hospedaje;0.05;-9.161672;-77.366102;node/3791117868
+244;Hotel Plaza Chacas;hotel;0.08;-9.161624;-77.365579;way/599984365
+245;Hotel Leydy;hotel;0.19;-3.496252;-73.0905;node/4874904228
+245;Hotel Municipal de Mazan;hotel;0.29;-3.499833;-73.090903;node/9998565674
+246;Luis Gonzalo;hospedaje;0.13;-16.71605;-72.426389;node/6125917820
+248;Alicia;hotel;0.14;-16.227937;-73.614402;node/6113367309
+248;Luz de Luna;hotel;0.16;-16.228222;-73.614017;node/6112083692
+248;Panorámico;hotel;0.17;-16.228193;-73.614514;node/6112083694
+254;Hotel Huayhuash;hotel;0.04;-10.472351;-76.993244;node/6188636086
+254;Don Bosco;hospedaje;0.07;-10.473162;-76.992582;node/5671612974
+254;Hotel Tambo del Inca;hotel;0.11;-10.473463;-76.992407;node/4358905993
+256;Hostal Progreso;albergue;0.07;-14.101403;-71.430229;node/7028557134
+256;Hospedaje San Isidro;albergue;0.08;-14.101325;-71.430275;way/821798589
+256;Hostal Progreso II;albergue;0.12;-14.100634;-71.429049;node/4998735524
+259;Hospedaje Municipal;hotel;0.03;-12.096223;-76.493103;node/6212137120
+259;Hospedaje Jovita;hotel;1.51;-12.090787;-76.50558;node/6768281717
+259;Hospedaje Lidu;hotel;1.6;-12.091101;-76.506571;node/6768281710
+261;Hostal Neby's;albergue;0.34;-11.160884;-75.994986;node/6322061687
+261;Hospedaje Lima;albergue;0.54;-11.161439;-75.993106;node/6321369685
+261;Hotel Leo;hotel;0.56;-11.160621;-75.992976;node/3503556709
+265;Hostal Hatun Huasi;hotel;0.07;-15.212869;-72.889711;node/9879836017
+265;Hostal Don Justito;albergue;0.1;-15.212321;-72.889664;node/4206257490
+265;Hostal Alcala Sipia;albergue;0.1;-15.212299;-72.889758;node/4206254991
+268;Hospedaje Shira;hotel;0.05;-12.121989;-76.013329;node/13844971561

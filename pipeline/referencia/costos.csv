@@ -1,6 +1,6 @@
 parametro;valor;minimo;maximo;unidad;fuente
-bus_intercepto;12;5;25;S/ por persona y tramo;Tarifas publicadas de operadores interprovinciales, recogidas en la semana 6. Sin calibrar: el rango entero entra a la banda
-bus_soles_km;0.085;0.055;0.125;S/ por persona y km;Igual que bus_intercepto
+bus_intercepto;12;5;84;S/ por persona y tramo;El valor y el mínimo, tarifas de operadores interprovinciales recogidas en la semana 6. El máximo, con bus_soles_km, cubre la tarifa más baja de Cruz del Sur en sus 18 rutas desde Lima, verificada el 27 de octubre de 2026 (tarifas_bus.csv, decisión 0032)
+bus_soles_km;0.085;0.055;0.10;S/ por persona y km;Igual que bus_intercepto. El máximo es la pendiente del ajuste de esas 18 tarifas al km, redondeada
 movilidad_soles_km;0.55;0.30;0.95;S/ por persona y km;Colectivo y taxi rural, observación de campo de la semana 6. Sin calibrar
 alojamiento_noche;70;35;140;S/ por persona y noche;INEI, Encuesta Mensual de Establecimientos de Hospedaje, recogida en la semana 6. Sin calibrar
 alimentacion_dia;50;25;95;S/ por persona y día;MINCETUR, gasto promedio del turista interno, recogido en la semana 6. Sin calibrar

@@ -330,6 +330,16 @@ describe("un viaje abierto", () => {
     expect(plano(letraChica?.textContent)).toContain("No cuenta colas ni esperas");
   });
 
+  it("dice qué hospedajes hay cerca de donde se duerme", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    // Desde la 1.10, hasta tres con nombre a 2 km o menos de la base, de OpenStreetMap (decisión 0032).
+    const cerca = document.querySelector(".portada__hospedajes");
+    expect(plano(cerca?.textContent)).toBe(
+      "Cerca: Enkanta Guest house (albergue, a 150 m), Los Corregidores (hotel, a 170 m) y Yaqta Hostel (albergue, a 200 m)",
+    );
+  });
+
   it("pone los avisos antes de ir, y el de los datos en la letra chica", async () => {
     await abrir(`/?${CONSULTA}#/ruta/1`);
     await viajeAbierto();
