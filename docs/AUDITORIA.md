@@ -92,7 +92,7 @@ La app dice ahora, en la hoja de cada lugar y en la letra chica, que entre un lu
 
 El orden de las paradas de cada día: en el 55 % de los días es el mejor orden posible para el camino, y solo en el 1 % queda a más de 5 % del mejor, por fuerza bruta sobre las mismas paradas y sin mirar horarios. Lo que se veía mal era el tiempo de cada tramo, no el orden.
 
-La heurística que elige qué visitar: en los 120 viajes que el motor propone para las 40 consultas del kit, reducidos a sus 15 mejores lugares, junta el 99,0 % del valor que junta el óptimo exacto ([`optimo.json`](../data/evaluacion/resultados/optimo.json)). Con los datos `2026.10.8` juntaba el 99,1 %.
+La heurística que elige qué visitar: en los 120 viajes que el motor propone para las 40 consultas del kit, reducidos a sus 15 mejores lugares, junta el 99,1 % del valor que junta el óptimo exacto con los datos `2026.11.5` ([`optimo.json`](../data/evaluacion/resultados/optimo.json)). Con los `2026.11.1` juntaba el 99,0 %, y con los `2026.10.8`, el 99,1 %.
 
 ## Pendiente, en orden
 

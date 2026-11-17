@@ -13,7 +13,7 @@ Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide s
 | `externos/resumen.json` | Las notas de fuera contra las del equipo en los mismos viajes, y el nDCG@3 de cada sistema con ellas | `python -m evaluacion.externos` |
 | `resultados/notas.csv`, `metricas.csv` y `resumen.json` | Cada viaje con sus notas, las métricas por consulta y el resumen, con las calificaciones de tres de los cuatro. Lo que dicen está en [`resultados.md`](../../docs/evaluacion/resultados.md) | `python -m evaluacion.informe` |
 | `resultados/optimo.csv` y `optimo.json` | Lo que junta la heurística del itinerario contra el óptimo exacto, en los 120 viajes que propone el motor | `python -m evaluacion.optimo`, unos 10 minutos |
-| `resultados/buses.csv` y `buses.json` | Los tiempos por tierra del motor contra los de Cruz del Sur, en 29 rutas | `python -m evaluacion.buses` |
+| `resultados/buses.csv` y `buses.json` | Los tiempos por tierra del motor contra los de Cruz del Sur, en 29 rutas, de terminal a terminal | `python -m evaluacion.buses` |
 | `resultados/presupuesto.csv` y `presupuesto.json` | Qué cambia si el presupuesto deja fuera lo que no cabe en el P50 o en el P80 | `python -m evaluacion.presupuesto`, unos 5 minutos |
 | `resultados/usabilidad.json` | El SUS y las tareas de la prueba de usabilidad | `python -m evaluacion.usabilidad` |
 | `resultados/zonas.json` | Qué zonas propone cada sistema en las 40 consultas y en cuántas coinciden | `python -m evaluacion.zonas` |
@@ -23,4 +23,4 @@ Lo que califica el equipo, lo que sale de esas calificaciones y lo que se mide s
 
 El kit es de los datos `2026.11.1` y del contrato 1.7, y su huella está en `clave.csv`: si el motor o los datos cambian, `python -m evaluacion.kit` da otro kit, y las calificaciones de este siguen valiendo para esta versión. Cómo se califica está en [`anotar.md`](../../docs/evaluacion/anotar.md).
 
-Lo que no depende de las calificaciones sale de los datos `2026.11.1`, salvo la auditoría, y el motor de ahora y la novedad media de `resumen.json`, que van con los `2026.11.5`, y se rehace igual, salvo los segundos que tarda cada búsqueda exacta, que cambian de una corrida a otra. Los grupos en horas dependen además de la red vial armada del extracto de OpenStreetMap del 30 de septiembre, que queda fuera de git.
+El kit y lo que sale de sus notas son de los datos `2026.11.1`. Lo demás va con los que se entregan, los `2026.11.5`: la auditoría, el óptimo, los buses, el presupuesto, el motor de ahora y la novedad media de las zonas que propuso cada sistema en el kit. Todo se rehace igual, salvo los segundos que tarda cada búsqueda exacta, que cambian de una corrida a otra. Los grupos en horas dependen además de la red vial armada del extracto de OpenStreetMap del 30 de septiembre, que queda fuera de git.
