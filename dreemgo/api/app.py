@@ -82,7 +82,7 @@ _anotar_en_la_salida()
 
 # Orígenes que pueden llamar a la API desde el navegador: la app en GitHub Pages y el
 # servidor de desarrollo de Vite. Se amplía con la variable DREEMGO_CORS, separada por comas.
-CORS_POR_DEFECTO = "https://oswaldoaqm.github.io,http://localhost:5173"
+CORS_POR_DEFECTO = "https://oswaldoaqm.github.io,http://localhost:5173,http://127.0.0.1:5173"
 ORIGENES = [o.strip() for o in os.environ.get("DREEMGO_CORS", CORS_POR_DEFECTO).split(",") if o.strip()]
 EVENTOS_RANGO_MAX_DIAS = 366
 

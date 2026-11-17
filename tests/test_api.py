@@ -270,6 +270,13 @@ def test_cors_para_la_app(cliente):
     assert r.headers.get("access-control-allow-origin") == "https://oswaldoaqm.github.io"
 
 
+def test_cors_para_la_app_local_por_ip(cliente):
+    r = cliente.options(
+        "/v1/viajes", headers={"Origin": "http://127.0.0.1:5173", "Access-Control-Request-Method": "GET"}
+    )
+    assert r.headers.get("access-control-allow-origin") == "http://127.0.0.1:5173"
+
+
 def test_cors_rechaza_otros_origenes(cliente):
     r = cliente.options("/v1/viajes", headers={"Origin": "https://ejemplo.com", "Access-Control-Request-Method": "GET"})
     assert "access-control-allow-origin" not in r.headers

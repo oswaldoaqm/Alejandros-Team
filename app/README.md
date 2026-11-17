@@ -19,7 +19,7 @@ npm ci
 npm run dev          # http://localhost:5173
 ```
 
-La app busca el API en `http://localhost:8000`. Para apuntarla a otro, copia `.env.example` como `.env.local` y cambia `VITE_API_URL`. El API solo acepta pedidos de los orígenes de su lista (`DREEMGO_CORS`); ya trae `http://localhost:5173` y la dirección de GitHub Pages.
+La app busca el API en `http://localhost:8000`. Para apuntarla a otro, copia `.env.example` como `.env.local` y cambia `VITE_API_URL`. El API solo acepta pedidos de los orígenes de su lista (`DREEMGO_CORS`); ya trae `http://localhost:5173`, `http://127.0.0.1:5173` y la dirección de GitHub Pages.
 
 Para probar «Publicar un evento», el API tiene que arrancar con una clave de publicador; sin ella responde que no acepta publicaciones. La clave es la que después se escribe en el formulario, y lo publicado queda en memoria hasta que el API se cierra:
 
