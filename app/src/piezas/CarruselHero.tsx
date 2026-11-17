@@ -325,7 +325,7 @@ export function CarruselHero({ onElegirDestino }: Props) {
   const [activo, ponerActivo] = useState(0);
   // `pausado`: mientras el puntero o el foco están encima. `detenido`: si el usuario pidió menos movimiento en su sistema.
   const [pausado, ponerPausado] = useState(false);
-  const [detenido] = useState(pideMenosMovimiento);
+  const [detenido, ponerDetenido] = useState(pideMenosMovimiento);
   // Las fotos que ya se pidieron: la que se ve y, si pasa solo, la que sigue. No las cinco de golpe.
   const [pedidas, ponerPedidas] = useState<ReadonlySet<number>>(() => new Set([0]));
   const inicioToque = useRef<number | null>(null);
@@ -461,6 +461,20 @@ export function CarruselHero({ onElegirDestino }: Props) {
         </p>
 
         <div className="carrusel-hero__mandos">
+          <button
+            type="button"
+            className="carrusel-hero__pausa"
+            aria-label={
+              detenido ? "Reanudar cambio automático de destinos" : "Pausar cambio automático de destinos"
+            }
+            aria-pressed={detenido}
+            onClick={() => {
+              ponerDetenido((valor) => !valor);
+              ponerPausado(false);
+            }}
+          >
+            <Icono nombre={detenido ? "reproducir" : "pausa"} tamano={20} />
+          </button>
           {/* Indicadores de diapositiva (pills) */}
           <div className="carrusel-hero__indicadores" role="tablist" aria-label="Destinos del carrusel">
             {DESTINOS_HERO.map((dest, i) => (
