@@ -21,7 +21,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, StringConstraints, field_validator, model_validator
 
-VERSION_CONTRATO = "1.10"
+VERSION_CONTRATO = "1.11"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000

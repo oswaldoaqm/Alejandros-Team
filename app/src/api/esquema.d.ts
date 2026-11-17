@@ -513,7 +513,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
@@ -771,7 +771,7 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
@@ -861,7 +861,7 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
@@ -966,7 +966,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /**
@@ -1008,7 +1008,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /**

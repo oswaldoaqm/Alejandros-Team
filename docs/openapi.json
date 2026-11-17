@@ -984,7 +984,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.10",
+            "default": "1.11",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1532,7 +1532,7 @@
             "$ref": "#/components/schemas/Rango"
           },
           "version_contrato": {
-            "default": "1.10",
+            "default": "1.11",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -1708,7 +1708,7 @@
             "type": "array"
           },
           "version_contrato": {
-            "default": "1.10",
+            "default": "1.11",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2006,7 +2006,7 @@
             "description": "Presente solo si no hay ninguna ruta: por qué y qué cambiar para que salga."
           },
           "version_contrato": {
-            "default": "1.10",
+            "default": "1.11",
             "title": "Version Contrato",
             "type": "string"
           },
@@ -2106,7 +2106,7 @@
             "type": "string"
           },
           "version_contrato": {
-            "default": "1.10",
+            "default": "1.11",
             "title": "Version Contrato",
             "type": "string"
           },
