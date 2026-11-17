@@ -4,21 +4,21 @@
   "por_tamano": {
     "10": {
       "viajes": 120,
-      "visita_todas": 73,
-      "con_que_elegir": 47,
-      "heuristica_optima": 33,
+      "visita_todas": 72,
+      "con_que_elegir": 48,
+      "heuristica_optima": 34,
       "mejorables": 14,
       "sin_resolver": 0,
       "brecha_con_que_elegir": {
-        "media": 0.011616893617021276,
+        "media": 0.011374875,
         "mediana": 0.0,
         "p90": 0.04276,
         "maxima": 0.090909
       },
-      "valor_que_junta_la_heuristica": 0.9973416011036658,
+      "valor_que_junta_la_heuristica": 0.9973412642647723,
       "segundos": {
-        "mediana": 0.05,
-        "maximo": 0.37
+        "mediana": 0.04,
+        "maximo": 0.27
       }
     },
     "12": {
@@ -34,10 +34,10 @@
         "p90": 0.053398,
         "maxima": 0.080941
       },
-      "valor_que_junta_la_heuristica": 0.9961149024964187,
+      "valor_que_junta_la_heuristica": 0.9961140363153451,
       "segundos": {
-        "mediana": 0.35,
-        "maximo": 2.3
+        "mediana": 0.25,
+        "maximo": 1.95
       }
     },
     "15": {
@@ -53,10 +53,10 @@
         "p90": 0.058824,
         "maxima": 0.095745
       },
-      "valor_que_junta_la_heuristica": 0.990754413461432,
+      "valor_que_junta_la_heuristica": 0.9907525260359941,
       "segundos": {
-        "mediana": 1.58,
-        "maximo": 20.29
+        "mediana": 1.31,
+        "maximo": 16.9
       }
     }
   }
