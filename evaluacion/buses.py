@@ -15,6 +15,11 @@ tiempos de terminal a terminal, con las paradas del bus; el motor mide de centro
 rápido. Una ruta cae **dentro** si el tiempo del motor está en el rango de la empresa, **debajo** si es más
 rápido que su bus más rápido, y **encima** si es más lento que el más lento.
 
+Desde los datos 2026.11.3 (decisión 0030), la ida en bus del motor suma el taxi al terminal del origen, el
+embarque y el taxi del terminal a la base (``data/procesados/terminales.csv``). La empresa no los cuenta: aquí
+se comparan sin ellos, con el mismo cálculo de ``pipeline/terminales.py``, y la hora de llegada de noche los
+vuelve a sumar a los dos lados.
+
 Desde la decisión 0026, estas rutas también ajustan los dos ritmos de la ida en bus (``pipeline/tiempos.py``):
 lo que da aquí con todas es dentro de la muestra. La cifra que no sale de los mismos datos es la que el pipeline
 mide dejando fuera cada corredor, en ``data/procesados/ida_en_bus.json``.
@@ -53,6 +58,11 @@ ARCHIVO = Path(__file__).with_name("buses.csv")
 SALIDA = RAIZ / "data" / "evaluacion" / "resultados"
 ATRASO_QUE_PESA = 60  # minutos: con una hora más, el primer día ya no empieza como dice el plan
 MISMA_BASE_KM = 5.0  # la base de la zona tiene que estar a menos de esto del pueblo al que llega el bus
+TERMINALES = RAIZ / "data" / "procesados" / "terminales.csv"
+# Los de pipeline/terminales.py, que no se importa para no pedir pandas aquí: una prueba revisa que coincidan.
+EMBARQUE_MIN = 30
+BASE_TAXI_MAX_MIN = 30
+IDA_EN_BUS_MIN = 180
 
 
 @dataclass(frozen=True)
@@ -107,6 +117,37 @@ def _km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * 6371.0088 * math.asin(math.sqrt(a))
 
 
+@dataclass(frozen=True)
+class Terminales:
+    """El taxi a cada terminal, en minutos y km: del origen y de la base de cada zona."""
+
+    origen: dict[str, tuple[float, float]]
+    base: dict[int, tuple[float, float]]
+
+    def de_la_ida(self, origen: str, polo: int, minutos: float) -> tuple[float, float, float]:
+        """Lo que la ida del motor suma por los terminales: (taxi del origen y embarque, taxi a la base, km),
+        o ceros si la ida es corta y no los suma."""
+        t_origen, km_origen = self.origen.get(origen, (0.0, 0.0))
+        t_base, km_base = self.base.get(polo, (0.0, 0.0))
+        if minutos - (t_origen + EMBARQUE_MIN + t_base) < IDA_EN_BUS_MIN:
+            return 0.0, 0.0, 0.0
+        return t_origen + EMBARQUE_MIN, t_base, km_origen + km_base
+
+
+def leer_terminales(ruta: Path = TERMINALES) -> Terminales:
+    """``terminales.csv``, o ninguno si no está: los datos de antes de la 0030 no los sumaban."""
+    origen: dict[str, tuple[float, float]] = {}
+    base: dict[int, tuple[float, float]] = {}
+    if ruta.exists():
+        with open(ruta, encoding="utf-8-sig", newline="") as fh:
+            for f in csv.DictReader(fh, delimiter=";"):
+                if f["punta"] == "origen":
+                    origen[f["id"]] = (float(f["minutos"]), float(f["km"]))
+                elif float(f["minutos"]) <= BASE_TAXI_MAX_MIN:
+                    base[int(f["id"])] = (float(f["minutos"]), float(f["km"]))
+    return Terminales(origen, base)
+
+
 def zona_de(r: Ruta, datos: Datos) -> int:
     """La zona cuya base está en el pueblo al que llega el bus: la más cercana, a menos de ``MISMA_BASE_KM``."""
     km, polo = min((_km(r.lat, r.lon, p.base["lat"], p.base["lon"]), p.id) for p in datos.polos.values())
@@ -115,11 +156,13 @@ def zona_de(r: Ruta, datos: Datos) -> int:
     return polo
 
 
-def comparar(r: Ruta, datos: Datos) -> dict:
+def comparar(r: Ruta, datos: Datos, terminales: Terminales | None = None) -> dict:
     polo = zona_de(r, datos)
-    minutos, km = datos.origenes[r.origen_motor].a_base.get(polo, (math.nan, math.nan))
-    if not math.isfinite(minutos):
+    ida, km_ida = datos.origenes[r.origen_motor].a_base.get(polo, (math.nan, math.nan))
+    if not math.isfinite(ida):
         raise ValueError(f"{r.origen} → {r.destino}: el motor no tiene camino de {r.origen_motor} a la zona {polo}")
+    antes, despues, km_taxi = (terminales or Terminales({}, {})).de_la_ida(r.origen_motor, polo, ida)
+    minutos, km = ida - antes - despues, km_ida - km_taxi  # de terminal a terminal, como la empresa
     mitad = (r.empresa_min + r.empresa_max) / 2
     fila = {
         "origen": r.origen,
@@ -130,6 +173,7 @@ def comparar(r: Ruta, datos: Datos) -> dict:
         "empresa_max": r.empresa_max,
         "donde": donde(minutos, r.empresa_min, r.empresa_max),
         "razon": round(minutos / mitad, 3),
+        "terminales_min": round(antes + despues),
         "motor_km": round(km),
         "empresa_km": r.empresa_km,
         "razon_km": round(km / r.empresa_km, 3),
@@ -141,16 +185,20 @@ def comparar(r: Ruta, datos: Datos) -> dict:
         "atraso_max": "",
         "fuente": r.fuente,
     }
-    if viaje.NOCHE_MIN <= minutos <= viaje.LEJOS_PARA_VOLAR_MIN:
-        sale, llega = viaje.bus_de_noche(minutos)
-        viaje_motor = math.ceil(minutos)  # como lo cuenta bus_de_noche
+    if viaje.NOCHE_MIN <= ida <= viaje.LEJOS_PARA_VOLAR_MIN:
+        # La app sale de la puerta a la hora de bus_de_noche: el bus parte del terminal tras el taxi y el
+        # embarque, y de su terminal a la base queda el otro taxi.
+        sale, llega = viaje.bus_de_noche(ida)
+        viaje_motor = math.ceil(ida)  # como lo cuenta bus_de_noche
+        llega_min = round(sale + antes + r.empresa_min + despues)
+        llega_max = round(sale + antes + r.empresa_max + despues)
         fila |= {
             "de_noche": "sí",
             "sale": _hora(sale),
             "llega_motor": _hora(llega),
-            "llega_bus": f"{_hora(sale + r.empresa_min)} a {_hora(sale + r.empresa_max)}",
-            "atraso_min": r.empresa_min - viaje_motor,
-            "atraso_max": r.empresa_max - viaje_motor,
+            "llega_bus": f"{_hora(llega_min)} a {_hora(llega_max)}",
+            "atraso_min": llega_min - (sale + viaje_motor),
+            "atraso_max": llega_max - (sale + viaje_motor),
         }
     return fila
 
@@ -173,7 +221,8 @@ def main() -> None:
     ap.add_argument("--salida", type=Path, default=SALIDA)
     a = ap.parse_args()
     datos = artefactos.cargar()
-    filas = [comparar(r, datos) for r in leer()]
+    terminales = leer_terminales()
+    filas = [comparar(r, datos, terminales) for r in leer()]
     resumen = {"version_datos": datos.version, **resumir(filas)}
     a.salida.mkdir(parents=True, exist_ok=True)
     with open(a.salida / "buses.csv", "w", encoding="utf-8-sig", newline="") as fh:
