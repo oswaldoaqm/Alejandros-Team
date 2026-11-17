@@ -166,13 +166,19 @@ function iconoDelAviso(a: Aviso): NombreDeIcono {
 }
 
 function AntesDeIr({ avisos }: { avisos: Aviso[] }) {
-  if (avisos.length === 0) return null;
   return (
     <section className="viaje__bloque" aria-labelledby="titulo-antes">
       <h2 id="titulo-antes" className="viaje__titular">
         Antes de ir
       </h2>
       <ul className="antes">
+        <li className="antes__aviso antes__aviso--advertencia">
+          <Icono nombre="info" />
+          <p>
+            Antes de viajar, confirma horarios, días de cierre y disponibilidad de entradas y transporte. El
+            plan no consulta esos datos en tiempo real.
+          </p>
+        </li>
         {avisos.map((a) => (
           <li key={`${a.tipo}-${a.mensaje}`} className={`antes__aviso antes__aviso--${a.nivel}`}>
             <Icono nombre={iconoDelAviso(a)} />

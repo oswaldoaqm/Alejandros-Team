@@ -1,0 +1,376 @@
+/* Ayuda al viajero: visible durante el recorrido, sin tapar la barra del celular. */
+
+.ayuda-lanzador {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(var(--barra-inferior) + 16px + env(safe-area-inset-bottom));
+  z-index: 19;
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  min-height: 48px;
+  padding: 9px 15px;
+  color: #fff;
+  background: var(--lago);
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: var(--sombra-flota);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.ayuda-lanzador:hover {
+  background: var(--lago-hundido);
+}
+
+.ayuda-viaje {
+  display: grid;
+  gap: 16px;
+}
+
+.ayuda-viaje__intro {
+  color: var(--tinta-2);
+}
+
+.ayuda-viaje__alcance {
+  padding: 8px 10px;
+  color: var(--tinta-2);
+  background: var(--superficie-2);
+  border-radius: var(--r-chico);
+  font-size: var(--t-pie);
+}
+
+.ayuda-viaje__pestanas,
+.ayuda-viaje__opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ayuda-viaje__pestanas {
+  padding: 4px;
+  background: var(--superficie-2);
+  border-radius: var(--r-control);
+}
+
+.ayuda-viaje__pestanas button {
+  flex: 1 1 130px;
+  min-height: 42px;
+  padding: 8px 12px;
+  color: var(--tinta-2);
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-chico);
+  font-weight: 700;
+}
+
+.ayuda-viaje__pestanas button[aria-pressed="true"] {
+  color: var(--tinta);
+  background: var(--superficie);
+  box-shadow: var(--sombra-baja);
+}
+
+.ayuda-viaje__preguntas {
+  display: grid;
+  gap: 12px;
+}
+
+.ayuda-viaje__conversacion {
+  display: grid;
+  gap: 12px;
+  max-height: min(36vh, 340px);
+  padding: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--superficie-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-control);
+}
+
+.ayuda-viaje__bienvenida {
+  justify-self: start;
+  max-width: 92%;
+  padding: 11px 13px;
+  background: var(--superficie);
+  border-left: 3px solid var(--ichu);
+  border-radius: var(--r-control) var(--r-control) var(--r-control) 2px;
+}
+
+.ayuda-viaje__turno {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ayuda-viaje__consulta {
+  display: grid;
+  gap: 8px;
+}
+
+.ayuda-viaje__consulta label {
+  font-weight: 700;
+}
+
+.ayuda-viaje__consulta > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ayuda-viaje__consulta input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 12px;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-control);
+}
+
+.ayuda-viaje__consulta .boton {
+  min-height: 44px;
+}
+
+.ayuda-viaje__etiqueta {
+  color: var(--tinta-2);
+  font-size: var(--t-nota);
+  font-weight: 700;
+}
+
+.ayuda-viaje__tema-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ayuda-viaje__reiniciar,
+.ayuda-viaje__mas-temas {
+  width: fit-content;
+  padding: 4px 0;
+  color: var(--enlace);
+  background: transparent;
+  border: 0;
+  font-size: var(--t-nota);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ayuda-viaje__opciones button {
+  padding: 9px 12px;
+  color: var(--tinta);
+  background: var(--lago-claro);
+  border: 1px solid var(--lago);
+  border-radius: 999px;
+  font-size: var(--t-nota);
+  text-align: left;
+}
+
+.ayuda-viaje__pregunta-elegida {
+  justify-self: end;
+  max-width: 88%;
+  padding: 9px 12px;
+  color: var(--tinta);
+  background: var(--lago-claro);
+  border-radius: var(--r-control) var(--r-control) 2px var(--r-control);
+  font-weight: 700;
+}
+
+.ayuda-viaje__mensaje-guia {
+  display: grid;
+  gap: 9px;
+  justify-self: start;
+  max-width: 92%;
+  padding: 11px 13px;
+  background: var(--superficie);
+  border-left: 3px solid var(--ichu);
+  border-radius: var(--r-control) var(--r-control) var(--r-control) 2px;
+}
+
+.ayuda-viaje__mensaje-guia strong {
+  color: var(--tinta-2);
+  font-size: var(--t-pie);
+}
+
+.ayuda-viaje__rutas {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  counter-reset: ruta;
+}
+
+.ayuda-viaje__rutas li {
+  display: grid;
+  gap: 5px;
+  padding: 10px 11px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-chico);
+  counter-increment: ruta;
+}
+
+.ayuda-viaje__rutas li::before {
+  content: "Opción " counter(ruta);
+  color: var(--tinta-2);
+  font-size: var(--t-pie);
+  font-weight: 700;
+}
+
+.ayuda-viaje__rutas details {
+  padding-top: 5px;
+  border-top: 1px solid var(--borde);
+}
+
+.ayuda-viaje__rutas summary {
+  color: var(--enlace);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ayuda-viaje__rutas details > div {
+  display: grid;
+  gap: 7px;
+  padding-top: 8px;
+}
+
+.ayuda-viaje__nota {
+  color: var(--tinta-2);
+  font-size: var(--t-pie);
+}
+
+.ayuda-viaje__aviso {
+  padding: 6px 8px;
+  background: var(--superficie);
+  border-left: 3px solid var(--ichu);
+  border-radius: 2px var(--r-chico) var(--r-chico) 2px;
+}
+
+.ayuda-viaje__mensaje-guia a,
+.ayuda-viaje__pasar-mensaje {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  width: fit-content;
+}
+
+.ayuda-viaje__pasar-mensaje {
+  padding: 0;
+  color: var(--enlace);
+  background: transparent;
+  border: 0;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ayuda-viaje__formulario {
+  display: grid;
+  gap: 9px;
+}
+
+.ayuda-viaje__formulario > p:first-child {
+  color: var(--tinta-2);
+  font-size: var(--t-nota);
+}
+
+.ayuda-viaje__formulario label {
+  margin-top: 6px;
+  font-weight: 700;
+}
+
+.ayuda-viaje__formulario select,
+.ayuda-viaje__formulario textarea {
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-control);
+}
+
+.ayuda-viaje__formulario textarea {
+  resize: vertical;
+}
+
+.ayuda-viaje__cuenta {
+  color: var(--tinta-3);
+  font-size: var(--t-pie);
+  text-align: right;
+}
+
+.ayuda-viaje__error,
+.ayuda-viaje__exito {
+  padding: 9px 12px;
+  border-radius: var(--r-chico);
+  font-size: var(--t-nota);
+}
+
+.ayuda-viaje__error {
+  color: var(--critico-tinta);
+  background: var(--critico-fondo);
+}
+
+.ayuda-viaje__exito {
+  color: var(--bien-tinta);
+  background: var(--bien-fondo);
+}
+
+.ayuda-viaje__formulario .boton {
+  justify-self: start;
+  margin-top: 5px;
+}
+
+@media (min-width: 960px) {
+  .ayuda-lanzador {
+    right: 24px;
+    bottom: 24px;
+  }
+}
+
+@media (max-width: 719px) {
+  .hoja[open]:has(.ayuda-viaje) {
+    width: calc(100% - 16px);
+    max-height: calc(100dvh - var(--alto-cabecera) - var(--barra-inferior) - 24px);
+    margin: auto 8px calc(var(--barra-inferior) + 8px);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--r-portada);
+  }
+
+  .hoja[open]:has(.ayuda-viaje)::backdrop {
+    background: rgb(9 15 20 / 70%);
+  }
+
+  .hoja[open]:has(.ayuda-viaje) .hoja__cabeza,
+  .hoja[open]:has(.ayuda-viaje) .hoja__cuerpo {
+    background: var(--superficie);
+  }
+
+  .hoja[open]:has(.ayuda-viaje) .hoja__cuerpo {
+    padding: 8px 14px 14px;
+  }
+
+  .ayuda-viaje,
+  .ayuda-viaje__preguntas {
+    gap: 10px;
+  }
+
+  .ayuda-viaje__alcance {
+    padding: 6px 8px;
+  }
+
+  .ayuda-viaje__pestanas button {
+    flex: 1 1 0;
+    min-height: 40px;
+    white-space: nowrap;
+  }
+
+  .ayuda-viaje__conversacion {
+    max-height: min(27vh, 180px);
+    padding: 10px;
+  }
+}

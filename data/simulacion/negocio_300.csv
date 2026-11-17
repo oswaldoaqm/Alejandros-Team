@@ -1,0 +1,301 @@
+﻿usuario_id;sesion;fecha_local;hora_local;canal_simulado;origen;intereses;dias;presupuesto_viaje;visito;interactuo;busco;vio_propuestas;propuestas_mostradas;abrio_propuesta;propuesta_abierta;polo_A;polo_B;acepto_propuesta;propuesta_aceptada;compra_simulada;importe_simulado;costo_variable_simulado;guardo;compartio;error_consulta;duracion_ms;etapa_final
+U0001;89a81f23-959d-5b6a-a5b4-7dcb30ec6ba9;2026-10-23;8;Directo;lima;;2;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0002;d85a1eb4-eaf0-58aa-a250-a2eb65946eee;2026-11-10;21;Redes sociales;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;A;14;70;False;;False;0;0;True;False;False;1009;propuesta_abierta_sin_aceptacion
+U0003;bef5347e-a4f0-58a1-8619-0c69977fe9df;2026-10-22;20;Directo;lima;historia|naturaleza;4;700;True;True;True;True;2;True;B;139;96;True;B;False;0;0;True;False;False;692;aceptacion_sin_compra
+U0004;c9af5d07-1788-5968-a410-3ac704f7a1cf;2026-10-20;20;Directo;lima;playa;5;1200;True;True;True;True;2;True;A;139;180;True;A;False;0;0;False;False;False;2565;aceptacion_sin_compra
+U0005;4f04db6b-05d4-5fad-a2a6-1996d85004e4;2026-11-03;11;Directo;lima;historia;6;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0006;361f4930-5c32-5b98-9c04-390a329fe527;2026-11-07;21;Redes sociales;lima;aventura|naturaleza;7;2500;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0007;3bba52de-3d7f-573e-9670-3b6b9a0af67c;2026-10-21;20;Referidos;lima;playa|gastronomia;3;800;True;True;True;True;2;True;B;70;139;True;B;False;0;0;True;False;False;428;aceptacion_sin_compra
+U0008;5cac3881-db22-5e16-abd4-d3e7007c6df8;2026-11-06;12;Redes sociales;lima;gastronomia|vida_nocturna;2;600;True;True;True;True;2;False;;70;15;False;;False;0;0;False;False;False;762;propuestas_sin_apertura
+U0009;720033de-78fa-59cd-98e2-413b37afb94d;2026-10-29;22;Directo;lima;fiestas|historia;5;;True;True;True;True;2;False;;36;139;False;;False;0;0;False;False;False;1464;propuestas_sin_apertura
+U0010;e2a83a44-f270-5604-a340-3def9be2ffde;2026-11-01;18;Redes sociales;lima;historia|fiestas;8;;True;True;True;True;2;True;B;36;11;False;;False;0;0;False;False;False;475;propuesta_abierta_sin_aceptacion
+U0011;df3a2f5b-7050-5fca-9ed4-7eec6b916fd1;2026-10-17;10;Referidos;lima;naturaleza;4;;True;True;True;True;2;True;B;25;14;False;;False;0;0;False;True;False;228;propuesta_abierta_sin_aceptacion
+U0012;6352ff6c-b14f-52a0-9d36-dd354b26fc18;2026-10-20;21;Directo;lima;;6;600;True;True;True;True;2;True;A;96;139;True;A;False;0;0;True;True;False;740;aceptacion_sin_compra
+U0013;9dc039fe-a08a-55f7-82d1-bd988a479861;2026-10-15;11;Directo;lima;naturaleza|aventura|caminatas;10;;True;True;True;True;2;False;;71;14;False;;False;0;0;False;False;False;214;propuestas_sin_apertura
+U0014;9dc50bf9-9726-55cf-a991-63243e973371;2026-11-08;18;Directo;lima;arquitectura|historia;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;610;respuesta_sin_propuestas
+U0015;c53123b8-29ad-5b1f-89d7-af837e01ee8c;2026-10-31;12;Redes sociales;lima;playa;2;;True;True;True;True;2;True;B;70;27;True;B;True;20;5;True;False;False;636;compra_simulada
+U0016;6bfe0ed7-d18f-5010-bac0-bf8f81daf618;2026-10-17;18;Directo;lima;;5;;True;True;True;True;2;True;A;139;11;False;;False;0;0;True;False;False;509;propuesta_abierta_sin_aceptacion
+U0017;6b92b7eb-258a-56c3-961d-f668f64a79c8;2026-11-08;20;Redes sociales;cusco;historia;2;;True;True;True;True;2;True;B;11;4;True;B;True;20;5;False;True;False;823;compra_simulada
+U0018;a48df80d-4a0b-5d4e-9c02-2887fefa4f00;2026-11-07;21;Directo;cusco;naturaleza|caminatas;4;;True;True;True;True;2;True;B;71;40;True;B;False;0;0;False;False;False;395;aceptacion_sin_compra
+U0019;fe67a893-99c4-5036-b1bd-e7f57f575c93;2026-10-28;16;Búsqueda;cusco;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0020;b98e9841-aa16-54a3-9746-9ece7e413b67;2026-10-14;12;Directo;cusco;gastronomia|vida_nocturna;5;1500;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0021;eb9dd937-cf36-5cd4-81b4-090145e9ce5f;2026-10-24;13;Redes sociales;arequipa;naturaleza;3;;True;True;True;True;2;True;A;71;187;False;;False;0;0;False;False;False;1372;propuesta_abierta_sin_aceptacion
+U0022;854550c9-f9dd-565c-82c3-57f1cb9aa0e3;2026-11-02;20;Directo;arequipa;historia|arquitectura;5;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;665;respuesta_sin_propuestas
+U0023;503e23d7-212d-500f-a9e0-cab1f2d13d77;2026-10-21;20;Búsqueda;arequipa;playa;2;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0024;062ac689-873c-51ba-9b45-cc9ce22590ee;2026-11-09;19;Redes sociales;arequipa;aventura;6;;True;True;True;True;2;True;A;71;25;True;A;True;20;5;True;False;False;322;compra_simulada
+U0025;d9721782-f20a-5ebd-9ca0-fb998c793edf;2026-10-31;19;Búsqueda;trujillo;historia;3;;True;True;True;True;2;True;A;31;2;False;;False;0;0;True;False;False;640;propuesta_abierta_sin_aceptacion
+U0026;037d18fe-8805-5c79-bb77-8d895e245ff6;2026-10-15;19;Directo;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;A;25;31;True;A;True;20;5;False;False;False;638;compra_simulada
+U0027;e2ed37f5-2f04-56cf-a76f-e025967b94a5;2026-10-21;18;Redes sociales;chiclayo;historia|arquitectura;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0028;1b7f3244-cd88-54fb-afa6-34ed8537b971;2026-11-02;13;Directo;chiclayo;naturaleza;5;;True;True;True;True;2;True;A;25;14;False;;False;0;0;True;False;False;419;propuesta_abierta_sin_aceptacion
+U0029;8b2fbed5-1a56-5a6d-a1cc-c44efd7a398f;2026-10-29;12;Redes sociales;piura;playa;2;;True;True;True;True;2;True;B;139;85;False;;False;0;0;False;False;False;1073;propuesta_abierta_sin_aceptacion
+U0030;dde7cf53-6785-514c-84f2-3d42bc85c6fd;2026-10-22;21;Redes sociales;piura;naturaleza|aventura;5;;True;True;True;True;2;False;;14;25;False;;False;0;0;False;False;False;954;propuestas_sin_apertura
+U0031;b5a4b036-c926-5e9f-a891-cf021a8c9d1c;2026-10-14;20;Directo;iquitos;naturaleza;4;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0032;a40d0047-8ff6-5813-bd36-248ef000195c;2026-10-30;19;Búsqueda;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;True;A;True;20;5;False;True;False;1003;compra_simulada
+U0033;49562eef-cf75-5dfe-baa0-8f41a8c66b35;2026-10-16;15;Búsqueda;huancayo;naturaleza|caminatas;4;;True;True;True;True;2;True;A;172;14;False;;False;0;0;True;False;False;468;propuesta_abierta_sin_aceptacion
+U0034;312cdda9-2a29-50e8-b4f2-9897875e5e36;2026-11-04;13;Redes sociales;puno;historia;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0035;23dde945-d815-5b3d-aae9-102140cd171e;2026-10-17;14;Redes sociales;tacna;;3;;True;True;True;True;2;True;B;187;11;False;;False;0;0;True;False;False;365;propuesta_abierta_sin_aceptacion
+U0036;57757030-acb7-5ab2-bbf3-f69fb9a9f358;2026-11-03;20;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;False;;36;31;False;;False;0;0;False;False;False;1213;propuestas_sin_apertura
+U0037;e2a75c7c-f8ba-57d6-801c-fcddaee058d2;2026-10-21;19;Directo;cajamarca;naturaleza|historia;3;;True;True;True;True;2;True;B;14;139;True;B;False;0;0;True;False;False;502;aceptacion_sin_compra
+U0038;ed5b31be-543c-56f6-9ed6-e37a1c432bd5;2026-10-29;21;Directo;huaraz;caminatas;3;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0039;93c95cff-67f3-5f28-aa77-98436b91a9a2;2026-11-08;11;Directo;tarapoto;naturaleza|aventura;4;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0040;dff5bb12-c8f4-5889-b759-838ece7baa84;2026-11-06;20;Referidos;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;False;False;False;4509;propuesta_abierta_sin_aceptacion
+U0041;ffdf0e88-0e62-5c48-b1e8-27fe5df93d22;2026-10-30;9;Directo;lima;fiestas|historia;5;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0042;e9c4a6be-d664-5067-b366-27756407d1d0;2026-10-18;15;Redes sociales;lima;fiestas|historia;5;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0043;e8c54e14-bd4a-5cff-9108-684a3a45b018;2026-10-29;20;Redes sociales;lima;playa|gastronomia;3;800;True;True;True;True;2;True;B;70;139;True;B;True;20;5;True;False;False;977;compra_simulada
+U0044;9adfbdb1-526e-5bc8-90a6-3997ca922ffe;2026-10-16;10;Directo;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;A;14;70;True;A;False;0;0;False;False;False;977;aceptacion_sin_compra
+U0045;52097492-f02e-50cc-8810-79b1a2e3f8cc;2026-11-01;8;Redes sociales;lima;fiestas|historia;5;;True;True;True;True;2;True;B;36;139;True;B;True;20;5;True;False;False;4247;compra_simulada
+U0046;a69ac5d6-05b1-5fc1-914d-59f647d8c951;2026-11-05;14;Directo;puno;historia;3;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0047;9725e5d0-a753-5039-849a-02b6cf1390f8;2026-11-03;16;Directo;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;B;25;31;True;B;True;20;5;True;False;False;372;compra_simulada
+U0048;4faa0ca3-e1a4-5045-8ec4-fdf6c3629724;2026-10-17;19;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;True;B;36;31;True;B;False;0;0;True;True;False;911;aceptacion_sin_compra
+U0049;bf07d06d-ad77-544d-921c-e6457c085c8b;2026-10-20;20;Directo;arequipa;aventura;6;;True;True;True;True;2;True;A;71;25;False;;False;0;0;False;False;False;769;propuesta_abierta_sin_aceptacion
+U0050;daae4bd0-ab0c-5ca6-a7fc-d28eb0332416;2026-11-09;13;Redes sociales;cajamarca;naturaleza|historia;3;;True;True;True;True;2;True;A;14;139;True;A;False;0;0;True;True;False;2892;aceptacion_sin_compra
+U0051;501622a2-8943-5268-9328-82b2a1c94692;2026-10-24;15;Directo;lima;naturaleza;4;;True;True;True;True;2;True;A;25;14;True;A;False;0;0;True;False;False;352;aceptacion_sin_compra
+U0052;d3e38684-0ae9-505b-97ce-3c41ed6e8975;2026-10-24;18;Redes sociales;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;False;;False;0;0;True;False;False;1938;propuesta_abierta_sin_aceptacion
+U0053;18ba213c-74f7-5125-a7a3-fd86b0cff5e0;2026-11-08;10;Búsqueda;arequipa;playa;2;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0054;739d5c28-8976-5d22-b7c4-a22cc339035a;2026-10-24;18;Directo;arequipa;naturaleza;3;;True;True;True;True;2;False;;71;187;False;;False;0;0;False;False;False;1454;propuestas_sin_apertura
+U0055;a31dc324-73a8-5647-86f1-eb05ccd940c1;2026-10-29;16;Redes sociales;lima;;5;;True;True;True;True;2;True;A;139;11;True;A;False;0;0;True;False;False;350;aceptacion_sin_compra
+U0056;afc0c4f1-a0b5-5209-88d1-556ac0bbd3ac;2026-10-23;20;Directo;lima;historia|fiestas;8;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0057;b6aeae0d-641a-5c17-af8f-c9a969dbc276;2026-10-25;17;Búsqueda;huancayo;historia|fiestas;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0058;823f6bb2-e900-5646-88aa-10044f1aae75;2026-11-10;12;Directo;arequipa;naturaleza;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;3454;respuesta_sin_propuestas
+U0059;8b0e6cd6-fb0a-5c59-8858-f10533692e4b;2026-10-22;18;Directo;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;True;False;False;1459;propuesta_abierta_sin_aceptacion
+U0060;1a8a35e6-54fa-5ccd-94e8-56aa3ceb284e;2026-10-26;12;Redes sociales;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;True;False;False;771;propuesta_abierta_sin_aceptacion
+U0061;e3a72ef5-0559-5a00-a1dc-885817727a92;2026-10-20;11;Redes sociales;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;B;25;31;True;B;False;0;0;True;True;False;3987;aceptacion_sin_compra
+U0062;fd958761-928b-5769-b667-3fb10680ad7f;2026-11-03;17;Búsqueda;lima;playa|gastronomia;3;800;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0063;0f5918bb-8986-52a7-86a7-f6a88714fb5a;2026-11-02;11;Redes sociales;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;False;False;False;827;propuesta_abierta_sin_aceptacion
+U0064;53b40e94-ac58-5425-9e08-90f0a457004e;2026-10-26;15;Redes sociales;lima;naturaleza|aventura|caminatas;10;;True;True;True;True;2;True;A;71;14;True;A;False;0;0;True;False;False;422;aceptacion_sin_compra
+U0065;c2c4cbb8-ef58-55e7-b996-f89491b5c543;2026-10-21;20;Directo;lima;historia|fiestas;8;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0066;52fc1bad-8a68-5fb4-9638-3b0eca2f20ec;2026-10-30;10;Búsqueda;chiclayo;historia|arquitectura;3;;True;True;True;True;2;True;A;139;31;False;;False;0;0;False;False;False;4289;propuesta_abierta_sin_aceptacion
+U0067;6c10bbf9-9b2d-533c-aa27-7247d5d58797;2026-10-19;18;Búsqueda;lima;historia|fiestas;8;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0068;cb29f8bc-6e35-5d2a-b52f-7c3661e18311;2026-11-02;11;Búsqueda;lima;historia;6;;True;True;True;True;2;True;A;36;40;True;A;False;0;0;False;False;False;767;aceptacion_sin_compra
+U0069;ab81df28-5e08-54c5-857a-a18650d4a130;2026-10-28;18;Directo;huancayo;naturaleza|caminatas;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0070;2f947317-8f20-587d-9d61-04dc3b3c5c9d;2026-10-24;20;Búsqueda;cusco;historia;2;;True;True;True;True;2;False;;11;4;False;;False;0;0;False;False;False;538;propuestas_sin_apertura
+U0071;21d959b5-8681-54d5-90ae-3a72689c2225;2026-10-21;19;Directo;iquitos;naturaleza;4;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0072;d6936690-3dc8-59b2-a87b-fbcf06e6f24c;2026-11-02;21;Redes sociales;arequipa;naturaleza;3;;True;True;True;True;2;False;;71;187;False;;False;0;0;False;False;False;554;propuestas_sin_apertura
+U0073;de5db3f8-0bec-5b2b-86f6-3085a2bc807e;2026-10-28;14;Directo;trujillo;historia;3;;True;True;True;True;2;True;B;31;2;True;B;False;0;0;True;True;False;244;aceptacion_sin_compra
+U0074;038f84a2-c23f-5fb0-ab15-580ccfaebcd5;2026-10-18;19;Búsqueda;lima;historia|naturaleza;4;700;True;True;True;True;2;True;A;139;96;True;A;True;20;5;False;False;False;1613;compra_simulada
+U0075;48c3c20b-409b-5788-82a6-a0185874ddde;2026-10-17;9;Redes sociales;cajamarca;naturaleza|historia;3;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0076;a609bc9d-b39f-5d6d-840b-343b199b53ed;2026-11-10;17;Referidos;arequipa;aventura;6;;True;True;True;True;2;True;A;71;25;True;A;True;20;5;False;False;False;664;compra_simulada
+U0077;67311874-59b7-5f2c-b3aa-24f0ea5625ad;2026-10-29;20;Directo;lima;fiestas|historia;5;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0078;977d304e-0feb-5d5c-aed9-7ebf7bcd51b8;2026-10-30;19;Directo;arequipa;naturaleza;3;;True;True;True;True;2;True;A;71;187;True;A;False;0;0;False;False;False;671;aceptacion_sin_compra
+U0079;152ff109-d5ee-52dd-86d8-2df37c959f63;2026-11-01;10;Búsqueda;lima;aventura|naturaleza;7;2500;True;True;True;True;2;False;;14;71;False;;False;0;0;False;False;False;551;propuestas_sin_apertura
+U0080;29242239-52cb-52bb-9ca0-36b720dbb5fd;2026-10-25;19;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;False;;36;31;False;;False;0;0;False;False;False;416;propuestas_sin_apertura
+U0081;109d735c-0ec9-5720-a102-8ff83d8e9b79;2026-10-18;13;Directo;lima;aventura|naturaleza;7;2500;True;True;True;True;2;False;;14;71;False;;False;0;0;False;False;False;255;propuestas_sin_apertura
+U0082;1bffc23a-e940-505b-a8da-e875fa3d2ac4;2026-10-25;10;Directo;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;B;14;70;True;B;False;0;0;True;False;False;787;aceptacion_sin_compra
+U0083;75f1d3c5-de98-5218-8872-0bb3b1e89b91;2026-11-09;11;Redes sociales;tarapoto;naturaleza|aventura;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0084;2b67e9c5-fce4-5b1f-91b8-fb19ab421071;2026-10-15;20;Referidos;lima;fiestas|historia;5;;True;True;True;True;2;False;;36;139;False;;False;0;0;False;False;False;389;propuestas_sin_apertura
+U0085;f5073ecd-3804-5386-bb10-f6eab2744f55;2026-11-04;20;Directo;lima;naturaleza;4;;True;True;True;True;2;False;;25;14;False;;False;0;0;False;False;False;1355;propuestas_sin_apertura
+U0086;845f030c-e2e6-56e2-8482-5f310aed95b6;2026-10-26;18;Redes sociales;lima;arquitectura|historia;3;;True;True;True;True;2;True;B;139;70;True;B;True;20;5;True;True;False;382;compra_simulada
+U0087;18b6da65-fde9-5fb4-9620-a1ed8f7e2206;2026-11-06;13;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;True;B;36;31;False;;False;0;0;False;False;False;573;propuesta_abierta_sin_aceptacion
+U0088;e0fc0943-5005-59f4-a83c-b5382b7d7a76;2026-11-03;11;Búsqueda;huancayo;naturaleza|caminatas;4;;True;True;True;True;2;True;A;172;14;True;A;False;0;0;False;False;False;738;aceptacion_sin_compra
+U0089;ad1e101f-c34c-5a08-8210-5b0bb3aa5b68;2026-11-04;18;Directo;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;B;14;70;True;B;True;20;5;True;False;False;793;compra_simulada
+U0090;34a2bf83-ab07-5a84-a570-bbf207f3083f;2026-10-18;21;Directo;iquitos;naturaleza;4;;True;True;True;True;2;True;B;31;245;False;;False;0;0;False;True;False;643;propuesta_abierta_sin_aceptacion
+U0091;d0a81f11-bf93-57d3-8ad0-66f82b7461bc;2026-11-01;13;Directo;cusco;gastronomia|vida_nocturna;5;1500;True;True;True;True;2;False;;31;70;False;;False;0;0;False;False;False;415;propuestas_sin_apertura
+U0092;c0f46793-c2da-5246-b4e8-75f2d84e95c5;2026-11-09;13;Redes sociales;lima;historia|fiestas;8;;True;True;True;True;2;True;A;36;11;False;;False;0;0;True;True;False;1016;propuesta_abierta_sin_aceptacion
+U0093;1829844c-4982-52df-bcc7-f21d7abdef6d;2026-11-09;19;Redes sociales;arequipa;historia|arquitectura;5;;True;True;True;True;2;True;B;36;11;False;;False;0;0;False;True;False;413;propuesta_abierta_sin_aceptacion
+U0094;3346cd29-4b74-541f-a289-ef02b9c58cd1;2026-11-07;22;Directo;lima;historia|naturaleza;4;700;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0095;6bb7a946-25c7-5305-83e7-9e304b17248a;2026-11-10;14;Búsqueda;lima;;2;;True;True;True;True;2;True;A;70;27;True;A;True;20;5;True;False;False;640;compra_simulada
+U0096;4da35afb-4fe9-5d52-9d91-357606cca3ef;2026-10-24;12;Búsqueda;lima;naturaleza|aventura|caminatas;10;;True;True;True;True;2;True;A;71;14;False;;False;0;0;False;False;False;470;propuesta_abierta_sin_aceptacion
+U0097;1394df5c-c0c4-5520-a0fb-194df248b33d;2026-10-28;13;Redes sociales;lima;;2;;True;True;True;True;2;True;A;70;27;True;A;True;20;5;False;True;False;680;compra_simulada
+U0098;e04b6a3e-ff97-541b-bd84-518bbde214fa;2026-10-19;20;Directo;piura;naturaleza|aventura;5;;True;True;True;True;2;True;B;14;25;False;;False;0;0;True;True;False;1013;propuesta_abierta_sin_aceptacion
+U0099;c2624e84-6104-59e8-b4bf-f4d7b5088086;2026-10-21;17;Directo;puno;historia;3;;True;True;True;True;2;True;A;36;40;False;;False;0;0;False;False;False;4373;propuesta_abierta_sin_aceptacion
+U0100;575d2aa9-f066-53cd-a97e-99ea852f9ce7;2026-10-30;16;Directo;lima;historia|naturaleza;4;700;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0101;7748c37a-afb2-5bb5-b8dd-ffb9792f993e;2026-11-09;22;Directo;lima;historia;6;;True;True;True;True;2;True;B;36;40;False;;False;0;0;False;False;False;1299;propuesta_abierta_sin_aceptacion
+U0102;b2f56219-09bc-50f1-9da3-21c223965ef3;2026-11-08;16;Redes sociales;tacna;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0103;f9d6e05f-565a-5a4a-90e6-204e283dd65f;2026-10-19;19;Búsqueda;piura;naturaleza|aventura;5;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;480;respuesta_sin_propuestas
+U0104;7dc8987f-5664-576e-b811-b08801dc5a75;2026-11-09;11;Directo;lima;historia;6;;True;True;True;True;2;False;;36;40;False;;False;0;0;False;False;False;1942;propuestas_sin_apertura
+U0105;ef766cf9-dccc-53c2-8973-ae4841505fb6;2026-11-10;14;Directo;cajamarca;naturaleza|historia;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0106;9ae8bb06-53b2-5b71-b322-c77f747dea61;2026-11-05;13;Redes sociales;puno;historia;3;;True;True;True;True;2;True;A;36;40;False;;False;0;0;True;True;False;346;propuesta_abierta_sin_aceptacion
+U0107;c3005b74-4b79-5422-91f6-5e815108dfe2;2026-11-05;14;Búsqueda;lima;playa;2;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0108;50cce9ec-04fe-535a-bbcd-30cb7937b8c6;2026-11-06;18;Directo;ayacucho;historia;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0109;4e75cc3b-290f-5acc-b342-b5ef181920f5;2026-10-20;10;Referidos;arequipa;aventura;6;;True;True;True;True;2;True;B;71;25;False;;False;0;0;False;True;False;193;propuesta_abierta_sin_aceptacion
+U0110;f22d43d1-8dd6-50aa-844e-26efade6be55;2026-11-02;20;Directo;lima;gastronomia|vida_nocturna;2;600;True;True;True;True;2;True;B;70;15;False;;False;0;0;True;False;False;1012;propuesta_abierta_sin_aceptacion
+U0111;ce65a519-baaf-5a79-ba6b-23782e1a22ec;2026-10-15;15;Redes sociales;lima;arquitectura|historia;3;;True;True;True;True;2;True;A;139;70;True;A;True;20;5;False;False;False;458;compra_simulada
+U0112;da3b9954-fa81-5f1c-b50d-e0c3d24182f0;2026-10-30;19;Referidos;lima;fiestas|historia;5;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0113;18bba63e-8171-59ee-a139-535f11c34c72;2026-11-04;20;Búsqueda;lima;playa;5;1200;True;True;True;True;2;True;B;139;180;True;B;False;0;0;False;False;False;3625;aceptacion_sin_compra
+U0114;8cbd0d3f-9b43-5063-9aeb-30f42cfdf4ae;2026-11-02;12;Directo;puno;historia;3;;True;True;True;True;2;True;B;36;40;False;;False;0;0;True;False;False;1481;propuesta_abierta_sin_aceptacion
+U0115;f635fcf9-a592-5b5b-87a5-97602106a80a;2026-11-03;19;Directo;lima;;2;;True;True;True;True;2;True;A;70;27;True;A;False;0;0;False;False;False;1111;aceptacion_sin_compra
+U0116;473a9053-8893-5c37-b270-72ada8b3f09f;2026-11-07;22;Directo;lima;naturaleza|caminatas;3;900;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0117;67d1ee9f-7f71-5e93-b6cc-d90a6f82fe57;2026-10-14;12;Directo;cusco;gastronomia|vida_nocturna;5;1500;True;True;True;True;2;True;A;31;70;True;A;False;0;0;False;False;False;807;aceptacion_sin_compra
+U0118;dbbd4a5d-a1fa-5a84-8269-9600d315f1f3;2026-10-25;9;Redes sociales;arequipa;naturaleza;3;;True;True;True;True;2;True;A;71;187;False;;False;0;0;True;False;False;1096;propuesta_abierta_sin_aceptacion
+U0119;3c6b3d24-bdfd-5bca-8ae7-76c6ee91ea0f;2026-10-28;10;Referidos;lima;playa|gastronomia;3;800;True;True;True;True;2;True;A;70;139;False;;False;0;0;True;False;False;742;propuesta_abierta_sin_aceptacion
+U0120;4d0a6756-8cd1-5160-bb4a-eeb9f923a74d;2026-10-30;18;Redes sociales;cajamarca;naturaleza|historia;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;597;respuesta_sin_propuestas
+U0121;52564981-db7b-53f5-b181-e9977a7112d1;2026-11-09;19;Directo;lima;;5;;True;True;True;True;2;True;B;139;11;False;;False;0;0;False;True;False;1186;propuesta_abierta_sin_aceptacion
+U0122;f9c113a6-83cb-51cc-9ec0-308890beb2ba;2026-10-24;20;Directo;cusco;;3;;True;True;True;True;2;False;;27;187;False;;False;0;0;False;False;False;1107;propuestas_sin_apertura
+U0123;9ea42b9d-f2f1-503a-88c1-01ebcc0cbf6d;2026-10-28;21;Búsqueda;piura;naturaleza|aventura;5;;True;True;True;True;2;True;A;14;25;False;;False;0;0;False;False;False;408;propuesta_abierta_sin_aceptacion
+U0124;ae4e7408-9171-5f02-b1c2-a0ea67bb4459;2026-11-07;21;Búsqueda;huancayo;naturaleza|caminatas;4;;True;True;True;True;2;False;;172;14;False;;False;0;0;False;False;False;327;propuestas_sin_apertura
+U0125;c30fd804-e6ba-5e70-acba-1b6060a715ec;2026-10-21;22;Directo;arequipa;historia|arquitectura;5;;True;True;True;True;2;True;B;36;11;True;B;False;0;0;True;False;False;834;aceptacion_sin_compra
+U0126;251d34b5-ba24-5ae8-8597-ddb7942b8347;2026-10-17;14;Redes sociales;arequipa;playa;2;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;2904;respuesta_sin_propuestas
+U0127;e1bba6e8-d184-5b16-8a3f-0197cdf29bb5;2026-10-19;19;Búsqueda;lima;playa|gastronomia;3;800;True;True;True;True;2;True;A;70;139;True;A;False;0;0;False;False;False;434;aceptacion_sin_compra
+U0128;5e065ac3-334a-5bd5-bf96-02f11620d6a6;2026-10-19;13;Redes sociales;lima;arquitectura|historia;3;;True;True;True;True;2;True;B;139;70;False;;False;0;0;False;False;False;715;propuesta_abierta_sin_aceptacion
+U0129;aa444d5e-69dd-5abf-b757-6afe8bbc312b;2026-10-14;18;Redes sociales;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;A;11;36;True;A;True;20;5;False;False;False;676;compra_simulada
+U0130;3436da83-a72a-56f0-9d74-0dc1f1459c8f;2026-10-15;20;Búsqueda;arequipa;naturaleza;3;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0131;3b414153-5a3d-5a40-a18b-26df5eebfb1f;2026-11-07;11;Directo;huancayo;historia|fiestas;3;;True;True;True;True;2;True;B;31;27;True;B;False;0;0;False;True;False;624;aceptacion_sin_compra
+U0132;c990d0c4-a952-5a8e-af49-9d95f78db7f4;2026-10-31;18;Directo;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;True;A;True;20;5;True;False;False;619;compra_simulada
+U0133;25e8438f-4c49-5b27-b80a-22cb16eca638;2026-11-01;12;Redes sociales;lima;;5;;True;True;True;True;2;True;B;139;11;True;B;False;0;0;False;False;False;766;aceptacion_sin_compra
+U0134;a6bf9c1e-f6ed-51e3-8d12-592f6ba9fb9d;2026-10-15;22;Directo;lima;playa;5;1200;True;True;True;True;2;True;A;139;180;False;;False;0;0;True;False;False;1425;propuesta_abierta_sin_aceptacion
+U0135;b8c05a1e-7866-570d-82dd-563bb6a2c3a5;2026-11-08;17;Directo;arequipa;aventura;6;;True;True;True;True;2;False;;71;25;False;;False;0;0;False;False;False;2302;propuestas_sin_apertura
+U0136;fe0343e2-b194-5443-a5c0-0b093455af54;2026-10-16;13;Búsqueda;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;True;A;True;20;5;True;False;False;150;compra_simulada
+U0137;ce562771-2824-5070-af17-b9cc9506fa56;2026-10-22;19;Directo;chiclayo;naturaleza;5;;True;True;True;True;2;True;B;25;14;False;;False;0;0;True;False;False;631;propuesta_abierta_sin_aceptacion
+U0138;d23c4a10-7398-5993-94dd-04a95650e61d;2026-11-07;21;Redes sociales;arequipa;aventura;6;;True;True;True;True;2;True;B;71;25;True;B;False;0;0;True;True;False;408;aceptacion_sin_compra
+U0139;5fe6eefa-49ad-51da-9f21-12fb8c98c0da;2026-10-27;15;Directo;trujillo;historia;3;;True;True;True;True;2;True;B;31;2;True;B;False;0;0;True;False;False;2167;aceptacion_sin_compra
+U0140;adf9fba9-95ef-5d2d-9c52-8e98242bdd30;2026-10-14;17;Búsqueda;lima;;5;;True;True;True;True;2;False;;139;11;False;;False;0;0;False;False;False;1463;propuestas_sin_apertura
+U0141;90352347-7ccb-5ad3-9e93-b0a6dd3aeb97;2026-11-02;8;Directo;lima;historia;6;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0142;f053170a-6594-5e87-b782-ee1bd1c5f832;2026-10-24;17;Redes sociales;trujillo;playa|gastronomia;4;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;693;respuesta_sin_propuestas
+U0143;adf294ac-ac56-5b76-b227-0dcd53995c20;2026-11-02;18;Redes sociales;lima;historia|fiestas;8;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0144;045b19c9-792e-5313-ae1f-bc9c3a3f5d74;2026-10-20;17;Directo;lima;gastronomia|vida_nocturna;2;600;True;True;True;True;2;True;B;70;15;False;;False;0;0;False;True;False;735;propuesta_abierta_sin_aceptacion
+U0145;b5f421ea-d003-545a-883c-26a1d00209f9;2026-10-27;13;Redes sociales;lima;historia;6;;True;True;True;True;2;True;A;36;40;False;;False;0;0;True;False;False;458;propuesta_abierta_sin_aceptacion
+U0146;0cc95d7e-dfa6-5ba1-98bb-23d3474bb119;2026-11-04;21;Directo;trujillo;historia;3;;True;True;True;True;2;True;B;31;2;True;B;True;20;5;False;True;False;4211;compra_simulada
+U0147;8689f468-7ce0-56c6-83a1-0b1c15ca8c74;2026-10-19;14;Redes sociales;cusco;gastronomia|vida_nocturna;5;1500;True;True;True;True;2;True;A;31;70;False;;False;0;0;True;True;False;452;propuesta_abierta_sin_aceptacion
+U0148;42e59304-5a11-5502-98f9-d3e247c14d0e;2026-10-21;21;Redes sociales;lima;;2;;True;True;True;True;2;True;A;70;27;False;;False;0;0;True;False;False;100;propuesta_abierta_sin_aceptacion
+U0149;446edf0c-10ef-5fb7-9440-ba49aee010ef;2026-10-25;10;Redes sociales;huaraz;caminatas;3;;True;True;True;True;2;True;B;25;70;False;;False;0;0;True;True;False;478;propuesta_abierta_sin_aceptacion
+U0150;4711a266-a219-5060-a64e-4f2870cfb55d;2026-11-05;17;Redes sociales;lima;naturaleza;4;;True;True;True;True;2;True;B;25;14;True;B;False;0;0;True;False;False;434;aceptacion_sin_compra
+U0151;0f815b86-892d-5d64-be79-7e8b1f6bce6c;2026-10-31;19;Directo;lima;playa;5;1200;True;True;True;True;2;True;B;139;180;False;;False;0;0;True;True;False;935;propuesta_abierta_sin_aceptacion
+U0152;4624fad7-d4ad-5c36-8436-e6addb5150d4;2026-10-22;21;Directo;lima;aventura|naturaleza;7;2500;True;True;True;True;2;False;;14;71;False;;False;0;0;False;False;False;600;propuestas_sin_apertura
+U0153;5087f0b9-b2a0-59f8-a8a0-aeb0c0d6130d;2026-11-02;13;Redes sociales;cusco;naturaleza|caminatas;4;;True;True;True;True;2;True;A;71;40;True;A;True;20;5;False;False;False;699;compra_simulada
+U0154;d4961019-a094-5aca-a361-d8e37fca68c5;2026-11-02;20;Búsqueda;trujillo;historia;3;;True;True;True;True;2;False;;31;2;False;;False;0;0;False;False;False;534;propuestas_sin_apertura
+U0155;1ed4f45e-a9b4-53ab-8a45-d707f7c30cac;2026-11-08;18;Búsqueda;iquitos;naturaleza;4;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0156;570e4fb6-8aac-5fdc-b22b-89e42fd8145a;2026-10-23;13;Redes sociales;lima;playa|gastronomia;3;800;True;True;True;True;2;True;A;70;139;False;;False;0;0;False;True;False;314;propuesta_abierta_sin_aceptacion
+U0157;f8d5da52-563f-5524-a94b-0172ac9923df;2026-11-04;17;Búsqueda;lima;;6;600;True;True;True;True;2;True;A;96;139;True;A;False;0;0;False;False;False;1160;aceptacion_sin_compra
+U0158;3dff52a4-8415-5049-97d4-6df1dea30db2;2026-10-29;15;Directo;lima;historia;6;;True;True;True;True;2;True;B;36;40;False;;False;0;0;True;True;False;563;propuesta_abierta_sin_aceptacion
+U0159;e2ffab59-1e65-5e66-a5ea-2124e13e00e4;2026-10-31;16;Referidos;cajamarca;naturaleza|historia;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0160;c7478337-9e7e-5768-b7ac-1586fa5299ad;2026-11-03;13;Directo;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;True;False;False;1148;propuesta_abierta_sin_aceptacion
+U0161;540e4805-3d4d-5fe7-b188-01b5956c6f74;2026-10-23;22;Directo;chiclayo;historia|arquitectura;3;;True;True;True;True;2;True;B;139;31;True;B;True;20;5;True;False;False;1268;compra_simulada
+U0162;59b30c84-bc25-544c-a666-e410f6cdcc91;2026-10-24;12;Redes sociales;trujillo;historia;3;;True;True;True;True;2;True;A;31;2;True;A;False;0;0;True;False;False;472;aceptacion_sin_compra
+U0163;aa09ef53-d8b0-5386-a47b-c09005584a53;2026-10-23;10;Directo;lima;historia|fiestas;8;;True;True;True;True;2;True;B;36;11;True;B;False;0;0;True;False;False;646;aceptacion_sin_compra
+U0164;cc522fee-4d68-50f7-bab5-8552cc45049b;2026-11-04;17;Búsqueda;cusco;historia;2;;True;True;True;True;2;False;;11;4;False;;False;0;0;False;False;False;482;propuestas_sin_apertura
+U0165;2c3bbed0-8057-5405-af0f-a3e8337f943a;2026-10-24;16;Búsqueda;puno;historia;3;;True;True;True;True;2;True;A;36;40;False;;False;0;0;False;True;False;764;propuesta_abierta_sin_aceptacion
+U0166;7371b542-679f-5054-9ac9-2f382b5b83d5;2026-10-17;9;Redes sociales;lima;fiestas|historia;5;;True;True;True;True;2;False;;36;139;False;;False;0;0;False;False;False;2022;propuestas_sin_apertura
+U0167;72cb586c-698e-52bc-9163-9a14cc4136bd;2026-10-28;17;Búsqueda;puno;historia;3;;True;True;True;True;2;True;B;36;40;False;;False;0;0;False;False;False;2278;propuesta_abierta_sin_aceptacion
+U0168;1e046ffa-ca99-50ec-b59a-781a2bdf4ee3;2026-11-05;11;Referidos;trujillo;playa|gastronomia;4;;True;True;True;True;2;False;;25;31;False;;False;0;0;False;False;False;513;propuestas_sin_apertura
+U0169;eefacd43-9b90-5538-aa06-ff2475bc713b;2026-11-03;11;Referidos;lima;playa;2;;True;True;True;True;2;False;;70;27;False;;False;0;0;False;False;False;1711;propuestas_sin_apertura
+U0170;714fbf40-fdc2-5303-8905-a03f0f42137d;2026-11-05;14;Directo;lima;historia;6;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0171;b2ada4ad-f434-5c49-bfcb-84861c5d0086;2026-10-27;12;Redes sociales;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;B;14;70;True;B;False;0;0;False;False;False;867;aceptacion_sin_compra
+U0172;a94c193e-03ad-5b7d-b79c-a1b6be59a8b5;2026-11-03;18;Referidos;iquitos;naturaleza;4;;True;True;True;True;2;True;A;31;245;False;;False;0;0;True;False;False;585;propuesta_abierta_sin_aceptacion
+U0173;02d79281-0926-5403-aaa0-eb5908f5ae2d;2026-10-24;17;Directo;lima;;2;;True;True;True;True;2;True;A;70;27;True;A;True;20;5;False;False;False;873;compra_simulada
+U0174;d39ef507-940d-596b-b9a2-403a17b45c89;2026-11-08;8;Directo;lima;playa|gastronomia;3;800;True;True;True;True;2;True;B;70;139;False;;False;0;0;False;False;False;537;propuesta_abierta_sin_aceptacion
+U0175;3df7c543-7db5-583b-873e-5b45d5002cac;2026-11-07;16;Directo;tarapoto;naturaleza|aventura;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0176;9fdeb44e-3768-5949-b647-29bc69be8b44;2026-11-06;21;Redes sociales;cusco;historia;2;;True;True;True;True;2;False;;11;4;False;;False;0;0;False;False;False;853;propuestas_sin_apertura
+U0177;105e320d-09dc-52cc-a30f-f6fbb7dfc837;2026-10-22;12;Búsqueda;ayacucho;historia;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0178;b54fd678-c3a8-5e11-8c5d-6dcf24316e2e;2026-10-26;19;Redes sociales;arequipa;historia|arquitectura;5;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;773;respuesta_sin_propuestas
+U0179;4de27adb-c291-5dee-8f6d-5fef7f5f49ae;2026-10-20;21;Directo;iquitos;naturaleza;4;;True;True;True;True;2;True;A;31;245;False;;False;0;0;False;False;False;412;propuesta_abierta_sin_aceptacion
+U0180;4f3b7cf0-95a7-5a4a-a30b-8b6ce182e150;2026-10-20;14;Redes sociales;lima;;6;600;True;True;True;True;2;True;A;96;139;False;;False;0;0;True;False;False;873;propuesta_abierta_sin_aceptacion
+U0181;71328dde-3346-5852-aa2a-a7e956f21eff;2026-10-19;20;Redes sociales;arequipa;naturaleza;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;312;respuesta_sin_propuestas
+U0182;5766ed3c-ba2b-59cb-8e96-9502b2772361;2026-10-14;21;Búsqueda;cusco;gastronomia|vida_nocturna;5;1500;True;True;True;True;2;True;A;31;70;True;A;False;0;0;True;False;False;1201;aceptacion_sin_compra
+U0183;1cc98f3f-3e3f-5e79-963a-f03f40c729bd;2026-11-03;19;Directo;arequipa;aventura;6;;True;True;True;True;2;True;B;71;25;True;B;True;20;5;True;False;False;346;compra_simulada
+U0184;43d85400-3da8-54ae-b8a5-18053d1106b5;2026-10-25;19;Directo;tarapoto;naturaleza|aventura;4;;True;True;True;True;2;True;A;86;25;True;A;False;0;0;True;False;False;1057;aceptacion_sin_compra
+U0185;ed45bac3-b007-547f-b58a-f5a9ec952660;2026-10-15;14;Directo;iquitos;naturaleza;4;;True;True;True;True;2;True;B;31;245;True;B;False;0;0;False;False;False;1946;aceptacion_sin_compra
+U0186;26504af4-ea20-584c-a4bf-c85b5cd69b02;2026-10-24;16;Directo;arequipa;naturaleza;3;;True;True;True;True;2;True;A;71;187;False;;False;0;0;False;False;False;293;propuesta_abierta_sin_aceptacion
+U0187;a950b776-8263-5865-925f-759695a4eaeb;2026-11-04;19;Búsqueda;chiclayo;historia|arquitectura;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0188;e86eb5f4-0885-5c1d-8c58-e8af3f963d26;2026-10-21;11;Directo;lima;naturaleza;4;;True;True;True;True;2;True;A;25;14;True;A;True;20;5;False;False;False;1428;compra_simulada
+U0189;bd7fe5b1-ab8b-5923-8dbb-ca489cec4175;2026-11-08;19;Referidos;lima;;2;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0190;809c6821-132c-5a16-a1ad-cac5c71ef03d;2026-10-20;18;Redes sociales;arequipa;historia|arquitectura;5;;True;True;True;True;2;False;;36;11;False;;False;0;0;False;False;False;740;propuestas_sin_apertura
+U0191;dfc06425-86b6-5374-8720-0b438fa23156;2026-10-24;10;Referidos;lima;naturaleza;4;;True;True;True;True;2;True;A;25;14;True;A;False;0;0;True;False;False;3974;aceptacion_sin_compra
+U0192;7b65b9d8-96f3-5550-ac67-0a5c66e78fba;2026-10-18;9;Directo;chiclayo;historia|arquitectura;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0193;62dd5c2b-1833-5faa-9ea5-092b221618d7;2026-10-20;12;Referidos;ayacucho;historia;4;;True;True;True;True;2;True;B;36;31;True;B;True;20;5;True;False;False;1249;compra_simulada
+U0194;e1274c3c-2312-5a7c-bd8f-3bb60feaed60;2026-10-30;18;Directo;cusco;;3;;True;True;True;True;2;False;;27;187;False;;False;0;0;False;False;False;756;propuestas_sin_apertura
+U0195;42ff68a6-e79c-5153-9cd8-9cecf70344ad;2026-10-17;19;Directo;lima;naturaleza|aventura|caminatas;10;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;788;respuesta_sin_propuestas
+U0196;1d063485-57ad-5f52-a021-37ff30d6f4cb;2026-11-06;21;Directo;ayacucho;historia;4;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0197;42c6d44d-20b5-5382-92f5-ab28ac354a6d;2026-10-27;19;Directo;lima;;6;600;True;True;True;True;2;False;;96;139;False;;False;0;0;False;False;False;929;propuestas_sin_apertura
+U0198;351e8b28-5846-5a92-85ad-32d144bf9a42;2026-11-07;20;Directo;piura;playa;2;;True;True;True;True;2;True;A;139;85;True;A;True;20;5;False;False;False;784;compra_simulada
+U0199;2b406a35-6e05-50b2-a378-6852dee4fa65;2026-11-07;18;Directo;huaraz;caminatas;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0200;bd2bfb48-809e-54cb-a185-4c99fc077f47;2026-10-18;20;Directo;chiclayo;naturaleza;5;;True;True;True;True;2;True;A;25;14;False;;False;0;0;False;False;False;3822;propuesta_abierta_sin_aceptacion
+U0201;cf2da8cb-513d-538d-bf9c-a3b37ccfe8e5;2026-11-08;20;Directo;lima;playa;2;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;1278;respuesta_sin_propuestas
+U0202;03508954-6db7-5d54-8059-4e2849d35e53;2026-10-17;19;Directo;lima;naturaleza|aventura|caminatas;10;;True;True;True;True;2;False;;71;14;False;;False;0;0;False;False;False;1237;propuestas_sin_apertura
+U0203;e2e8bfca-fbed-5ab0-90ff-19dad9ef2464;2026-10-17;11;Búsqueda;huancayo;naturaleza|caminatas;4;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0204;8be39397-68bb-5b36-8daf-bda7af92b003;2026-10-27;12;Redes sociales;lima;historia|naturaleza;4;700;True;True;True;True;2;True;B;139;96;True;B;True;20;5;True;False;False;1005;compra_simulada
+U0205;f2c68b03-5a0b-5e60-adee-f38b5318ce14;2026-10-23;15;Directo;arequipa;historia|arquitectura;5;;True;True;True;True;2;True;A;36;11;True;A;False;0;0;True;True;False;1786;aceptacion_sin_compra
+U0206;50be0ce8-699b-59ed-8627-fc1681f76a78;2026-10-17;18;Directo;arequipa;aventura;6;;True;True;True;True;2;False;;71;25;False;;False;0;0;False;False;False;5067;propuestas_sin_apertura
+U0207;fae6c57c-38ac-535f-aceb-bdec379dfdd5;2026-10-20;18;Directo;lima;arquitectura|historia;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0208;1969ef27-9114-59d8-971b-e22983d3b637;2026-10-18;10;Directo;lima;historia|naturaleza;4;700;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0209;23410053-0920-5aca-9a66-3892dbe23243;2026-11-05;15;Directo;chiclayo;historia|arquitectura;3;;True;True;True;True;2;True;A;139;31;True;A;True;20;5;True;False;False;1051;compra_simulada
+U0210;9da822d4-1485-54ab-b646-42f0901936a0;2026-11-03;15;Búsqueda;piura;playa;2;;True;True;True;True;2;False;;139;85;False;;False;0;0;False;False;False;1061;propuestas_sin_apertura
+U0211;8e9859d9-4f24-5d0f-8c83-9e86e60ced60;2026-11-04;18;Directo;lima;;2;;True;True;True;True;2;True;B;70;27;True;B;False;0;0;True;False;False;517;aceptacion_sin_compra
+U0212;9101b7f2-d034-579a-ad77-82b8972a4718;2026-10-27;20;Búsqueda;lima;playa;5;1200;True;True;True;True;2;True;B;139;180;True;B;False;0;0;False;False;False;336;aceptacion_sin_compra
+U0213;e73919aa-9c0d-5e94-8d66-4b26cb4d6076;2026-10-31;19;Redes sociales;puerto-maldonado;naturaleza;3;;True;True;True;True;2;False;;11;36;False;;False;0;0;False;False;False;292;propuestas_sin_apertura
+U0214;573a045a-dc02-5e7f-b315-d7492fe00118;2026-11-08;19;Búsqueda;lima;fiestas|historia;5;;True;True;True;True;2;False;;36;139;False;;False;0;0;False;False;False;305;propuestas_sin_apertura
+U0215;bf51ec11-fe4b-5254-9a64-3c1ecf433ae4;2026-10-23;13;Búsqueda;lima;naturaleza|aventura|caminatas;10;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;918;respuesta_sin_propuestas
+U0216;cfe4d1cf-d8f5-575e-8a2d-b8dadbfd6023;2026-10-17;21;Redes sociales;tacna;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0217;bf95543c-719c-5c1c-9a4c-3dc50b65e449;2026-11-06;20;Búsqueda;huaraz;caminatas;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0218;d1651987-8e11-51cc-bc6e-cf343ce98e4c;2026-11-02;11;Búsqueda;huancayo;naturaleza|caminatas;4;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0219;0a8a6a9c-c21b-5c45-8ef7-11745dc84ef5;2026-11-05;12;Referidos;lima;historia|naturaleza;4;700;True;True;True;True;2;False;;139;96;False;;False;0;0;False;False;False;1042;propuestas_sin_apertura
+U0220;8019e0f5-ccc2-5910-9740-cce463153519;2026-10-29;11;Directo;arequipa;naturaleza;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;503;respuesta_sin_propuestas
+U0221;1663906e-0372-5292-8cfc-3c92311d8e40;2026-10-14;22;Redes sociales;trujillo;historia;3;;True;True;True;True;2;True;B;31;2;True;B;False;0;0;False;False;False;617;aceptacion_sin_compra
+U0222;39f369ca-5b65-543b-8c9c-8c2d7b79728a;2026-10-14;17;Directo;lima;gastronomia|vida_nocturna;2;600;True;True;True;True;2;True;A;70;15;True;A;True;20;5;False;False;False;735;compra_simulada
+U0223;aa913e83-111f-5387-9cfb-00894c4c2879;2026-11-10;21;Directo;lima;naturaleza|caminatas;3;900;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0224;255dd80e-17c2-5065-8ef2-fd99e9d2e935;2026-11-03;17;Redes sociales;lima;arquitectura|historia;3;;True;True;True;True;2;True;A;139;70;True;A;True;20;5;True;False;False;673;compra_simulada
+U0225;3561d121-8c83-5e7b-b210-d294d60f47eb;2026-11-07;20;Redes sociales;chiclayo;historia|arquitectura;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0226;e3107c40-60d6-5653-8e9f-1657bf81b9e2;2026-10-26;17;Directo;tacna;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0227;f7c16832-f4b0-5a4e-9de0-e895dbed0791;2026-11-04;18;Directo;chiclayo;naturaleza;5;;True;True;True;True;2;True;A;25;14;False;;False;0;0;False;False;False;506;propuesta_abierta_sin_aceptacion
+U0228;442c0256-026c-53be-8216-05bfb02f1366;2026-10-28;12;Directo;cusco;historia;2;;True;True;True;True;2;True;A;11;4;False;;False;0;0;False;False;False;861;propuesta_abierta_sin_aceptacion
+U0229;bb14d606-f685-5f7e-8890-b7d8e3c9e33d;2026-10-19;20;Búsqueda;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;B;25;31;False;;False;0;0;True;False;False;1022;propuesta_abierta_sin_aceptacion
+U0230;732e6111-50a0-5efa-b72e-6a7caa214d25;2026-10-30;19;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;True;B;36;31;True;B;False;0;0;True;False;False;737;aceptacion_sin_compra
+U0231;dfacc042-8371-55fb-a9d9-5051c0847fb2;2026-11-02;16;Referidos;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;False;;False;0;0;True;False;False;3269;propuesta_abierta_sin_aceptacion
+U0232;b4f8ebfe-17c4-5647-b87e-728bce5bc828;2026-11-08;20;Redes sociales;lima;;2;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;1482;respuesta_sin_propuestas
+U0233;562f85f9-4460-5169-93c9-2a447261ee6c;2026-10-23;17;Redes sociales;chiclayo;historia|arquitectura;3;;True;True;True;True;2;True;A;139;31;True;A;False;0;0;False;False;False;1332;aceptacion_sin_compra
+U0234;e01abc9e-51dc-5f63-98f9-d07b72547910;2026-10-27;11;Directo;iquitos;naturaleza;4;;True;True;True;True;2;True;B;31;245;False;;False;0;0;True;False;False;675;propuesta_abierta_sin_aceptacion
+U0235;0f1cf4d3-4949-5774-9606-2f484df4a219;2026-10-21;13;Referidos;cajamarca;naturaleza|historia;3;;True;True;True;True;2;True;B;14;139;True;B;True;20;5;False;False;False;470;compra_simulada
+U0236;9c8ebeb4-d7d5-5140-b729-d2552b4df345;2026-11-06;22;Búsqueda;tacna;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0237;7f981745-fa91-528e-acb3-1b9f760c53fd;2026-10-18;21;Redes sociales;cajamarca;naturaleza|historia;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0238;31bd26b5-fb00-57df-a26d-4e9597d95a0a;2026-10-30;9;Redes sociales;tacna;;3;;True;True;True;True;2;True;B;187;11;True;B;True;20;5;False;False;False;586;compra_simulada
+U0239;44ec539b-2779-5958-8417-a8a3406c54a7;2026-10-17;16;Redes sociales;huancayo;historia|fiestas;3;;True;True;True;True;2;True;A;31;27;True;A;False;0;0;False;True;False;1923;aceptacion_sin_compra
+U0240;4a1bb1d8-8143-5010-a7c5-de6279fd6840;2026-10-27;18;Directo;puno;historia;3;;True;True;True;True;2;True;A;36;40;True;A;False;0;0;True;True;False;1171;aceptacion_sin_compra
+U0241;ea57210d-6731-589b-a6fc-d562d97e06cf;2026-10-29;12;Directo;tacna;;3;;True;True;True;True;2;True;B;187;11;False;;False;0;0;False;False;False;568;propuesta_abierta_sin_aceptacion
+U0242;f60a66f9-10ab-595c-a903-e4d9c0c038c2;2026-10-29;10;Búsqueda;lima;historia;6;;True;True;True;True;2;True;A;36;40;True;A;True;20;5;True;False;False;455;compra_simulada
+U0243;551e0eb0-2e18-57a9-b26f-9a7c194e4947;2026-10-16;12;Directo;lima;aventura|naturaleza;7;2500;True;True;True;True;2;True;A;14;71;True;A;False;0;0;False;True;False;249;aceptacion_sin_compra
+U0244;cd9b513d-ac14-59f7-aac2-3fc9e4ae1151;2026-11-02;9;Redes sociales;lima;naturaleza|caminatas;3;900;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0245;476961b5-d625-568b-aa88-188e78c3d0d7;2026-11-07;21;Búsqueda;tacna;;3;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0246;b778784e-ec26-53c2-a215-0633d1dc4b57;2026-11-06;12;Directo;tacna;;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0247;baa98f9c-0f6d-5753-aeeb-ab03a4c81327;2026-10-18;18;Referidos;iquitos;naturaleza;4;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0248;c4dce3be-f59c-57f2-8104-db2838acdd71;2026-10-14;13;Búsqueda;arequipa;playa;2;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0249;ea2ba71a-8db1-5656-9f88-5422e04fb6b9;2026-10-22;14;Búsqueda;iquitos;naturaleza;4;;True;True;True;True;2;False;;31;245;False;;False;0;0;False;False;False;730;propuestas_sin_apertura
+U0250;ec265c62-5947-568a-b978-439e8646dafb;2026-10-15;13;Directo;lima;playa;2;;True;True;True;True;2;True;A;70;27;True;A;False;0;0;True;True;False;1000;aceptacion_sin_compra
+U0251;c025700f-af2e-55fa-980b-823fe1afb827;2026-10-27;13;Directo;lima;playa|gastronomia;3;800;True;True;True;True;2;True;B;70;139;False;;False;0;0;True;True;False;535;propuesta_abierta_sin_aceptacion
+U0252;6cc65d73-7678-5c83-9682-562e8b0dd1b3;2026-10-16;12;Redes sociales;lima;;6;600;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0253;4251cd76-0889-58ed-931f-4666d3716d9a;2026-10-21;15;Búsqueda;lima;;5;;True;True;True;True;2;True;A;139;11;True;A;True;20;5;True;False;False;853;compra_simulada
+U0254;aa012dbd-9b7d-5565-a187-d5f63d2716be;2026-10-16;21;Redes sociales;lima;playa;5;1200;True;True;True;True;2;True;B;139;180;True;B;False;0;0;False;False;False;584;aceptacion_sin_compra
+U0255;a36d8ad5-dce2-55dc-8064-207227130cdf;2026-11-08;14;Directo;puerto-maldonado;naturaleza;3;;True;True;True;True;2;True;B;11;36;False;;False;0;0;False;False;False;2036;propuesta_abierta_sin_aceptacion
+U0256;891dc259-d211-5f81-af51-e11cff99b370;2026-10-24;14;Búsqueda;ayacucho;historia;4;;True;True;True;True;2;True;A;36;31;False;;False;0;0;False;False;False;702;propuesta_abierta_sin_aceptacion
+U0257;b39fb510-704f-5375-9cdb-0ef4a8583b55;2026-10-31;19;Referidos;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;B;14;70;True;B;True;20;5;False;True;False;1391;compra_simulada
+U0258;0a46391c-29b3-5ae3-a069-e813e5c8eccb;2026-10-17;12;Directo;lima;historia|naturaleza;4;700;True;True;True;True;2;False;;139;96;False;;False;0;0;False;False;False;727;propuestas_sin_apertura
+U0259;13b76e7c-eb37-57b4-93e3-192af57c3897;2026-10-26;19;Búsqueda;lima;arquitectura|historia;3;;True;True;True;True;2;False;;139;70;False;;False;0;0;False;False;False;840;propuestas_sin_apertura
+U0260;f5e63c7d-e747-53ad-ac69-bf9c9be02ab2;2026-10-22;10;Directo;puno;historia;3;;True;True;True;True;2;True;A;36;40;True;A;True;20;5;True;False;False;825;compra_simulada
+U0261;3ffcb9fa-1cee-53f6-818d-1f471d52d7b3;2026-10-19;18;Referidos;lima;naturaleza;4;;True;True;True;True;2;True;B;25;14;False;;False;0;0;True;False;False;523;propuesta_abierta_sin_aceptacion
+U0262;e4d9c8fa-9a3e-5e1d-8c2e-2acdf31c5852;2026-10-21;22;Redes sociales;lima;historia|naturaleza;4;700;True;True;True;True;2;True;A;139;96;True;A;False;0;0;True;False;False;309;aceptacion_sin_compra
+U0263;9f0f2a3b-a6a4-54c2-92e6-cfdd4547ca75;2026-11-03;21;Directo;arequipa;aventura;6;;True;True;True;True;2;True;B;71;25;True;B;False;0;0;False;False;False;1842;aceptacion_sin_compra
+U0264;e30c974c-484b-5c9c-99fb-816279c54ead;2026-10-24;15;Directo;arequipa;historia|arquitectura;5;;True;False;False;False;0;False;;;;False;;False;0;0;False;False;False;;solo_visita
+U0265;61ff2d06-e49b-51db-ad1b-c4b2abc9a11e;2026-10-18;21;Redes sociales;lima;gastronomia|vida_nocturna;2;600;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0266;43765082-defc-5233-a15e-b82d3db788da;2026-10-22;17;Directo;arequipa;naturaleza;3;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0267;ff80a8be-4f62-5ab8-98ad-efa800e15b81;2026-10-14;18;Búsqueda;tarapoto;naturaleza|aventura;4;;True;True;True;True;2;True;A;86;25;False;;False;0;0;False;False;False;714;propuesta_abierta_sin_aceptacion
+U0268;2ab8b50e-911b-58f3-a928-76293e1e9e47;2026-10-22;19;Búsqueda;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;A;25;31;True;A;False;0;0;False;False;False;881;aceptacion_sin_compra
+U0269;a1a701ff-8d0b-5b32-8bd0-199eca8ac801;2026-10-18;17;Redes sociales;lima;historia|fiestas;8;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;817;respuesta_sin_propuestas
+U0270;5e080a7d-2476-52bc-809d-4f8a42c703a4;2026-10-17;12;Directo;tacna;;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;1494;respuesta_sin_propuestas
+U0271;6479623a-8154-552e-989b-49ff891cee31;2026-10-29;13;Redes sociales;puerto-maldonado;naturaleza;3;;True;True;True;True;2;False;;11;36;False;;False;0;0;False;False;False;799;propuestas_sin_apertura
+U0272;c09b97e9-3291-5be8-aba5-17e9d2558b89;2026-11-01;21;Directo;huancayo;historia|fiestas;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0273;56aa3b39-690f-5cdb-b79a-5ee25aff47cc;2026-10-25;17;Redes sociales;arequipa;historia|arquitectura;5;;True;True;True;True;2;False;;36;11;False;;False;0;0;False;False;False;1643;propuestas_sin_apertura
+U0274;2e5e1162-2ffa-51a9-93b2-10852e2b7f02;2026-11-03;21;Directo;lima;naturaleza|caminatas;3;900;True;True;True;True;2;True;A;14;70;True;A;False;0;0;False;False;False;706;aceptacion_sin_compra
+U0275;ddba79cc-c9c3-52f7-a2bf-405d901b6130;2026-10-21;11;Redes sociales;tacna;;3;;True;True;True;True;2;True;A;187;11;False;;False;0;0;True;False;False;322;propuesta_abierta_sin_aceptacion
+U0276;cb21033b-b8b2-5bc4-aa70-d740e4e34b8f;2026-11-10;22;Directo;chiclayo;historia|arquitectura;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0277;f244375d-b35b-5419-a4a5-3c7ddfa0d4a9;2026-10-25;18;Directo;tarapoto;naturaleza|aventura;4;;True;True;True;True;2;True;A;86;25;True;A;True;20;5;True;False;False;1230;compra_simulada
+U0278;89e48ee1-ebc5-51d3-88fa-ec785e3c0d4d;2026-11-04;21;Redes sociales;cusco;naturaleza|caminatas;4;;True;True;True;True;2;True;A;71;40;False;;False;0;0;False;False;False;655;propuesta_abierta_sin_aceptacion
+U0279;0be3ffd3-9ae4-5dd1-8e31-2e9d723f025d;2026-10-30;18;Búsqueda;cajamarca;naturaleza|historia;3;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;False;395;respuesta_sin_propuestas
+U0280;0cdea07a-4543-5a89-b954-6a03339463be;2026-10-16;20;Directo;puno;historia;3;;True;True;True;True;2;False;;36;40;False;;False;0;0;False;False;False;4467;propuestas_sin_apertura
+U0281;7365c499-489f-5055-9a53-d0a7e0550d5c;2026-11-05;10;Directo;piura;playa;2;;True;True;True;True;2;True;A;139;85;False;;False;0;0;False;True;False;317;propuesta_abierta_sin_aceptacion
+U0282;ac420383-2845-52a9-89f7-8bb894d6c67c;2026-11-01;10;Redes sociales;arequipa;aventura;6;;True;True;True;False;0;False;;;;False;;False;0;0;False;False;True;;error_consulta
+U0283;62128f32-2a84-5302-bcb8-ee46abf3a779;2026-11-10;21;Directo;cajamarca;naturaleza|historia;3;;True;True;True;True;2;False;;14;139;False;;False;0;0;False;False;False;305;propuestas_sin_apertura
+U0284;1b40e3c3-837e-5d8c-9881-e5fdb6909eb6;2026-10-19;8;Directo;lima;naturaleza|aventura|caminatas;10;;True;True;True;True;2;True;A;71;14;False;;False;0;0;True;False;False;659;propuesta_abierta_sin_aceptacion
+U0285;21c27ebe-0903-562c-8674-c6d920a44ded;2026-11-05;10;Búsqueda;lima;arquitectura|historia;3;;True;True;True;True;2;False;;139;70;False;;False;0;0;False;False;False;365;propuestas_sin_apertura
+U0286;23fcd01f-ae8d-507d-a7e3-c978af41f858;2026-11-08;15;Directo;huaraz;caminatas;3;;True;True;True;True;2;True;A;25;70;False;;False;0;0;False;False;False;306;propuesta_abierta_sin_aceptacion
+U0287;1d015fa4-5758-5aff-acd1-f82602faf977;2026-10-21;17;Redes sociales;lima;aventura|naturaleza;7;2500;True;True;True;True;2;False;;14;71;False;;False;0;0;False;False;False;823;propuestas_sin_apertura
+U0288;4b5aa9db-0004-5b75-ba3e-3317e556945a;2026-11-06;19;Búsqueda;lima;playa;2;;True;True;True;True;2;True;A;70;27;False;;False;0;0;True;False;False;1485;propuesta_abierta_sin_aceptacion
+U0289;d1db6475-18ff-54d1-abc0-d7fafda86a1f;2026-10-25;20;Búsqueda;arequipa;naturaleza;3;;True;True;True;True;2;True;A;71;187;True;A;False;0;0;False;False;False;417;aceptacion_sin_compra
+U0290;b3d5b66e-e2ae-5a4b-8ca8-8eca9b1102ed;2026-11-03;21;Búsqueda;chiclayo;historia|arquitectura;3;;True;True;True;True;2;True;A;139;31;False;;False;0;0;False;False;False;1592;propuesta_abierta_sin_aceptacion
+U0291;91e3a312-5700-5b9b-a934-841858944aef;2026-10-25;18;Directo;cajamarca;naturaleza|historia;3;;True;True;True;True;2;True;B;14;139;True;B;False;0;0;True;False;False;525;aceptacion_sin_compra
+U0292;433fb271-063a-5c99-9c70-70f40ccb0177;2026-11-10;17;Redes sociales;piura;playa;2;;True;True;False;False;0;False;;;;False;;False;0;0;False;False;False;;formulario_sin_busqueda
+U0293;8aebdda6-b1c8-50d6-9407-b27afd8e5175;2026-10-18;14;Redes sociales;puno;historia;3;;True;True;True;True;2;False;;36;40;False;;False;0;0;False;False;False;325;propuestas_sin_apertura
+U0294;051d9d63-5b60-51d4-9b77-1d6c95d74d7c;2026-11-07;21;Redes sociales;tarapoto;naturaleza|aventura;4;;True;True;True;True;2;True;B;86;25;True;B;False;0;0;True;True;False;472;aceptacion_sin_compra
+U0295;cfdb980a-9e3d-5f83-87fb-961879724334;2026-11-03;14;Redes sociales;ayacucho;historia;4;;True;True;True;True;2;True;A;36;31;True;A;True;20;5;False;False;False;589;compra_simulada
+U0296;edf97aca-a51f-530f-8e92-ba6d38ffbffe;2026-10-27;10;Referidos;tacna;;3;;True;True;True;True;2;True;B;187;11;True;B;False;0;0;False;False;False;402;aceptacion_sin_compra
+U0297;f529efcf-38b7-5d19-81a5-0cb2995450e0;2026-10-24;20;Redes sociales;arequipa;historia|arquitectura;5;;True;True;True;True;2;True;A;36;11;False;;False;0;0;True;False;False;1047;propuesta_abierta_sin_aceptacion
+U0298;ed22be11-482a-5ba0-b08a-e9d8b0afe5ba;2026-10-31;18;Redes sociales;trujillo;playa|gastronomia;4;;True;True;True;True;2;True;B;25;31;True;B;True;20;5;False;True;False;917;compra_simulada
+U0299;ba7c1989-a713-58b3-a882-6deeafb78d45;2026-10-18;17;Redes sociales;tarapoto;naturaleza|aventura;4;;True;True;True;True;2;True;A;86;25;False;;False;0;0;False;False;False;1102;propuesta_abierta_sin_aceptacion
+U0300;708f77df-325d-5fa6-a84e-53c22716f7f3;2026-11-02;15;Búsqueda;cusco;;3;;True;True;True;True;2;True;A;27;187;True;A;True;20;5;True;True;False;813;compra_simulada

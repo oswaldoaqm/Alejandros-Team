@@ -4,6 +4,64 @@
  */
 
 export interface paths {
+    "/v1/analitica/eventos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Anotar una acción anónima del planificador
+         * @description El navegador envía categorías, nunca nombres ni la URL del viaje.
+         */
+        post: operations["anotar_uso_v1_analitica_eventos_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/analitica/resumen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Indicadores de uso, reales o de simulación */
+        get: operations["resumen_uso_v1_analitica_resumen_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/comentarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Leer mensajes recibidos por el equipo */
+        get: operations["listar_comentarios_v1_comentarios_get"];
+        put?: never;
+        /**
+         * Recibir una duda, sugerencia o aviso de problema
+         * @description Guarda texto breve sin solicitar identidad ni mezclarlo con analítica.
+         */
+        post: operations["recibir_comentario_v1_comentarios_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/eventos": {
         parameters: {
             query?: never;
@@ -109,6 +167,18 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccionReciente */
+        AccionReciente: {
+            /** Etiqueta */
+            etiqueta: string;
+            /**
+             * Instante
+             * Format: date-time
+             */
+            instante: string;
+            /** Tipo */
+            tipo: string;
+        };
         /**
          * Almuerzo
          * @description La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.
@@ -139,6 +209,24 @@ export interface components {
              * @description Dónde: el nombre de la parada o de la base.
              */
             lugar: string;
+        };
+        /** AnalisisGerencial */
+        AnalisisGerencial: {
+            correlacion: components["schemas"]["Correlacion"];
+            /** Dispersion */
+            dispersion: components["schemas"]["PuntoDispersion"][];
+            /** Distribucion */
+            distribucion: components["schemas"]["Distribucion"][];
+            /** Embudo */
+            embudo: components["schemas"]["Etapa"][];
+            latencia: components["schemas"]["Latencia"];
+            /** Mapa Calor */
+            mapa_calor: components["schemas"]["CeldaCalor"][];
+            /** Nota */
+            nota: string;
+            /** Pareto */
+            pareto: components["schemas"]["Pareto"][];
+            proyeccion: components["schemas"]["Proyeccion"];
         };
         /** Aviso */
         Aviso: {
@@ -181,6 +269,29 @@ export interface components {
              * @description La salida de la base, la noche del último día.
              */
             sale_vuelta: string;
+        };
+        /** Buzon */
+        Buzon: {
+            /** Comentarios */
+            comentarios: components["schemas"]["ComentarioEquipo"][];
+            /** Total */
+            total: number;
+        };
+        /** Candidato */
+        Candidato: {
+            /** Mae */
+            mae: number;
+            /** Metodo */
+            metodo: string;
+        };
+        /** CeldaCalor */
+        CeldaCalor: {
+            /** Acciones */
+            acciones: number;
+            /** Dia */
+            dia: number;
+            /** Hora */
+            hora: number;
         };
         /**
          * Cielo
@@ -245,6 +356,58 @@ export interface components {
             noches_despejadas: (number | null)[];
             observatorio?: components["schemas"]["LugarDeEstrellas"] | null;
         };
+        /** ComentarioEquipo */
+        ComentarioEquipo: {
+            /**
+             * Categoria
+             * @enum {string}
+             */
+            categoria: "duda" | "sugerencia" | "problema";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Instante
+             * Format: date-time
+             */
+            instante: string;
+            /** Mensaje */
+            mensaje: string;
+        };
+        /**
+         * ComentarioNuevo
+         * @description La sesión limita envíos repetidos; no se pide nombre ni correo.
+         */
+        ComentarioNuevo: {
+            /**
+             * Categoria
+             * @enum {string}
+             */
+            categoria: "duda" | "sugerencia" | "problema";
+            /** Mensaje */
+            mensaje: string;
+            /**
+             * Sesion
+             * Format: uuid
+             */
+            sesion: string;
+        };
+        /** ComentarioRecibido */
+        ComentarioRecibido: {
+            /**
+             * Estado
+             * @default recibido
+             * @constant
+             */
+            estado: "recibido";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
         /**
          * Consulta
          * @description Lo que el viajero pide. Es también el enlace para compartir: el motor es
@@ -306,6 +469,15 @@ export interface components {
              * @default false
              */
             sorpresa: boolean;
+        };
+        /** Correlacion */
+        Correlacion: {
+            /** Nota */
+            nota: string;
+            /** Pares */
+            pares: components["schemas"]["ParCorrelacion"][];
+            /** Variables */
+            variables: components["schemas"]["Variable"][];
         };
         /**
          * Costo
@@ -378,6 +550,17 @@ export interface components {
              */
             tranquilo: boolean;
         };
+        /** Distribucion */
+        Distribucion: {
+            /** Cantidad */
+            cantidad: number;
+            /** Id */
+            id: string;
+            /** Nombre */
+            nombre: string;
+            /** Porcentaje */
+            porcentaje: number;
+        };
         /** Estacionalidad */
         Estacionalidad: {
             /** Dias Con Lluvia */
@@ -410,6 +593,17 @@ export interface components {
              * @enum {string}
              */
             veredicto: "viable" | "advertencia" | "desaconsejado";
+        };
+        /** Etapa */
+        Etapa: {
+            /** Id */
+            id: string;
+            /** Nombre */
+            nombre: string;
+            /** Porcentaje */
+            porcentaje: number | null;
+            /** Sesiones */
+            sesiones: number;
         };
         /** Evento */
         Evento: {
@@ -497,6 +691,42 @@ export interface components {
             /** Url */
             url?: string | null;
         };
+        /**
+         * EventoUso
+         * @description Solo categorías del producto y un identificador aleatorio de sesión.
+         */
+        EventoUso: {
+            /** Codigo Error */
+            codigo_error?: string | null;
+            /** Dias */
+            dias?: number | null;
+            /** Duracion Ms */
+            duracion_ms?: number | null;
+            /** Id Evento */
+            id_evento?: string | null;
+            /** Intereses */
+            intereses?: components["schemas"]["Interes"][];
+            /** Mes */
+            mes?: number | null;
+            /** Origen */
+            origen?: string | null;
+            /** Polo */
+            polo?: number | null;
+            /** Presupuesto */
+            presupuesto?: number | null;
+            /** Resultados */
+            resultados?: number | null;
+            /**
+             * Sesion
+             * Format: uuid
+             */
+            sesion: string;
+            /**
+             * Tipo
+             * @enum {string}
+             */
+            tipo: "sesion_iniciada" | "formulario_abierto" | "busqueda_iniciada" | "busqueda_resultado" | "itinerario_abierto" | "viaje_guardado" | "viaje_compartido" | "viaje_impreso" | "ayuda_consultada" | "comentario_enviado" | "error_consulta";
+        };
         /** Eventos */
         Eventos: {
             /**
@@ -513,7 +743,7 @@ export interface components {
             hasta: string;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
@@ -551,6 +781,24 @@ export interface components {
              */
             tipo: "hotel" | "albergue" | "hospedaje" | "motel" | "departamento";
         };
+        /** Indicador */
+        Indicador: {
+            /** Descripcion */
+            descripcion: string;
+            /** Etiqueta */
+            etiqueta: string;
+            /** Grupo */
+            grupo: string;
+            /** Id */
+            id: string;
+            /**
+             * Unidad
+             * @default
+             */
+            unidad: string;
+            /** Valor */
+            valor: number | null;
+        };
         /** Indicadores */
         Indicadores: {
             /** Altitud Max M */
@@ -583,6 +831,38 @@ export interface components {
          * @enum {string}
          */
         Interes: "naturaleza" | "historia" | "gastronomia" | "caminatas" | "playa" | "fiestas" | "arquitectura" | "aventura" | "vida_nocturna";
+        /** Intervalo */
+        Intervalo: {
+            /** Cantidad */
+            cantidad: number;
+            /** Desde */
+            desde: number;
+            /** Hasta */
+            hasta: number;
+        };
+        /** Latencia */
+        Latencia: {
+            /** Desviacion */
+            desviacion: number | null;
+            /** Histograma */
+            histograma: components["schemas"]["Intervalo"][];
+            /** Maximo */
+            maximo: number | null;
+            /** Media */
+            media: number | null;
+            /** Mediana */
+            mediana: number | null;
+            /** Minimo */
+            minimo: number | null;
+            /** N */
+            n: number;
+            /** P25 */
+            p25: number | null;
+            /** P75 */
+            p75: number | null;
+            /** P95 */
+            p95: number | null;
+        };
         /**
          * LugarDeEstrellas
          * @description Desde dónde se mira el cielo (desde 1.5).
@@ -771,11 +1051,22 @@ export interface components {
             presupuesto: components["schemas"]["Rango"];
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
             version_datos: string;
+        };
+        /** ParCorrelacion */
+        ParCorrelacion: {
+            /** N */
+            n: number;
+            /** R */
+            r: number | null;
+            /** X */
+            x: string;
+            /** Y */
+            y: string;
         };
         /** Parada */
         Parada: {
@@ -799,6 +1090,17 @@ export interface components {
              */
             orden: number;
             recurso: components["schemas"]["Recurso"];
+        };
+        /** Pareto */
+        Pareto: {
+            /** Acumulado */
+            acumulado: number;
+            /** Cantidad */
+            cantidad: number;
+            /** Nombre */
+            nombre: string;
+            /** Porcentaje */
+            porcentaje: number;
         };
         /** Polo */
         Polo: {
@@ -861,11 +1163,42 @@ export interface components {
             recursos: components["schemas"]["Recurso"][];
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /** Version Datos */
             version_datos: string;
+        };
+        /** Proyeccion */
+        Proyeccion: {
+            /** Candidatos */
+            candidatos: components["schemas"]["Candidato"][];
+            /** Dias Historia */
+            dias_historia: number;
+            /**
+             * Estado
+             * @enum {string}
+             */
+            estado: "disponible" | "insuficiente";
+            /** Futuro */
+            futuro: components["schemas"]["PuntoProyeccion"][];
+            /** Historico */
+            historico: components["schemas"]["PuntoProyeccion"][];
+            /** Mae Validacion */
+            mae_validacion: number | null;
+            /** Metodo */
+            metodo: string | null;
+            /** N Validacion */
+            n_validacion: number;
+            /** Nota */
+            nota: string;
+        };
+        /** Puesto */
+        Puesto: {
+            /** Cantidad */
+            cantidad: number;
+            /** Nombre */
+            nombre: string;
         };
         /** Punto */
         Punto: {
@@ -877,6 +1210,39 @@ export interface components {
             lon: number;
             /** Nombre */
             nombre: string;
+        };
+        /** PuntoDispersion */
+        PuntoDispersion: {
+            /** Dias */
+            dias: number;
+            /** Presupuesto */
+            presupuesto: number;
+        };
+        /** PuntoProyeccion */
+        PuntoProyeccion: {
+            /**
+             * Fecha
+             * Format: date
+             */
+            fecha: string;
+            /** Valor */
+            valor: number;
+        };
+        /** PuntoSerie */
+        PuntoSerie: {
+            /** Busquedas */
+            busquedas: number;
+            /** Detalles */
+            detalles: number;
+            /**
+             * Fecha
+             * Format: date
+             */
+            fecha: string;
+            /** Guardados */
+            guardados: number;
+            /** Sesiones */
+            sesiones: number;
         };
         /** Rango */
         Rango: {
@@ -966,7 +1332,7 @@ export interface components {
             sin_resultado?: components["schemas"]["SinResultado"] | null;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /**
@@ -974,6 +1340,45 @@ export interface components {
              * @description Versión de los artefactos con que se calculó; va en el enlace.
              */
             version_datos: string;
+        };
+        /** Resumen */
+        Resumen: {
+            /** Actividad Reciente */
+            actividad_reciente: components["schemas"]["AccionReciente"][];
+            /** Actualizado */
+            actualizado: string | null;
+            analisis: components["schemas"]["AnalisisGerencial"];
+            /**
+             * Consultado
+             * Format: date-time
+             */
+            consultado: string;
+            /** Destinos */
+            destinos: components["schemas"]["Puesto"][];
+            /** Fuente */
+            fuente: string;
+            /** Indicadores */
+            indicadores: components["schemas"]["Indicador"][];
+            /** Intereses */
+            intereses: components["schemas"]["Puesto"][];
+            /**
+             * Modo
+             * @enum {string}
+             */
+            modo: "simulacion" | "real";
+            /** Periodo */
+            periodo: {
+                [key: string]: string | null;
+            };
+            /** Serie */
+            serie: components["schemas"]["PuntoSerie"][];
+            /** Total Eventos */
+            total_eventos: number;
+            /**
+             * Zona Horaria
+             * @default America/Lima
+             */
+            zona_horaria: string;
         };
         /** Ruta */
         Ruta: {
@@ -1008,7 +1413,7 @@ export interface components {
             version: string;
             /**
              * Version Contrato
-             * @default 1.10
+             * @default 1.11
              */
             version_contrato: string;
             /**
@@ -1125,6 +1530,13 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** Variable */
+        Variable: {
+            /** Id */
+            id: string;
+            /** Nombre */
+            nombre: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -1134,6 +1546,208 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    anotar_uso_v1_analitica_eventos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventoUso"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description La sesión envió demasiadas acciones en un minuto. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No se pudo guardar la acción. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    resumen_uso_v1_analitica_resumen_get: {
+        parameters: {
+            query?: {
+                modo?: "simulacion" | "real";
+                desde?: string | null;
+                hasta?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Resumen"];
+                };
+            };
+            /** @description Clave incorrecta para los datos reales. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No se configuró la clave para los datos reales. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description No se pudieron leer los eventos. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listar_comentarios_v1_comentarios_get: {
+        parameters: {
+            query?: {
+                limite?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Buzon"];
+                };
+            };
+            /** @description Clave incorrecta o ausente. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Este servidor no tiene configurada la lectura del buzón. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description No se pudieron leer los mensajes. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    recibir_comentario_v1_comentarios_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ComentarioNuevo"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComentarioRecibido"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Esta sesión ya envió tres mensajes durante la última hora. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No se pudo guardar el mensaje. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     eventos_v1_eventos_get: {
         parameters: {
             query: {

@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreemGO · Tablero de control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <style>
+:root {
+	--fuente:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+		Arial, sans-serif;
+	--fuente-titular:
+		"Merriweather", "Lora", "Charter", Georgia, "Times New Roman", serif;
+	--lago: #9e0a22;
+	--lago-tinta: #7d020d;
+	--ichu: #ffc42e;
+	--tinta: #14212b;
+	--tinta-2: #4b5a66;
+	--fondo: #f4f6f7;
+	--superficie: #fff;
+	--linea: #d8dee4;
+	--foco: #ffd147;
+}
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	background: var(--fondo);
+	color: var(--tinta);
+	font: 16px / 1.55 var(--fuente);
+}
+button,
+input {
+	font: inherit;
+}
+button,
+a,
+input:focus-visible {
+	outline-offset: 4px;
+}
+button:focus-visible,
+a:focus-visible {
+	outline: 3px solid var(--foco);
+}
+button {
+	cursor: pointer;
+}
+a {
+	color: var(--lago);
+}
+h1,
+h2,
+h3 {
+	font-family: var(--fuente-titular);
+	line-height: 1.25;
+}
+h1 {
+	font-size: clamp(2rem, 4vw, 3.3rem);
+	margin: 0.3em 0;
+}
+h2 {
+	font-size: 1.35rem;
+	margin: 0 0 16px;
+}
+h3 {
+	font-size: 1.03rem;
+	margin: 0 0 8px;
+}
+p {
+	margin: 0 0 16px;
+}
+small,
+.nota {
+	font-size: 0.86rem;
+	color: var(--tinta-2);
+}
+strong em {
+	font-weight: 750;
+	font-style: italic;
+}
+.ancho {
+	max-width: 1200px;
+	margin: auto;
+	padding: 0 24px;
+}
+.marca {
+	background: var(--lago);
+	color: white;
+	padding: 12px 0;
+}
+.marca .ancho {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+.marca strong {
+	font-family: var(--fuente-titular);
+	font-size: 1.45rem;
+}
+.marca a {
+	color: white;
+	font-size: 0.9rem;
+}
+.portada {
+	background: linear-gradient(115deg, #7d020d, #9e0a22);
+	color: white;
+	padding: 36px 0 40px;
+}
+.portada .bajada {
+	max-width: 760px;
+	color: #fff0f3;
+}
+.eyebrow {
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.13em;
+	color: var(--ichu);
+	text-transform: uppercase;
+}
+.fuente {
+	display: inline-block;
+	border: 1px solid #ffffff55;
+	border-radius: 24px;
+	padding: 6px 12px;
+	font-size: 0.82rem;
+	margin-top: 8px;
+}
+.control {
+	padding: 24px 0 14px;
+}
+.controles {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: end;
+	gap: 12px;
+}
+.control label {
+	display: grid;
+	gap: 5px;
+	font-size: 0.85rem;
+}
+.control input {
+	border: 1px solid #8795a1;
+	border-radius: 8px;
+	background: white;
+	padding: 9px 12px;
+	max-width: 100%;
+}
+.control input[type="url"] {
+	width: 290px;
+}
+.boton {
+	border: 1px solid var(--linea);
+	background: white;
+	color: var(--tinta);
+	border-radius: 8px;
+	padding: 10px 16px;
+	font-weight: 650;
+}
+.boton.activo,
+.boton.principal {
+	background: var(--lago);
+	border-color: var(--lago);
+	color: white;
+}
+.boton:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+.estado {
+	padding: 12px 0;
+	min-height: 44px;
+	font-size: 0.88rem;
+	color: var(--tinta-2);
+}
+.advertencia {
+	border-left: 4px solid var(--ichu);
+	padding: 12px 16px;
+	background: #fff8e6;
+	font-size: 0.9rem;
+}
+.navegacion {
+	display: flex;
+	gap: 8px;
+	overflow: auto;
+	padding: 10px 0 20px;
+}
+.navegacion button {
+	white-space: nowrap;
+}
+.panel {
+	background: var(--superficie);
+	border: 1px solid var(--linea);
+	border-radius: 12px;
+	padding: 24px;
+	box-shadow: 0 2px 5px #14212b06;
+	min-width: 0;
+}
+.malla {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+	margin: 20px 0;
+}
+.completo {
+	grid-column: 1 / -1;
+}
+.kpis {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 14px;
+	margin: 22px 0;
+}
+.kpi {
+	background: white;
+	border: 1px solid var(--linea);
+	border-radius: 10px;
+	padding: 18px;
+	min-width: 0;
+}
+.kpi dt {
+	font-size: 0.86rem;
+	color: var(--tinta-2);
+}
+.kpi dd {
+	margin: 8px 0 4px;
+	font-size: 1.65rem;
+	font-family: var(--fuente-titular);
+	overflow-wrap: anywhere;
+}
+.kpi small {
+	display: block;
+	font-size: 0.76rem;
+}
+.barras {
+	display: grid;
+	gap: 16px;
+}
+.barra-titulo {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 0.88rem;
+}
+.pista {
+	height: 11px;
+	background: #edf1f4;
+	border-radius: 8px;
+	overflow: hidden;
+	margin-top: 7px;
+}
+.pista span {
+	display: block;
+	height: 100%;
+	background: var(--lago);
+	border-radius: 8px;
+}
+.donut-layout {
+	display: grid;
+	grid-template-columns: 210px 1fr;
+	align-items: center;
+	gap: 25px;
+}
+.donut {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	position: relative;
+	display: grid;
+	place-items: center;
+}
+.donut:before {
+	content: "";
+	position: absolute;
+	inset: 35px;
+	border-radius: 50%;
+	background: white;
+}
+.donut span {
+	z-index: 1;
+	text-align: center;
+}
+.donut strong {
+	display: block;
+	font-size: 2rem;
+}
+.leyenda {
+	display: grid;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.8rem;
+}
+.leyenda li {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+.color {
+	width: 11px;
+	height: 11px;
+	display: inline-block;
+	border-radius: 3px;
+	flex-shrink: 0;
+}
+svg {
+	width: 100%;
+	height: auto;
+	display: block;
+	max-height: 350px;
+}
+.leyenda-linea {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	font-size: 0.84rem;
+	margin: 5px 0 12px;
+}
+.tabla-scroll {
+	overflow: auto;
+}
+table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 0.85rem;
+}
+th,
+td {
+	padding: 10px 12px;
+	border-bottom: 1px solid var(--linea);
+	text-align: left;
+}
+th {
+	font-weight: 700;
+}
+details {
+	margin-top: 18px;
+}
+summary {
+	cursor: pointer;
+	font-size: 0.86rem;
+	color: var(--lago);
+	font-weight: 650;
+}
+.calor {
+	display: grid;
+	grid-template-columns: 60px repeat(24, minmax(17px, 1fr));
+	gap: 3px;
+	min-width: 680px;
+	align-items: center;
+}
+.calor button {
+	height: 23px;
+	border: 1px solid #ffffff55;
+	border-radius: 3px;
+	padding: 0;
+}
+.calor .hora {
+	font-size: 9px;
+	text-align: center;
+}
+.calor .dia {
+	font-size: 11px;
+}
+.matriz button {
+	border: 0;
+	border-radius: 6px;
+	min-width: 75px;
+	padding: 12px 8px;
+	cursor: pointer;
+}
+.matriz small {
+	display: block;
+	color: inherit;
+	font-size: 10px;
+}
+.fin-form {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 14px;
+}
+.fin-form label {
+	display: grid;
+	gap: 6px;
+	font-size: 0.84rem;
+}
+.fin-form input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #8795a1;
+	border-radius: 8px;
+}
+.hipotesis {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 15px;
+}
+.hipotesis article {
+	border-left: 3px solid var(--lago);
+	padding-left: 15px;
+}
+.sin-datos {
+	padding: 25px 0;
+	color: var(--tinta-2);
+}
+.separador {
+	border: 0;
+	border-top: 1px solid var(--linea);
+	margin: 25px 0;
+}
+.pie {
+	padding: 22px 0 40px;
+	color: var(--tinta-2);
+	font-size: 0.85rem;
+}
+.oculto,
+[hidden] {
+	display: none !important;
+}
+.acciones {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.nota {
+	margin-top: 12px;
+}
+.metodo {
+	padding: 12px 0;
+	border-top: 1px solid var(--linea);
+}
+.positivo {
+	color: #17683a;
+}
+.negativo {
+	color: #9e0a22;
+}
+@media (max-width: 850px) {
+	.kpis {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.malla {
+		grid-template-columns: 1fr;
+	}
+	.donut-layout {
+		grid-template-columns: 1fr;
+		justify-items: center;
+	}
+	.fin-form {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.hipotesis {
+		grid-template-columns: 1fr;
+	}
+	.panel {
+		padding: 18px;
+	}
+	.ancho {
+		padding: 0 16px;
+	}
+}
+@media (max-width: 480px) {
+	.kpi dd {
+		font-size: 1.4rem;
+	}
+	.fin-form {
+		grid-template-columns: 1fr;
+	}
+	.marca .ancho {
+		align-items: start;
+	}
+	.marca a {
+		max-width: 110px;
+	}
+	.control input[type="url"] {
+		width: 100%;
+	}
+	.control label {
+		width: 100%;
+	}
+}
+</style>
+</head>
+<body>
+<header class="marca">
+<div class="ancho">
+<strong>DreemGO</strong>
+<a id="pagina-viajes" href="http://localhost:5173/" target="_blank" rel="noopener">Abrir la página de viajes ↗</a>
+</div>
+</header>
+<section class="portada">
+<div class="ancho">
+<p class="eyebrow">Tablero de control · Producto y gestión</p>
+<h1>Una lectura clara del negocio</h1>
+<p class="bajada">Actividad, calidad de las recomendaciones y escenarios para decidir qué revisar. Este archivo acompaña la página de los alumnos y conserva su identidad.</p>
+<span class="fuente" id="fuente">SIMULACIÓN · 200 usuarios ficticios</span>
+</div>
+</section>
+<main class="ancho">
+  <section class="control" aria-label="Fuente del tablero">
+    <div class="controles">
+<button class="boton activo" id="modo-simulacion" aria-pressed="true">Simulación inicial</button>
+<button class="boton" id="modo-real" aria-pressed="false">Actividad registrada</button>
+<button class="boton" id="descargar">Descargar indicadores CSV</button>
+</div>
+    <div class="controles" id="conexion" hidden style="margin-top:16px">
+<label>Dirección de la API<input id="api" type="url" value="http://localhost:8000" autocomplete="off">
+</label>
+<label>Clave de lectura<input id="clave" type="password" autocomplete="off">
+</label>
+<button class="boton principal" id="conectar">Conectar</button>
+<button class="boton" id="pausar" disabled>Pausar</button>
+</div>
+    <p class="estado" id="estado" role="status" aria-live="polite">
+</p>
+    <p class="advertencia" id="alcance">La simulación corresponde a <strong>
+<em>200 usuarios ficticios, 200 sesiones y 28 días</em>
+</strong>. Sirve para practicar; no acredita visitantes, ventas ni resultados reales.</p>
+  </section>
+  <nav class="navegacion" aria-label="Áreas de gestión">
+<button class="boton activo" data-vista="general" aria-pressed="true">Visión general</button>
+<button class="boton" data-vista="estrategia" aria-pressed="false">Estrategia y modelo</button>
+<button class="boton" data-vista="calidad" aria-pressed="false">Calidad y TI</button>
+<button class="boton" data-vista="marketing" aria-pressed="false">Marketing</button>
+<button class="boton" data-vista="finanzas" aria-pressed="false">Finanzas</button>
+</nav>
+  <section id="general" aria-label="Visión general">
+</section>
+  <section id="estrategia" aria-label="Estrategia y modelo" hidden>
+</section>
+  <section id="calidad" aria-label="Calidad y TI" hidden>
+</section>
+  <section id="marketing" aria-label="Marketing" hidden>
+</section>
+  <section id="finanzas" aria-label="Escenario financiero" hidden>
+    <div class="panel">
+<p class="eyebrow" style="color:var(--lago)">Supuestos editables · No son operaciones registradas</p>
+<h2>Escenario financiero ilustrativo</h2>
+<p>Explore qué pasaría si parte de las sesiones generara una operación. DreemGO actualmente no vende ni reserva. <strong>
+<em>Los importes y la conversión de este ejercicio son supuestos, no resultados del proyecto.</em>
+</strong>
+</p>
+    <form class="fin-form" id="supuestos">
+<label>Ingreso por operación (S/)<input id="ingreso" type="number" min="0" step="0.01" value="20" required>
+</label>
+<label>Costo variable por operación (S/)<input id="variable" type="number" min="0" step="0.01" value="5" required>
+</label>
+<label>Costo fijo del periodo (S/)<input id="fijo" type="number" min="0" step="0.01" value="500" required>
+</label>
+<label>Presupuesto de marketing (S/)<input id="publicidad" type="number" min="0" step="0.01" value="300" required>
+</label>
+<label>Conversión comercial supuesta (%)<input id="conversion" type="number" min="0" max="100" step="0.1" value="10" required>
+</label>
+</form>
+<p class="nota">Todos los costos corresponden al mismo periodo del tablero. Cambiar estos campos modifica únicamente el escenario financiero y sus razones de planificación.</p>
+</div>
+    <div id="fin-resultados">
+</div>
+  </section>
+  <footer class="pie">
+<hr class="separador">
+<strong>
+<em>Cómo continuar</em>
+</strong>: comprueben una cifra contra el CSV, expliquen un gráfico y prueben un cambio en el escenario financiero. Las fuentes y el método del recomendador se conservan en los documentos del proyecto. Este archivo no reentrena el modelo.</footer>
+</main>
+<script id="datos-iniciales" type="application/json">{"modo":"simulacion","actualizado":"2026-11-10T21:56:50-05:00","consultado":"2026-11-11T15:50:07.733746Z","zona_horaria":"America/Lima","total_eventos":932,"actividad_reciente":[{"instante":"2026-11-10T21:56:50-05:00","tipo":"busqueda_resultado","etiqueta":"Se recibieron las recomendaciones"},{"instante":"2026-11-10T21:56:41-05:00","tipo":"busqueda_iniciada","etiqueta":"Se solicitó una recomendación"},{"instante":"2026-11-10T21:56:14-05:00","tipo":"formulario_abierto","etiqueta":"Se abrió el planificador"},{"instante":"2026-11-10T21:55:44-05:00","tipo":"sesion_iniciada","etiqueta":"Se inició una sesión"},{"instante":"2026-11-10T20:39:03-05:00","tipo":"sesion_iniciada","etiqueta":"Se inició una sesión"},{"instante":"2026-11-10T17:09:56-05:00","tipo":"itinerario_abierto","etiqueta":"Se abrió un itinerario"},{"instante":"2026-11-10T17:09:23-05:00","tipo":"busqueda_resultado","etiqueta":"Se recibieron las recomendaciones"},{"instante":"2026-11-10T17:09:00-05:00","tipo":"busqueda_iniciada","etiqueta":"Se solicitó una recomendación"}],"periodo":{"desde":"2026-10-14","hasta":"2026-11-10"},"fuente":"SIMULACIÓN: 200 sesiones ficticias.","indicadores":[{"id":"sesiones","etiqueta":"Sesiones","valor":200,"unidad":"","descripcion":"Sesiones anónimas con al menos una acción.","grupo":"Uso"},{"id":"formularios_abiertos","etiqueta":"Formularios abiertos","valor":190,"unidad":"","descripcion":"Veces que se abrió el planificador.","grupo":"Uso"},{"id":"busquedas_iniciadas","etiqueta":"Búsquedas iniciadas","valor":160,"unidad":"","descripcion":"Envíos del formulario.","grupo":"Búsqueda"},{"id":"busquedas_completadas","etiqueta":"Búsquedas completadas","valor":154,"unidad":"","descripcion":"Respuestas recibidas del motor, con o sin rutas.","grupo":"Búsqueda"},{"id":"busquedas_con_resultados","etiqueta":"Búsquedas con viajes","valor":143,"unidad":"","descripcion":"Respuestas con al menos un viaje.","grupo":"Búsqueda"},{"id":"busquedas_sin_resultados","etiqueta":"Búsquedas sin viajes","valor":11,"unidad":"","descripcion":"Respuestas válidas sin viajes posibles.","grupo":"Búsqueda"},{"id":"tasa_resultados","etiqueta":"Tasa con viajes","valor":92.9,"unidad":"%","descripcion":"Búsquedas con viajes / búsquedas completadas.","grupo":"Búsqueda"},{"id":"tasa_abandono_formulario","etiqueta":"Formularios sin búsqueda","valor":15.8,"unidad":"%","descripcion":"Sesiones con formulario y sin búsqueda en el periodo / sesiones con formulario. No confirma abandono.","grupo":"Búsqueda"},{"id":"itinerarios_abiertos","etiqueta":"Itinerarios abiertos","valor":115,"unidad":"","descripcion":"Aperturas de un viaje propuesto.","grupo":"Interacción"},{"id":"tasa_apertura","etiqueta":"Sesiones que abrieron ruta","valor":57.5,"unidad":"%","descripcion":"Sesiones con itinerario abierto / sesiones con actividad.","grupo":"Interacción"},{"id":"viajes_guardados","etiqueta":"Viajes guardados","valor":60,"unidad":"","descripcion":"Acciones de guardar confirmadas por el navegador.","grupo":"Interacción"},{"id":"tasa_guardado","etiqueta":"Guardado tras abrir","valor":52.2,"unidad":"%","descripcion":"Sesiones que guardaron y abrieron itinerario / sesiones que abrieron itinerario.","grupo":"Interacción"},{"id":"viajes_compartidos","etiqueta":"Viajes compartidos","valor":30,"unidad":"","descripcion":"Acciones de compartir un enlace.","grupo":"Interacción"},{"id":"tasa_compartir","etiqueta":"Compartido tras abrir","valor":26.1,"unidad":"%","descripcion":"Sesiones que compartieron y abrieron itinerario / sesiones que abrieron itinerario.","grupo":"Interacción"},{"id":"impresiones","etiqueta":"PDF o impresión","valor":17,"unidad":"","descripcion":"Veces que se abrió la impresión del viaje.","grupo":"Interacción"},{"id":"errores_consulta","etiqueta":"Errores de consulta","valor":6,"unidad":"","descripcion":"Errores comunicados por el navegador al consultar viajes.","grupo":"Calidad"},{"id":"sesiones_con_error","etiqueta":"Sesiones con error","valor":6,"unidad":"","descripcion":"Sesiones donde ocurrió al menos un error de consulta.","grupo":"Calidad"},{"id":"tasa_sesiones_con_error","etiqueta":"Sesiones con error (%)","valor":3.0,"unidad":"%","descripcion":"Sesiones con error / sesiones con actividad.","grupo":"Calidad"},{"id":"latencia_mediana_ms","etiqueta":"Respuesta mediana","valor":730.0,"unidad":"ms","descripcion":"Mediana del tiempo observado en el navegador para consultas completadas.","grupo":"Calidad"},{"id":"latencia_p95_ms","etiqueta":"Respuesta p95","valor":3513.8,"unidad":"ms","descripcion":"Percentil 95 del tiempo observado en el navegador para consultas completadas.","grupo":"Calidad"},{"id":"dias_promedio","etiqueta":"Días solicitados","valor":4.1,"unidad":"días","descripcion":"Promedio de días en búsquedas iniciadas.","grupo":"Preferencias"},{"id":"presupuesto_mediano_soles","etiqueta":"Presupuesto mediano","valor":900,"unidad":"S/","descripcion":"Mediana de presupuestos indicados; omite búsquedas sin presupuesto.","grupo":"Preferencias"}],"serie":[{"fecha":"2026-10-14","sesiones":7,"busquedas":4,"detalles":0,"guardados":0},{"fecha":"2026-10-15","sesiones":5,"busquedas":4,"detalles":4,"guardados":2},{"fecha":"2026-10-16","sesiones":6,"busquedas":5,"detalles":4,"guardados":2},{"fecha":"2026-10-17","sesiones":7,"busquedas":5,"detalles":4,"guardados":3},{"fecha":"2026-10-18","sesiones":8,"busquedas":8,"detalles":7,"guardados":3},{"fecha":"2026-10-19","sesiones":8,"busquedas":7,"detalles":6,"guardados":1},{"fecha":"2026-10-20","sesiones":7,"busquedas":6,"detalles":5,"guardados":2},{"fecha":"2026-10-21","sesiones":11,"busquedas":10,"detalles":6,"guardados":4},{"fecha":"2026-10-22","sesiones":6,"busquedas":5,"detalles":1,"guardados":1},{"fecha":"2026-10-23","sesiones":7,"busquedas":6,"detalles":4,"guardados":1},{"fecha":"2026-10-24","sesiones":10,"busquedas":7,"detalles":6,"guardados":1},{"fecha":"2026-10-25","sesiones":3,"busquedas":3,"detalles":2,"guardados":2},{"fecha":"2026-10-26","sesiones":3,"busquedas":2,"detalles":2,"guardados":0},{"fecha":"2026-10-27","sesiones":6,"busquedas":4,"detalles":2,"guardados":2},{"fecha":"2026-10-28","sesiones":6,"busquedas":6,"detalles":3,"guardados":1},{"fecha":"2026-10-29","sesiones":8,"busquedas":7,"detalles":6,"guardados":4},{"fecha":"2026-10-30","sesiones":8,"busquedas":5,"detalles":3,"guardados":2},{"fecha":"2026-10-31","sesiones":6,"busquedas":6,"detalles":4,"guardados":2},{"fecha":"2026-11-01","sesiones":3,"busquedas":2,"detalles":2,"guardados":2},{"fecha":"2026-11-02","sesiones":11,"busquedas":9,"detalles":8,"guardados":4},{"fecha":"2026-11-03","sesiones":12,"busquedas":11,"detalles":7,"guardados":5},{"fecha":"2026-11-04","sesiones":8,"busquedas":7,"detalles":6,"guardados":2},{"fecha":"2026-11-05","sesiones":6,"busquedas":5,"detalles":3,"guardados":2},{"fecha":"2026-11-06","sesiones":7,"busquedas":6,"detalles":5,"guardados":2},{"fecha":"2026-11-07","sesiones":8,"busquedas":6,"detalles":5,"guardados":4},{"fecha":"2026-11-08","sesiones":11,"busquedas":7,"detalles":6,"guardados":5},{"fecha":"2026-11-09","sesiones":7,"busquedas":5,"detalles":3,"guardados":1},{"fecha":"2026-11-10","sesiones":5,"busquedas":2,"detalles":1,"guardados":0}],"destinos":[{"nombre":"Huaraz","cantidad":12},{"nombre":"Miraflores","cantidad":10},{"nombre":"Nasca","cantidad":10},{"nombre":"Arequipa","cantidad":9},{"nombre":"Huacho","cantidad":9},{"nombre":"Puno","cantidad":9},{"nombre":"Trujillo","cantidad":8},{"nombre":"Yanque","cantidad":7}],"intereses":[{"nombre":"Historia y arqueología","cantidad":56},{"nombre":"Naturaleza","cantidad":52},{"nombre":"Gastronomía","cantidad":20},{"nombre":"Playa","cantidad":19},{"nombre":"Aventura","cantidad":19},{"nombre":"Caminatas","cantidad":14},{"nombre":"Arquitectura urbana","cantidad":12},{"nombre":"Vida nocturna","cantidad":10}],"analisis":{"distribucion":[{"id":"guardado","nombre":"Guardó un viaje","cantidad":60,"porcentaje":30.0},{"id":"abierto","nombre":"Abrió una ruta sin guardar","cantidad":55,"porcentaje":27.5},{"id":"resultados","nombre":"Recibió viajes sin abrir una ruta","cantidad":28,"porcentaje":14.0},{"id":"sin_resultados","nombre":"Obtuvo una respuesta sin viajes","cantidad":11,"porcentaje":5.5},{"id":"error","nombre":"Registró error sin recibir viajes","cantidad":6,"porcentaje":3.0},{"id":"formulario","nombre":"Abrió formulario sin buscar","cantidad":30,"porcentaje":15.0},{"id":"visita","nombre":"Solo registró la visita","cantidad":10,"porcentaje":5.0}],"embudo":[{"id":"visita","nombre":"Sesiones con actividad","sesiones":200,"porcentaje":100.0},{"id":"formulario","nombre":"Abrieron el formulario","sesiones":190,"porcentaje":95.0},{"id":"busqueda","nombre":"Iniciaron una búsqueda","sesiones":160,"porcentaje":80.0},{"id":"resultados","nombre":"Recibieron viajes","sesiones":143,"porcentaje":71.5},{"id":"detalle","nombre":"Abrieron un itinerario","sesiones":115,"porcentaje":57.5},{"id":"guardado","nombre":"Guardaron un viaje","sesiones":60,"porcentaje":30.0}],"pareto":[{"nombre":"Abrió una ruta sin guardar","cantidad":55,"porcentaje":39.3,"acumulado":39.3},{"nombre":"Abrió formulario sin buscar","cantidad":30,"porcentaje":21.4,"acumulado":60.7},{"nombre":"Recibió viajes sin abrir una ruta","cantidad":28,"porcentaje":20.0,"acumulado":80.7},{"nombre":"Obtuvo una respuesta sin viajes","cantidad":11,"porcentaje":7.9,"acumulado":88.6},{"nombre":"Solo registró la visita","cantidad":10,"porcentaje":7.1,"acumulado":95.7},{"nombre":"Registró error sin recibir viajes","cantidad":6,"porcentaje":4.3,"acumulado":100.0}],"mapa_calor":[{"dia":0,"hora":0,"acciones":0},{"dia":0,"hora":1,"acciones":0},{"dia":0,"hora":2,"acciones":0},{"dia":0,"hora":3,"acciones":0},{"dia":0,"hora":4,"acciones":0},{"dia":0,"hora":5,"acciones":0},{"dia":0,"hora":6,"acciones":0},{"dia":0,"hora":7,"acciones":0},{"dia":0,"hora":8,"acciones":5},{"dia":0,"hora":9,"acciones":0},{"dia":0,"hora":10,"acciones":0},{"dia":0,"hora":11,"acciones":16},{"dia":0,"hora":12,"acciones":9},{"dia":0,"hora":13,"acciones":23},{"dia":0,"hora":14,"acciones":2},{"dia":0,"hora":15,"acciones":6},{"dia":0,"hora":16,"acciones":1},{"dia":0,"hora":17,"acciones":5},{"dia":0,"hora":18,"acciones":23},{"dia":0,"hora":19,"acciones":17},{"dia":0,"hora":20,"acciones":19},{"dia":0,"hora":21,"acciones":5},{"dia":0,"hora":22,"acciones":1},{"dia":0,"hora":23,"acciones":0},{"dia":1,"hora":0,"acciones":0},{"dia":1,"hora":1,"acciones":0},{"dia":1,"hora":2,"acciones":0},{"dia":1,"hora":3,"acciones":0},{"dia":1,"hora":4,"acciones":0},{"dia":1,"hora":5,"acciones":0},{"dia":1,"hora":6,"acciones":0},{"dia":1,"hora":7,"acciones":0},{"dia":1,"hora":8,"acciones":1},{"dia":1,"hora":9,"acciones":8},{"dia":1,"hora":10,"acciones":14},{"dia":1,"hora":11,"acciones":0},{"dia":1,"hora":12,"acciones":5},{"dia":1,"hora":13,"acciones":21},{"dia":1,"hora":14,"acciones":13},{"dia":1,"hora":15,"acciones":7},{"dia":1,"hora":16,"acciones":4},{"dia":1,"hora":17,"acciones":11},{"dia":1,"hora":18,"acciones":4},{"dia":1,"hora":19,"acciones":11},{"dia":1,"hora":20,"acciones":1},{"dia":1,"hora":21,"acciones":23},{"dia":1,"hora":22,"acciones":13},{"dia":1,"hora":23,"acciones":0},{"dia":2,"hora":0,"acciones":0},{"dia":2,"hora":1,"acciones":0},{"dia":2,"hora":2,"acciones":0},{"dia":2,"hora":3,"acciones":0},{"dia":2,"hora":4,"acciones":0},{"dia":2,"hora":5,"acciones":0},{"dia":2,"hora":6,"acciones":0},{"dia":2,"hora":7,"acciones":0},{"dia":2,"hora":8,"acciones":0},{"dia":2,"hora":9,"acciones":0},{"dia":2,"hora":10,"acciones":0},{"dia":2,"hora":11,"acciones":17},{"dia":2,"hora":12,"acciones":14},{"dia":2,"hora":13,"acciones":10},{"dia":2,"hora":14,"acciones":6},{"dia":2,"hora":15,"acciones":0},{"dia":2,"hora":16,"acciones":8},{"dia":2,"hora":17,"acciones":21},{"dia":2,"hora":18,"acciones":4},{"dia":2,"hora":19,"acciones":30},{"dia":2,"hora":20,"acciones":16},{"dia":2,"hora":21,"acciones":17},{"dia":2,"hora":22,"acciones":0},{"dia":2,"hora":23,"acciones":0},{"dia":3,"hora":0,"acciones":0},{"dia":3,"hora":1,"acciones":0},{"dia":3,"hora":2,"acciones":0},{"dia":3,"hora":3,"acciones":0},{"dia":3,"hora":4,"acciones":0},{"dia":3,"hora":5,"acciones":0},{"dia":3,"hora":6,"acciones":0},{"dia":3,"hora":7,"acciones":0},{"dia":3,"hora":8,"acciones":0},{"dia":3,"hora":9,"acciones":2},{"dia":3,"hora":10,"acciones":16},{"dia":3,"hora":11,"acciones":4},{"dia":3,"hora":12,"acciones":12},{"dia":3,"hora":13,"acciones":0},{"dia":3,"hora":14,"acciones":0},{"dia":3,"hora":15,"acciones":6},{"dia":3,"hora":16,"acciones":0},{"dia":3,"hora":17,"acciones":13},{"dia":3,"hora":18,"acciones":24},{"dia":3,"hora":19,"acciones":7},{"dia":3,"hora":20,"acciones":15},{"dia":3,"hora":21,"acciones":14},{"dia":3,"hora":22,"acciones":11},{"dia":3,"hora":23,"acciones":0},{"dia":4,"hora":0,"acciones":0},{"dia":4,"hora":1,"acciones":0},{"dia":4,"hora":2,"acciones":0},{"dia":4,"hora":3,"acciones":0},{"dia":4,"hora":4,"acciones":0},{"dia":4,"hora":5,"acciones":0},{"dia":4,"hora":6,"acciones":0},{"dia":4,"hora":7,"acciones":0},{"dia":4,"hora":8,"acciones":0},{"dia":4,"hora":9,"acciones":6},{"dia":4,"hora":10,"acciones":11},{"dia":4,"hora":11,"acciones":7},{"dia":4,"hora":12,"acciones":10},{"dia":4,"hora":13,"acciones":6},{"dia":4,"hora":14,"acciones":11},{"dia":4,"hora":15,"acciones":0},{"dia":4,"hora":16,"acciones":1},{"dia":4,"hora":17,"acciones":14},{"dia":4,"hora":18,"acciones":8},{"dia":4,"hora":19,"acciones":21},{"dia":4,"hora":20,"acciones":7},{"dia":4,"hora":21,"acciones":20},{"dia":4,"hora":22,"acciones":5},{"dia":4,"hora":23,"acciones":0},{"dia":5,"hora":0,"acciones":0},{"dia":5,"hora":1,"acciones":0},{"dia":5,"hora":2,"acciones":0},{"dia":5,"hora":3,"acciones":0},{"dia":5,"hora":4,"acciones":0},{"dia":5,"hora":5,"acciones":0},{"dia":5,"hora":6,"acciones":0},{"dia":5,"hora":7,"acciones":0},{"dia":5,"hora":8,"acciones":2},{"dia":5,"hora":9,"acciones":5},{"dia":5,"hora":10,"acciones":23},{"dia":5,"hora":11,"acciones":3},{"dia":5,"hora":12,"acciones":28},{"dia":5,"hora":13,"acciones":5},{"dia":5,"hora":14,"acciones":0},{"dia":5,"hora":15,"acciones":5},{"dia":5,"hora":16,"acciones":7},{"dia":5,"hora":17,"acciones":4},{"dia":5,"hora":18,"acciones":12},{"dia":5,"hora":19,"acciones":12},{"dia":5,"hora":20,"acciones":21},{"dia":5,"hora":21,"acciones":15},{"dia":5,"hora":22,"acciones":0},{"dia":5,"hora":23,"acciones":0},{"dia":6,"hora":0,"acciones":0},{"dia":6,"hora":1,"acciones":0},{"dia":6,"hora":2,"acciones":0},{"dia":6,"hora":3,"acciones":0},{"dia":6,"hora":4,"acciones":0},{"dia":6,"hora":5,"acciones":0},{"dia":6,"hora":6,"acciones":0},{"dia":6,"hora":7,"acciones":0},{"dia":6,"hora":8,"acciones":0},{"dia":6,"hora":9,"acciones":0},{"dia":6,"hora":10,"acciones":7},{"dia":6,"hora":11,"acciones":0},{"dia":6,"hora":12,"acciones":6},{"dia":6,"hora":13,"acciones":27},{"dia":6,"hora":14,"acciones":15},{"dia":6,"hora":15,"acciones":7},{"dia":6,"hora":16,"acciones":2},{"dia":6,"hora":17,"acciones":4},{"dia":6,"hora":18,"acciones":10},{"dia":6,"hora":19,"acciones":14},{"dia":6,"hora":20,"acciones":17},{"dia":6,"hora":21,"acciones":6},{"dia":6,"hora":22,"acciones":13},{"dia":6,"hora":23,"acciones":0}],"latencia":{"n":154,"media":1011.61,"mediana":730.0,"p25":478.5,"p75":1104.25,"p95":3513.85,"desviacion":912.53,"minimo":100.0,"maximo":4373.0,"histograma":[{"desde":100.0,"hasta":812.17,"cantidad":94},{"desde":812.17,"hasta":1524.33,"cantidad":38},{"desde":1524.33,"hasta":2236.5,"cantidad":9},{"desde":2236.5,"hasta":2948.67,"cantidad":4},{"desde":2948.67,"hasta":3660.83,"cantidad":2},{"desde":3660.83,"hasta":4373.0,"cantidad":7}]},"correlacion":{"variables":[{"id":"dias","nombre":"Días solicitados"},{"id":"presupuesto","nombre":"Presupuesto indicado"},{"id":"latencia","nombre":"Latencia mediana"},{"id":"interacciones","nombre":"Acciones sobre viajes"}],"pares":[{"x":"dias","y":"dias","r":1.0,"n":160},{"x":"dias","y":"presupuesto","r":0.71,"n":33},{"x":"dias","y":"latencia","r":-0.052,"n":154},{"x":"dias","y":"interacciones","r":0.038,"n":160},{"x":"presupuesto","y":"dias","r":0.71,"n":33},{"x":"presupuesto","y":"presupuesto","r":1.0,"n":33},{"x":"presupuesto","y":"latencia","r":-0.245,"n":32},{"x":"presupuesto","y":"interacciones","r":-0.328,"n":33},{"x":"latencia","y":"dias","r":-0.052,"n":154},{"x":"latencia","y":"presupuesto","r":-0.245,"n":32},{"x":"latencia","y":"latencia","r":1.0,"n":154},{"x":"latencia","y":"interacciones","r":0.031,"n":154},{"x":"interacciones","y":"dias","r":0.038,"n":160},{"x":"interacciones","y":"presupuesto","r":-0.328,"n":33},{"x":"interacciones","y":"latencia","r":0.031,"n":154},{"x":"interacciones","y":"interacciones","r":1.0,"n":200}],"nota":"Pearson por sesión, usando pares completos. La consulta más reciente aporta días y presupuesto; la latencia es la mediana de sus respuestas y las interacciones cuentan abrir, guardar, compartir e imprimir. Menos de cinco pares o una variable constante no permiten calcular r. Una asociación no demuestra causalidad; en la simulación refleja sus supuestos."},"dispersion":[{"dias":5.0,"presupuesto":1500.0},{"dias":3.0,"presupuesto":900.0},{"dias":6.0,"presupuesto":600.0},{"dias":3.0,"presupuesto":800.0},{"dias":5.0,"presupuesto":1200.0},{"dias":5.0,"presupuesto":1200.0},{"dias":5.0,"presupuesto":1200.0},{"dias":3.0,"presupuesto":900.0},{"dias":3.0,"presupuesto":800.0},{"dias":6.0,"presupuesto":600.0},{"dias":2.0,"presupuesto":600.0},{"dias":3.0,"presupuesto":800.0},{"dias":3.0,"presupuesto":900.0},{"dias":3.0,"presupuesto":800.0},{"dias":5.0,"presupuesto":1500.0},{"dias":5.0,"presupuesto":1500.0},{"dias":5.0,"presupuesto":1500.0},{"dias":5.0,"presupuesto":1500.0},{"dias":4.0,"presupuesto":700.0},{"dias":3.0,"presupuesto":800.0},{"dias":4.0,"presupuesto":700.0},{"dias":2.0,"presupuesto":600.0},{"dias":7.0,"presupuesto":2500.0},{"dias":5.0,"presupuesto":1200.0},{"dias":5.0,"presupuesto":1200.0},{"dias":4.0,"presupuesto":700.0},{"dias":5.0,"presupuesto":1500.0},{"dias":3.0,"presupuesto":800.0},{"dias":7.0,"presupuesto":2500.0},{"dias":2.0,"presupuesto":600.0},{"dias":6.0,"presupuesto":600.0},{"dias":2.0,"presupuesto":600.0},{"dias":7.0,"presupuesto":2500.0}],"proyeccion":{"estado":"disponible","metodo":"Promedio de los últimos 7 días","dias_historia":28,"n_validacion":7,"mae_validacion":1.39,"candidatos":[{"metodo":"Promedio de los últimos 7 días","mae":1.39},{"metodo":"Tendencia lineal","mae":1.44}],"historico":[{"fecha":"2026-10-14","valor":7.0},{"fecha":"2026-10-15","valor":5.0},{"fecha":"2026-10-16","valor":6.0},{"fecha":"2026-10-17","valor":7.0},{"fecha":"2026-10-18","valor":8.0},{"fecha":"2026-10-19","valor":8.0},{"fecha":"2026-10-20","valor":7.0},{"fecha":"2026-10-21","valor":11.0},{"fecha":"2026-10-22","valor":6.0},{"fecha":"2026-10-23","valor":7.0},{"fecha":"2026-10-24","valor":10.0},{"fecha":"2026-10-25","valor":3.0},{"fecha":"2026-10-26","valor":3.0},{"fecha":"2026-10-27","valor":6.0},{"fecha":"2026-10-28","valor":6.0},{"fecha":"2026-10-29","valor":8.0},{"fecha":"2026-10-30","valor":8.0},{"fecha":"2026-10-31","valor":6.0},{"fecha":"2026-11-01","valor":3.0},{"fecha":"2026-11-02","valor":11.0},{"fecha":"2026-11-03","valor":12.0},{"fecha":"2026-11-04","valor":8.0},{"fecha":"2026-11-05","valor":6.0},{"fecha":"2026-11-06","valor":7.0},{"fecha":"2026-11-07","valor":8.0},{"fecha":"2026-11-08","valor":11.0},{"fecha":"2026-11-09","valor":7.0},{"fecha":"2026-11-10","valor":5.0}],"futuro":[{"fecha":"2026-11-11","valor":7.43},{"fecha":"2026-11-12","valor":7.43},{"fecha":"2026-11-13","valor":7.43},{"fecha":"2026-11-14","valor":7.43},{"fecha":"2026-11-15","valor":7.43},{"fecha":"2026-11-16","valor":7.43},{"fecha":"2026-11-17","valor":7.43}],"nota":"Proyección exploratoria de sesiones por día. Se compara promedio móvil de 7 días con tendencia lineal: se ajustan sin usar los últimos 7 días y se elige el menor error absoluto medio en esos 7 días. Luego se reajusta con toda la historia. Es una sola partición temporal, no validación cruzada ni garantía de demanda. No incluye intervalo de confianza. El historial es simulado; la proyección también es una demostración."},"nota":"La distribución asigna cada sesión a una sola etapa: se prioriza guardado y después el mayor avance observado en el periodo. No confirma abandono. El Pareto describe sesiones sin guardado, no sus causas. El embudo exige observar los pasos en orden. Los ceros diarios son días sin eventos recibidos dentro del tramo observado; no garantizan que el servicio estuviera disponible."}}</script>
+<script id="calculos-tablero">
+// Funciones puras: se prueban también con Node, sin navegador ni dependencias.
+function razon(parte, total) {
+	return Number.isFinite(parte) && Number.isFinite(total) && total > 0
+		? parte / total
+		: null;
+}
+function notaSesiones(modo) {
+	return modo === "simulacion"
+		? "Una sesión por usuario ficticio en el ejemplo"
+		: "Sesiones anónimas con actividad; no personas únicas";
+}
+function urlViajes(ubicacion) {
+	return ["http:", "https:"].includes(ubicacion.protocol)
+		? `${ubicacion.origin}/`
+		: "http://localhost:5173/";
+}
+function crearCSV(resumen, supuestosFinancieros = null) {
+	const celda = (valor) => {
+		let texto = String(valor ?? "");
+		// Evita interpretar texto de una etiqueta como una fórmula en Excel.
+		if (typeof valor === "string" && /^[=+@\-\t\r]/.test(texto)) texto = "'" + texto;
+		return '"' + texto.replaceAll('"', '""') + '"';
+	};
+	const filas = [
+		["Fuente", "Desde", "Hasta", "ID", "Indicador", "Valor", "Unidad", "Definición"],
+		...resumen.indicadores.map((i) => [
+			resumen.modo, resumen.periodo.desde, resumen.periodo.hasta,
+			i.id, i.etiqueta, i.valor, i.unidad, i.descripcion,
+		]),
+	];
+	if (supuestosFinancieros !== null) {
+		const sesiones = resumen.indicadores.find((i) => i.id === "sesiones")?.valor;
+		const [ingreso, variable, fijo, publicidad, conversion] = supuestosFinancieros;
+		const f = finanzas(sesiones, ingreso, variable, fijo, publicidad, conversion);
+		const escenario = [
+			["base_sesiones", "Base de sesiones", sesiones, "", "Base observada o simulada; no compradores"],
+			["ingreso_unitario", "Ingreso supuesto por operación", ingreso, "S/", "Supuesto editable"],
+			["costo_unitario", "Costo variable supuesto por operación", variable, "S/", "Supuesto editable"],
+			["costo_fijo", "Costo fijo supuesto", fijo, "S/", "Supuesto para todo el periodo"],
+			["marketing", "Presupuesto supuesto de marketing", publicidad, "S/", "Supuesto para todo el periodo"],
+			["conversion", "Conversión comercial supuesta", conversion, "%", "No es una conversión comercial medida"],
+			["operaciones", "Operaciones estimadas", f.operaciones, "", "Sesiones × conversión / 100"],
+			["ingresos", "Ingresos del escenario", f.ingresos, "S/", "Operaciones × ingreso unitario"],
+			["costo_variable", "Costo variable total", f.costoVariable, "S/", "Operaciones × costo variable unitario"],
+			["costos", "Costos totales del escenario", f.costos, "S/", "Variables + fijo + marketing"],
+			["resultado", "Resultado del escenario", f.resultado, "S/", "Ingresos − costos"],
+			["margen", "Margen del escenario", f.margen === null ? null : f.margen * 100, "%", "Resultado / ingresos × 100; vacío si no hay denominador"],
+			["equilibrio", "Punto de equilibrio del escenario", f.equilibrio, "operaciones", "Redondeo superior de (fijo + marketing) / margen unitario; vacío si no alcanzable"],
+			["roi", "ROI operativo supuesto", f.roi === null ? null : f.roi * 100, "%", "Resultado / costos totales × 100; vacío si no hay denominador"],
+		];
+		for (const [id, etiqueta, valor, unidad, descripcion] of escenario) {
+			filas.push([`Escenario hipotético (base: ${resumen.modo})`, resumen.periodo.desde,
+				resumen.periodo.hasta, `escenario_${id}`, etiqueta, valor, unidad, descripcion]);
+		}
+	}
+	return "\uFEFF" + filas.map((f) => f.map(celda).join(";")).join("\r\n");
+}
+function finanzas(sesiones, ingreso, variable, fijo, publicidad, conversion) {
+	const valores = [sesiones, ingreso, variable, fijo, publicidad, conversion];
+	if (valores.some((v) => !Number.isFinite(v) || v < 0) || conversion > 100)
+		throw new Error(
+			"Revise los supuestos: deben ser números válidos y la conversión no puede superar 100%.",
+		);
+	const operaciones = (sesiones * conversion) / 100;
+	const ingresos = operaciones * ingreso;
+	const costoVariable = operaciones * variable;
+	const costos = costoVariable + fijo + publicidad;
+	const resultado = ingresos - costos;
+	return {
+		operaciones,
+		ingresos,
+		costoVariable,
+		costos,
+		resultado,
+		margen: razon(resultado, ingresos),
+		equilibrio:
+			ingreso > variable
+				? Math.ceil((fijo + publicidad) / (ingreso - variable))
+				: null,
+		roi: razon(resultado, costos),
+	};
+}
+if (typeof module !== "undefined") module.exports = { razon, finanzas, notaSesiones, urlViajes, crearCSV };
+</script>
+<script>
+"use strict";
+// La instantánea contiene únicamente agregados; las credenciales nunca se guardan.
+const inicial = JSON.parse(
+	document.getElementById("datos-iniciales").textContent,
+);
+let datos = inicial,
+	modo = "simulacion",
+	vista = "general",
+	reloj,
+	solicitud = 0,
+	conexionActiva = false,
+	pausado = false;
+let acceso = null; // API y clave elegidas al pulsar Conectar; nunca se escriben en almacenamiento.
+const colores = [
+	"#9e0a22",
+	"#db8d18",
+	"#31566c",
+	"#806647",
+	"#cf4b63",
+	"#627c76",
+	"#8f78a7",
+	"#646e78",
+];
+const $ = (id) => document.getElementById(id);
+$("pagina-viajes").href = urlViajes(location);
+const n = (v, d = 1) =>
+	v == null || !Number.isFinite(v)
+		? "Sin datos"
+		: new Intl.NumberFormat("es-PE", { maximumFractionDigits: d }).format(v);
+const e = (v) =>
+	String(v ?? "").replace(
+		/[&<>"']/g,
+		(c) =>
+			({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+				c
+			],
+	);
+const importante = (v) => `<strong><em>${e(v)}</em></strong>`;
+const kpi = (nombre, valor, nota = "") =>
+	`<div class="kpi"><dt>${importante(nombre)}</dt><dd>${importante(valor)}</dd><small>${e(nota)}</small></div>`;
+const panel = (titulo, contenido, completo = false) =>
+	`<article class="panel ${completo ? "completo" : ""}"><h2>${e(titulo)}</h2>${contenido}</article>`;
+const ind = (id) => datos?.indicadores?.find((i) => i.id === id)?.valor ?? null;
+const tasa = (a, b) => {
+	const r = razon(a ?? 0, b ?? 0);
+	return r === null ? null : r * 100;
+};
+const tabla = (cabeceras, filas, titulo = "Ver los datos") =>
+	`<details><summary>${e(titulo)}</summary><div class="tabla-scroll"><table><thead><tr>${cabeceras.map((c) => `<th>${e(c)}</th>`).join("")}</tr></thead><tbody>${filas.map((f) => `<tr>${f.map((v) => `<td>${e(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></details>`;
+function barras(filas) {
+	if (!filas.length)
+		return '<p class="sin-datos">Sin datos en este periodo.</p>';
+	const maximo = Math.max(1, ...filas.map((f) => Math.abs(f.valor)));
+	return `<div class="barras">${filas.map((f, i) => `<div><div class="barra-titulo"><span>${e(f.nombre)}</span>${importante(n(f.valor))}</div><div class="pista"><span style="width:${(Math.abs(f.valor) * 100) / maximo}%;background:${f.valor < 0 ? "#c62d1f" : colores[i % colores.length]}"></span></div></div>`).join("")}</div>`;
+}
+function combinado(serie) {
+	if (!serie.length) return '<p class="sin-datos">Sin historia suficiente.</p>';
+	const max = Math.max(4, ...serie.flatMap((p) => [p.sesiones, p.busquedas])),
+		paso = 610 / serie.length,
+		y = (v) => 220 - (v * 180) / max;
+	const barras = serie
+		.map(
+			(p, i) =>
+				`<rect x="${45 + i * paso + paso * 0.2}" y="${y(p.sesiones)}" width="${paso * 0.6}" height="${220 - y(p.sesiones)}" fill="#9e0a22"><title>${e(p.fecha)}: ${p.sesiones} sesiones</title></rect>`,
+		)
+		.join("");
+	const linea = serie
+		.map((p, i) => `${i ? "L" : "M"}${45 + (i + 0.5) * paso} ${y(p.busquedas)}`)
+		.join(" ");
+	return `<div class="leyenda-linea"><span>■ Sesiones</span><span style="color:#855800">━ Búsquedas</span></div><svg viewBox="0 0 700 260" role="img" aria-label="Sesiones en barras y búsquedas en línea">${[0, 0.5, 1].map((f) => `<line x1="45" x2="655" y1="${y(max * f)}" y2="${y(max * f)}" stroke="#d8dee4"/><text x="35" y="${y(max * f) + 4}" text-anchor="end" font-size="11">${n(max * f, 0)}</text>`).join("")}${barras}<path d="${linea}" fill="none" stroke="#db8d18" stroke-width="3"/><text x="45" y="248" font-size="11">${e(serie[0].fecha)}</text><text x="655" y="248" text-anchor="end" font-size="11">${e(serie.at(-1).fecha)}</text></svg>${tabla(
+		["Fecha", "Sesiones", "Búsquedas"],
+		serie.map((p) => [p.fecha, p.sesiones, p.busquedas]),
+	)}`;
+}
+function circular(filas) {
+	const total = filas.reduce((s, f) => s + f.cantidad, 0);
+	if (!total) return '<p class="sin-datos">Sin sesiones para distribuir.</p>';
+	let inicio = 0;
+	const segmentos = filas.map((f, i) => {
+		const fin = inicio + (f.cantidad * 100) / total;
+		const tramo = `${colores[i % colores.length]} ${inicio}% ${fin}%`;
+		inicio = fin;
+		return tramo;
+	});
+	return `<div class="donut-layout"><div class="donut" style="background:conic-gradient(${segmentos.join(",")})" role="img" aria-label="Distribución de ${total} sesiones por estado"><span>${importante(n(total, 0))}<small>sesiones</small></span></div><ul class="leyenda">${filas.map((f, i) => `<li><i class="color" style="background:${colores[i % colores.length]}"></i><span>${e(f.nombre)}: ${importante(`${f.cantidad} · ${n(f.porcentaje)} %`)}</span></li>`).join("")}</ul></div><p class="nota">Cada sesión aparece una sola vez, según su avance observado. No demuestra compra ni abandono.</p>`;
+}
+function pareto(filas) {
+	if (!filas.length)
+		return '<p class="sin-datos">No hay sesiones sin guardar en este periodo.</p>';
+	const max = Math.max(...filas.map((f) => f.cantidad)),
+		paso = 580 / filas.length;
+	const curva = filas
+		.map(
+			(f, i) =>
+				`${i ? "L" : "M"}${50 + (i + 0.5) * paso} ${220 - f.acumulado * 1.8}`,
+		)
+		.join(" ");
+	return `<div class="leyenda-linea"><span>■ Sesiones · izquierda</span><span>━ Acumulado (%) · derecha</span></div><svg viewBox="0 0 700 260" role="img" aria-label="Pareto descriptivo de sesiones sin guardar">${[0, 0.5, 1].map((f) => `<line x1="50" x2="630" y1="${220 - f * 180}" y2="${220 - f * 180}" stroke="#d8dee4"/><text x="40" y="${224 - f * 180}" text-anchor="end" font-size="11">${n(max * f, 0)}</text><text x="640" y="${224 - f * 180}" font-size="11">${f * 100}%</text>`).join("")}${filas.map((f, i) => `<rect x="${50 + i * paso + paso * 0.2}" y="${220 - (f.cantidad * 180) / max}" width="${paso * 0.6}" height="${(f.cantidad * 180) / max}" fill="#9e0a22"><title>${e(f.nombre)}: ${f.cantidad}</title></rect><text x="${50 + (i + 0.5) * paso}" y="245" text-anchor="middle" font-size="11">${i + 1}</text>`).join("")}<path d="${curva}" fill="none" stroke="#db8d18" stroke-width="3"/></svg>${tabla(
+		["N.º", "Estado", "Sesiones", "Acumulado"],
+		filas.map((f, i) => [i + 1, f.nombre, f.cantidad, `${f.acumulado}%`]),
+		"Leer categorías y acumulados",
+	)}<p class="nota">Concentración descriptiva de sesiones sin guardar. Las barras no identifican causas.</p>`;
+}
+function calor(celdas) {
+	const max = Math.max(1, ...celdas.map((c) => c.acciones)),
+		dias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+	let html =
+		"<span></span>" +
+		Array.from(
+			{ length: 24 },
+			(_, h) => `<span class="hora">${h % 3 === 0 ? h : ""}</span>`,
+		).join("");
+	for (let d = 0; d < 7; d++) {
+		html += `<span class="dia">${dias[d]}</span>`;
+		for (let h = 0; h < 24; h++) {
+			const v = celdas.find((c) => c.dia === d && c.hora === h)?.acciones ?? 0;
+			const texto = `${dias[d]}, ${h}:00–${h}:59: ${v} acciones`;
+			html += `<button data-calor="${e(texto)}" title="${e(texto)}" aria-label="${e(texto)}" style="background:rgba(158,10,34,${v ? 0.15 + (0.85 * v) / max : 0.035})"></button>`;
+		}
+	}
+	return `<p class="nota">Acciones por día y hora de Perú. Seleccione una celda para leer su cantidad.</p><div class="tabla-scroll"><div class="calor">${html}</div></div><p class="nota" id="detalle-calor" role="status">Escala: 0 a ${max} acciones.</p>`;
+}
+function correlacion(c) {
+	return `<div class="tabla-scroll"><table class="matriz"><thead><tr><th>Variable</th>${c.variables.map((v) => `<th>${e(v.nombre)}</th>`).join("")}</tr></thead><tbody>${c.variables
+		.map(
+			(v) =>
+				`<tr><th>${e(v.nombre)}</th>${c.variables
+					.map((u) => {
+						const p = c.pares.find((p) => p.x === v.id && p.y === u.id),
+							r = p?.r;
+						return `<td><button data-correlacion="${e(`${v.nombre} y ${u.nombre}: r=${n(r, 3)}, n=${p?.n ?? 0}. Asociación, no causalidad.`)}" style="background:${r == null ? "#eef2f4" : `rgba(${r < 0 ? "49,86,108" : "158,10,34"},${0.05 + Math.abs(r) * 0.2})`}">${importante(n(r, 2))}<small>n=${p?.n ?? 0}</small></button></td>`;
+					})
+					.join("")}</tr>`,
+		)
+		.join(
+			"",
+		)}</tbody></table></div><p id="detalle-correlacion" class="nota" role="status">Seleccione una celda para leer el coeficiente y la muestra.</p><p class="nota">${e(c.nota)}</p>`;
+}
+function proyeccion(p) {
+	if (p.estado !== "disponible")
+		return `<p class="sin-datos">${e(p.nota)} Hay ${p.dias_historia} días disponibles.</p>`;
+	const puntos = [...p.historico, ...p.futuro],
+		max = Math.max(4, ...puntos.map((v) => v.valor)),
+		x = (i) => 45 + (i * 610) / Math.max(1, puntos.length - 1),
+		y = (v) => 220 - (v * 180) / max;
+	const linea = (lista, inicio) =>
+		lista
+			.map((v, i) => `${i ? "L" : "M"}${x(inicio + i)} ${y(v.valor)}`)
+			.join(" ");
+	return `<p>${importante(p.metodo)} · ${p.dias_historia} días históricos · validación de ${p.n_validacion} días · error medio ${importante(`${n(p.mae_validacion)} sesiones/día`)}.</p><svg viewBox="0 0 700 260" role="img" aria-label="Historia y proyección exploratoria de sesiones">${[0, 0.5, 1].map((f) => `<line x1="45" x2="655" y1="${y(max * f)}" y2="${y(max * f)}" stroke="#d8dee4"/><text x="35" y="${y(max * f) + 4}" text-anchor="end" font-size="11">${n(max * f, 0)}</text>`).join("")}<path d="${linea(p.historico, 0)}" fill="none" stroke="#9e0a22" stroke-width="3"/><path d="${linea([...p.historico.slice(-1), ...p.futuro], p.historico.length - 1)}" fill="none" stroke="#db8d18" stroke-width="3" stroke-dasharray="6 4"/><text x="45" y="248" font-size="11">${e(puntos[0].fecha)}</text><text x="655" y="248" font-size="11" text-anchor="end">${e(puntos.at(-1).fecha)}</text></svg><p class="nota">Rojo: historia. Dorado discontinuo: proyección.</p>${tabla(
+		["Fecha", "Sesiones estimadas"],
+		p.futuro.map((v) => [v.fecha, n(v.valor)]),
+	)}<p class="nota">${e(p.nota)}</p>`;
+}
+function supuestos() {
+	return ["ingreso", "variable", "fijo", "publicidad", "conversion"].map((id) =>
+		Number($(id).value),
+	);
+}
+function renderFinanzas() {
+	const base = ind("sesiones");
+	if (base === null) {
+		$("fin-resultados").innerHTML =
+			'<p class="sin-datos">Conecte una fuente para obtener la base de sesiones.</p>';
+		return;
+	}
+	if (!$("supuestos").checkValidity()) {
+		$("fin-resultados").innerHTML =
+			'<p class="advertencia">Revise los valores del formulario antes de interpretar el escenario.</p>';
+		return;
+	}
+	const valores = supuestos(),
+		f = finanzas(base, ...valores),
+		sol = (v) => `S/ ${n(v, 2)}`;
+	$("fin-resultados").innerHTML =
+		`<p class="nota">Base: ${importante(`${base} sesiones`)} de ${modo === "simulacion" ? "la simulación" : "la actividad registrada"}. Se aplica una conversión comercial hipotética; no se consultan ventas.</p><dl class="kpis">${kpi("Operaciones estimadas", n(f.operaciones, 2), "Sesiones × conversión supuesta")}${kpi("Ingresos del escenario", sol(f.ingresos), "Operaciones × ingreso unitario")}${kpi("Costos totales", sol(f.costos), "Variables + fijo + marketing")}${kpi("Resultado del escenario", sol(f.resultado), "Ingresos − costos totales")}${kpi("Margen del escenario", f.margen === null ? "Sin datos" : `${n(f.margen * 100)} %`, "Resultado / ingresos")}${kpi("Equilibrio", f.equilibrio === null ? "No alcanzable" : `${n(f.equilibrio, 0)} operaciones`, "Costos fijo y marketing / margen unitario")}${kpi("ROI operativo supuesto", f.roi === null ? "Sin datos" : `${n(f.roi * 100)} %`, "Resultado / costos totales del periodo")}${kpi("Costo variable total", sol(f.costoVariable), "Operaciones × costo variable unitario")}</dl><div class="malla">${panel(
+			"Ingresos, costos y resultado",
+			barras([
+				{ nombre: "Ingresos (S/)", valor: f.ingresos },
+				{ nombre: "Costos (S/)", valor: f.costos },
+				{ nombre: "Resultado (S/; puede ser negativo)", valor: f.resultado },
+			]) +
+				`<p class="nota">La longitud indica magnitud; el signo del resultado se conserva en la cifra. Es un escenario editable, no una cuenta real.</p>`,
+			true,
+		)}</div>`;
+}
+function renderMarketing() {
+	const sesiones = ind("sesiones"),
+		guardados = ind("viajes_guardados"),
+		compartidos = ind("viajes_compartidos"),
+		p = $("publicidad").checkValidity() ? Number($("publicidad").value) : null;
+	$("marketing").innerHTML =
+		`<dl class="kpis">${kpi("Sesiones", n(sesiones), "No son personas únicas en actividad real")}${kpi("Guardados", n(guardados), "Acciones confirmadas en el navegador")}${kpi("Compartidos", n(compartidos), "No mide alcance posterior del enlace")}${kpi("Compartido tras abrir", `${n(ind("tasa_compartir"))} %`, "Sesiones con ambas acciones / aperturas")}</dl><div class="malla">${panel("Intereses expresados", barras(datos.intereses.map((f) => ({ nombre: f.nombre, valor: f.cantidad }))))}${panel("Destinos abiertos", barras(datos.destinos.map((f) => ({ nombre: f.nombre, valor: f.cantidad }))))}${panel("Planificar el presupuesto de difusión", `<p>Supuesto de marketing: ${importante(p === null ? "Revise el presupuesto" : `S/ ${n(p, 2)}`)} para este periodo, editable en Finanzas.</p><p>Presupuesto por sesión: ${importante(razon(p, sesiones) === null ? "Sin datos" : `S/ ${n(p / sesiones, 2)}`)}. Presupuesto por acción de guardar: ${importante(razon(p, guardados) === null ? "Sin datos" : `S/ ${n(p / guardados, 2)}`)}.</p><p class="nota">Estas razones son ejercicios de planificación. No son CAC, ventas atribuibles ni retorno de campañas. Faltan datos de canal y adquisición para calcularlos.</p>`, true)}</div>`;
+}
+function render() {
+	if (!datos?.indicadores || !datos.analisis) {
+		for (const id of ["general", "estrategia", "calidad", "marketing"])
+			$(id).innerHTML =
+				'<p class="sin-datos">Aún no hay datos de esta fuente.</p>';
+		renderFinanzas();
+		return;
+	}
+	const a = datos.analisis,
+		sesiones = ind("sesiones"),
+		busquedas = ind("busquedas_iniciadas"),
+		completadas = ind("busquedas_completadas"),
+		errores = ind("errores_consulta");
+	$("general").innerHTML =
+		`<div class="acciones"><p class="nota">Periodo: ${e(datos.periodo.desde ?? "Sin fecha")} a ${e(datos.periodo.hasta ?? "Sin fecha")}. La simulación y la actividad real nunca se suman.</p></div><dl class="kpis">${kpi("Sesiones", n(sesiones), notaSesiones(datos.modo))}${kpi("Búsquedas", n(busquedas), "Acciones de consultar al modelo")}${kpi("Viajes abiertos", n(ind("itinerarios_abiertos")), "Acciones sobre propuestas")}${kpi("Guardados", n(ind("viajes_guardados")), "Señal de uso, no una compra")}</dl><div class="malla">${panel("Actividad a lo largo del periodo", combinado(datos.serie), true)}${panel("Hasta dónde avanzó cada sesión", circular(a.distribucion), true)}${panel(
+			"Indicadores disponibles",
+			tabla(
+				["Indicador", "Valor", "Unidad", "Cómo leerlo"],
+				datos.indicadores.map((i) => [
+					i.etiqueta,
+					n(i.valor),
+					i.unidad,
+					i.descripcion,
+				]),
+				"Abrir los 22 indicadores y sus fórmulas",
+			),
+			true,
+		)}</div>`;
+	$("estrategia").innerHTML =
+		`<dl class="kpis">${kpi("Activación de búsqueda", `${n(a.embudo.find((e) => e.id === "busqueda")?.porcentaje)} %`, "Sesiones con recorrido hasta buscar / sesiones")}${kpi("Llegaron a guardar", `${n(a.embudo.find((e) => e.id === "guardado")?.porcentaje)} %`, "Embudo completo observado / sesiones")}${kpi("Consultas con viajes", n(ind("busquedas_con_resultados")), "El modelo devolvió alguna alternativa")}${kpi("Tasa con viajes", `${n(ind("tasa_resultados"))} %`, "Respuestas con viajes / respuestas completadas")}</dl><div class="malla">${panel("Recorrido del producto", barras(a.embudo.map((f) => ({ nombre: f.nombre, valor: f.sesiones }))) + `<p class="nota">Las etapas exigen los pasos anteriores en orden dentro del periodo. No es un embudo de ventas.</p>`)}${panel("Prioridades según concentración", pareto(a.pareto))}${panel("Proyección exploratoria de sesiones", proyeccion(a.proyeccion), true)}${panel("Qué sabemos del recomendador", `<p>La web combina agrupamiento geográfico, regresión de tiempos, reglas y optimización de itinerarios. ${importante("Devolver viajes mide cobertura de respuesta, no satisfacción ni precisión del ranking.")}</p><p>La calidad de las propuestas se evalúa con el cuadernillo del equipo. Faltan calificaciones reales suficientes para afirmar que el modelo satisface a los viajeros.</p>`, true)}</div>`;
+	const l = a.latencia;
+	$("calidad").innerHTML =
+		`<dl class="kpis">${kpi("Respuestas completadas", `${n(tasa(completadas, busquedas))} %`, "Respuestas / búsquedas iniciadas; no es disponibilidad del servidor")}${kpi("Errores de consulta", n(errores), "Eventos reportados por el navegador")}${kpi("Respuestas sin viajes", n(ind("busquedas_sin_resultados")), "Respuesta válida, no error técnico")}${kpi("Muestra de tiempos", n(l.n, 0), "Respuestas con duración medida")}${kpi("Tiempo mediano", `${n(l.mediana)} ms`, "p50 de respuestas completadas")}${kpi("Tiempo p95", `${n(l.p95)} ms`, "95% de tiempos no supera aproximadamente este valor")}${kpi("Media", `${n(l.media)} ms`, "Puede aumentar por una cola de tiempos altos")}${kpi("Desviación muestral", l.desviacion === null ? "Sin datos" : `${n(l.desviacion)} ms`, "Dispersión; requiere más de un tiempo")}</dl><div class="malla">${panel(
+			"Histograma de respuesta",
+			barras(
+				l.histograma.map((f) => ({
+					nombre: `${n(f.desde, 0)}–${n(f.hasta, 0)} ms`,
+					valor: f.cantidad,
+				})),
+			) +
+				tabla(
+					["Desde ms", "Hasta ms", "Cantidad"],
+					l.histograma.map((f) => [f.desde, f.hasta, f.cantidad]),
+				) +
+				`<p class="nota">Intervalos iguales; el último incluye el extremo superior.</p>`,
+		)}${panel("Causa y efecto como hipótesis", `<p>${importante("No son causas demostradas.")}</p><div class="hipotesis"><article><h3>Interacción</h3><p>${n(ind("tasa_abandono_formulario"))}% de sesiones con formulario no registró búsqueda.</p><small>Observar a un compañero completar el formulario.</small></article><article><h3>Respuesta</h3><p>${n(ind("busquedas_sin_resultados"))} respuestas sin viajes.</p><small>Repetir una consulta y variar una preferencia.</small></article><article><h3>Conexión</h3><p>${n(errores)} errores registrados.</p><small>Revisar conexión y respuesta de la API en el caso concreto.</small></article><article><h3>Tiempo</h3><p>p95: ${n(l.p95)} ms.</p><small>Observar la espera y preguntar antes de atribuirle un motivo.</small></article></div><p class="nota">Se investiga por qué una sesión no continuó. El panel no mide uptime, SLA ni causa raíz por sí solo.</p>`)}${panel("Mapa de calor de actividad", calor(a.mapa_calor), true)}${panel("Relaciones entre variables", correlacion(a.correlacion), true)}</div>`;
+	renderMarketing();
+	renderFinanzas();
+}
+function cambiarVista(nombre) {
+	vista = nombre;
+	for (const id of [
+		"general",
+		"estrategia",
+		"calidad",
+		"marketing",
+		"finanzas",
+	])
+		$(id).hidden = id !== nombre;
+	document.querySelectorAll("[data-vista]").forEach((b) => {
+		const activo = b.dataset.vista === nombre;
+		b.classList.toggle("activo", activo);
+		b.setAttribute("aria-pressed", String(activo));
+	});
+}
+function detener() {
+	clearTimeout(reloj);
+	solicitud++;
+}
+function cambiarModo(nuevo) {
+	detener();
+	conexionActiva = false;
+	pausado = false;
+	modo = nuevo;
+	$("conexion").hidden = modo !== "real";
+	$("pausar").disabled = true;
+	$("pausar").textContent = "Pausar";
+	for (const id of ["simulacion", "real"]) {
+		$("modo-" + id).classList.toggle("activo", modo === id);
+		$("modo-" + id).setAttribute("aria-pressed", String(modo === id));
+	}
+	datos = modo === "simulacion" ? inicial : null;
+	$("fuente").textContent =
+		modo === "simulacion"
+			? "SIMULACIÓN · 200 usuarios ficticios"
+			: "ACTIVIDAD REGISTRADA · acceso protegido";
+	$("alcance").innerHTML =
+		modo === "simulacion"
+			? "La simulación contiene <strong><em>200 usuarios ficticios y 28 días completos</em></strong>. Las cifras financieras son un escenario separado."
+			: "Solo se muestran acciones de visitantes que aceptaron estadísticas. <strong><em>Sesiones no equivale a personas únicas y DreemGO no registra ventas.</em></strong>";
+	$("estado").textContent =
+		modo === "simulacion"
+			? "Instantánea incluida en el archivo. Funciona sin servidor; los gráficos se pueden explorar por área."
+			: location.protocol === "file:"
+				? "Para actividad real, abra este archivo servido desde http://localhost:5173/tablero-gerencial.html. El modo local file:// mantiene la simulación disponible."
+				: "Ingrese la API del equipo y su clave de lectura. La clave permanece solo en esta página.";
+	render();
+}
+async function cargar() {
+	if (
+		modo !== "real" ||
+		!conexionActiva ||
+		!acceso ||
+		pausado ||
+		document.hidden
+	)
+		return;
+	const id = ++solicitud;
+	const control = new AbortController(),
+		timeout = setTimeout(() => control.abort(), 15000);
+	try {
+		const respuesta = await fetch(acceso.url, {
+			headers: { "X-Clave-Analitica": acceso.clave },
+			cache: "no-store",
+			signal: control.signal,
+		});
+		if (!respuesta.ok) {
+			if (respuesta.status === 401 || respuesta.status === 403) {
+				conexionActiva = false;
+				$("pausar").disabled = true;
+			}
+			throw new Error(
+				respuesta.status === 401 || respuesta.status === 403
+					? "Revise la clave y vuelva a conectar."
+					: `La API respondió ${respuesta.status}.`,
+			);
+		}
+		const recibido = await respuesta.json();
+		if (id !== solicitud || modo !== "real") return;
+		if (
+			recibido.modo !== "real" ||
+			!Array.isArray(recibido.indicadores) ||
+			!recibido.analisis
+		)
+			throw new Error("La API no ofrece el contrato de este tablero.");
+		datos = recibido;
+		render();
+		$("estado").textContent =
+			`Lectura automática cada 3 segundos mientras la pestaña está visible. Última lectura: ${new Date(recibido.consultado).toLocaleTimeString("es-PE", { timeZone: "America/Lima" })} (Lima).`;
+	} catch (error) {
+		if (id === solicitud)
+			$("estado").textContent =
+				`No se pudo actualizar. ${error.message} ${datos ? "Se conserva la última lectura real correcta." : "Todavía no se muestran datos reales."}`;
+	} finally {
+		clearTimeout(timeout);
+		if (id === solicitud && conexionActiva && !pausado && !document.hidden)
+			reloj = setTimeout(cargar, 3000);
+	}
+}
+$("modo-simulacion").onclick = () => cambiarModo("simulacion");
+$("modo-real").onclick = () => cambiarModo("real");
+$("conectar").onclick = () => {
+	if (location.protocol === "file:") {
+		$("estado").textContent =
+			"Abra http://localhost:5173/tablero-gerencial.html para conectar la actividad real. En file:// use la simulación incluida.";
+		return;
+	}
+	if (!$("clave").value) {
+		$("estado").textContent = "Ingrese la clave de lectura.";
+		return;
+	}
+	let url;
+	try {
+		url = new URL($("api").value);
+		if (
+			!["http:", "https:"].includes(url.protocol) ||
+			url.username ||
+			url.password
+		)
+			throw new Error();
+		url.pathname = url.pathname.replace(/\/$/, "") + "/v1/analitica/resumen";
+		url.search = "modo=real";
+		url.hash = "";
+	} catch {
+		$("estado").textContent =
+			"Ingrese una dirección HTTP o HTTPS válida para la API, sin credenciales en el enlace.";
+		return;
+	}
+	detener();
+	acceso = { url: url.toString(), clave: $("clave").value };
+	conexionActiva = true;
+	pausado = false;
+	$("pausar").disabled = false;
+	$("pausar").textContent = "Pausar";
+	cargar();
+};
+$("pausar").onclick = () => {
+	pausado = !pausado;
+	detener();
+	$("pausar").textContent = pausado ? "Reanudar" : "Pausar";
+	$("estado").textContent = pausado
+		? "Lectura automática pausada. La web puede seguir registrando actividad."
+		: "Reanudando lectura…";
+	if (!pausado) cargar();
+};
+document.addEventListener("visibilitychange", () => {
+	detener();
+	if (!document.hidden) cargar();
+});
+document.addEventListener("click", (evento) => {
+	const boton = evento.target.closest("button");
+	if (!boton) return;
+	if (boton.dataset.vista) cambiarVista(boton.dataset.vista);
+	if (boton.dataset.calor) $("detalle-calor").textContent = boton.dataset.calor;
+	if (boton.dataset.correlacion)
+		$("detalle-correlacion").textContent = boton.dataset.correlacion;
+});
+$("supuestos").onsubmit = (evento) => evento.preventDefault();
+$("supuestos").oninput = () => {
+	renderFinanzas();
+	if (datos) renderMarketing();
+};
+$("descargar").onclick = () => {
+	if (!datos) return;
+	const escenario = $("supuestos").checkValidity() ? supuestos() : null;
+	const archivo = new Blob([crearCSV(datos, escenario)], { type: "text/csv;charset=utf-8" });
+	const enlace = document.createElement("a"),
+		url = URL.createObjectURL(archivo);
+	enlace.href = url;
+	enlace.download = `DreemGO_indicadores_${modo}.csv`;
+	enlace.click();
+	setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+cambiarModo("simulacion");
+</script>
+</body>
+</html>

@@ -84,6 +84,7 @@ def elegir(consulta: Consulta, datos: Datos, cabe: Callable[[Costo, int], bool])
             itinerarios.append((p, it))
             bases_planificadas.add(p.polo.base["nombre"])
     mejor = max((it.valor for _, it in itinerarios), default=1.0)
+    detras = viaje.sin_lo_pedido(itinerarios, consulta, datos)
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
@@ -92,7 +93,7 @@ def elegir(consulta: Consulta, datos: Datos, cabe: Callable[[Costo, int], bool])
         costo = viaje.costo_del_viaje(it, consulta, datos, dias)
         puntaje = (1 - lam) * calidad * viaje.por_presupuesto(costo, consulta.presupuesto) + lam * it.polo.novedad
         puntuados.append((puntaje, p, costo))
-    puntuados.sort(key=lambda x: (-x[0], x[1].polo.id))
+    puntuados.sort(key=lambda x: (x[1].polo.id in detras, -x[0], x[1].polo.id))
     elegidas, bases = [], set()
     for puntaje, p, costo in puntuados:
         if p.polo.base["nombre"] in bases or not cabe(costo, consulta.presupuesto):
@@ -102,7 +103,7 @@ def elegir(consulta: Consulta, datos: Datos, cabe: Callable[[Costo, int], bool])
         elegidas.append((round(min(1.0, puntaje), 3), Propuesta(p.polo.id, p.polo.nombre, costo.p50, costo.p80)))
         if len(elegidas) == RUTAS_MAX:
             break
-    elegidas.sort(key=lambda x: (-x[0], x[1].polo))
+    elegidas.sort(key=lambda x: (x[1].polo in detras, -x[0], x[1].polo))
     return [e for _, e in elegidas]
 
 

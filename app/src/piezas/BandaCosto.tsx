@@ -62,7 +62,7 @@ export function BandaCosto({ costo, presupuesto }: { costo: Costo; presupuesto: 
         </div>
       </div>
       <p className="costo__leyenda">
-        Lo más probable es que gastes entre {soles(costo.p20)} y {soles(costo.p80)}.
+        Costo estimado por persona: entre {soles(costo.p20)} y {soles(costo.p80)}.
         {presupuesto === null ? null : (
           <>
             {" "}

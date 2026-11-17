@@ -36,6 +36,7 @@ COMPARACIONES = (("motor", "guia"), ("variante", "motor"))
 # La parte del viaje que se lleva el bus de noche, ida y vuelta, contra las horas de sus días: los tramos con que
 # se mira la nota (decisión 0027). El kit se armó con el tope de entonces, el 40 %.
 TRAMOS_DEL_BUS = ((0.0, 0.2, "menos_del_20"), (0.2, 0.3, "del_20_al_30"), (0.3, 0.4, "del_30_al_40"))
+METRICAS = ("ndcg3", "p3", "rr", "no_encajan")
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,8 @@ def _filas(ruta: Path) -> list[dict]:
 
 def leer_clave(ruta: Path) -> tuple[list[Viaje], list[str]]:
     filas = _filas(ruta)
+    if not filas:
+        raise ValueError(f"{ruta.name} no contiene viajes para evaluar")
     sistemas = [c.removeprefix("puesto_") for c in filas[0] if c.startswith("puesto_")]
     viajes = [
         Viaje(
@@ -84,6 +87,9 @@ def leer_calificaciones(carpeta: Path, viajes: list[Viaje]) -> dict[str, dict[tu
         notas, problemas = {}, []
         for f in _filas(ruta):
             clave = (int(f["consulta"]), f["opcion"].strip())
+            if clave in notas:
+                problemas.append(f"{clave[0]}{clave[1]}: duplicada")
+                continue
             if zonas.get(clave) != f["zona"].strip():
                 problemas.append(f"{clave[0]}{clave[1]}")
                 continue
@@ -167,14 +173,17 @@ def calcular(
     nombres = sorted(quienes)
     por_viaje = {(v.consulta, v.opcion): [quienes[q][(v.consulta, v.opcion)] for q in nombres] for v in viajes}
     completas = [n for n in por_viaje.values() if all(x is not None for x in n)]
+    con_dos_notas = [n for n in por_viaje.values() if sum(x is not None for x in n) >= 2]
     resumen: dict = {
         "calificadores": len(nombres),
         "viajes": len(viajes),
         "acuerdo": {
             "viajes_con_todas_las_notas": len(completas),
             "kappa_fleiss": acuerdo.kappa_de_fleiss(completas) if completas else None,
-            "alfa_krippendorff_ordinal": acuerdo.alfa_de_krippendorff(list(por_viaje.values())),
-            "alfa_krippendorff_nominal": acuerdo.alfa_de_krippendorff(list(por_viaje.values()), "nominal"),
+            "alfa_krippendorff_ordinal": acuerdo.alfa_de_krippendorff(con_dos_notas) if con_dos_notas else None,
+            "alfa_krippendorff_nominal": (
+                acuerdo.alfa_de_krippendorff(con_dos_notas, "nominal") if con_dos_notas else None
+            ),
             "coinciden_todos": sum(1 for n in completas if len(set(n)) == 1) / len(completas) if completas else None,
             "notas_por_calificador": {
                 q: {k: sum(1 for x in quienes[q].values() if x == int(k)) for k in NOTAS} for q in nombres
@@ -198,16 +207,21 @@ def calcular(
             }
         )
 
-    # Por consulta y por sistema, con la media de cada viaje (los que nadie calificó cuentan 0).
+    # Una opción sin calificar no es una mala recomendación. Se deja pendiente la consulta
+    # completa para comparar todos los sistemas con el mismo conjunto de opciones juzgadas.
     de_la_consulta = defaultdict(list)
     for v in viajes:
         de_la_consulta[v.consulta].append(v)
     filas, por_sistema = [], {s: defaultdict(list) for s in sistemas}
+    pendientes = []
     for n, vs in sorted(de_la_consulta.items()):
-        todas = [media[(v.consulta, v.opcion)] or 0.0 for v in vs]
+        if any(media[(v.consulta, v.opcion)] is None for v in vs):
+            pendientes.append(n)
+            continue
+        todas = [media[(v.consulta, v.opcion)] for v in vs]
         for s in sistemas:
             orden = sorted((v for v in vs if s in v.puestos), key=lambda v: v.puestos[s])
-            propuestas = [media[(v.consulta, v.opcion)] or 0.0 for v in orden]
+            propuestas = [media[(v.consulta, v.opcion)] for v in orden]
             cifras = {
                 "ndcg3": metricas.ndcg(propuestas, todas),
                 "p3": metricas.precision(propuestas),
@@ -217,11 +231,21 @@ def calcular(
             filas.append({"consulta": n, "sistema": s, **{k: round(x, 4) for k, x in cifras.items()}})
             for k, x in cifras.items():
                 por_sistema[s][k].append(x)
-    resumen["por_sistema"] = {s: {k: sum(xs) / len(xs) for k, xs in m.items()} for s, m in por_sistema.items()}
+    resumen["evaluacion"] = {
+        "consultas_total": len(de_la_consulta),
+        "consultas_evaluadas": len(de_la_consulta) - len(pendientes),
+        "consultas_pendientes": pendientes,
+        "viajes_sin_calificar": sum(x is None for x in media.values()),
+        "criterio": "Solo consultas cuyas opciones tienen al menos una calificación; "
+        "una nota ausente no cuenta como cero.",
+    }
+    resumen["por_sistema"] = {
+        s: {k: sum(m[k]) / len(m[k]) if m[k] else None for k in METRICAS} for s, m in por_sistema.items()
+    }
     resumen["comparaciones"] = {
         f"{a}_menos_{b}": {k: metricas.comparar(por_sistema[a][k], por_sistema[b][k]) for k in ("ndcg3", "p3")}
         for a, b in COMPARACIONES
-        if a in sistemas and b in sistemas
+        if a in sistemas and b in sistemas and por_sistema[a]["ndcg3"]
     }
 
     # La cobertura y la novedad: cuántas zonas distintas propone cada uno y cuántas fuera del circuito.
@@ -233,8 +257,8 @@ def calcular(
         resumen["cobertura"][s] = {
             "zonas_distintas": len(set(propuestas)),
             "de": len(datos.polos),
-            "fuera_del_circuito": fuera / len(propuestas),
-            "novedad_media": sum(datos.polos[p].novedad for p in propuestas) / len(propuestas),
+            "fuera_del_circuito": fuera / len(propuestas) if propuestas else None,
+            "novedad_media": sum(datos.polos[p].novedad for p in propuestas) / len(propuestas) if propuestas else None,
         }
 
     # Lo mismo por interés: cada consulta cuenta en cada uno de sus intereses, y las sin interés aparte.
@@ -272,9 +296,9 @@ def calcular(
     return notas, filas, resumen
 
 
-def _escribir(ruta: Path, filas: list[dict]) -> None:
+def _escribir(ruta: Path, filas: list[dict], campos: list[str] | None = None) -> None:
     with open(ruta, "w", encoding="utf-8-sig", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(filas[0]), delimiter=";", lineterminator="\n")
+        w = csv.DictWriter(fh, fieldnames=campos or list(filas[0]), delimiter=";", lineterminator="\n")
         w.writeheader()
         w.writerows(filas)
 
@@ -289,11 +313,19 @@ def main() -> None:
     notas, filas, resumen = calcular(a.clave, a.calificaciones, a.cuadernillo, con_el_motor_de_ahora=True)
     a.salida.mkdir(parents=True, exist_ok=True)
     _escribir(a.salida / "notas.csv", notas)
-    _escribir(a.salida / "metricas.csv", filas)
+    _escribir(a.salida / "metricas.csv", filas, ["consulta", "sistema", *METRICAS])
     (a.salida / "resumen.json").write_text(json.dumps(resumen, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     kappa = resumen["acuerdo"]["kappa_fleiss"]
-    print(f"{resumen['calificadores']} calificadores y {resumen['viajes']} viajes; kappa de Fleiss, {kappa:.3f}.")
+    texto_kappa = "sin datos suficientes" if kappa is None else f"{kappa:.3f}"
+    print(f"{resumen['calificadores']} calificadores y {resumen['viajes']} viajes; kappa de Fleiss, {texto_kappa}.")
+    print(
+        f"Consultas evaluadas: {resumen['evaluacion']['consultas_evaluadas']}; "
+        f"pendientes: {len(resumen['evaluacion']['consultas_pendientes'])}."
+    )
     for s, m in resumen["por_sistema"].items():
+        if m["ndcg3"] is None:
+            print(f"  {s}: faltan calificaciones para comparar.")
+            continue
         cifras = f"nDCG@3 {m['ndcg3']:.3f} · P@3 {m['p3']:.3f} · MRR {m['rr']:.3f} · no encajan {m['no_encajan']:.3f}"
         print(f"  {s}: {cifras}")
 

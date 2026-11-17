@@ -19,6 +19,8 @@ optimización de rutas, para entregar en segundos lo que hoy toma días de búsq
 | **El plan, con fechas y estado** | [`docs/PLAN.md`](./docs/PLAN.md) |
 | **Por qué cada cosa es como es** | [`docs/decisiones/`](./docs/decisiones/) |
 | **Lo que un jurado podría objetar, con su prueba** | [`docs/AUDITORIA.md`](./docs/AUDITORIA.md) |
+| **La revisión del profesor** | El asistente «¿Te ayudamos?», la comparación de rutas, el buzón, el panel de uso y dos tableros con usuarios ficticios ([decisión 0034](./docs/decisiones/0034-la-revision-del-profesor.md), [sus notas y guías](./docs/revision_del_profesor/)) |
+| **Los tableros, con datos simulados** | [`tablero-negocio.html`](./app/public/tablero-negocio.html) y [`tablero-gerencial.html`](./app/public/tablero-gerencial.html), que se abren con doble clic. Las compras, los canales y los usuarios son ficticios: DreemGO no vende nada |
 
 ---
 

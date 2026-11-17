@@ -25,6 +25,13 @@
       }
     }
   },
+  "evaluacion": {
+    "consultas_total": 40,
+    "consultas_evaluadas": 40,
+    "consultas_pendientes": [],
+    "viajes_sin_calificar": 0,
+    "criterio": "Solo consultas cuyas opciones tienen al menos una calificación; una nota ausente no cuenta como cero."
+  },
   "por_sistema": {
     "motor": {
       "ndcg3": 0.8119629372334914,
@@ -203,8 +210,8 @@
     "version_datos": "2026.11.5",
     "consultas_que_cambian": 32,
     "propuestas": 120,
-    "sin_nota_en_el_kit": 31,
-    "media_con_nota": 1.2584269662921348,
+    "sin_nota_en_el_kit": 30,
+    "media_con_nota": 1.262962962962963,
     "media_del_kit": 1.1666666666666667,
     "otro_primer_puesto": [
       {

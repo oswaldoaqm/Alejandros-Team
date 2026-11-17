@@ -6,14 +6,18 @@ import { clave } from "./consulta";
 import { ContextoApp, nombresDe } from "./estado/contexto";
 import { useNavegacion } from "./estado/navegacion";
 import { usePedido } from "./estado/pedido";
+import { AyudaViaje } from "./piezas/AyudaViaje";
 import { BotonTema } from "./piezas/BotonTema";
 import { Enlace } from "./piezas/Enlace";
 import { MarcaFlor } from "./piezas/Flor";
 import { Icono } from "./piezas/Icono";
 import { Limite } from "./piezas/Limite";
+import { PermisoUso } from "./piezas/PermisoUso";
 import { enlaces, type Vista } from "./ruta";
 import { Acerca } from "./vistas/Acerca";
+import { BuzonComentarios } from "./vistas/BuzonComentarios";
 import { Formulario } from "./vistas/Formulario";
+import { Indicadores } from "./vistas/Indicadores";
 import { MisViajes } from "./vistas/MisViajes";
 import { PaginaBlog } from "./vistas/PaginaBlog";
 import { PaginaCalendario } from "./vistas/PaginaCalendario";
@@ -55,6 +59,10 @@ function Pantalla({ vista }: { vista: Vista }) {
       return <Acerca />;
     case "publicar":
       return <Publicar />;
+    case "indicadores":
+      return <Indicadores />;
+    case "buzon-equipo":
+      return <BuzonComentarios />;
   }
 }
 
@@ -141,7 +149,14 @@ export function App() {
         <p>
           ¿Eres de una municipalidad? <Enlace href={enlaces.publicar()}>Publica un evento</Enlace>
         </p>
+        <p>
+          <Enlace href={enlaces.indicadores()}>Actividad del sitio</Enlace>
+          {" · "}
+          <a href="/tablero-negocio.html">Tablero de negocio (simulación)</a>
+        </p>
+        <PermisoUso registrarInicio={vista.tipo !== "indicadores" && vista.tipo !== "buzon-equipo"} />
       </footer>
+      <AyudaViaje vista={vista} />
       {/* En celular, las secciones van abajo, al alcance del pulgar. */}
       <nav aria-label="Secciones" className="barra-inferior">
         <Enlace href={enlaces.inicio()} aria-current={en("inicio")}>

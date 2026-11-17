@@ -1,8 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import fotos from "../../public/fotos.json";
 import { App } from "../App";
 import { obtenerFestividadesVivas } from "../datos/festividades";
+import { olvidarFotos } from "../estado/fotos";
 import { irA, ponerApi } from "../pruebas/api";
 
 // Las festividades de la portada dependen del día: estas pruebas van al 3 de noviembre de 2026.
@@ -12,6 +14,22 @@ function el3DeNoviembre() {
 }
 
 describe("página de inicio", () => {
+  it("muestra una zona del catálogo con foto acreditada y permite abrir su planificador", async () => {
+    irA("./");
+    olvidarFotos();
+    ponerApi({ "/fotos.json": { cuerpo: fotos } });
+    render(<App />);
+
+    const enlace = await screen.findByRole("link", { name: "Planear viaje a Trujillo" });
+    expect(enlace.getAttribute("href")).toContain("#/planear");
+    expect(enlace.getAttribute("href")).toContain("destino=139");
+    const tarjeta = enlace.closest("article") as HTMLElement;
+    expect(tarjeta.querySelector("img")?.getAttribute("src")).toContain("Trujillo-Peru2.jpg");
+    expect(
+      within(tarjeta).getByRole("link", { name: /Foto: madiko83, en Wikimedia Commons/i }),
+    ).toBeDefined();
+  });
+
   it("muestra el carrusel hero, el CTA a Planear, festividades del mes y el blog viajero", async () => {
     el3DeNoviembre();
     irA("./");
@@ -26,7 +44,7 @@ describe("página de inicio", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "Tu planificador inteligente de viajes" }),
     ).toBeDefined();
-    expect(screen.getByText("¿Qué esperas para explorar?")).toBeDefined();
+    expect(screen.getByText("Empieza con tus preferencias.")).toBeDefined();
     const btnPlanear = screen.getByRole("link", { name: /Armar mi viaje/i });
     expect(btnPlanear.getAttribute("href")).toBe("./#/planear");
     const btnComoFunciona = within(btnPlanear.parentElement as HTMLElement).getByRole("link", {

@@ -18,13 +18,16 @@ export type Vista =
   | { tipo: "blog"; slug: string | null }
   | { tipo: "mis-viajes" }
   | { tipo: "acerca" }
-  | { tipo: "publicar" };
+  | { tipo: "publicar" }
+  | { tipo: "indicadores" }
+  | { tipo: "buzon-equipo" };
 
 /** La pantalla que corresponde a una URL. */
 export function vistaDe(url: URL): Vista {
   const consulta = deParametros(url.searchParams);
   const fragmento = url.hash.replace(/^#\/?/, "");
   const [pagina = "", argumento = ""] = fragmento.split("/");
+  if (pagina === "equipo" && argumento === "comentarios") return { tipo: "buzon-equipo" };
   switch (pagina) {
     case "planear":
     case "editar":
@@ -48,6 +51,8 @@ export function vistaDe(url: URL): Vista {
       return { tipo: "acerca" };
     case "publicar":
       return { tipo: "publicar" };
+    case "indicadores":
+      return { tipo: "indicadores" };
   }
   if (!consulta) return { tipo: "inicio", consulta: null };
   const elegida = pagina === "ruta" ? Number(argumento) : null;
@@ -75,4 +80,6 @@ export const enlaces = {
   misViajes: () => "./#/mis-viajes",
   acerca: () => "./#/acerca",
   publicar: () => "./#/publicar",
+  indicadores: () => "./#/indicadores",
+  buzonEquipo: () => "./#/equipo/comentarios",
 };

@@ -45,6 +45,7 @@ describe("la banda de costo", () => {
   it("muestra el centro, la banda y en qué se va", () => {
     render(<BandaCosto costo={COSTO} presupuesto={null} />);
     expect(screen.getByText("S/ 1 157")).toBeDefined();
+    expect(screen.getByText("Costo estimado por persona: entre S/ 972 y S/ 1 339.")).toBeDefined();
     expect(plano(screen.getByRole("img").getAttribute("aria-label"))).toBe(
       "Costo estimado por persona: entre S/ 972 y S/ 1 339, con centro en S/ 1 157.",
     );

@@ -88,6 +88,11 @@ def test_consulta_sin_mes(cliente):
         ({"mes": 0}, "mes", "Debe ser mayor o igual que 1."),
         ({"mes": "julio"}, "mes", "Debe ser un número entero."),
         ({"mes": 7, "fecha_inicio": "20/07/2026"}, "fecha_inicio", "Fecha no válida: se espera AAAA-MM-DD."),
+        (
+            {"fecha_inicio": "9999-12-31", "dias": 14},
+            "consulta",
+            "La fecha de inicio y los días del viaje quedan fuera del calendario.",
+        ),
         ({"mes": 7, "intereses": "museos"}, "intereses", "Valor no válido. Opciones:"),
         ({"mes": 7, "origen": "Lima"}, "origen", "Formato no válido."),
     ],
@@ -263,6 +268,13 @@ def test_cors_para_la_app(cliente):
         "/v1/viajes", headers={"Origin": "https://oswaldoaqm.github.io", "Access-Control-Request-Method": "GET"}
     )
     assert r.headers.get("access-control-allow-origin") == "https://oswaldoaqm.github.io"
+
+
+def test_cors_para_la_app_local_por_ip(cliente):
+    r = cliente.options(
+        "/v1/viajes", headers={"Origin": "http://127.0.0.1:5173", "Access-Control-Request-Method": "GET"}
+    )
+    assert r.headers.get("access-control-allow-origin") == "http://127.0.0.1:5173"
 
 
 def test_cors_rechaza_otros_origenes(cliente):

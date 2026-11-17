@@ -24,9 +24,12 @@ export function MisViajes() {
   useTitulo("Guardados");
 
   const quitar = (viaje: ViajeGuardado, nombre: string) => {
-    borrarViaje(viaje.consulta, viaje.ruta);
-    ponerViajes(leerViajes());
-    ponerAviso(`Quitamos «${nombre}» de Guardados.`);
+    if (borrarViaje(viaje.consulta, viaje.ruta)) {
+      ponerViajes(leerViajes());
+      ponerAviso(`Quitamos «${nombre}» de Guardados.`);
+    } else {
+      ponerAviso(`No pudimos quitar «${nombre}». Vuelve a intentarlo.`);
+    }
   };
 
   return (

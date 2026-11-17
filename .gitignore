@@ -70,3 +70,5 @@ desktop.ini
 # ── Archivos de trabajo local ────────────────────────────────────────────────
 *.log
 diagnostico.txt
+data/analitica/
+*.sqlite3

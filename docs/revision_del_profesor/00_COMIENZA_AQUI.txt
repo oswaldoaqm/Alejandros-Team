@@ -1,0 +1,119 @@
+DreemGO
+Guía rápida para abrir la web, la ayuda y el tablero comercial
+
+Equipo: la página de viajes, el recomendador y el catálogo de fotos que
+seleccionaron siguen en esta copia. La web pide esas fotos a Wikimedia y
+muestra el autor y la licencia; el ZIP contiene el catálogo, no las imágenes.
+Empiecen por guia/Guia_para_usar_y_explicar_DreemGO.docx. Explica cómo
+ejecutar la web, consultar viajes desde la ayuda y comparar las propuestas.
+La ayuda ahora pregunta al motor por rutas concretas cuando reconoce el
+origen, mes, días, presupuesto e intereses. Las tarjetas muestran el costo,
+los motivos y los avisos. Si quieren una ciudad fija, usen Planear.
+En los resultados, «Compara antes de elegir» muestra las rutas recibidas.
+El modelo evita anteponer un viaje sin el interés pedido cuando hay otro
+que sí lo cubre. Una consulta puede devolver menos de tres rutas.
+La ayuda también permite seguir una conversación sobre nueve temas del producto.
+Si una duda no tiene respuesta preparada, se puede enviar al equipo y leer en
+un buzón privado. Empiecen por guia/Guia_consultas_y_comentarios_DreemGO.docx.
+El tablero comercial conserva el ejercicio aparte de 300 usuarios ficticios.
+Ahora incluye un Pareto del último paso y un mapa de calor por día y franja.
+Empiecen por guia/Guia_tableros_y_consultas_DreemGO.docx; la guía anterior
+del tablero sigue en guia/Guia_tablero_de_negocio_DreemGO.docx.
+
+Qué pueden mostrar
+
+En la web de viajes encontrarán una galería de Trujillo, Iquitos, Oxapampa
+y Piura. Prueben sus enlaces, la pausa del carrusel y los créditos de foto.
+El botón «¿Te ayudamos?» permite escribir preguntas, elegir temas y consultar
+respuestas anteriores durante la visita. Cubre planificación, destinos,
+comparación, costos, clima, eventos, disponibilidad, guardados y compartir.
+También permite dejar una duda o sugerencia para que el equipo la revise;
+no ofrece una conversación con una persona en vivo.
+
+1. Abran app/public/tablero-negocio.html en el navegador. Pulsen
+   «Reiniciar 0» y luego «Reproducir 300» para ver cómo cambian el embudo y
+   los gráficos al incorporar usuarios. Prueben los filtros de fecha, canal,
+   interés y alternativa A/B. En «Patrones», pulsen una celda del mapa de
+   calor y observen cómo cambia todo el tablero. «Descargar CSV» guarda las
+   filas visibles.
+
+2. En data/simulacion/negocio_300.csv pueden comprobar las cifras. El JSON
+   contiene los mismos registros y los supuestos. docs/TABLERO_NEGOCIO_300.md
+   explica los indicadores; docs/SIMULACION_NEGOCIO_300.md describe cómo se
+   generaron los datos. El generador está en evaluacion/simular_negocio.py.
+
+3. Digan siempre que las aceptaciones, las compras, los canales y los importes
+   son simulados. La web actual recomienda itinerarios, pero no cobra ni
+   confirma reservas. A y B son las dos primeras rutas del motor; no son una
+   prueba aleatoria.
+
+Cómo ejecutar la web completa en Windows
+
+Necesitan Python 3.11 o posterior y Node.js 22.12 o posterior. Extraigan el
+ZIP y abran dos terminales en la carpeta DreemGO.
+
+Terminal 1, API:
+   py -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -e ".[api]"
+   .\.venv\Scripts\python.exe -m uvicorn dreemgo.api.app:app --port 8000
+
+Terminal 2, página:
+   cd app
+   npm ci
+   npm run dev
+
+Abrir http://localhost:5173. Si Vite muestra otro puerto, usen el que
+aparezca en la terminal. El tablero comercial está en /tablero-negocio.html.
+Mantengan ambas terminales abiertas.
+
+Para probar el recomendador, hagan una consulta desde Lima para julio: cuatro
+días, intereses de naturaleza e historia, presupuesto S/ 700 y altura máxima
+de 3 500 m. Abran la propuesta de Trujillo y revisen los avisos de horarios
+y disponibilidad. Los tiempos, costos y horarios son estimados; la web no
+comprueba pasajes ni entradas en tiempo real.
+
+Ayuda y comentarios
+
+En la página, abran «¿Te ayudamos?» y prueben las preguntas disponibles.
+Desde allí pueden ir al formulario. Para probar el envío, escriban una duda
+de ejemplo de entre 10 y 1 000 caracteres, sin nombres ni datos personales.
+El comentario se guarda en una base SQLite de esta instalación si el API está
+funcionando. No se envía un correo. Si el visitante aceptó compartir
+estadísticas, el panel de actividad cuenta la pregunta y el comentario
+enviado, pero no almacena allí el texto.
+Para consultar los comentarios como equipo, configuren
+DREEMGO_CLAVE_COMENTARIOS antes de iniciar el API y entren a
+http://localhost:5173/#/equipo/comentarios. La clave se escribe en esa pantalla
+y no se guarda al salir. Sigan docs/COMENTARIOS.md y no publiquen la clave.
+
+Actividad de la web y trabajos anteriores
+
+El panel /#/indicadores reúne un ejercicio anterior de 200 usuarios ficticios
+y, si el visitante da permiso, actividad registrada por esta copia de la web.
+No sumen esas cifras a las 300 del tablero comercial. El panel permite
+comparar dos series diarias y muestra 24 indicadores al abrir el detalle.
+Para consultar la actividad registrada, configuren DREEMGO_CLAVE_ANALITICA
+antes de iniciar el API y usen su clave en el panel. La vista real se
+actualiza cada tres segundos mientras está visible. Consulten
+docs/INDICADORES.md.
+
+La vista independiente app/public/tablero-gerencial.html y su guía
+docs/TABLERO_GERENCIAL.md se conservan como trabajo anterior. También siguen
+en guia/ los documentos 01_Pagina_web_y_prueba.docx,
+02_Recomendador_y_auditoria.docx y 03_Dashboard_en_vivo.docx.
+docs/AUDITORIA_Y_CAMBIOS.md registra la revisión previa. La entrega original
+se conserva por separado.
+
+Qué les toca completar
+
+Comprueben en el CSV una cifra del embudo. Elijan una celda del mapa de calor
+y expliquen qué cambió en el Pareto y en el total. Comparen dos series de
+actividad. Prueben una pregunta de la ayuda y revisen un comentario de
+ejemplo como equipo. Entreguen dos capturas y una explicación breve. No
+tienen que rehacer el motor.
+
+Si continúan la evaluación del recomendador, dos integrantes pueden calificar
+las mismas tres consultas en data/evaluacion/cuadernillo.html y guardar los CSV
+en data/evaluacion/calificaciones/. Las instrucciones están en las guías
+anteriores. El caso de Uros y la evaluación completa siguen abiertos; no
+presenten el modelo como validado todavía.

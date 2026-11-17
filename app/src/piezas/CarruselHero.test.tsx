@@ -23,6 +23,18 @@ describe("el carrusel de la portada", () => {
     expect(titulo()).toBe(DESTINOS_HERO[2]?.titulo);
   });
 
+  it("permite detener y reanudar el cambio automático desde un botón", () => {
+    vi.useFakeTimers();
+    render(<CarruselHero />);
+    const pausa = screen.getByRole("button", { name: "Pausar cambio automático de destinos" });
+    fireEvent.click(pausa);
+    act(() => vi.advanceTimersByTime(13000));
+    expect(titulo()).toBe(DESTINOS_HERO[0]?.titulo);
+    fireEvent.click(screen.getByRole("button", { name: "Reanudar cambio automático de destinos" }));
+    act(() => vi.advanceTimersByTime(6500));
+    expect(titulo()).toBe(DESTINOS_HERO[1]?.titulo);
+  });
+
   it("si se pidió menos movimiento, arranca detenido y pide solo la foto que se ve", () => {
     vi.useFakeTimers();
     vi.stubGlobal("matchMedia", (consulta: string) => ({

@@ -21,7 +21,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, StringConstraints, field_validator, model_validator
 
-VERSION_CONTRATO = "1.10"
+VERSION_CONTRATO = "1.11"
 
 DIAS_MIN, DIAS_MAX, DIAS_DEFECTO = 1, 14, 6
 ALTITUD_MIN_M, ALTITUD_MAX_M = 0, 6_000
@@ -149,6 +149,10 @@ class Consulta(_Modelo):
         if self.fecha_inicio is not None:
             if self.mes is not None and self.mes != self.fecha_inicio.month:
                 raise ValueError("El mes no coincide con la fecha de inicio: basta con indicar la fecha.")
+            # El motor puede probar hasta DIAS_MAX días al sugerir cambios, y consultar
+            # la noche posterior al último día. Las copias internas no revalidan el modelo.
+            if self.fecha_inicio > date.max - timedelta(days=DIAS_MAX):
+                raise ValueError("La fecha de inicio y los días del viaje quedan fuera del calendario.")
             self.mes = self.fecha_inicio.month
         elif self.mes is None:
             raise ValueError("Indica el mes de viaje o la fecha de inicio.")

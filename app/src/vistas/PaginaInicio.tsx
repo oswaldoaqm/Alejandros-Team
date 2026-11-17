@@ -1,15 +1,18 @@
-// Pantalla de Inicio: carrusel hero de destinos peruanos, invitación rápida a planear,
-// festividades y eventos destacados del mes y notas del blog viajero al estilo ¿Y tú qué planes?
+// Inicio: destinos destacados, acceso al planificador, fotos de otras zonas,
+// festividades y notas para preparar el viaje.
 
 import { useMemo, useState } from "react";
 import { consultaNueva } from "../consulta";
 import { ARTICULOS_BLOG, type ArticuloBlog } from "../datos/blog";
 import { type FestividadMes, obtenerFestividadesVivas } from "../datos/festividades";
 import { useApp } from "../estado/contexto";
+import { useDestinos } from "../estado/destinos";
+import { useFotos } from "../estado/fotos";
 import { useTitulo } from "../estado/titulo";
-import { urlDeFoto } from "../fotos";
+import { srcsetDeFoto, urlDeFoto } from "../fotos";
 import { CarruselHero } from "../piezas/CarruselHero";
 import { Enlace } from "../piezas/Enlace";
+import { CreditoDeFoto } from "../piezas/Foto";
 import { Hoja } from "../piezas/Hoja";
 import { Icono } from "../piezas/Icono";
 import { enlaces } from "../ruta";
@@ -17,6 +20,8 @@ import { enlaces } from "../ruta";
 export function PaginaInicio() {
   const { navegar } = useApp();
   const [festividadAbierta, setFestividadAbierta] = useState<FestividadMes | null>(null);
+  const destinos = useDestinos();
+  const fotos = useFotos();
   useTitulo(null); // Título base: «DreemGO»
 
   const elegirDestinoDirecto = (destinoId: number) => {
@@ -28,6 +33,15 @@ export function PaginaInicio() {
   const articuloPrincipal =
     ARTICULOS_BLOG.find((a) => a.destacadoEnHome) ?? (ARTICULOS_BLOG[0] as ArticuloBlog);
   const articulosSecundarios = ARTICULOS_BLOG.filter((a) => a.id !== articuloPrincipal.id).slice(0, 3);
+  const destinosConFoto = useMemo(
+    () =>
+      [139, 150, 96, 125].flatMap((id) => {
+        const zona = destinos?.zonas.find((candidata) => candidata.id === id);
+        const foto = fotos?.bases[String(id)];
+        return zona && foto ? [{ zona, foto }] : [];
+      }),
+    [destinos, fotos],
+  );
 
   return (
     <div className="pagina-inicio">
@@ -44,9 +58,8 @@ export function PaginaInicio() {
               Tu planificador inteligente de viajes
             </h2>
             <p className="inicio-cta-planear__bajada">
-              Cuéntanos desde dónde sales, cuántos días tienes y qué te apasiona. DreemGO calcula tres
-              itinerarios optimizados con datos oficiales de MINCETUR, protocolo de altura y costos
-              transparentes.
+              Cuéntanos desde dónde sales, cuántos días tienes y qué te interesa. DreemGO te propone hasta
+              tres viajes con costos estimados y avisos útiles si vas a lugares de altura.
             </p>
           </div>
           <div className="inicio-cta-planear__acciones">
@@ -54,7 +67,7 @@ export function PaginaInicio() {
               <Icono nombre="ayuda" tamano={20} />
               Cómo funciona
             </Enlace>
-            <p className="inicio-cta-planear__llamado">¿Qué esperas para explorar?</p>
+            <p className="inicio-cta-planear__llamado">Empieza con tus preferencias.</p>
             <Enlace href={enlaces.planear()} className="boton boton--primario boton--grande">
               <Icono nombre="mapa" tamano={20} />
               Armar mi viaje
@@ -63,7 +76,60 @@ export function PaginaInicio() {
         </div>
       </section>
 
-      {/* ── 3. Apartado de Fiestas: Festividades y eventos del mes ───────── */}
+      {/* ── 3. Otras zonas con fotos del catálogo ───────────────────────── */}
+      {destinosConFoto.length > 0 ? (
+        <section className="inicio-seccion inicio-explorar" aria-labelledby="titulo-explorar">
+          <div className="inicio-explorar__cabeza">
+            <div>
+              <p className="inicio-explorar__etiqueta">Ideas para tu próximo viaje</p>
+              <h2 id="titulo-explorar" className="inicio-seccion__titulo">
+                Elige un lugar para empezar
+              </h2>
+              <p className="inicio-seccion__bajada">
+                Después puedes ajustar los días, el presupuesto y lo que te gustaría conocer.
+              </p>
+            </div>
+            <Enlace href={enlaces.planear()} className="inicio-explorar__todos">
+              Ver todas las zonas <Icono nombre="flecha" tamano={17} />
+            </Enlace>
+          </div>
+          <div className="inicio-explorar__galeria">
+            {destinosConFoto.map(({ zona, foto }) => (
+              <article className="inicio-explorar__tarjeta" key={zona.id}>
+                <Enlace
+                  href={enlaces.planear(consultaNueva({ destino: zona.id, sorpresa: false }))}
+                  className="inicio-explorar__imagen-enlace"
+                  aria-label={`Planear viaje a ${zona.nombre}`}
+                >
+                  <img
+                    src={urlDeFoto(foto, 500)}
+                    srcSet={srcsetDeFoto(foto, 960)}
+                    sizes="(min-width: 900px) 28vw, (min-width: 600px) 46vw, 86vw"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onError={(evento) => {
+                      evento.currentTarget.hidden = true;
+                    }}
+                  />
+                  <span className="inicio-explorar__imagen-texto">
+                    <small>{zona.region}</small>
+                    <strong>{zona.nombre}</strong>
+                    <span>
+                      Armar este viaje <Icono nombre="flecha" tamano={17} />
+                    </span>
+                  </span>
+                </Enlace>
+                <p className="inicio-explorar__credito">
+                  <CreditoDeFoto foto={foto} />
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* ── 4. Festividades y eventos del mes ────────────────────────────── */}
       <section className="inicio-seccion inicio-fiestas" aria-labelledby="titulo-fiestas-mes">
         <div className="inicio-seccion__cabeza">
           <div className="inicio-seccion__icono-adorno" aria-hidden="true">
@@ -99,6 +165,9 @@ export function PaginaInicio() {
                 </div>
                 {/* Badge de categoría abajo-izquierda */}
                 <div className="festividad-tarjeta__badge-cat">{fest.categoria}</div>
+                <span className="inicio-foto-credito">
+                  <CreditoDeFoto foto={fest.foto} />
+                </span>
               </div>
 
               <div className="festividad-tarjeta__cuerpo">
@@ -133,7 +202,7 @@ export function PaginaInicio() {
         </div>
       </section>
 
-      {/* ── 4. Apartado de Blog Viajero ──────────────────────────────────── */}
+      {/* ── 5. Notas para preparar el viaje ──────────────────────────────── */}
       <section className="inicio-seccion inicio-blog" aria-labelledby="titulo-blog-inicio">
         <div className="inicio-seccion__cabeza">
           <div className="inicio-seccion__icono-adorno" aria-hidden="true">
@@ -143,8 +212,7 @@ export function PaginaInicio() {
             Blog viajero
           </h2>
           <p className="inicio-seccion__bajada">
-            ¡Asegúrate de no perderte de nada en tu próximo viaje por el Perú! Consejos prácticos, rutas y
-            guías locales.
+            Consejos, lugares y rutas para preparar tu próximo viaje por el Perú.
           </p>
         </div>
 
@@ -160,6 +228,9 @@ export function PaginaInicio() {
                 decoding="async"
               />
               <span className="inicio-blog__cat-tag">{articuloPrincipal.categoria}</span>
+              <span className="inicio-foto-credito">
+                <CreditoDeFoto foto={articuloPrincipal.foto} />
+              </span>
             </div>
             <div className="inicio-blog__destacado-cuerpo">
               <h3 className="inicio-blog__destacado-titulo">{articuloPrincipal.titulo}</h3>
@@ -192,6 +263,9 @@ export function PaginaInicio() {
                     loading="lazy"
                     decoding="async"
                   />
+                  <span className="inicio-foto-credito">
+                    <CreditoDeFoto foto={art.foto} />
+                  </span>
                 </div>
                 <div className="inicio-blog__fila-cuerpo">
                   <span className="inicio-blog__fila-cat">{art.categoria}</span>
@@ -262,6 +336,9 @@ export function PaginaInicio() {
                 <span className="hoja-festividad__badge-meses">{festividadAbierta.mesRango}</span>
               </div>
               <div className="hoja-festividad__badge-cat">{festividadAbierta.categoria}</div>
+              <span className="inicio-foto-credito">
+                <CreditoDeFoto foto={festividadAbierta.foto} />
+              </span>
             </div>
 
             <div className="hoja-festividad__metas">

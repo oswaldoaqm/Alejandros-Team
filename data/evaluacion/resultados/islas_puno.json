@@ -1,0 +1,171 @@
+{
+  "version_datos": "2026.11.5",
+  "fuente_de_lugares": "Inventario Nacional de Recursos Turísticos de MINCETUR",
+  "alcance": "Diagnóstico del motor actual; no verifica horarios ni disponibilidad de botes",
+  "casos": [
+    {
+      "caso": "Puno sin intereses, cuatro días",
+      "consulta": {
+        "origen": "lima",
+        "mes": 7,
+        "fecha_inicio": null,
+        "dias": 4,
+        "intereses": [],
+        "presupuesto": null,
+        "altitud_max": null,
+        "sorpresa": false,
+        "solo_por_tierra": false,
+        "destino": 11
+      },
+      "islas": [
+        {
+          "codigo_mincetur": "958",
+          "nombre": "Isla Amantani",
+          "minutos_desde_puno": 177.7,
+          "km_en_bote_desde_puno": 39.1,
+          "puesto_en_preseleccion": 73,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "959",
+          "nombre": "Isla Taquile",
+          "minutos_desde_puno": 152.8,
+          "km_en_bote_desde_puno": 36.7,
+          "puesto_en_preseleccion": 69,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "960",
+          "nombre": "Islas Flotantes de los Uros",
+          "minutos_desde_puno": 56.2,
+          "km_en_bote_desde_puno": 5.0,
+          "puesto_en_preseleccion": 1,
+          "entra_entre_40_candidatas": true,
+          "aparece_en_el_itinerario": true
+        },
+        {
+          "codigo_mincetur": "13550",
+          "nombre": "Isla Tikonata",
+          "minutos_desde_puno": 96.3,
+          "km_en_bote_desde_puno": 0.0,
+          "puesto_en_preseleccion": 68,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        }
+      ]
+    },
+    {
+      "caso": "Puno con naturaleza, cuatro días",
+      "consulta": {
+        "origen": "lima",
+        "mes": 7,
+        "fecha_inicio": null,
+        "dias": 4,
+        "intereses": [
+          "naturaleza"
+        ],
+        "presupuesto": null,
+        "altitud_max": null,
+        "sorpresa": false,
+        "solo_por_tierra": false,
+        "destino": 11
+      },
+      "islas": [
+        {
+          "codigo_mincetur": "958",
+          "nombre": "Isla Amantani",
+          "minutos_desde_puno": 177.7,
+          "km_en_bote_desde_puno": 39.1,
+          "puesto_en_preseleccion": 51,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "959",
+          "nombre": "Isla Taquile",
+          "minutos_desde_puno": 152.8,
+          "km_en_bote_desde_puno": 36.7,
+          "puesto_en_preseleccion": 73,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "960",
+          "nombre": "Islas Flotantes de los Uros",
+          "minutos_desde_puno": 56.2,
+          "km_en_bote_desde_puno": 5.0,
+          "puesto_en_preseleccion": 1,
+          "entra_entre_40_candidatas": true,
+          "aparece_en_el_itinerario": true
+        },
+        {
+          "codigo_mincetur": "13550",
+          "nombre": "Isla Tikonata",
+          "minutos_desde_puno": 96.3,
+          "km_en_bote_desde_puno": 0.0,
+          "puesto_en_preseleccion": 44,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        }
+      ]
+    },
+    {
+      "caso": "Puno con caminatas y gastronomía, cinco días",
+      "consulta": {
+        "origen": "lima",
+        "mes": 7,
+        "fecha_inicio": null,
+        "dias": 5,
+        "intereses": [
+          "caminatas",
+          "gastronomia"
+        ],
+        "presupuesto": null,
+        "altitud_max": null,
+        "sorpresa": false,
+        "solo_por_tierra": false,
+        "destino": 11
+      },
+      "islas": [
+        {
+          "codigo_mincetur": "958",
+          "nombre": "Isla Amantani",
+          "minutos_desde_puno": 177.7,
+          "km_en_bote_desde_puno": 39.1,
+          "puesto_en_preseleccion": 51,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "959",
+          "nombre": "Isla Taquile",
+          "minutos_desde_puno": 152.8,
+          "km_en_bote_desde_puno": 36.7,
+          "puesto_en_preseleccion": 45,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        },
+        {
+          "codigo_mincetur": "960",
+          "nombre": "Islas Flotantes de los Uros",
+          "minutos_desde_puno": 56.2,
+          "km_en_bote_desde_puno": 5.0,
+          "puesto_en_preseleccion": 1,
+          "entra_entre_40_candidatas": true,
+          "aparece_en_el_itinerario": true
+        },
+        {
+          "codigo_mincetur": "13550",
+          "nombre": "Isla Tikonata",
+          "minutos_desde_puno": 96.3,
+          "km_en_bote_desde_puno": 0.0,
+          "puesto_en_preseleccion": 72,
+          "entra_entre_40_candidatas": false,
+          "aparece_en_el_itinerario": false
+        }
+      ]
+    }
+  ]
+}

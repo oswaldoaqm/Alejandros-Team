@@ -2,6 +2,8 @@
 cuadernillo o como las deja Excel, y uno que no es del kit."""
 
 import csv
+import json
+import sys
 
 import pytest
 
@@ -109,3 +111,57 @@ def test_lo_que_propone_el_motor_de_ahora_contra_el_kit():
             "nota_ahora": 0.0,
         }
     ]
+
+
+def test_una_opcion_sin_juzgar_deja_la_consulta_pendiente_no_la_convierte_en_cero(tmp_path):
+    clave, carpeta = _kit(tmp_path, {"AB": [2, "", 0, 2], "CD": [2, "", 0, 2]})
+    notas, filas, resumen = informe.calcular(clave, carpeta)
+    assert notas[1]["media"] == ""
+    assert notas[2]["media"] == 0  # Un cero explícito sí es una valoración.
+    assert {f["consulta"] for f in filas} == {2}
+    assert resumen["evaluacion"]["consultas_pendientes"] == [1]
+    assert resumen["evaluacion"]["consultas_evaluadas"] == 1
+    assert resumen["evaluacion"]["viajes_sin_calificar"] == 1
+    assert resumen["por_sistema"]["a"]["ndcg3"] == 1
+
+
+def test_sin_valoraciones_no_inventa_metricas_ni_acuerdo_y_genera_el_informe(tmp_path, monkeypatch, capsys):
+    clave, carpeta = _kit(tmp_path, {"AB": ["", "", "", ""], "CD": ["", "", "", ""]})
+    salida = tmp_path / "resultados"
+    monkeypatch.setattr(
+        sys, "argv", ["informe", "--clave", str(clave), "--calificaciones", str(carpeta), "--salida", str(salida)]
+    )
+    informe.main()
+    resumen = json.loads((salida / "resumen.json").read_text(encoding="utf-8"))
+    assert resumen["evaluacion"]["consultas_evaluadas"] == 0
+    assert resumen["evaluacion"]["consultas_pendientes"] == [1, 2]
+    assert resumen["acuerdo"]["kappa_fleiss"] is None
+    assert resumen["acuerdo"]["alfa_krippendorff_ordinal"] is None
+    assert resumen["por_sistema"]["a"]["ndcg3"] is None
+    assert resumen["comparaciones"] == {}
+    assert len((salida / "metricas.csv").read_text(encoding="utf-8-sig").splitlines()) == 1
+    assert "sin datos suficientes" in capsys.readouterr().out
+
+
+def test_con_una_sola_nota_por_opcion_no_afirma_acuerdo_entre_personas(tmp_path):
+    clave, carpeta = _kit(tmp_path, {"AB": [2, 0, "", ""], "CD": ["", "", 1, 2]})
+    _, filas, resumen = informe.calcular(clave, carpeta)
+    assert len(filas) == 4
+    assert resumen["acuerdo"]["kappa_fleiss"] is None
+    assert resumen["acuerdo"]["alfa_krippendorff_ordinal"] is None
+
+
+def test_una_calificacion_duplicada_no_sobrescribe_la_primera(tmp_path):
+    clave, carpeta = _kit(tmp_path, {"AB": [2, 1, 0, 2], "CD": [1, 1, 0, 2]})
+    ruta = carpeta / "CD.csv"
+    with ruta.open("a", encoding="utf-8", newline="") as archivo:
+        archivo.write("1;A;Huacho;0;\n")
+    with pytest.raises(ValueError, match="duplicada"):
+        informe.calcular(clave, carpeta)
+
+
+def test_una_clave_vacia_se_explica_con_un_error_claro(tmp_path):
+    clave = tmp_path / "clave.csv"
+    clave.write_text("consulta;opcion;polo;zona;puesto_a\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="no contiene viajes"):
+        informe.leer_clave(clave)

@@ -1,0 +1,140 @@
+/* Lectura privada de los comentarios, con la misma paleta de la web. */
+.buzon {
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+
+.buzon__cabeza {
+  max-width: 45rem;
+  margin-bottom: 1.5rem;
+}
+
+.buzon__cabeza h1 {
+  margin-block: 0.35rem 0.75rem;
+}
+
+.buzon__cabeza p:last-child {
+  color: var(--tinta-2);
+  line-height: 1.55;
+}
+
+.buzon__etiqueta {
+  color: var(--lago-texto);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.buzon__acceso,
+.buzon__contenido {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-portada);
+  box-shadow: var(--sombra-baja);
+}
+
+.buzon__acceso label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.buzon__acceso-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.buzon__acceso input {
+  flex: 1 1 15rem;
+  min-width: 0;
+  padding: 0.75rem;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-control);
+  font: inherit;
+}
+
+.buzon__acceso input:focus-visible {
+  outline: 3px solid var(--foco-accesible);
+  outline-offset: 2px;
+}
+
+.buzon__acceso p {
+  margin-bottom: 0;
+  color: var(--tinta-2);
+  font-size: var(--t-nota);
+}
+
+.buzon__acciones,
+.buzon__mensaje-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.buzon__acciones {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.buzon__acciones p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.buzon__acciones > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.buzon__lista {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.buzon__mensaje {
+  padding: 1rem;
+  background: var(--superficie-2);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-tarjeta);
+}
+
+.buzon__mensaje-cabeza time {
+  color: var(--tinta-2);
+  font-size: var(--t-nota);
+}
+
+.buzon__categoria {
+  padding: 0.25rem 0.55rem;
+  color: var(--tinta);
+  background: var(--lago-claro);
+  border-radius: 100px;
+  font-size: var(--t-nota);
+  font-weight: 700;
+}
+
+.buzon__mensaje p {
+  margin-bottom: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.buzon__vacio {
+  margin-bottom: 0;
+  padding: 1rem 0;
+}
+
+.buzon__error {
+  padding: 0.85rem 1rem;
+  color: var(--critico-tinta);
+  background: var(--critico-fondo);
+  border-radius: var(--r-control);
+}

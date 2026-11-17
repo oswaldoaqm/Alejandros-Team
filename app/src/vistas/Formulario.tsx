@@ -4,7 +4,8 @@
 // elegir. Con «A dónde», el viaje es a esa zona. Las opciones (orígenes, intereses y rangos)
 // vienen de GET /v1/opciones; las zonas, de public/destinos.json.
 
-import { type FormEvent, useId, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from "react";
+import { CAMBIO_PERMISO, datosDeConsulta, iniciarMedicionBusqueda, registrarEvento } from "../analitica";
 import type { Opciones } from "../api/tipos";
 import { type Consulta, consultaNueva } from "../consulta";
 import {
@@ -83,6 +84,16 @@ function acotar(valor: number, minimo: number, maximo: number): number {
 
 export function Formulario({ inicial }: { inicial: Consulta | null }) {
   const { opciones } = useApp();
+  const anotado = useRef(false);
+  useEffect(() => {
+    const anotar = () => {
+      if (!anotado.current) anotado.current = registrarEvento("formulario_abierto");
+    };
+    anotar();
+    // También cuenta si el visitante acepta estando ya en el formulario.
+    window.addEventListener(CAMBIO_PERMISO, anotar);
+    return () => window.removeEventListener(CAMBIO_PERMISO, anotar);
+  }, []);
   useTitulo(inicial ? "Cambiar el viaje" : "Planear viaje");
 
   return (
@@ -92,7 +103,8 @@ export function Formulario({ inicial }: { inicial: Consulta | null }) {
           {inicial ? "Cambia tu viaje" : "¿A dónde te escapas?"}
         </h1>
         <p className="inicio__bajada">
-          Dinos desde dónde sales y cuándo. Te armamos tres viajes por el Perú, con su plan día por día.
+          Dinos desde dónde sales y cuándo. Te proponemos hasta tres viajes por el Perú, con su plan día por
+          día.
         </p>
       </div>
       {opciones.datos ? (
@@ -120,15 +132,15 @@ function Campos({ opciones, inicial }: { opciones: Opciones; inicial: Consulta |
   const origen = opciones.origenes.find((o) => o.id === c.origen)?.nombre ?? c.origen;
   const etiquetas = new Map<string, string>(opciones.intereses.map((i) => [i.id, i.etiqueta]));
   const destino =
-    c.destino === null ? "Te proponemos tres" : (nombreDeZona(destinos, c.destino) ?? "La zona elegida");
+    c.destino === null ? "Hasta tres viajes" : (nombreDeZona(destinos, c.destino) ?? "La zona elegida");
 
   // Con un destino sale un solo viaje: se abre directo.
-  const buscar = (sorpresa: boolean) =>
-    navegar(
-      c.destino === null
-        ? enlaces.resultados({ ...c, sorpresa })
-        : enlaces.resultados({ ...c, sorpresa: false }, null, 1),
-    );
+  const buscar = (sorpresa: boolean) => {
+    const buscada = { ...c, sorpresa: c.destino === null && sorpresa };
+    registrarEvento("busqueda_iniciada", datosDeConsulta(buscada));
+    iniciarMedicionBusqueda(buscada);
+    navegar(c.destino === null ? enlaces.resultados(buscada) : enlaces.resultados(buscada, null, 1));
+  };
   const enviar = (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
     buscar(false);
@@ -469,7 +481,7 @@ function ElegirDestino({
             onClick={() => elegir(null)}
           >
             <span className="opcion__texto">
-              <span>Te proponemos tres</span>
+              <span>Hasta tres viajes</span>
               <span className="opcion__nota">Las zonas que mejor te quedan</span>
             </span>
             {elegido === null ? <Icono nombre="bien" /> : null}

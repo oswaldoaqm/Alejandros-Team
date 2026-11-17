@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
@@ -135,6 +135,41 @@ describe("los tres viajes", () => {
     await tarjetas();
     await waitFor(() => expect(window.location.search).toBe(`?${CONSULTA}&v=${VERSION}`));
     expect(screen.queryByText(/Este enlace se armó con los datos/)).toBeNull();
+  });
+
+  it("al cambiar de consulta no muestra viajes anteriores ni acepta una respuesta tardía", async () => {
+    const api = await abrir();
+    await tarjetas();
+    const responderNormal = api.getMockImplementation();
+    let terminar: (() => void) | undefined;
+    api.mockImplementation((entrada, opciones) => {
+      const url = new URL(String(entrada));
+      if (url.pathname === "/v1/viajes" && url.searchParams.get("dias") === "5") {
+        return new Promise<Response>((resolver) => {
+          terminar = () => resolver(new Response(JSON.stringify(viajesPara(url)), { status: 200 }));
+        });
+      }
+      if (!responderNormal) throw new Error("Falta el API de prueba.");
+      return responderNormal(entrada, opciones);
+    });
+
+    act(() => {
+      window.history.pushState(null, "", "/?origen=lima&mes=7&dias=5");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await waitFor(() => expect(terminar).toBeDefined());
+    expect(screen.queryByRole("list", { name: "Viajes propuestos" })).toBeNull();
+    expect(screen.getByText("Armando tus viajes…")).toBeDefined();
+
+    act(() => {
+      window.history.pushState(null, "", "/?origen=lima&mes=7&dias=6");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    const lista = await tarjetas();
+    expect(lista[0]?.getAttribute("href")).toContain("dias=6");
+
+    await act(async () => terminar?.());
+    expect((await tarjetas())[0]?.getAttribute("href")).toContain("dias=6");
   });
 
   it("si el enlace es de otra versión de datos, lo dice", async () => {
@@ -501,6 +536,29 @@ describe("guardar, compartir e imprimir", () => {
       [C.polo.nombre, 3],
       [A.polo.nombre, 1],
     ]);
+  });
+
+  it("si el navegador no permite borrar, conserva el viaje y avisa en ambas pantallas", async () => {
+    await abrir(`/?${CONSULTA}#/ruta/1`);
+    await viajeAbierto();
+    await userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    const fallo = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("Almacenamiento bloqueado");
+    });
+    try {
+      await userEvent.click(screen.getByRole("button", { name: "Guardado" }));
+      expect(screen.getByRole("button", { name: "Guardado" }).getAttribute("aria-pressed")).toBe("true");
+      expect(screen.getByText("No pudimos quitarlo. Vuelve a intentarlo.")).toBeDefined();
+
+      await userEvent.click(screen.getAllByRole("link", { name: "Guardados" })[0] as HTMLElement);
+      await screen.findByRole("heading", { level: 1, name: "Guardados" });
+      await userEvent.click(screen.getByRole("button", { name: new RegExp(`^Quitar ${A.polo.nombre}`) }));
+      expect(screen.getByText(`No pudimos quitar «${A.polo.nombre}». Vuelve a intentarlo.`)).toBeDefined();
+      expect(screen.getByRole("link", { name: new RegExp(`^${A.polo.nombre}`) })).toBeDefined();
+      expect(leerViajes()).toHaveLength(1);
+    } finally {
+      fallo.mockRestore();
+    }
   });
 
   it("lo guardado cuando no se elegía un viaje sigue abriendo los tres", async () => {

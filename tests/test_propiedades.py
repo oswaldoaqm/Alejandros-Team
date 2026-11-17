@@ -22,6 +22,7 @@ from hypothesis import strategies as st
 from dreemgo.calendario import DIAS
 from dreemgo.contrato import (
     ALTITUD_MAX_M,
+    DE_NOCHE,
     DIAS_MAX,
     DIAS_MIN,
     PRESUPUESTO_MAX,
@@ -97,6 +98,25 @@ def _hospedajes(ruta) -> None:
     assert [x.km for x in h] == sorted(x.km for x in h)
     if h:
         event("algún hospedaje cerca")
+
+
+def _lo_pedido(consulta: Consulta, respuesta, datos) -> None:
+    """21. Una ruta que no visita nada de lo pedido lo avisa y, sin destino, va detrás de las que sí (desde 1.11,
+    decisión 0034). La vida nocturna se atiende de noche y no cuenta."""
+    pedidos = {i.value for i in consulta.intereses if i not in DE_NOCHE}
+    cubre = []
+    for ruta in respuesta.rutas:
+        visitados = {i for d in ruta.dias for p in d.paradas for i in datos.recursos[p.recurso.codigo]["intereses"]}
+        faltan = sorted(pedidos - visitados)
+        aviso = [a for a in ruta.avisos if a.mensaje.startswith("Este itinerario no incluye paradas registradas de")]
+        assert len(aviso) == (1 if faltan else 0)
+        if aviso:
+            assert (aviso[0].tipo, aviso[0].nivel) == ("datos", "info")
+        cubre.append(bool(pedidos & visitados))
+    if pedidos and consulta.destino is None:
+        assert cubre == sorted(cubre, reverse=True)
+        if not all(cubre) and any(cubre):
+            event("una ruta sin lo pedido va detrás")
 
 
 def _de_noche(consulta: Consulta, ruta, datos) -> None:
@@ -313,6 +333,7 @@ def test_las_propiedades(consulta):
         _las_entradas(ruta, datos)
         _de_noche(consulta, ruta, datos)
         _hospedajes(ruta)
+    _lo_pedido(consulta, respuesta, datos)
     if respuesta.sin_resultado is not None:
         assert not POLO.search(respuesta.sin_resultado.motivo)
         assert not any("ruta" in s.efecto for s in respuesta.sin_resultado.sugerencias)

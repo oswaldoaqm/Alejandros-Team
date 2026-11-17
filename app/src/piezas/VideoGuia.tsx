@@ -29,7 +29,7 @@ export const PASOS_VIDEO: readonly PasoVideo[] = [
     fin: 21,
     tiempoTexto: "0:06 - 0:21",
     descripcion:
-      "Presentación de DreemGO y la propuesta de valor: tres viajes por el Perú día por día adaptados a lo que le pidas, con verificación en fuentes oficiales.",
+      "Presentación de DreemGO: hasta tres viajes por el Perú, adaptados a tus preferencias y explicados día por día.",
     icono: "mochila",
   },
   {
@@ -47,13 +47,13 @@ export const PASOS_VIDEO: readonly PasoVideo[] = [
   {
     id: 3,
     numero: "Paso 3",
-    titulo: "Tres viajes para ti",
+    titulo: "Hasta tres viajes para ti",
     etiqueta: "Ranking y selección",
     inicio: 43,
     fin: 52,
     tiempoTexto: "0:43 - 0:52",
     descripcion:
-      "El algoritmo presenta las tres mejores zonas del país ordenadas por conveniencia, mostrando costo estimado por persona, tiempo de ida y estacionalidad del clima.",
+      "El planificador muestra hasta tres zonas ordenadas por conveniencia, con costos y tiempos estimados y una orientación sobre el clima.",
     icono: "estrella",
   },
   {

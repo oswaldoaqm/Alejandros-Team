@@ -161,3 +161,9 @@ docker run -p 8080:8080 -e DREEMGO_CORS=http://localhost:5173 \
 | `DREEMGO_CLAVE_PUBLICADOR` | La clave que exige `POST /v1/eventos` | Nadie publica |
 | `DREEMGO_TABLA_EVENTOS` | La tabla de DynamoDB donde se guardan los eventos publicados. La pone `template.yaml` | Se mira la variable siguiente |
 | `DREEMGO_EVENTOS_ARCHIVO` | El archivo donde se guardan, una línea de JSON por evento. Lo pueden compartir varios procesos del API | Quedan en memoria y se pierden al reiniciar: sirve para desarrollar, con un solo proceso |
+| `DREEMGO_CLAVE_ANALITICA` | Clave de lectura de la actividad real del panel; se envía en `X-Clave-Analitica` | El panel solo puede mostrar la simulación |
+| `DREEMGO_ANALITICA_DB` | Ruta del SQLite de actividad anónima opcional | Se usa `~/.dreemgo/actividad.sqlite3` en un servidor normal, o `/tmp/dreemgo/actividad.sqlite3` en Lambda |
+
+### Datos del panel de uso
+
+El modo de simulación está dentro del paquete del API y no escribe en la base. La actividad real se guarda en SQLite solo para quienes aceptan la medición en la web. Para probarla en Docker con persistencia entre reinicios del contenedor, se puede usar el mismo volumen `/datos` con `DREEMGO_ANALITICA_DB=/datos/actividad.sqlite3`. En un host sin volumen persistente, una nueva instancia puede perder ese historial. AWS Lambda usa `/tmp` por defecto, que no es un almacén compartido ni duradero para medir tráfico real. El equipo debe elegir un almacenamiento persistente antes de presentar esos conteos como históricos de producción. Ver [`docs/INDICADORES.md`](../docs/INDICADORES.md).
