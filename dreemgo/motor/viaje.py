@@ -1054,6 +1054,18 @@ def avisos(
                 mensaje=f"{est.explicacion} Mejores meses para ir: {mejores}.",
             )
         )
+    cubiertos = {interes for recurso in visitadas for interes in recurso["intereses"]}
+    sin_cubrir = [i for i in consulta.intereses if i not in DE_NOCHE and i.value not in cubiertos]
+    if sin_cubrir:
+        etiquetas = textos.lista([datos.intereses[i.value]["etiqueta"].lower() for i in sin_cubrir], "ni")
+        salida.append(
+            Aviso(
+                tipo="datos",
+                nivel="info",
+                mensaje=f"Este itinerario no incluye paradas registradas de {etiquetas}. "
+                "Puedes comparar otras propuestas o ajustar tus intereses.",
+            )
+        )
     altas = sorted((r for r in visitadas if (r["altitud_m"] or 0) >= ALTITUD_AVISO_M), key=lambda r: -r["altitud_m"])
     if altas:
         salida.append(
@@ -1319,6 +1331,19 @@ def _concava(fraccion: float) -> float:
     return fraccion if CONCAVIDAD == 1.0 else fraccion**CONCAVIDAD
 
 
+def sin_lo_pedido(itinerarios: list, consulta: Consulta, datos: Datos) -> set[int]:
+    """Las zonas cuyo itinerario no visita ninguna parada de los intereses del día; vacío con destino o sin
+    intereses (decisión 0034)."""
+    pedidos = {i.value for i in consulta.intereses if i not in DE_NOCHE}
+    if consulta.destino is not None or not pedidos:
+        return set()
+    return {
+        it.polo.id
+        for _, it in itinerarios
+        if not any(pedidos.intersection(datos.recursos[it.polo.paradas[c.i]]["intereses"]) for c in _visitadas(it))
+    }
+
+
 def resolver(
     consulta: Consulta, datos: Datos, publicados: Instantanea = SIN_PUBLICADOS, sugerir: bool = True
 ) -> Respuesta:
@@ -1351,11 +1376,16 @@ def resolver(
             itinerarios.append((p, it))
             bases_planificadas.add(p.polo.base["nombre"])
 
+    mejor = max((it.valor for _, it in itinerarios), default=1.0)
+
+    # Una ruta que no visita nada de lo pedido no va antes que una que sí: se ordena detrás, sin
+    # quitarla, y lleva su aviso. Con un destino elegido no aplica (decisión 0034).
+    detras = sin_lo_pedido(itinerarios, consulta, datos)
+
     # Las tres bases distintas se eligen por su puntaje, con el presupuesto: un viaje que lo
     # pasa compite castigado por (presupuesto / costo)², así que sale solo si es mucho mejor que
     # los que entran, y siempre con su aviso. Sin presupuesto, elegir no necesita el costo
     # (CONTRATO §3.7 y decisión 0016).
-    mejor = max((it.valor for _, it in itinerarios), default=1.0)
     puntuados = []
     for p, it in itinerarios:
         ocupacion = sum(1 for r in it.recorridos if r.visitas) / len(it.recorridos)
@@ -1366,7 +1396,7 @@ def resolver(
             costo = costo_del_viaje(it, consulta, datos, dias)
         puntaje = (1 - lam) * calidad * por_presupuesto(costo, consulta.presupuesto) + lam * it.polo.novedad
         puntuados.append((puntaje, p, it, dias, costo))
-    puntuados.sort(key=lambda x: (-x[0], x[1].polo.id))
+    puntuados.sort(key=lambda x: (x[2].polo.id in detras, -x[0], x[1].polo.id))
     elegidas, bases = [], set()
     for puntaje, p, it, dias, costo in puntuados:
         if it.polo.base["nombre"] in bases:
@@ -1375,7 +1405,7 @@ def resolver(
         elegidas.append(armar_ruta(p, it, puntaje, consulta, origen, datos, publicados, dias, costo))
         if len(elegidas) == RUTAS_MAX:
             break
-    elegidas.sort(key=lambda r: (-r.puntaje, r.polo.id))
+    elegidas.sort(key=lambda r: (r.polo.id in detras, -r.puntaje, r.polo.id))
 
     sin_resultado = None if elegidas else _sin_resultado(consulta, origen, datos, sugerir)
     return Respuesta(
