@@ -17,6 +17,14 @@ from pathlib import Path
 import numpy as np
 
 DATOS = Path(__file__).resolve().parents[1] / "datos"
+ARCHIVOS_DEL_MOTOR = (
+    "manifiesto.json",
+    "recursos.json.gz",
+    "polos.json.gz",
+    "origenes.json.gz",
+    "eventos.json.gz",
+    "costos.json",
+)
 
 
 @dataclass(frozen=True)
@@ -190,4 +198,9 @@ def cargar(carpeta: Path = DATOS) -> Datos:
 
 
 def hay_datos(carpeta: Path = DATOS) -> bool:
-    return (carpeta / "manifiesto.json").exists()
+    """El API necesita el conjunto completo, no solo el manifiesto.
+
+    Si una copia quedó a medio descomprimir, las rutas de datos responden 503
+    en vez de fallar al leer el primer archivo ausente.
+    """
+    return all((carpeta / nombre).is_file() for nombre in ARCHIVOS_DEL_MOTOR)
