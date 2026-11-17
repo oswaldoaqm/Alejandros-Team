@@ -47,13 +47,13 @@ Son pocos viajes por tramo, y los que van más lejos difieren también en otras 
 
 ## El motor de ahora
 
-Las notas valen para el motor de los datos `2026.11.1`. El que se entrega es el de los `2026.11.5`. Para las mismas 40 consultas, cambia algo en 32, y 31 de sus 120 propuestas son zonas que el kit no tiene para esa consulta. Las que sí tiene promedian 1,26 de nota, y las que proponía el motor del kit, 1,17.
+Las notas valen para el motor de los datos `2026.11.1`. El que se entrega es el de los `2026.11.5`. Para las mismas 40 consultas, cambia algo en 32, y 30 de sus 120 propuestas son zonas que el kit no tiene para esa consulta. Las que sí tiene promedian 1,26 de nota, y las que proponía el motor del kit, 1,17.
 
 El primer puesto cambia en 18 consultas. En 14 la zona nueva tiene nota en el kit, y las dos medias quedan iguales, 1,19: mejora en 4, empeora en 7 y queda igual en 3. En 6 consultas pasa a ser Puno, que ahora va a los Uros ([0028](../decisiones/0028-horarios-y-visitas-corregidos.md)): las zonas que desplaza tenían 1,56 de media, y Puno, en las cinco con nota, 0,87, con notas puestas a viajes sin los Uros. Las que mejoran son Paracas en lugar de Huacho, Machu Picchu en lugar de Puno, Mollendo en lugar de Ilo y Los Órganos en lugar de Trujillo.
 
 Casi todo eso entra con los datos `2026.11.3`, los de la [0030](../decisiones/0030-a-su-hora-y-desde-el-terminal.md): la ida en bus suma los terminales, los vuelos cuentan cuántos hay al mes y el Circuito Mágico del Agua se ve de noche. Con los `2026.11.2` el primer puesto cambiaba en 14 consultas. La hora del día, el techo del bus y los hospedajes, de los `2026.11.4` y `2026.11.5`, no cambian ningún primer puesto.
 
-Con una de cada cuatro propuestas sin nota, las cifras de arriba describen al motor del kit y solo en parte al que se entrega. Calificar las 31 zonas nuevas pide otro kit (`python -m evaluacion.kit`) y otra ronda de notas.
+Con una de cada cuatro propuestas sin nota, las cifras de arriba describen al motor del kit y solo en parte al que se entrega. Calificar las 30 zonas nuevas pide otro kit (`python -m evaluacion.kit`) y otra ronda de notas.
 
 ## Lo que esto no dice
 
