@@ -20,15 +20,17 @@ from __future__ import annotations
 
 import logging
 import os
+import secrets
+import sqlite3
 from datetime import date, datetime, timedelta
-from typing import Annotated
+from typing import Annotated, Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Security
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response, Security
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 
-from dreemgo import __version__
+from dreemgo import __version__, analitica, comentarios
 from dreemgo.api.errores import validacion_en_espanol
 from dreemgo.api.publicaciones import (
     CalendarioLleno,
@@ -107,7 +109,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=ORIGENES,
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "X-Clave-Publicador"],
+    allow_headers=["Content-Type", "X-Clave-Publicador", "X-Clave-Analitica", "X-Clave-Comentarios"],
     max_age=3600,
 )
 
@@ -144,6 +146,20 @@ clave_de_publicador = APIKeyHeader(
     name="X-Clave-Publicador",
     scheme_name="ClavePublicador",
     description="La clave que el equipo de DreemGO entrega a los municipios y oficinas de destino que publican.",
+    auto_error=False,
+)
+
+clave_de_analitica = APIKeyHeader(
+    name="X-Clave-Analitica",
+    scheme_name="ClaveAnalitica",
+    description="Clave del equipo para consultar la actividad real. La simulación no la necesita.",
+    auto_error=False,
+)
+
+clave_de_comentarios = APIKeyHeader(
+    name="X-Clave-Comentarios",
+    scheme_name="ClaveComentarios",
+    description="Clave del equipo para leer los mensajes recibidos. No se usa para enviarlos.",
     auto_error=False,
 )
 
@@ -338,3 +354,127 @@ def publicar(
         "Evento %s publicado; sale en los polos %s.", publicado.id, sorted(instantanea.polos_de(publicado.id))
     )
     return publicado.evento(instantanea.zona_de(publicado.id))
+
+
+@app.post(
+    "/v1/analitica/eventos",
+    status_code=202,
+    tags=["analítica"],
+    summary="Anotar una acción anónima del planificador",
+    responses={
+        429: {"description": "La sesión envió demasiadas acciones en un minuto."},
+        503: {"description": "No se pudo guardar la acción."},
+    },
+)
+def anotar_uso(evento: analitica.EventoUso) -> dict[str, str]:
+    """El navegador envía categorías, nunca nombres ni la URL del viaje."""
+    try:
+        nuevo = analitica.registrar(evento)
+    except analitica.DemasiadasAcciones as e:
+        raise HTTPException(
+            status_code=429,
+            detail="La sesión envió demasiadas acciones. Intenta nuevamente en un minuto.",
+            headers={"Retry-After": "60"},
+        ) from e
+    except (OSError, sqlite3.Error) as e:
+        bitacora.exception("No se pudo guardar una acción de uso.")
+        raise HTTPException(status_code=503, detail="No se pudo registrar la actividad.") from e
+    return {"estado": "registrado" if nuevo else "ya_registrado"}
+
+
+@app.get(
+    "/v1/analitica/resumen",
+    response_model=analitica.Resumen,
+    tags=["analítica"],
+    summary="Indicadores de uso, reales o de simulación",
+    responses={
+        401: {"description": "Clave incorrecta para los datos reales."},
+        403: {"description": "No se configuró la clave para los datos reales."},
+        503: {"description": "No se pudieron leer los eventos."},
+    },
+)
+def resumen_uso(
+    response: Response,
+    modo: Literal["simulacion", "real"] = "simulacion",
+    desde: date | None = None,
+    hasta: date | None = None,
+    clave: Annotated[str | None, Security(clave_de_analitica)] = None,
+) -> analitica.Resumen:
+    response.headers["Cache-Control"] = "no-store"
+    if desde and hasta and desde > hasta:
+        raise _error("hasta", "No puede ser anterior a desde.")
+    if modo == "real":
+        esperada = os.environ.get("DREEMGO_CLAVE_ANALITICA", "")
+        if not esperada:
+            raise HTTPException(status_code=403, detail="No se configuró el acceso a la actividad real.")
+        if not clave or not secrets.compare_digest(clave.encode("utf-8"), esperada.encode("utf-8")):
+            raise HTTPException(status_code=401, detail="Falta la clave de analítica o no es correcta.")
+        try:
+            eventos_uso = analitica.leer_reales(desde, hasta)
+        except (OSError, sqlite3.Error) as e:
+            bitacora.exception("No se pudieron leer los indicadores reales.")
+            raise HTTPException(status_code=503, detail="No se pudo leer la actividad.") from e
+        fuente = "Acciones anónimas registradas por esta instalación de DreemGO."
+    else:
+        try:
+            meta, eventos_uso = analitica.leer_simulacion()
+        except (OSError, ValueError, KeyError) as e:
+            bitacora.exception("No se pudo leer la simulación de actividad.")
+            raise HTTPException(status_code=503, detail="No está disponible la simulación.") from e
+        fuente = f"SIMULACIÓN: {meta.get('sesiones', 0)} sesiones generadas; no son usuarios ni compras reales."
+    return analitica.resumir(eventos_uso, modo=modo, desde=desde, hasta=hasta, fuente=fuente)
+
+
+@app.post(
+    "/v1/comentarios",
+    response_model=comentarios.ComentarioRecibido,
+    status_code=201,
+    tags=["comentarios"],
+    summary="Recibir una duda, sugerencia o aviso de problema",
+    responses={
+        429: {"description": "Esta sesión ya envió tres mensajes durante la última hora."},
+        503: {"description": "No se pudo guardar el mensaje."},
+    },
+)
+def recibir_comentario(nuevo: comentarios.ComentarioNuevo) -> comentarios.ComentarioRecibido:
+    """Guarda texto breve sin solicitar identidad ni mezclarlo con analítica."""
+    try:
+        return comentarios.guardar(nuevo)
+    except comentarios.DemasiadosComentarios as e:
+        raise HTTPException(
+            status_code=429,
+            detail="Esta sesión ya envió tres mensajes durante la última hora. Intenta más tarde.",
+            headers={"Retry-After": "3600"},
+        ) from e
+    except (OSError, sqlite3.Error) as e:
+        bitacora.exception("No se pudo guardar un comentario del sitio.")
+        raise HTTPException(status_code=503, detail="No pudimos guardar tu mensaje. Inténtalo de nuevo.") from e
+
+
+@app.get(
+    "/v1/comentarios",
+    response_model=comentarios.Buzon,
+    tags=["comentarios"],
+    summary="Leer mensajes recibidos por el equipo",
+    responses={
+        401: {"description": "Clave incorrecta o ausente."},
+        403: {"description": "Este servidor no tiene configurada la lectura del buzón."},
+        503: {"description": "No se pudieron leer los mensajes."},
+    },
+)
+def listar_comentarios(
+    response: Response,
+    limite: Annotated[int, Query(ge=1, le=100)] = 50,
+    clave: Annotated[str | None, Security(clave_de_comentarios)] = None,
+) -> comentarios.Buzon:
+    response.headers["Cache-Control"] = "no-store"
+    esperada = os.environ.get("DREEMGO_CLAVE_COMENTARIOS", "")
+    if not esperada:
+        raise HTTPException(status_code=403, detail="Este servidor no tiene configurada la lectura del buzón.")
+    if not clave or not secrets.compare_digest(clave.encode("utf-8"), esperada.encode("utf-8")):
+        raise HTTPException(status_code=401, detail="Falta la clave de comentarios o no es correcta.")
+    try:
+        return comentarios.leer(limite)
+    except (OSError, sqlite3.Error) as e:
+        bitacora.exception("No se pudieron leer los comentarios del sitio.")
+        raise HTTPException(status_code=503, detail="No se pudieron leer los mensajes.") from e

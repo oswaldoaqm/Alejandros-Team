@@ -1,6 +1,30 @@
 {
   "components": {
     "schemas": {
+      "AccionReciente": {
+        "properties": {
+          "etiqueta": {
+            "title": "Etiqueta",
+            "type": "string"
+          },
+          "instante": {
+            "format": "date-time",
+            "title": "Instante",
+            "type": "string"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instante",
+          "tipo",
+          "etiqueta"
+        ],
+        "title": "AccionReciente",
+        "type": "object"
+      },
       "Almuerzo": {
         "additionalProperties": false,
         "description": "La hora de almuerzo de un día con visitas (desde 1.6). No cuenta en las horas del día.",
@@ -47,6 +71,71 @@
           "en_la_base"
         ],
         "title": "Almuerzo",
+        "type": "object"
+      },
+      "AnalisisGerencial": {
+        "properties": {
+          "correlacion": {
+            "$ref": "#/components/schemas/Correlacion"
+          },
+          "dispersion": {
+            "items": {
+              "$ref": "#/components/schemas/PuntoDispersion"
+            },
+            "title": "Dispersion",
+            "type": "array"
+          },
+          "distribucion": {
+            "items": {
+              "$ref": "#/components/schemas/Distribucion"
+            },
+            "title": "Distribucion",
+            "type": "array"
+          },
+          "embudo": {
+            "items": {
+              "$ref": "#/components/schemas/Etapa"
+            },
+            "title": "Embudo",
+            "type": "array"
+          },
+          "latencia": {
+            "$ref": "#/components/schemas/Latencia"
+          },
+          "mapa_calor": {
+            "items": {
+              "$ref": "#/components/schemas/CeldaCalor"
+            },
+            "title": "Mapa Calor",
+            "type": "array"
+          },
+          "nota": {
+            "title": "Nota",
+            "type": "string"
+          },
+          "pareto": {
+            "items": {
+              "$ref": "#/components/schemas/Pareto"
+            },
+            "title": "Pareto",
+            "type": "array"
+          },
+          "proyeccion": {
+            "$ref": "#/components/schemas/Proyeccion"
+          }
+        },
+        "required": [
+          "distribucion",
+          "embudo",
+          "pareto",
+          "mapa_calor",
+          "latencia",
+          "correlacion",
+          "dispersion",
+          "proyeccion",
+          "nota"
+        ],
+        "title": "AnalisisGerencial",
         "type": "object"
       },
       "Aviso": {
@@ -125,6 +214,68 @@
           "llega_vuelta"
         ],
         "title": "BusDeNoche",
+        "type": "object"
+      },
+      "Buzon": {
+        "properties": {
+          "comentarios": {
+            "items": {
+              "$ref": "#/components/schemas/ComentarioEquipo"
+            },
+            "title": "Comentarios",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "comentarios"
+        ],
+        "title": "Buzon",
+        "type": "object"
+      },
+      "Candidato": {
+        "properties": {
+          "mae": {
+            "title": "Mae",
+            "type": "number"
+          },
+          "metodo": {
+            "title": "Metodo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "metodo",
+          "mae"
+        ],
+        "title": "Candidato",
+        "type": "object"
+      },
+      "CeldaCalor": {
+        "properties": {
+          "acciones": {
+            "title": "Acciones",
+            "type": "integer"
+          },
+          "dia": {
+            "title": "Dia",
+            "type": "integer"
+          },
+          "hora": {
+            "title": "Hora",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "dia",
+          "hora",
+          "acciones"
+        ],
+        "title": "CeldaCalor",
         "type": "object"
       },
       "Cielo": {
@@ -329,6 +480,92 @@
         "title": "CieloDeLaZona",
         "type": "object"
       },
+      "ComentarioEquipo": {
+        "properties": {
+          "categoria": {
+            "enum": [
+              "duda",
+              "sugerencia",
+              "problema"
+            ],
+            "title": "Categoria",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "instante": {
+            "format": "date-time",
+            "title": "Instante",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "categoria",
+          "mensaje",
+          "instante"
+        ],
+        "title": "ComentarioEquipo",
+        "type": "object"
+      },
+      "ComentarioNuevo": {
+        "additionalProperties": false,
+        "description": "La sesión limita envíos repetidos; no se pide nombre ni correo.",
+        "properties": {
+          "categoria": {
+            "enum": [
+              "duda",
+              "sugerencia",
+              "problema"
+            ],
+            "title": "Categoria",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          },
+          "sesion": {
+            "format": "uuid",
+            "title": "Sesion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sesion",
+          "categoria",
+          "mensaje"
+        ],
+        "title": "ComentarioNuevo",
+        "type": "object"
+      },
+      "ComentarioRecibido": {
+        "properties": {
+          "estado": {
+            "const": "recibido",
+            "default": "recibido",
+            "title": "Estado",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "ComentarioRecibido",
+        "type": "object"
+      },
       "Consulta": {
         "additionalProperties": false,
         "description": "Lo que el viajero pide. Es también el enlace para compartir: el motor es\ndeterminista, así que la misma consulta con la misma versión de datos\ndevuelve el mismo viaje.",
@@ -441,6 +678,35 @@
           }
         },
         "title": "Consulta",
+        "type": "object"
+      },
+      "Correlacion": {
+        "properties": {
+          "nota": {
+            "title": "Nota",
+            "type": "string"
+          },
+          "pares": {
+            "items": {
+              "$ref": "#/components/schemas/ParCorrelacion"
+            },
+            "title": "Pares",
+            "type": "array"
+          },
+          "variables": {
+            "items": {
+              "$ref": "#/components/schemas/Variable"
+            },
+            "title": "Variables",
+            "type": "array"
+          }
+        },
+        "required": [
+          "variables",
+          "pares",
+          "nota"
+        ],
+        "title": "Correlacion",
         "type": "object"
       },
       "Costo": {
@@ -617,6 +883,34 @@
         "title": "Dia",
         "type": "object"
       },
+      "Distribucion": {
+        "properties": {
+          "cantidad": {
+            "title": "Cantidad",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "porcentaje": {
+            "title": "Porcentaje",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "cantidad",
+          "porcentaje"
+        ],
+        "title": "Distribucion",
+        "type": "object"
+      },
       "Estacionalidad": {
         "additionalProperties": false,
         "properties": {
@@ -710,6 +1004,41 @@
           "explicacion"
         ],
         "title": "Estacionalidad",
+        "type": "object"
+      },
+      "Etapa": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "porcentaje": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Porcentaje"
+          },
+          "sesiones": {
+            "title": "Sesiones",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "sesiones",
+          "porcentaje"
+        ],
+        "title": "Etapa",
         "type": "object"
       },
       "Evento": {
@@ -963,6 +1292,161 @@
         "title": "EventoNuevo",
         "type": "object"
       },
+      "EventoUso": {
+        "additionalProperties": false,
+        "description": "Solo categorías del producto y un identificador aleatorio de sesión.",
+        "properties": {
+          "codigo_error": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z0-9_-]{1,24}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Error"
+          },
+          "dias": {
+            "anyOf": [
+              {
+                "maximum": 14.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dias"
+          },
+          "duracion_ms": {
+            "anyOf": [
+              {
+                "maximum": 120000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duracion Ms"
+          },
+          "id_evento": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Evento"
+          },
+          "intereses": {
+            "items": {
+              "$ref": "#/components/schemas/Interes"
+            },
+            "maxItems": 9,
+            "title": "Intereses",
+            "type": "array"
+          },
+          "mes": {
+            "anyOf": [
+              {
+                "maximum": 12.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mes"
+          },
+          "origen": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z0-9_-]{1,64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origen"
+          },
+          "polo": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Polo"
+          },
+          "presupuesto": {
+            "anyOf": [
+              {
+                "maximum": 50000.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Presupuesto"
+          },
+          "resultados": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resultados"
+          },
+          "sesion": {
+            "format": "uuid",
+            "title": "Sesion",
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "sesion_iniciada",
+              "formulario_abierto",
+              "busqueda_iniciada",
+              "busqueda_resultado",
+              "itinerario_abierto",
+              "viaje_guardado",
+              "viaje_compartido",
+              "viaje_impreso",
+              "ayuda_consultada",
+              "comentario_enviado",
+              "error_consulta"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sesion",
+          "tipo"
+        ],
+        "title": "EventoUso",
+        "type": "object"
+      },
       "Eventos": {
         "additionalProperties": false,
         "properties": {
@@ -1071,6 +1555,54 @@
         "title": "Hospedaje",
         "type": "object"
       },
+      "Indicador": {
+        "properties": {
+          "descripcion": {
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "etiqueta": {
+            "title": "Etiqueta",
+            "type": "string"
+          },
+          "grupo": {
+            "title": "Grupo",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "unidad": {
+            "default": "",
+            "title": "Unidad",
+            "type": "string"
+          },
+          "valor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valor"
+          }
+        },
+        "required": [
+          "id",
+          "etiqueta",
+          "valor",
+          "descripcion",
+          "grupo"
+        ],
+        "title": "Indicador",
+        "type": "object"
+      },
       "Indicadores": {
         "additionalProperties": false,
         "properties": {
@@ -1147,6 +1679,146 @@
         ],
         "title": "Interes",
         "type": "string"
+      },
+      "Intervalo": {
+        "properties": {
+          "cantidad": {
+            "title": "Cantidad",
+            "type": "integer"
+          },
+          "desde": {
+            "title": "Desde",
+            "type": "number"
+          },
+          "hasta": {
+            "title": "Hasta",
+            "type": "number"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta",
+          "cantidad"
+        ],
+        "title": "Intervalo",
+        "type": "object"
+      },
+      "Latencia": {
+        "properties": {
+          "desviacion": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desviacion"
+          },
+          "histograma": {
+            "items": {
+              "$ref": "#/components/schemas/Intervalo"
+            },
+            "title": "Histograma",
+            "type": "array"
+          },
+          "maximo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximo"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "mediana": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mediana"
+          },
+          "minimo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimo"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "p25": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P25"
+          },
+          "p75": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P75"
+          },
+          "p95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P95"
+          }
+        },
+        "required": [
+          "n",
+          "media",
+          "mediana",
+          "p25",
+          "p75",
+          "p95",
+          "desviacion",
+          "minimo",
+          "maximo",
+          "histograma"
+        ],
+        "title": "Latencia",
+        "type": "object"
       },
       "LugarDeEstrellas": {
         "additionalProperties": false,
@@ -1552,6 +2224,41 @@
         "title": "Opciones",
         "type": "object"
       },
+      "ParCorrelacion": {
+        "properties": {
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "r": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "R"
+          },
+          "x": {
+            "title": "X",
+            "type": "string"
+          },
+          "y": {
+            "title": "Y",
+            "type": "string"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "r",
+          "n"
+        ],
+        "title": "ParCorrelacion",
+        "type": "object"
+      },
       "Parada": {
         "additionalProperties": false,
         "properties": {
@@ -1596,6 +2303,34 @@
           "minutos_visita"
         ],
         "title": "Parada",
+        "type": "object"
+      },
+      "Pareto": {
+        "properties": {
+          "acumulado": {
+            "title": "Acumulado",
+            "type": "number"
+          },
+          "cantidad": {
+            "title": "Cantidad",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "porcentaje": {
+            "title": "Porcentaje",
+            "type": "number"
+          }
+        },
+        "required": [
+          "nombre",
+          "cantidad",
+          "porcentaje",
+          "acumulado"
+        ],
+        "title": "Pareto",
         "type": "object"
       },
       "Polo": {
@@ -1728,6 +2463,104 @@
         "title": "PoloDetalle",
         "type": "object"
       },
+      "Proyeccion": {
+        "properties": {
+          "candidatos": {
+            "items": {
+              "$ref": "#/components/schemas/Candidato"
+            },
+            "title": "Candidatos",
+            "type": "array"
+          },
+          "dias_historia": {
+            "title": "Dias Historia",
+            "type": "integer"
+          },
+          "estado": {
+            "enum": [
+              "disponible",
+              "insuficiente"
+            ],
+            "title": "Estado",
+            "type": "string"
+          },
+          "futuro": {
+            "items": {
+              "$ref": "#/components/schemas/PuntoProyeccion"
+            },
+            "title": "Futuro",
+            "type": "array"
+          },
+          "historico": {
+            "items": {
+              "$ref": "#/components/schemas/PuntoProyeccion"
+            },
+            "title": "Historico",
+            "type": "array"
+          },
+          "mae_validacion": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mae Validacion"
+          },
+          "metodo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metodo"
+          },
+          "n_validacion": {
+            "title": "N Validacion",
+            "type": "integer"
+          },
+          "nota": {
+            "title": "Nota",
+            "type": "string"
+          }
+        },
+        "required": [
+          "estado",
+          "metodo",
+          "dias_historia",
+          "n_validacion",
+          "mae_validacion",
+          "candidatos",
+          "historico",
+          "futuro",
+          "nota"
+        ],
+        "title": "Proyeccion",
+        "type": "object"
+      },
+      "Puesto": {
+        "properties": {
+          "cantidad": {
+            "title": "Cantidad",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "cantidad"
+        ],
+        "title": "Puesto",
+        "type": "object"
+      },
       "Punto": {
         "additionalProperties": false,
         "properties": {
@@ -1765,6 +2598,77 @@
           "lon"
         ],
         "title": "Punto",
+        "type": "object"
+      },
+      "PuntoDispersion": {
+        "properties": {
+          "dias": {
+            "title": "Dias",
+            "type": "number"
+          },
+          "presupuesto": {
+            "title": "Presupuesto",
+            "type": "number"
+          }
+        },
+        "required": [
+          "dias",
+          "presupuesto"
+        ],
+        "title": "PuntoDispersion",
+        "type": "object"
+      },
+      "PuntoProyeccion": {
+        "properties": {
+          "fecha": {
+            "format": "date",
+            "title": "Fecha",
+            "type": "string"
+          },
+          "valor": {
+            "title": "Valor",
+            "type": "number"
+          }
+        },
+        "required": [
+          "fecha",
+          "valor"
+        ],
+        "title": "PuntoProyeccion",
+        "type": "object"
+      },
+      "PuntoSerie": {
+        "properties": {
+          "busquedas": {
+            "title": "Busquedas",
+            "type": "integer"
+          },
+          "detalles": {
+            "title": "Detalles",
+            "type": "integer"
+          },
+          "fecha": {
+            "format": "date",
+            "title": "Fecha",
+            "type": "string"
+          },
+          "guardados": {
+            "title": "Guardados",
+            "type": "integer"
+          },
+          "sesiones": {
+            "title": "Sesiones",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "fecha",
+          "sesiones",
+          "busquedas",
+          "detalles",
+          "guardados"
+        ],
+        "title": "PuntoSerie",
         "type": "object"
       },
       "Rango": {
@@ -2023,6 +2927,117 @@
           "atribucion"
         ],
         "title": "Respuesta",
+        "type": "object"
+      },
+      "Resumen": {
+        "properties": {
+          "actividad_reciente": {
+            "items": {
+              "$ref": "#/components/schemas/AccionReciente"
+            },
+            "title": "Actividad Reciente",
+            "type": "array"
+          },
+          "actualizado": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actualizado"
+          },
+          "analisis": {
+            "$ref": "#/components/schemas/AnalisisGerencial"
+          },
+          "consultado": {
+            "format": "date-time",
+            "title": "Consultado",
+            "type": "string"
+          },
+          "destinos": {
+            "items": {
+              "$ref": "#/components/schemas/Puesto"
+            },
+            "title": "Destinos",
+            "type": "array"
+          },
+          "fuente": {
+            "title": "Fuente",
+            "type": "string"
+          },
+          "indicadores": {
+            "items": {
+              "$ref": "#/components/schemas/Indicador"
+            },
+            "title": "Indicadores",
+            "type": "array"
+          },
+          "intereses": {
+            "items": {
+              "$ref": "#/components/schemas/Puesto"
+            },
+            "title": "Intereses",
+            "type": "array"
+          },
+          "modo": {
+            "enum": [
+              "simulacion",
+              "real"
+            ],
+            "title": "Modo",
+            "type": "string"
+          },
+          "periodo": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Periodo",
+            "type": "object"
+          },
+          "serie": {
+            "items": {
+              "$ref": "#/components/schemas/PuntoSerie"
+            },
+            "title": "Serie",
+            "type": "array"
+          },
+          "total_eventos": {
+            "title": "Total Eventos",
+            "type": "integer"
+          },
+          "zona_horaria": {
+            "default": "America/Lima",
+            "title": "Zona Horaria",
+            "type": "string"
+          }
+        },
+        "required": [
+          "modo",
+          "actualizado",
+          "consultado",
+          "total_eventos",
+          "actividad_reciente",
+          "periodo",
+          "fuente",
+          "indicadores",
+          "serie",
+          "destinos",
+          "intereses",
+          "analisis"
+        ],
+        "title": "Resumen",
         "type": "object"
       },
       "Ruta": {
@@ -2385,9 +3400,39 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      },
+      "Variable": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ],
+        "title": "Variable",
+        "type": "object"
       }
     },
     "securitySchemes": {
+      "ClaveAnalitica": {
+        "description": "Clave del equipo para consultar la actividad real. La simulación no la necesita.",
+        "in": "header",
+        "name": "X-Clave-Analitica",
+        "type": "apiKey"
+      },
+      "ClaveComentarios": {
+        "description": "Clave del equipo para leer los mensajes recibidos. No se usa para enviarlos.",
+        "in": "header",
+        "name": "X-Clave-Comentarios",
+        "type": "apiKey"
+      },
       "ClavePublicador": {
         "description": "La clave que el equipo de DreemGO entrega a los municipios y oficinas de destino que publican.",
         "in": "header",
@@ -2403,6 +3448,258 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/v1/analitica/eventos": {
+      "post": {
+        "description": "El navegador envía categorías, nunca nombres ni la URL del viaje.",
+        "operationId": "anotar_uso_v1_analitica_eventos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoUso"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Anotar Uso V1 Analitica Eventos Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "La sesión envió demasiadas acciones en un minuto."
+          },
+          "503": {
+            "description": "No se pudo guardar la acción."
+          }
+        },
+        "summary": "Anotar una acción anónima del planificador",
+        "tags": [
+          "analítica"
+        ]
+      }
+    },
+    "/v1/analitica/resumen": {
+      "get": {
+        "operationId": "resumen_uso_v1_analitica_resumen_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "modo",
+            "required": false,
+            "schema": {
+              "default": "simulacion",
+              "enum": [
+                "simulacion",
+                "real"
+              ],
+              "title": "Modo",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "desde",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Desde"
+            }
+          },
+          {
+            "in": "query",
+            "name": "hasta",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasta"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resumen"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Clave incorrecta para los datos reales."
+          },
+          "403": {
+            "description": "No se configuró la clave para los datos reales."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "description": "No se pudieron leer los eventos."
+          }
+        },
+        "security": [
+          {
+            "ClaveAnalitica": []
+          }
+        ],
+        "summary": "Indicadores de uso, reales o de simulación",
+        "tags": [
+          "analítica"
+        ]
+      }
+    },
+    "/v1/comentarios": {
+      "get": {
+        "operationId": "listar_comentarios_v1_comentarios_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limite",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limite",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Buzon"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Clave incorrecta o ausente."
+          },
+          "403": {
+            "description": "Este servidor no tiene configurada la lectura del buzón."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "description": "No se pudieron leer los mensajes."
+          }
+        },
+        "security": [
+          {
+            "ClaveComentarios": []
+          }
+        ],
+        "summary": "Leer mensajes recibidos por el equipo",
+        "tags": [
+          "comentarios"
+        ]
+      },
+      "post": {
+        "description": "Guarda texto breve sin solicitar identidad ni mezclarlo con analítica.",
+        "operationId": "recibir_comentario_v1_comentarios_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComentarioNuevo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComentarioRecibido"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "Esta sesión ya envió tres mensajes durante la última hora."
+          },
+          "503": {
+            "description": "No se pudo guardar el mensaje."
+          }
+        },
+        "summary": "Recibir una duda, sugerencia o aviso de problema",
+        "tags": [
+          "comentarios"
+        ]
+      }
+    },
     "/v1/eventos": {
       "get": {
         "description": "Los del calendario oficial y los que publicaron los municipios (`fuente: \"publicado\"`).",
