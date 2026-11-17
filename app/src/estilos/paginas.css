@@ -1031,6 +1031,196 @@
   width: 100%;
 }
 
+/* Otras zonas del catálogo: fotos que ya están referenciadas en fotos.json. */
+.inicio-seccion.inicio-explorar {
+  gap: 24px;
+  padding-top: 38px;
+  padding-bottom: 58px;
+}
+
+.inicio-explorar__cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.inicio-explorar__cabeza .inicio-seccion__bajada {
+  max-width: 58ch;
+  margin-top: 8px;
+}
+
+.inicio-explorar__etiqueta {
+  margin: 0 0 8px;
+  color: var(--lago-texto);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.inicio-explorar__todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 10px 0;
+  color: var(--lago-texto);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.inicio-explorar__galeria {
+  display: grid;
+  grid-auto-columns: minmax(240px, 78vw);
+  grid-auto-flow: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 2px 2px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--linea) transparent;
+}
+
+.inicio-explorar__tarjeta {
+  min-width: 0;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  box-shadow: var(--sombra-baja);
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+.inicio-explorar__imagen-enlace {
+  position: relative;
+  display: block;
+  min-height: 300px;
+  aspect-ratio: 4 / 5;
+  color: #fff;
+  background: linear-gradient(145deg, var(--lago-hundido), var(--lago));
+  overflow: hidden;
+}
+
+.inicio-explorar__imagen-enlace::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, transparent 28%, rgb(0 0 0 / 78%) 100%);
+  pointer-events: none;
+}
+
+.inicio-explorar__imagen-enlace img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.inicio-explorar__imagen-enlace img[hidden] {
+  display: none;
+}
+
+.inicio-explorar__imagen-enlace:hover img {
+  transform: scale(1.045);
+}
+
+.inicio-explorar__imagen-texto {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  left: 20px;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 55%);
+}
+
+.inicio-explorar__imagen-texto small {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.inicio-explorar__imagen-texto strong {
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.65rem, 2.4vw, 2.15rem);
+  line-height: 1.12;
+}
+
+.inicio-explorar__imagen-texto > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.inicio-explorar__credito {
+  min-height: 34px;
+  margin: 0;
+  padding: 8px 12px;
+  color: var(--tinta-3);
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.inicio-explorar__credito a {
+  color: inherit;
+}
+
+@media (min-width: 600px) {
+  .inicio-explorar__galeria {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+@media (min-width: 980px) {
+  .inicio-explorar__galeria {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .inicio-explorar__cabeza {
+    display: block;
+  }
+
+  .inicio-explorar__todos {
+    margin-top: 8px;
+  }
+}
+
+/* El autor y la licencia se pueden consultar en cada foto de portada. */
+.inicio-foto-credito {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  max-width: 62%;
+  padding: 4px 7px;
+  color: #fff;
+  background: rgb(0 0 0 / 75%);
+  border-radius: 6px;
+  font-size: 0.64rem;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.inicio-foto-credito a {
+  color: inherit;
+  text-decoration-color: rgb(255 255 255 / 70%);
+}
+
 /* ── Banner de Acceso Rápido al Planificador ──────────────────────────────── */
 
 .inicio-cta-planear {
@@ -1542,21 +1732,23 @@
 
 .inicio-blog__layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   width: 100%;
   max-width: 1200px;
+  min-width: 0;
 }
 
 @media (min-width: 900px) {
   .inicio-blog__layout {
-    grid-template-columns: 1.15fr 1fr;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     gap: 24px;
     align-items: stretch;
   }
 }
 
 .inicio-blog__destacado {
+  min-width: 0;
   background: var(--superficie);
   border: 1px solid var(--linea);
   border-radius: 18px;
@@ -1671,6 +1863,7 @@
   flex-direction: column;
   gap: 14px;
   height: 100%;
+  min-width: 0;
 }
 
 .inicio-blog__fila-tarjeta {
@@ -1679,7 +1872,8 @@
   border-radius: 16px;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 130px 1fr;
+  grid-template-columns: 130px minmax(0, 1fr);
+  min-width: 0;
   box-shadow: var(--sombra-baja);
   transition:
     transform var(--movimiento),
@@ -1689,13 +1883,13 @@
 
 @media (min-width: 600px) {
   .inicio-blog__fila-tarjeta {
-    grid-template-columns: 160px 1fr;
+    grid-template-columns: 160px minmax(0, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .inicio-blog__fila-tarjeta {
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 180px minmax(0, 1fr);
   }
 }
 
@@ -1728,6 +1922,7 @@
 }
 
 .inicio-blog__fila-cuerpo {
+  min-width: 0;
   padding: 16px 20px;
   display: flex;
   flex-direction: column;

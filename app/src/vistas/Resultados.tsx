@@ -2,8 +2,9 @@
 // se abre su plan (`#/ruta/N`), en su propia pantalla; «Volver» regresa a los tres. Con un
 // destino sale un solo viaje y se abre directo; si no cabe, aquí se dice por qué y qué cambiar.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { borrarViaje, estaGuardado, guardarViaje } from "../almacen";
+import { datosDeConsulta, duracionBusqueda, registrarEvento } from "../analitica";
 import type { Respuesta } from "../api/tipos";
 import { aParametros, type Consulta, clave, detalles, titulo } from "../consulta";
 import { nombreDeZona } from "../destinos";
@@ -13,6 +14,7 @@ import { useFotos } from "../estado/fotos";
 import { usePedido } from "../estado/pedido";
 import { useTitulo } from "../estado/titulo";
 import { fotoDelViaje } from "../fotos";
+import { CompararViajes } from "../piezas/CompararViajes";
 import { DetalleRuta } from "../piezas/DetalleRuta";
 import { Enlace } from "../piezas/Enlace";
 import { Cargando, ErrorVista } from "../piezas/Estados";
@@ -59,12 +61,13 @@ interface PropsDeAcciones {
   version: string;
   /** El viaje abierto: 1, 2 o 3. Es el que se guarda y el que se comparte, no los tres. */
   elegida: number;
+  poloId: number;
   /** El nombre del viaje abierto, para reconocerlo en Guardados. */
   nombre: string;
 }
 
 /** Guardar, compartir e imprimir el viaje abierto: van sobre su portada, con un aviso abajo. */
-function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
+function Acciones({ consulta, version, elegida, poloId, nombre }: PropsDeAcciones) {
   const { nombres } = useApp();
   const llave = clave(consulta);
   const [guardado, ponerGuardado] = useState(() => estaGuardado(consulta, elegida));
@@ -84,9 +87,11 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
 
   const alternarGuardado = () => {
     if (guardado) {
-      borrarViaje(consulta, elegida);
-      ponerGuardado(false);
-      ponerMensaje({ texto: "Lo quitamos de Guardados." });
+      const quitado = borrarViaje(consulta, elegida);
+      if (quitado) ponerGuardado(false);
+      ponerMensaje({
+        texto: quitado ? "Lo quitamos de Guardados." : "No pudimos quitarlo. Vuelve a intentarlo.",
+      });
       return;
     }
     const listo = guardarViaje({
@@ -97,6 +102,7 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
       guardado: new Date().toISOString(),
     });
     ponerGuardado(listo);
+    if (listo) registrarEvento("viaje_guardado", { ...datosDeConsulta(consulta), polo: poloId });
     ponerMensaje({
       texto: listo ? "Guardado en este navegador." : "Este navegador no deja guardar. Comparte el enlace.",
     });
@@ -114,6 +120,7 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
           text: `Mira este viaje: ${pedido}`,
           url: enlace,
         });
+        registrarEvento("viaje_compartido", { ...datosDeConsulta(consulta), polo: poloId });
         return;
       } catch (causa) {
         if (causa instanceof DOMException && causa.name === "AbortError") return; // cerró el menú
@@ -121,6 +128,7 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
     }
     try {
       await navigator.clipboard.writeText(enlace);
+      registrarEvento("viaje_compartido", { ...datosDeConsulta(consulta), polo: poloId });
       ponerMensaje({ texto: "Enlace copiado. Quien lo abra ve este mismo viaje." });
     } catch {
       ponerMensaje({ texto: "Copia este enlace:", enlace });
@@ -130,6 +138,7 @@ function Acciones({ consulta, version, elegida, nombre }: PropsDeAcciones) {
   const imprimir = () => {
     // Lo plegado no se imprime: se abre todo antes.
     for (const plegable of document.querySelectorAll("details")) plegable.open = true;
+    registrarEvento("viaje_impreso", { ...datosDeConsulta(consulta), polo: poloId });
     window.print();
   };
 
@@ -215,12 +224,18 @@ function SinRutas({ respuesta, consulta }: { respuesta: Respuesta; consulta: Con
 }
 
 export function Resultados({ consulta, version, elegida }: Props) {
+  const eventosAnotados = useRef(new Set<string>());
   const { navegar, nombres, opciones } = useApp();
   const parametros = aParametros(consulta).toString();
   const pedido = usePedido<Respuesta>("/v1/viajes", parametros);
   const fotos = useFotos();
-  const respuesta = pedido.datos;
-  const alDia = respuesta !== null && !pedido.cargando && pedido.de === `/v1/viajes?${parametros}`;
+  // Al volver con el navegador a otra consulta, el pedido conserva momentáneamente la
+  // respuesta anterior. No se deben enlazar esos viajes con los parámetros nuevos.
+  const corresponde = pedido.de === `/v1/viajes?${parametros}`;
+  const respuesta = corresponde ? pedido.datos : null;
+  const error = corresponde ? pedido.error : null;
+  const buscando = !corresponde || pedido.cargando;
+  const alDia = respuesta !== null && !buscando;
   const vigente = respuesta?.version_datos ?? version;
   const rutas = respuesta?.rutas ?? [];
   // Con un destino, su nombre sale de la lista de zonas o, si no llega, del viaje mismo.
@@ -276,6 +291,44 @@ export function Resultados({ consulta, version, elegida }: Props) {
 
   // Un viaje abierto: su plan completo, en su propia pantalla.
   const abierta = elegida !== null ? rutas[Math.min(Math.max(elegida, 1), rutas.length) - 1] : undefined;
+  useEffect(() => {
+    if (alDia && respuesta) {
+      const llave = `respuesta:${parametros}:${respuesta.version_datos}`;
+      if (!eventosAnotados.current.has(llave)) {
+        eventosAnotados.current.add(llave);
+        // Solo una búsqueda iniciada desde el formulario puede completarse. Una URL compartida
+        // o el montaje repetido de esta pantalla no deben sumar otra búsqueda al tablero.
+        const duracion = duracionBusqueda(consulta);
+        if (duracion !== undefined) {
+          registrarEvento("busqueda_resultado", {
+            ...datosDeConsulta(consulta),
+            resultados: respuesta.rutas.length,
+            duracion_ms: duracion,
+          });
+        }
+      }
+    }
+    if (!buscando && error) {
+      const llave = `error:${parametros}:${error.estado ?? error.tipo}`;
+      if (!eventosAnotados.current.has(llave)) {
+        eventosAnotados.current.add(llave);
+        registrarEvento("error_consulta", {
+          ...datosDeConsulta(consulta),
+          codigo_error: String(error.estado ?? error.tipo),
+        });
+      }
+    }
+    if (alDia && abierta && elegida !== null) {
+      const llave = `detalle:${parametros}:${elegida}`;
+      if (!eventosAnotados.current.has(llave)) {
+        eventosAnotados.current.add(llave);
+        registrarEvento("itinerario_abierto", {
+          ...datosDeConsulta(consulta),
+          polo: abierta.polo.id,
+        });
+      }
+    }
+  }, [alDia, respuesta, parametros, consulta, buscando, error, abierta, elegida]);
   useTitulo(abierta ? nombreDelViaje(abierta.polo.nombre).titulo : titulo(consulta, nombres, zona));
   if (respuesta !== null && abierta && elegida !== null) {
     const indice = rutas.indexOf(abierta);
@@ -298,6 +351,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
                 consulta={consulta}
                 version={respuesta.version_datos}
                 elegida={indice + 1}
+                poloId={abierta.polo.id}
                 nombre={abierta.polo.nombre}
               />
             ) : null
@@ -312,7 +366,7 @@ export function Resultados({ consulta, version, elegida }: Props) {
   const demas = detalles(entendida, nombres);
   // Si ninguno pasa por Lima ni por Cusco, lo dice una frase arriba y no la etiqueta de cada tarjeta.
   const todosFuera = rutas.length > 1 && rutas.every((r) => r.polo.fuera_del_circuito);
-  const armando = pedido.cargando && respuesta === null;
+  const armando = buscando && respuesta === null;
   const encabezado = conDestino
     ? armando
       ? "Armando tu viaje"
@@ -352,14 +406,14 @@ export function Resultados({ consulta, version, elegida }: Props) {
             {pedido.cargando
               ? `Estamos ${conDestino ? "armando el viaje" : "revisando las zonas del país"}. La primera vez puede tardar unos segundos.`
               : alDia && rutas.length > 1
-                ? `Del que más te conviene al que menos.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
+                ? `Ordenados según tus preferencias y las condiciones del viaje.${todosFuera ? ` ${rutas.length === 2 ? "Los dos" : "Los tres"} están fuera del circuito de Lima y Cusco.` : ""}`
                 : ""}
           </p>
         </div>
 
-        {pedido.error ? (
+        {error ? (
           <ErrorVista
-            error={pedido.error}
+            error={error}
             reintentar={() => {
               // Si las opciones tampoco llegaron, se piden otra vez: de ahí salen los nombres.
               if (opciones.error) opciones.reintentar();
@@ -379,6 +433,22 @@ export function Resultados({ consulta, version, elegida }: Props) {
         {respuesta !== null && rutas.length === 0 && alDia ? (
           <SinRutas respuesta={respuesta} consulta={consulta} />
         ) : null}
+
+        {rutas.length > 0 ? (
+          <details className="resultados__modelo">
+            <summary>Cómo se armó esta recomendación</summary>
+            <p>
+              El motor usa tu origen, las fechas, los días y tus preferencias para evaluar los destinos.
+              Estima los traslados con su modelo de tiempos y organiza las visitas según las restricciones de
+              tu consulta. Al abrir un viaje puedes revisar sus motivos, costos y advertencias.
+            </p>
+            <Enlace href={enlaces.editar(consulta, vigente)} className="boton boton--secundario">
+              Ajustar mis preferencias
+            </Enlace>
+          </details>
+        ) : null}
+
+        {alDia && rutas.length > 1 ? <CompararViajes rutas={rutas} /> : null}
 
         {rutas.length > 0 ? (
           <ol className={`viajes${pedido.cargando ? " viajes--espera" : ""}`} aria-label="Viajes propuestos">

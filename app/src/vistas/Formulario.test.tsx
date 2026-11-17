@@ -1,13 +1,16 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { StrictMode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App";
+import { permitirEstadisticas } from "../analitica";
 import { irA, OPCIONES, pedidosA, ponerApi, VERSION } from "../pruebas/api";
 import { plano } from "../pruebas/texto";
 
 vi.mock("../piezas/MapaRuta", () => ({ default: () => <div data-testid="mapa" /> }));
 
 beforeEach(() => {
+  permitirEstadisticas(false);
   irA("./#/planear");
 });
 
@@ -27,6 +30,53 @@ const consultaPedida = (api: ReturnType<typeof ponerApi>) => pedidosA(api, "/v1/
 const enResultados = () => screen.findByRole("heading", { level: 1, name: "Tres viajes para ti" });
 
 describe("el formulario", () => {
+  it("cuenta el formulario si se acepta el permiso después de abrirlo", async () => {
+    const api = await abrir();
+    const tipos = () =>
+      api.mock.calls
+        .filter(
+          ([entrada, opciones]) =>
+            new URL(String(entrada)).pathname === "/v1/analitica/eventos" && opciones?.method === "POST",
+        )
+        .map(([, opciones]) => JSON.parse(String(opciones?.body)).tipo as string);
+    expect(tipos()).toHaveLength(0);
+    await userEvent.click(
+      screen.getByRole("checkbox", { name: "Compartir estadísticas anónimas para mejorar DreemGO" }),
+    );
+    expect(tipos().filter((tipo) => tipo === "sesion_iniciada")).toHaveLength(1);
+    expect(tipos().filter((tipo) => tipo === "formulario_abierto")).toHaveLength(1);
+  });
+
+  it("registra una sola búsqueda completada aunque la pantalla se monte de nuevo", async () => {
+    const api = ponerApi();
+    permitirEstadisticas(true);
+    render(
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    );
+    await screen.findByRole("button", { name: /^Desde/ });
+    await buscar();
+    await enResultados();
+
+    const tipos = () =>
+      api.mock.calls
+        .filter(
+          ([entrada, opciones]) =>
+            new URL(String(entrada)).pathname === "/v1/analitica/eventos" && opciones?.method === "POST",
+        )
+        .map(([, opciones]) => JSON.parse(String(opciones?.body)).tipo as string);
+    await waitFor(() => expect(tipos().filter((tipo) => tipo === "busqueda_resultado")).toHaveLength(1));
+    expect(tipos().filter((tipo) => tipo === "busqueda_iniciada")).toHaveLength(1);
+
+    const enlace = window.location.href;
+    await userEvent.click(screen.getByRole("link", { name: "Cambiar" }));
+    window.history.pushState(null, "", enlace);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    await enResultados();
+    expect(tipos().filter((tipo) => tipo === "busqueda_resultado")).toHaveLength(1);
+  });
+
   it("se arma con lo que dice el API: orígenes, intereses y días", async () => {
     await abrir();
     expect(fila(/^Desde/)).toBe("Desde Lima");
@@ -46,7 +96,8 @@ describe("el formulario", () => {
     await userEvent.click(screen.getByRole("button", { name: "Cerrar" }));
 
     await abrirFila(/^Qué te gusta/);
-    expect(screen.getAllByRole("checkbox").map((c) => c.closest("label")?.textContent)).toEqual(
+    const intereses = within(screen.getByRole("dialog", { name: "¿Qué te gusta?" })).getAllByRole("checkbox");
+    expect(intereses.map((c) => c.closest("label")?.textContent)).toEqual(
       OPCIONES.intereses.map((i) => i.etiqueta),
     );
   });
@@ -138,13 +189,13 @@ describe("el formulario", () => {
     expect(consultaPedida(api)).toBe("/v1/viajes?origen=lima&mes=7&dias=6");
   });
 
-  it("«A dónde» propone tres viajes; sin nada escrito, sugiere zonas de imperdibles fuera de tu ciudad", async () => {
+  it("«A dónde» puede proponer hasta tres viajes; sin nada escrito, sugiere zonas fuera de tu ciudad", async () => {
     await abrir();
-    expect(fila(/^A dónde/)).toBe("A dónde Te proponemos tres");
+    expect(fila(/^A dónde/)).toBe("A dónde Hasta tres viajes");
     await abrirFila(/^A dónde/);
     const hoja = screen.getByRole("dialog", { name: "¿A dónde quieres ir?" });
     expect(within(hoja).getByRole("button", { pressed: true }).textContent).toBe(
-      "Te proponemos tresLas zonas que mejor te quedan",
+      "Hasta tres viajesLas zonas que mejor te quedan",
     );
     const zonas = await within(hoja).findAllByRole("button", { pressed: false });
     // Desde Lima, Miraflores no: es la misma ciudad.
@@ -176,7 +227,7 @@ describe("el formulario", () => {
     expect(window.location.hash).toBe("#/ruta/1");
   });
 
-  it("Enter elige la primera zona que coincide, y «Te proponemos tres» quita el destino", async () => {
+  it("Enter elige la primera zona que coincide, y «Hasta tres viajes» quita el destino", async () => {
     await abrir();
     await abrirFila(/^A dónde/);
     await userEvent.type(
@@ -189,8 +240,8 @@ describe("el formulario", () => {
     expect(within(screen.getByRole("dialog")).getByRole("button", { pressed: true }).textContent).toContain(
       "Yanque",
     );
-    await userEvent.click(screen.getByRole("button", { name: /^Te proponemos tres/ }));
-    expect(fila(/^A dónde/)).toBe("A dónde Te proponemos tres");
+    await userEvent.click(screen.getByRole("button", { name: /^Hasta tres viajes/ }));
+    expect(fila(/^A dónde/)).toBe("A dónde Hasta tres viajes");
     expect(screen.getByRole("button", { name: "Sorpréndeme fuera de Lima y Cusco" })).toBeTruthy();
   });
 

@@ -35,6 +35,8 @@ describe("de la URL a la pantalla", () => {
     expect(vista("#/mis-viajes")).toEqual({ tipo: "mis-viajes" });
     expect(vista("#/acerca")).toEqual({ tipo: "acerca" });
     expect(vista("#/publicar")).toEqual({ tipo: "publicar" });
+    expect(vista("#/indicadores")).toEqual({ tipo: "indicadores" });
+    expect(vista("#/equipo/comentarios")).toEqual({ tipo: "buzon-equipo" });
   });
 
   it("el calendario se puede abrir en un mes", () => {
@@ -82,6 +84,8 @@ describe("de la pantalla a la URL", () => {
     expect(vista(enlaces.misViajes())).toEqual({ tipo: "mis-viajes" });
     expect(vista(enlaces.acerca())).toEqual({ tipo: "acerca" });
     expect(vista(enlaces.publicar())).toEqual({ tipo: "publicar" });
+    expect(vista(enlaces.indicadores())).toEqual({ tipo: "indicadores" });
+    expect(vista(enlaces.buzonEquipo())).toEqual({ tipo: "buzon-equipo" });
     expect(vista(enlaces.inicio())).toEqual({ tipo: "inicio", consulta: null });
   });
 });
