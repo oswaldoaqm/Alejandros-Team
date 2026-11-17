@@ -20,7 +20,7 @@ export function Enlace({ href, reemplazar, conservarPosicion, volver, onClick, c
     const conTecla = evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey;
     if (evento.defaultPrevented || evento.button !== 0 || conTecla) return;
     evento.preventDefault();
-    if (volver && vinoDeLaApp()) window.history.back();
+    if (volver && vinoDeLaApp(href)) window.history.back();
     else navegar(href, { reemplazar, conservarPosicion });
   };
   return (

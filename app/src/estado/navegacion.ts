@@ -12,10 +12,39 @@ function vistaActual(): Vista {
   return vistaDe(new URL(window.location.href));
 }
 
-/** Si a la pantalla actual se llegó desde otra de la app: entonces «volver» es retroceder. */
-export function vinoDeLaApp(): boolean {
+/** Retroceder solo si la pantalla anterior es el destino del enlace «volver». */
+export function vinoDeLaApp(enlace: string): boolean {
   const estado: unknown = window.history.state;
-  return typeof estado === "object" && estado !== null && "dreemgo" in estado;
+  if (typeof estado !== "object" || estado === null || !("dreemgo" in estado) || !("desde" in estado))
+    return false;
+  if (typeof estado.desde !== "string") return false;
+  try {
+    const anterior = new URL(estado.desde, window.location.href);
+    const destino = new URL(enlace, window.location.href);
+    if (anterior.href === destino.href) return true;
+
+    // Una ficha de lugar o el calendario pueden haberse abierto desde un viaje.
+    // Ahí «Tus viajes» vuelve al viaje abierto, sin perder el punto de lectura.
+    const actual = vistaActual();
+    const vistaAnterior = vistaDe(anterior);
+    const vistaDestino = vistaDe(destino);
+    if (
+      (actual.tipo === "polo" || actual.tipo === "calendario") &&
+      vistaAnterior.tipo === "resultados" &&
+      vistaAnterior.ruta !== null &&
+      vistaDestino.tipo === "resultados" &&
+      vistaDestino.ruta === null
+    ) {
+      const consultaAnterior = new URLSearchParams(anterior.search);
+      const consultaDestino = new URLSearchParams(destino.search);
+      consultaAnterior.delete("v");
+      consultaDestino.delete("v");
+      return consultaAnterior.toString() === consultaDestino.toString();
+    }
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 export function useNavegacion(): [Vista, Navegar] {
@@ -34,7 +63,7 @@ export function useNavegacion(): [Vista, Navegar] {
   const navegar = useCallback<Navegar>((enlace, opciones = {}) => {
     const destino = new URL(enlace, window.location.href);
     if (opciones.reemplazar) window.history.replaceState(window.history.state, "", destino);
-    else window.history.pushState({ dreemgo: true }, "", destino);
+    else window.history.pushState({ dreemgo: true, desde: window.location.href }, "", destino);
     ponerVista(vistaDe(destino));
     if (!opciones.conservarPosicion) window.scrollTo({ top: 0 });
   }, []);

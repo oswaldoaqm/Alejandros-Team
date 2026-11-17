@@ -52,6 +52,9 @@ export function usePedido<T>(ruta: string | null, parametros = ""): Pedido<T> {
     ponerEstado((antes) => ({ ...antes, error: null, cargando: true }));
     pedir<T>(ruta, { parametros: new URLSearchParams(parametros), senal: control.signal })
       .then((datos) => {
+        // Un pedido anterior puede terminar después de cambiar de consulta. Su respuesta
+        // ya no debe aparecer ni quedar guardada para esta pantalla.
+        if (control.signal.aborted) return;
         memoria.set(llave, datos);
         ponerEstado({ datos, error: null, cargando: false, de: llave });
       })
