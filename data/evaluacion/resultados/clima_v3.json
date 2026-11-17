@@ -1,0 +1,17 @@
+{
+  "grupos_v3": 203,
+  "con_clima_propio": 108,
+  "sin_clima": 0,
+  "paradas_en_las_dos": 4219,
+  "pares_parada_mes": 50628,
+  "pares_con_el_mismo_veredicto": 47158,
+  "paradas_con_algun_mes_distinto": 1404,
+  "cambios": {
+    "advertencia a viable": 1078,
+    "viable a advertencia": 1044,
+    "desaconsejado a advertencia": 629,
+    "advertencia a desaconsejado": 576,
+    "desaconsejado a viable": 126,
+    "viable a desaconsejado": 17
+  }
+}
