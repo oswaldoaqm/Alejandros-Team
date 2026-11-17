@@ -1,505 +1,505 @@
 ﻿grupo;consulta;presupuesto;criterio;zonas;p50;p80
-con_presupuesto;2;900;hoy;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-con_presupuesto;2;900;filtro_p50;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-con_presupuesto;2;900;filtro_p80;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-con_presupuesto;3;700;hoy;Trujillo | Oxapampa | Huacho;837 | 779 | 804;948 | 890 | 922
+con_presupuesto;2;900;hoy;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+con_presupuesto;2;900;filtro_p50;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+con_presupuesto;2;900;filtro_p80;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+con_presupuesto;3;700;hoy;Trujillo | Huacho | Oxapampa;906 | 828 | 830;1019 | 944 | 943
 con_presupuesto;3;700;filtro_p50;;;
 con_presupuesto;3;700;filtro_p80;;;
-con_presupuesto;4;1200;hoy;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
-con_presupuesto;4;1200;filtro_p50;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
-con_presupuesto;4;1200;filtro_p80;Trujillo | Paracas | Huacho;982 | 972 | 948;1125 | 1117 | 1096
-con_presupuesto;6;2500;hoy;Huaraz | Yanque | Iquitos;1463 | 2050 | 2117;1679 | 2318 | 2385
-con_presupuesto;6;2500;filtro_p50;Huaraz | Yanque | Iquitos;1463 | 2050 | 2117;1679 | 2318 | 2385
-con_presupuesto;6;2500;filtro_p80;Huaraz | Yanque | Iquitos;1463 | 2050 | 2117;1679 | 2318 | 2385
-con_presupuesto;7;800;hoy;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-con_presupuesto;7;800;filtro_p50;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-con_presupuesto;7;800;filtro_p80;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-con_presupuesto;8;600;hoy;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-con_presupuesto;8;600;filtro_p50;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-con_presupuesto;8;600;filtro_p80;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-con_presupuesto;12;600;hoy;Oxapampa | Trujillo | Cajamarca;1113 | 1241 | 1247;1289 | 1420 | 1425
+con_presupuesto;4;1200;hoy;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+con_presupuesto;4;1200;filtro_p50;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+con_presupuesto;4;1200;filtro_p80;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+con_presupuesto;6;2500;hoy;Puno | Yanque | Huaraz;2347 | 2103 | 1513;2619 | 2374 | 1729
+con_presupuesto;6;2500;filtro_p50;Puno | Yanque | Huaraz;2347 | 2103 | 1513;2619 | 2374 | 1729
+con_presupuesto;6;2500;filtro_p80;Yanque | Huaraz | Iquitos;2103 | 1513 | 2178;2374 | 1729 | 2449
+con_presupuesto;7;800;hoy;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+con_presupuesto;7;800;filtro_p50;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+con_presupuesto;7;800;filtro_p80;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+con_presupuesto;8;600;hoy;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+con_presupuesto;8;600;filtro_p50;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+con_presupuesto;8;600;filtro_p80;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+con_presupuesto;12;600;hoy;Oxapampa | Trujillo | Yanque;1165 | 1257 | 1876;1341 | 1434 | 2121
 con_presupuesto;12;600;filtro_p50;;;
 con_presupuesto;12;600;filtro_p80;;;
-con_presupuesto;20;1500;hoy;Miraflores | Huacho | Urubamba;1352 | 1441 | 980;1520 | 1613 | 1123
-con_presupuesto;20;1500;filtro_p50;Miraflores | Huacho | Urubamba;1352 | 1441 | 980;1520 | 1613 | 1123
-con_presupuesto;20;1500;filtro_p80;Urubamba | Ilo | Puno;980 | 997 | 1064;1123 | 1145 | 1214
-monto_500;1;500;hoy;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_500;1;500;filtro_p50;Huacho | Huaraz | Huánuco;352 | 373 | 328;400 | 422 | 377
-monto_500;1;500;filtro_p80;Huacho | Huaraz | Huánuco;352 | 373 | 328;400 | 422 | 377
-monto_500;2;500;hoy;Huaraz | Huacho | Oxapampa;624 | 579 | 588;706 | 660 | 667
+con_presupuesto;20;1500;hoy;Puno | Miraflores | Huacho;1124 | 1397 | 1498;1275 | 1570 | 1671
+con_presupuesto;20;1500;filtro_p50;Puno | Miraflores | Huacho;1124 | 1397 | 1498;1275 | 1570 | 1671
+con_presupuesto;20;1500;filtro_p80;Puno | Urubamba | Ilo;1124 | 1039 | 1037;1275 | 1185 | 1182
+monto_500;1;500;hoy;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_500;1;500;filtro_p50;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_500;1;500;filtro_p80;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_500;2;500;hoy;Huaraz | Huacho | Jauja;674 | 619 | 628;761 | 705 | 714
 monto_500;2;500;filtro_p50;;;
 monto_500;2;500;filtro_p80;;;
-monto_500;3;500;hoy;Oxapampa | Trujillo | Nasca;779 | 837 | 988;890 | 948 | 1109
+monto_500;3;500;hoy;Oxapampa | Trujillo | Nasca;830 | 906 | 1080;943 | 1019 | 1215
 monto_500;3;500;filtro_p50;;;
 monto_500;3;500;filtro_p80;;;
-monto_500;4;500;hoy;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
+monto_500;4;500;hoy;Trujillo | Paracas | Los Órganos;1010 | 987 | 1757;1152 | 1133 | 1983
 monto_500;4;500;filtro_p50;;;
 monto_500;4;500;filtro_p80;;;
-monto_500;5;500;hoy;Nasca | Trujillo | Yanque;1443 | 1233 | 1813;1636 | 1412 | 2055
+monto_500;5;500;hoy;Nasca | Yanque | Trujillo;1496 | 1867 | 1270;1691 | 2110 | 1447
 monto_500;5;500;filtro_p50;;;
 monto_500;5;500;filtro_p80;;;
-monto_500;6;500;hoy;La Merced | Huaraz | Tingo María;1565 | 1463 | 1447;1783 | 1679 | 1661
+monto_500;6;500;hoy;La Merced | Yanque | Tingo María;1621 | 2103 | 1498;1837 | 2374 | 1709
 monto_500;6;500;filtro_p50;;;
 monto_500;6;500;filtro_p80;;;
-monto_500;7;500;hoy;Huacho | Trujillo | Ica;574 | 629 | 509;655 | 709 | 585
+monto_500;7;500;hoy;Huacho | Chincha Alta | Ica;627 | 607 | 547;712 | 692 | 629
 monto_500;7;500;filtro_p50;;;
 monto_500;7;500;filtro_p80;;;
-monto_500;8;500;hoy;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_500;8;500;filtro_p50;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_500;8;500;filtro_p80;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_500;9;500;hoy;Yurimaguas | Trujillo | Nasca;1448 | 984 | 1198;1649 | 1128 | 1354
+monto_500;8;500;hoy;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_500;8;500;filtro_p50;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_500;8;500;filtro_p80;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_500;9;500;hoy;Yurimaguas | Trujillo | Nasca;1503 | 1031 | 1254;1713 | 1174 | 1414
 monto_500;9;500;filtro_p50;;;
 monto_500;9;500;filtro_p80;;;
-monto_500;10;500;hoy;Yanque | Nasca | Trujillo;2200 | 1816 | 1572;2495 | 2075 | 1816
+monto_500;10;500;hoy;Yanque | Nasca | Trujillo;2257 | 1875 | 1604;2552 | 2130 | 1844
 monto_500;10;500;filtro_p50;;;
 monto_500;10;500;filtro_p80;;;
-monto_500;11;500;hoy;Andamarca | Huaraz | Jauja;767 | 824 | 789;881 | 937 | 905
+monto_500;11;500;hoy;Andamarca | Huaraz | Jauja;811 | 875 | 844;925 | 989 | 960
 monto_500;11;500;filtro_p50;;;
 monto_500;11;500;filtro_p80;;;
-monto_500;12;500;hoy;Oxapampa | Yanque | Trujillo;1113 | 1823 | 1241;1289 | 2064 | 1420
+monto_500;12;500;hoy;Oxapampa | Yanque | Trujillo;1165 | 1876 | 1257;1341 | 2121 | 1434
 monto_500;12;500;filtro_p50;;;
 monto_500;12;500;filtro_p80;;;
-monto_500;13;500;hoy;Yanque | La Merced | Los Órganos;2637 | 2219 | 2716;2990 | 2540 | 3090
+monto_500;13;500;hoy;Yanque | La Merced | Los Órganos;2685 | 2273 | 2780;3048 | 2593 | 3142
 monto_500;13;500;filtro_p50;;;
 monto_500;13;500;filtro_p80;;;
-monto_500;14;500;hoy;Huánuco | Trujillo | Huacho;517 | 640 | 605;595 | 719 | 688
+monto_500;14;500;hoy;Huánuco | Huacho | Nasca;570 | 684 | 765;651 | 775 | 855
 monto_500;14;500;filtro_p50;;;
 monto_500;14;500;filtro_p80;;;
-monto_500;15;500;hoy;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_500;15;500;filtro_p50;Huacho | Paracas | Nuevo Chimbote;352 | 330 | 444;400 | 377 | 499
-monto_500;15;500;filtro_p80;Huacho | Paracas | Nuevo Chimbote;352 | 330 | 444;400 | 377 | 499
-monto_500;16;500;hoy;Yurimaguas | Oxapampa | Trujillo;1448 | 942 | 1042;1649 | 1085 | 1189
+monto_500;15;500;hoy;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_500;15;500;filtro_p50;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_500;15;500;filtro_p80;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_500;16;500;hoy;Yurimaguas | Oxapampa | Trujillo;1503 | 995 | 1024;1713 | 1139 | 1167
 monto_500;16;500;filtro_p50;;;
 monto_500;16;500;filtro_p80;;;
-monto_500;17;500;hoy;Puno | Yanque | Ayaviri;425 | 437 | 397;475 | 488 | 447
-monto_500;17;500;filtro_p50;Puno | Yanque | Ayaviri;425 | 437 | 397;475 | 488 | 447
-monto_500;17;500;filtro_p80;Puno | Yanque | Ayaviri;425 | 437 | 397;475 | 488 | 447
-monto_500;18;500;hoy;Yanque | Ilo | Arequipa;821 | 775 | 894;936 | 889 | 1012
+monto_500;17;500;hoy;Urubamba | Ayaviri | Machupicchu Pueblo;494 | 451 | 627;554 | 512 | 747
+monto_500;17;500;filtro_p50;Urubamba | Ayaviri | Abancay;494 | 451 | 337;554 | 512 | 397
+monto_500;17;500;filtro_p80;Abancay | Combapata | Quillabamba;337 | 432 | 349;397 | 494 | 408
+monto_500;18;500;hoy;Yanque | Puno | Andagua;873 | 952 | 704;988 | 1069 | 814
 monto_500;18;500;filtro_p50;;;
 monto_500;18;500;filtro_p80;;;
-monto_500;19;500;hoy;Ilo | Mollendo | Nasca;610 | 594 | 745;693 | 675 | 830
-monto_500;19;500;filtro_p50;Boca Manu;466;542
+monto_500;19;500;hoy;Boca Manu | Yanque | Puno;517 | 645 | 671;599 | 731 | 756
+monto_500;19;500;filtro_p50;;;
 monto_500;19;500;filtro_p80;;;
-monto_500;20;500;hoy;Ilo | Puno | Arequipa;997 | 1064 | 1031;1145 | 1214 | 1175
+monto_500;20;500;hoy;Puno | Ilo | Arequipa;1124 | 1037 | 1080;1275 | 1182 | 1225
 monto_500;20;500;filtro_p50;;;
 monto_500;20;500;filtro_p80;;;
-monto_500;21;500;hoy;Ilo | Yanque | Mollendo;484 | 582 | 520;560 | 663 | 597
-monto_500;21;500;filtro_p50;Ilo | Moquegua;484 | 488;560 | 565
+monto_500;21;500;hoy;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_500;21;500;filtro_p50;;;
 monto_500;21;500;filtro_p80;;;
-monto_500;22;500;hoy;Puno | Yanque | Andamarca;900 | 918 | 967;1042 | 1062 | 1114
+monto_500;22;500;hoy;Yanque | Puno | Yauca;982 | 907 | 1132;1129 | 1050 | 1287
 monto_500;22;500;filtro_p50;;;
 monto_500;22;500;filtro_p80;;;
-monto_500;23;500;hoy;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_500;23;500;filtro_p50;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_500;23;500;filtro_p80;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_500;24;500;hoy;Yanque | Mollendo | Ilo;1162 | 1114 | 1071;1346 | 1293 | 1250
+monto_500;23;500;hoy;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_500;23;500;filtro_p50;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_500;23;500;filtro_p80;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_500;24;500;hoy;Yanque | Puno | Mollendo;1205 | 1150 | 1171;1383 | 1327 | 1349
 monto_500;24;500;filtro_p50;;;
 monto_500;24;500;filtro_p80;;;
-monto_500;25;500;hoy;Cajamarca | Miraflores | Íllimo;532 | 596 | 572;610 | 676 | 650
+monto_500;25;500;hoy;Íllimo | Carhuaz | Chiclayo;598 | 568 | 619;680 | 650 | 704
 monto_500;25;500;filtro_p50;;;
 monto_500;25;500;filtro_p80;;;
-monto_500;26;500;hoy;Íllimo | Los Órganos | Huaraz;823 | 832 | 728;939 | 948 | 838
+monto_500;26;500;hoy;Íllimo | Los Órganos | Pacasmayo;784 | 878 | 727;897 | 995 | 842
 monto_500;26;500;filtro_p50;;;
 monto_500;26;500;filtro_p80;;;
-monto_500;27;500;hoy;Trujillo | Cajamarca | Piura;527 | 491 | 467;603 | 567 | 542
-monto_500;27;500;filtro_p50;Cajamarca | Piura | Pacasmayo;491 | 467 | 477;567 | 542 | 555
+monto_500;27;500;hoy;Trujillo | Piura | Cajamarca;586 | 522 | 545;667 | 603 | 626
+monto_500;27;500;filtro_p50;;;
 monto_500;27;500;filtro_p80;;;
-monto_500;28;500;hoy;Íllimo | Huaraz | Los Órganos;1057 | 1044 | 931;1209 | 1192 | 1078
+monto_500;28;500;hoy;Íllimo | Huaraz | Los Órganos;1116 | 1092 | 1102;1270 | 1238 | 1255
 monto_500;28;500;filtro_p50;;;
 monto_500;28;500;filtro_p80;;;
-monto_500;29;500;hoy;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_500;29;500;filtro_p50;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_500;29;500;filtro_p80;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_500;30;500;hoy;Los Órganos | Íllimo | Huaraz;864 | 1075 | 1082;1008 | 1227 | 1232
+monto_500;29;500;hoy;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_500;29;500;filtro_p50;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_500;29;500;filtro_p80;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_500;30;500;hoy;Los Órganos | Íllimo | Huaraz;922 | 1115 | 1125;1067 | 1265 | 1271
 monto_500;30;500;filtro_p50;;;
 monto_500;30;500;filtro_p80;;;
-monto_500;31;500;hoy;Mazán | Nauta | Miraflores;642 | 618 | 1473;752 | 725 | 1677
+monto_500;31;500;hoy;Mazán | Nauta | Miraflores;701 | 676 | 1519;815 | 787 | 1727
 monto_500;31;500;filtro_p50;;;
 monto_500;31;500;filtro_p80;;;
-monto_500;32;500;hoy;Miraflores | Cerro de Pasco | Ayacucho;586 | 500 | 505;664 | 577 | 582
-monto_500;32;500;filtro_p50;Cerro de Pasco;500;577
+monto_500;32;500;hoy;Miraflores | Jauja | Ayacucho;603 | 599 | 638;685 | 686 | 723
+monto_500;32;500;filtro_p50;;;
 monto_500;32;500;filtro_p80;;;
-monto_500;33;500;hoy;Jauja | Oxapampa | Andamarca;741 | 727 | 749;856 | 837 | 863
+monto_500;33;500;hoy;Jauja | Oxapampa | Andamarca;800 | 756 | 827;917 | 869 | 941
 monto_500;33;500;filtro_p50;;;
 monto_500;33;500;filtro_p80;;;
-monto_500;34;500;hoy;Arequipa | Yanque | Juli;537 | 523 | 550;614 | 600 | 630
-monto_500;34;500;filtro_p50;Moquegua | Andagua;497 | 499;574 | 578
+monto_500;34;500;hoy;Yanque | Yunguyo | Juli;562 | 598 | 609;643 | 684 | 694
+monto_500;34;500;filtro_p50;;;
 monto_500;34;500;filtro_p80;;;
-monto_500;35;500;hoy;Ilo | Puno | Moquegua;495 | 587 | 464;573 | 667 | 540
-monto_500;35;500;filtro_p50;Ilo | Moquegua | Mollendo;495 | 464 | 483;573 | 540 | 559
+monto_500;35;500;hoy;Ilo | Puno | Arequipa;541 | 654 | 623;623 | 739 | 707
+monto_500;35;500;filtro_p50;;;
 monto_500;35;500;filtro_p80;;;
-monto_500;36;500;hoy;Pausa | Huancayo | Nasca;661 | 695 | 944;771 | 804 | 1063
+monto_500;36;500;hoy;Pausa | Nasca | Andamarca;709 | 973 | 781;819 | 1093 | 895
 monto_500;36;500;filtro_p50;;;
 monto_500;36;500;filtro_p80;;;
-monto_500;37;500;hoy;Íllimo | Trujillo | Huaraz;533 | 540 | 702;610 | 616 | 786
+monto_500;37;500;hoy;Pacasmayo | Huamachuco | Chiclayo;560 | 563 | 627;643 | 646 | 714
 monto_500;37;500;filtro_p50;;;
 monto_500;37;500;filtro_p80;;;
-monto_500;38;500;hoy;Trujillo | Íllimo | Huacho;483 | 742 | 599;559 | 829 | 681
-monto_500;38;500;filtro_p50;Trujillo;483;559
+monto_500;38;500;hoy;Huacho | Carhuaz | Nuevo Chimbote;637 | 601 | 600;723 | 687 | 686
+monto_500;38;500;filtro_p50;;;
 monto_500;38;500;filtro_p80;;;
-monto_500;39;500;hoy;Moyobamba | Yurimaguas | Tingo María;822 | 596 | 840;940 | 703 | 953
+monto_500;39;500;hoy;Moyobamba | Yurimaguas | Tingo María;882 | 648 | 890;998 | 758 | 1003
 monto_500;39;500;filtro_p50;;;
 monto_500;39;500;filtro_p80;;;
-monto_500;40;500;hoy;Lanlacuni Bajo | Puno | Juli;510 | 730 | 615;588 | 820 | 697
+monto_500;40;500;hoy;Iñapari | Ayaviri | Lanlacuni Bajo;597 | 699 | 525;684 | 788 | 606
 monto_500;40;500;filtro_p50;;;
 monto_500;40;500;filtro_p80;;;
-monto_800;1;800;hoy;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_800;1;800;filtro_p50;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_800;1;800;filtro_p80;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_800;2;800;hoy;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_800;2;800;filtro_p50;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_800;2;800;filtro_p80;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_800;3;800;hoy;Trujillo | Huacho | Oxapampa;837 | 804 | 779;948 | 922 | 890
-monto_800;3;800;filtro_p50;Oxapampa;779;890
+monto_800;1;800;hoy;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_800;1;800;filtro_p50;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_800;1;800;filtro_p80;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_800;2;800;hoy;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+monto_800;2;800;filtro_p50;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+monto_800;2;800;filtro_p80;Huaraz | Huacho | Jauja;674 | 619 | 628;761 | 705 | 714
+monto_800;3;800;hoy;Trujillo | Huacho | Oxapampa;906 | 828 | 830;1019 | 944 | 943
+monto_800;3;800;filtro_p50;;;
 monto_800;3;800;filtro_p80;;;
-monto_800;4;800;hoy;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
+monto_800;4;800;hoy;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
 monto_800;4;800;filtro_p50;;;
 monto_800;4;800;filtro_p80;;;
-monto_800;5;800;hoy;Trujillo | Nasca | Huancayo;1233 | 1443 | 1240;1412 | 1636 | 1422
+monto_800;5;800;hoy;Trujillo | Nasca | Huancayo;1270 | 1496 | 1244;1447 | 1691 | 1423
 monto_800;5;800;filtro_p50;;;
 monto_800;5;800;filtro_p80;;;
-monto_800;6;800;hoy;Huaraz | La Merced | Tingo María;1463 | 1565 | 1447;1679 | 1783 | 1661
+monto_800;6;800;hoy;Huaraz | La Merced | Tingo María;1513 | 1621 | 1498;1729 | 1837 | 1709
 monto_800;6;800;filtro_p50;;;
 monto_800;6;800;filtro_p80;;;
-monto_800;7;800;hoy;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_800;7;800;filtro_p50;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_800;7;800;filtro_p80;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_800;8;800;hoy;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_800;8;800;filtro_p50;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_800;8;800;filtro_p80;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_800;9;800;hoy;Trujillo | Yurimaguas | Nasca;984 | 1448 | 1198;1128 | 1649 | 1354
+monto_800;7;800;hoy;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_800;7;800;filtro_p50;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_800;7;800;filtro_p80;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_800;8;800;hoy;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_800;8;800;filtro_p50;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_800;8;800;filtro_p80;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_800;9;800;hoy;Trujillo | Yurimaguas | Nasca;1031 | 1503 | 1254;1174 | 1713 | 1414
 monto_800;9;800;filtro_p50;;;
 monto_800;9;800;filtro_p80;;;
-monto_800;10;800;hoy;Trujillo | Yanque | Huancayo;1572 | 2200 | 1579;1816 | 2495 | 1826
+monto_800;10;800;hoy;Yanque | Trujillo | Huancayo;2257 | 1604 | 1614;2552 | 1844 | 1861
 monto_800;10;800;filtro_p50;;;
 monto_800;10;800;filtro_p80;;;
-monto_800;11;800;hoy;Huaraz | Íllimo | Jauja;824 | 984 | 789;937 | 1107 | 905
-monto_800;11;800;filtro_p50;Jauja | Andamarca | Kimbiri;789 | 767 | 788;905 | 881 | 902
+monto_800;11;800;hoy;Huaraz | Jauja | Andamarca;875 | 844 | 811;989 | 960 | 925
+monto_800;11;800;filtro_p50;San Juan de Marcona;763;875
 monto_800;11;800;filtro_p80;;;
-monto_800;12;800;hoy;Oxapampa | Trujillo | Huaraz;1113 | 1241 | 1238;1289 | 1420 | 1420
+monto_800;12;800;hoy;Oxapampa | Trujillo | Huaraz;1165 | 1257 | 1288;1341 | 1434 | 1469
 monto_800;12;800;filtro_p50;;;
 monto_800;12;800;filtro_p80;;;
-monto_800;13;800;hoy;Huaraz | Yanque | La Merced;2069 | 2637 | 2219;2384 | 2990 | 2540
+monto_800;13;800;hoy;Yanque | La Merced | Huaraz;2685 | 2273 | 2117;3048 | 2593 | 2434
 monto_800;13;800;filtro_p50;;;
 monto_800;13;800;filtro_p80;;;
-monto_800;14;800;hoy;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_800;14;800;filtro_p50;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_800;14;800;filtro_p80;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_800;15;800;hoy;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_800;15;800;filtro_p50;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_800;15;800;filtro_p80;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_800;16;800;hoy;Yurimaguas | Trujillo | Oxapampa;1448 | 1042 | 942;1649 | 1189 | 1085
+monto_800;14;800;hoy;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_800;14;800;filtro_p50;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_800;14;800;filtro_p80;Huacho | Huánuco | Paracas;684 | 570 | 631;775 | 651 | 713
+monto_800;15;800;hoy;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_800;15;800;filtro_p50;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_800;15;800;filtro_p80;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_800;16;800;hoy;Yurimaguas | Trujillo | Oxapampa;1503 | 1024 | 995;1713 | 1167 | 1139
 monto_800;16;800;filtro_p50;;;
 monto_800;16;800;filtro_p80;;;
-monto_800;17;800;hoy;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_800;17;800;filtro_p50;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_800;17;800;filtro_p80;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_800;18;800;hoy;Yanque | Ilo | Arequipa;821 | 775 | 894;936 | 889 | 1012
-monto_800;18;800;filtro_p50;Ilo | Kimbiri | Andamarca;775 | 757 | 767;889 | 870 | 881
+monto_800;17;800;hoy;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_800;17;800;filtro_p50;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_800;17;800;filtro_p80;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_800;18;800;hoy;Yanque | Puno | Arequipa;873 | 952 | 950;988 | 1069 | 1069
+monto_800;18;800;filtro_p50;Andagua;704;814
 monto_800;18;800;filtro_p80;;;
-monto_800;19;800;hoy;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_800;19;800;filtro_p50;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_800;19;800;filtro_p80;Ilo | Mollendo | Ayacucho;610 | 594 | 626;693 | 675 | 709
-monto_800;20;800;hoy;Ilo | Urubamba | Puno;997 | 980 | 1064;1145 | 1123 | 1214
+monto_800;19;800;hoy;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_800;19;800;filtro_p50;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_800;19;800;filtro_p80;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_800;20;800;hoy;Puno | Ilo | Urubamba;1124 | 1037 | 1039;1275 | 1182 | 1185
 monto_800;20;800;filtro_p50;;;
 monto_800;20;800;filtro_p80;;;
-monto_800;21;800;hoy;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_800;21;800;filtro_p50;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_800;21;800;filtro_p80;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_800;22;800;hoy;Puno | Yanque | Moquegua;900 | 918 | 924;1042 | 1062 | 1072
+monto_800;21;800;hoy;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_800;21;800;filtro_p50;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_800;21;800;filtro_p80;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_800;22;800;hoy;Puno | Moquegua | Yanque;907 | 897 | 982;1050 | 1041 | 1129
 monto_800;22;800;filtro_p50;;;
 monto_800;22;800;filtro_p80;;;
-monto_800;23;800;hoy;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_800;23;800;filtro_p50;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_800;23;800;filtro_p80;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_800;24;800;hoy;Yanque | Mollendo | Ilo;1162 | 1114 | 1071;1346 | 1293 | 1250
+monto_800;23;800;hoy;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_800;23;800;filtro_p50;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_800;23;800;filtro_p80;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_800;24;800;hoy;Yanque | Puno | Mollendo;1205 | 1150 | 1171;1383 | 1327 | 1349
 monto_800;24;800;filtro_p50;;;
 monto_800;24;800;filtro_p80;;;
-monto_800;25;800;hoy;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_800;25;800;filtro_p50;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_800;25;800;filtro_p80;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_800;26;800;hoy;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_800;26;800;filtro_p50;Miraflores | Huacho | Piura;797 | 776 | 784;910 | 889 | 899
+monto_800;25;800;hoy;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_800;25;800;filtro_p50;Íllimo | Chiclayo | Carhuaz;598 | 619 | 568;680 | 704 | 650
+monto_800;25;800;filtro_p80;Íllimo | Chiclayo | Carhuaz;598 | 619 | 568;680 | 704 | 650
+monto_800;26;800;hoy;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_800;26;800;filtro_p50;Íllimo | Pacasmayo | Huaraz;784 | 727 | 726;897 | 842 | 836
 monto_800;26;800;filtro_p80;;;
-monto_800;27;800;hoy;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_800;27;800;filtro_p50;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_800;27;800;filtro_p80;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_800;28;800;hoy;Íllimo | Huaraz | Los Órganos;1057 | 1044 | 931;1209 | 1192 | 1078
+monto_800;27;800;hoy;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_800;27;800;filtro_p50;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_800;27;800;filtro_p80;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_800;28;800;hoy;Íllimo | Huaraz | Cajamarca;1116 | 1092 | 961;1270 | 1238 | 1105
 monto_800;28;800;filtro_p50;;;
 monto_800;28;800;filtro_p80;;;
-monto_800;29;800;hoy;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_800;29;800;filtro_p50;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_800;29;800;filtro_p80;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_800;30;800;hoy;Los Órganos | Íllimo | Huaraz;864 | 1075 | 1082;1008 | 1227 | 1232
+monto_800;29;800;hoy;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_800;29;800;filtro_p50;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_800;29;800;filtro_p80;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_800;30;800;hoy;Los Órganos | Íllimo | Huaraz;922 | 1115 | 1125;1067 | 1265 | 1271
 monto_800;30;800;filtro_p50;;;
 monto_800;30;800;filtro_p80;;;
-monto_800;31;800;hoy;Miraflores | Mazán | Nauta;1473 | 642 | 618;1677 | 752 | 725
-monto_800;31;800;filtro_p50;Mazán | Nauta;642 | 618;752 | 725
-monto_800;31;800;filtro_p80;Mazán | Nauta;642 | 618;752 | 725
-monto_800;32;800;hoy;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_800;32;800;filtro_p50;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_800;32;800;filtro_p80;Miraflores | Cerro de Pasco | Ayacucho;586 | 500 | 505;664 | 577 | 582
-monto_800;33;800;hoy;Jauja | Miraflores | Huaraz;741 | 755 | 896;856 | 863 | 1013
-monto_800;33;800;filtro_p50;Jauja | Miraflores | Oxapampa;741 | 755 | 727;856 | 863 | 837
-monto_800;33;800;filtro_p80;Pozuzo;649;756
-monto_800;34;800;hoy;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_800;34;800;filtro_p50;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_800;34;800;filtro_p80;Arequipa | Yanque | Juli;537 | 523 | 550;614 | 600 | 630
-monto_800;35;800;hoy;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_800;35;800;filtro_p50;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_800;35;800;filtro_p80;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_800;36;800;hoy;Miraflores | Nasca | Huancayo;798 | 944 | 695;908 | 1063 | 804
-monto_800;36;800;filtro_p50;Miraflores | Huancayo | Andamarca;798 | 695 | 726;908 | 804 | 838
-monto_800;36;800;filtro_p80;Andahuaylas | Pausa;686 | 661;796 | 771
-monto_800;37;800;hoy;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_800;37;800;filtro_p50;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_800;37;800;filtro_p80;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_800;38;800;hoy;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_800;38;800;filtro_p50;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_800;38;800;filtro_p80;Huacho | Tingo María | Trujillo;599 | 674 | 483;681 | 757 | 559
-monto_800;39;800;hoy;Moyobamba | Íllimo | Tingo María;822 | 969 | 840;940 | 1091 | 953
-monto_800;39;800;filtro_p50;Yurimaguas | Puerto Inca;596 | 787;703 | 902
-monto_800;39;800;filtro_p80;Yurimaguas;596;703
-monto_800;40;800;hoy;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_800;40;800;filtro_p50;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_800;40;800;filtro_p80;Juli | Sibayo | Lanlacuni Bajo;615 | 627 | 510;697 | 709 | 588
-monto_1200;1;1200;hoy;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_1200;1;1200;filtro_p50;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_1200;1;1200;filtro_p80;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_1200;2;1200;hoy;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_1200;2;1200;filtro_p50;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_1200;2;1200;filtro_p80;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_1200;3;1200;hoy;Nasca | Íllimo | Trujillo;988 | 978 | 837;1109 | 1098 | 948
-monto_1200;3;1200;filtro_p50;Nasca | Íllimo | Trujillo;988 | 978 | 837;1109 | 1098 | 948
-monto_1200;3;1200;filtro_p80;Nasca | Íllimo | Trujillo;988 | 978 | 837;1109 | 1098 | 948
-monto_1200;4;1200;hoy;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
-monto_1200;4;1200;filtro_p50;Trujillo | Paracas | Cajamarca;982 | 972 | 1060;1125 | 1117 | 1206
-monto_1200;4;1200;filtro_p80;Trujillo | Paracas | Huacho;982 | 972 | 948;1125 | 1117 | 1096
-monto_1200;5;1200;hoy;Trujillo | Huancayo | Nasca;1233 | 1240 | 1443;1412 | 1422 | 1636
-monto_1200;5;1200;filtro_p50;Huánuco;1187;1370
+monto_800;31;800;hoy;Nauta | Mazán | Miraflores;676 | 701 | 1519;787 | 815 | 1727
+monto_800;31;800;filtro_p50;Nauta | Mazán;676 | 701;787 | 815
+monto_800;31;800;filtro_p80;Nauta;676;787
+monto_800;32;800;hoy;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_800;32;800;filtro_p50;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_800;32;800;filtro_p80;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_800;33;800;hoy;Jauja | Huacho | Oxapampa;800 | 901 | 756;917 | 1018 | 869
+monto_800;33;800;filtro_p50;Jauja | Oxapampa;800 | 756;917 | 869
+monto_800;33;800;filtro_p80;;;
+monto_800;34;800;hoy;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_800;34;800;filtro_p50;Yanque | Juli | Yunguyo;562 | 609 | 598;643 | 694 | 684
+monto_800;34;800;filtro_p80;Yanque | Juli | Yunguyo;562 | 609 | 598;643 | 694 | 684
+monto_800;35;800;hoy;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_800;35;800;filtro_p50;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_800;35;800;filtro_p80;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_800;36;800;hoy;Miraflores | Nasca | Huancayo;860 | 973 | 854;972 | 1093 | 970
+monto_800;36;800;filtro_p50;Andamarca | Andahuaylas | Pausa;781 | 716 | 709;895 | 828 | 819
+monto_800;36;800;filtro_p80;;;
+monto_800;37;800;hoy;Piura | Chachapoyas | Chiclayo;685 | 721 | 627;775 | 813 | 714
+monto_800;37;800;filtro_p50;Piura | Chachapoyas | Chiclayo;685 | 721 | 627;775 | 813 | 714
+monto_800;37;800;filtro_p80;Piura | Chiclayo | Chulucanas;685 | 627 | 675;775 | 714 | 764
+monto_800;38;800;hoy;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_800;38;800;filtro_p50;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_800;38;800;filtro_p80;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_800;39;800;hoy;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_800;39;800;filtro_p50;Yurimaguas;648;758
+monto_800;39;800;filtro_p80;Yurimaguas;648;758
+monto_800;40;800;hoy;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_800;40;800;filtro_p50;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_800;40;800;filtro_p80;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_1200;1;1200;hoy;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_1200;1;1200;filtro_p50;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_1200;1;1200;filtro_p80;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_1200;2;1200;hoy;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+monto_1200;2;1200;filtro_p50;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+monto_1200;2;1200;filtro_p80;Huaraz | Huacho | La Merced;674 | 619 | 756;761 | 705 | 848
+monto_1200;3;1200;hoy;Trujillo | Nasca | Huacho;906 | 1080 | 828;1019 | 1215 | 944
+monto_1200;3;1200;filtro_p50;Trujillo | Nasca | Huacho;906 | 1080 | 828;1019 | 1215 | 944
+monto_1200;3;1200;filtro_p80;Trujillo | Huacho | La Merced;906 | 828 | 1004;1019 | 944 | 1127
+monto_1200;4;1200;hoy;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+monto_1200;4;1200;filtro_p50;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+monto_1200;4;1200;filtro_p80;Trujillo | Paracas | Huacho;1010 | 987 | 959;1152 | 1133 | 1107
+monto_1200;5;1200;hoy;Trujillo | Huancayo | Nasca;1270 | 1244 | 1496;1447 | 1423 | 1691
+monto_1200;5;1200;filtro_p50;;;
 monto_1200;5;1200;filtro_p80;;;
-monto_1200;6;1200;hoy;Huaraz | Huacho | Kimbiri;1463 | 1309 | 1345;1679 | 1520 | 1558
+monto_1200;6;1200;hoy;Huaraz | Huacho | La Merced;1513 | 1318 | 1621;1729 | 1529 | 1837
 monto_1200;6;1200;filtro_p50;;;
 monto_1200;6;1200;filtro_p80;;;
-monto_1200;7;1200;hoy;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_1200;7;1200;filtro_p50;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_1200;7;1200;filtro_p80;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_1200;8;1200;hoy;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_1200;8;1200;filtro_p50;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_1200;8;1200;filtro_p80;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_1200;9;1200;hoy;Trujillo | Nasca | Íllimo;984 | 1198 | 1213;1128 | 1354 | 1366
-monto_1200;9;1200;filtro_p50;Trujillo | Nasca | Huacho;984 | 1198 | 1024;1128 | 1354 | 1175
-monto_1200;9;1200;filtro_p80;Trujillo | Huacho | Ayacucho;984 | 1024 | 1028;1128 | 1175 | 1176
-monto_1200;10;1200;hoy;Trujillo | Huancayo | Cerro de Pasco;1572 | 1579 | 1559;1816 | 1826 | 1809
+monto_1200;7;1200;hoy;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_1200;7;1200;filtro_p50;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_1200;7;1200;filtro_p80;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_1200;8;1200;hoy;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_1200;8;1200;filtro_p50;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_1200;8;1200;filtro_p80;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_1200;9;1200;hoy;Trujillo | Nasca | Íllimo;1031 | 1254 | 1245;1174 | 1414 | 1400
+monto_1200;9;1200;filtro_p50;Trujillo | Huacho | Ayacucho;1031 | 1058 | 1078;1174 | 1208 | 1224
+monto_1200;9;1200;filtro_p80;Trujillo | Ica;1031 | 985;1174 | 1130
+monto_1200;10;1200;hoy;Trujillo | Huancayo | Cerro de Pasco;1604 | 1614 | 1587;1844 | 1861 | 1834
 monto_1200;10;1200;filtro_p50;;;
 monto_1200;10;1200;filtro_p80;;;
-monto_1200;11;1200;hoy;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_1200;11;1200;filtro_p50;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_1200;11;1200;filtro_p80;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_1200;12;1200;hoy;Trujillo | Huaraz | Cajamarca;1241 | 1238 | 1247;1420 | 1420 | 1425
-monto_1200;12;1200;filtro_p50;Oxapampa | Cerro de Pasco;1113 | 1161;1289 | 1343
+monto_1200;11;1200;hoy;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_1200;11;1200;filtro_p50;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_1200;11;1200;filtro_p80;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_1200;12;1200;hoy;Trujillo | Oxapampa | Huaraz;1257 | 1165 | 1288;1434 | 1341 | 1469
+monto_1200;12;1200;filtro_p50;Oxapampa | Ayacucho;1165 | 1166;1341 | 1340
 monto_1200;12;1200;filtro_p80;;;
-monto_1200;13;1200;hoy;Huaraz | Yanque | La Merced;2069 | 2637 | 2219;2384 | 2990 | 2540
+monto_1200;13;1200;hoy;Huaraz | Yanque | La Merced;2117 | 2685 | 2273;2434 | 3048 | 2593
 monto_1200;13;1200;filtro_p50;;;
 monto_1200;13;1200;filtro_p80;;;
-monto_1200;14;1200;hoy;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_1200;14;1200;filtro_p50;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_1200;14;1200;filtro_p80;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_1200;15;1200;hoy;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_1200;15;1200;filtro_p50;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_1200;15;1200;filtro_p80;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_1200;16;1200;hoy;Trujillo | Íllimo | Nasca;1042 | 1198 | 1260;1189 | 1351 | 1423
-monto_1200;16;1200;filtro_p50;Trujillo | Íllimo | Ayacucho;1042 | 1198 | 955;1189 | 1351 | 1098
-monto_1200;16;1200;filtro_p80;Trujillo | Ayacucho | Oxapampa;1042 | 955 | 942;1189 | 1098 | 1085
-monto_1200;17;1200;hoy;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_1200;17;1200;filtro_p50;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_1200;17;1200;filtro_p80;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_1200;18;1200;hoy;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_1200;18;1200;filtro_p50;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_1200;18;1200;filtro_p80;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_1200;19;1200;hoy;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_1200;19;1200;filtro_p50;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_1200;19;1200;filtro_p80;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_1200;20;1200;hoy;Miraflores | Urubamba | Ilo;1352 | 980 | 997;1520 | 1123 | 1145
-monto_1200;20;1200;filtro_p50;Urubamba | Ilo | Puno;980 | 997 | 1064;1123 | 1145 | 1214
-monto_1200;20;1200;filtro_p80;Urubamba | Ilo | Arequipa;980 | 997 | 1031;1123 | 1145 | 1175
-monto_1200;21;1200;hoy;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_1200;21;1200;filtro_p50;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_1200;21;1200;filtro_p80;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_1200;22;1200;hoy;Cuzco | Puno | Yanque;1161 | 900 | 918;1308 | 1042 | 1062
-monto_1200;22;1200;filtro_p50;Cuzco | Puno | Yanque;1161 | 900 | 918;1308 | 1042 | 1062
-monto_1200;22;1200;filtro_p80;Puno | Yanque | Moquegua;900 | 918 | 924;1042 | 1062 | 1072
-monto_1200;23;1200;hoy;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_1200;23;1200;filtro_p50;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_1200;23;1200;filtro_p80;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_1200;24;1200;hoy;Yanque | Mollendo | Ilo;1162 | 1114 | 1071;1346 | 1293 | 1250
-monto_1200;24;1200;filtro_p50;Yanque | Mollendo | Ilo;1162 | 1114 | 1071;1346 | 1293 | 1250
+monto_1200;14;1200;hoy;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_1200;14;1200;filtro_p50;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_1200;14;1200;filtro_p80;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_1200;15;1200;hoy;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_1200;15;1200;filtro_p50;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_1200;15;1200;filtro_p80;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_1200;16;1200;hoy;Trujillo | Íllimo | Nasca;1024 | 1231 | 1311;1167 | 1385 | 1475
+monto_1200;16;1200;filtro_p50;Trujillo | Oxapampa | Ayacucho;1024 | 995 | 1003;1167 | 1139 | 1148
+monto_1200;16;1200;filtro_p80;Trujillo | Oxapampa | Ayacucho;1024 | 995 | 1003;1167 | 1139 | 1148
+monto_1200;17;1200;hoy;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_1200;17;1200;filtro_p50;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_1200;17;1200;filtro_p80;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_1200;18;1200;hoy;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_1200;18;1200;filtro_p50;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_1200;18;1200;filtro_p80;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_1200;19;1200;hoy;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_1200;19;1200;filtro_p50;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_1200;19;1200;filtro_p80;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_1200;20;1200;hoy;Puno | Urubamba | Ilo;1124 | 1039 | 1037;1275 | 1185 | 1182
+monto_1200;20;1200;filtro_p50;Puno | Urubamba | Ilo;1124 | 1039 | 1037;1275 | 1185 | 1182
+monto_1200;20;1200;filtro_p80;Urubamba | Ilo | Moquegua;1039 | 1037 | 1002;1185 | 1182 | 1147
+monto_1200;21;1200;hoy;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_1200;21;1200;filtro_p50;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_1200;21;1200;filtro_p80;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_1200;22;1200;hoy;Cuzco | Puno | Yanque;1199 | 907 | 982;1344 | 1050 | 1129
+monto_1200;22;1200;filtro_p50;Cuzco | Puno | Yanque;1199 | 907 | 982;1344 | 1050 | 1129
+monto_1200;22;1200;filtro_p80;Puno | Yanque | Moquegua;907 | 982 | 897;1050 | 1129 | 1041
+monto_1200;23;1200;hoy;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_1200;23;1200;filtro_p50;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_1200;23;1200;filtro_p80;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_1200;24;1200;hoy;Yanque | Puno | Mollendo;1205 | 1150 | 1171;1383 | 1327 | 1349
+monto_1200;24;1200;filtro_p50;Puno | Mollendo | Ilo;1150 | 1171 | 1127;1327 | 1349 | 1305
 monto_1200;24;1200;filtro_p80;;;
-monto_1200;25;1200;hoy;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_1200;25;1200;filtro_p50;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_1200;25;1200;filtro_p80;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_1200;26;1200;hoy;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_1200;26;1200;filtro_p50;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_1200;26;1200;filtro_p80;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_1200;27;1200;hoy;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_1200;27;1200;filtro_p50;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_1200;27;1200;filtro_p80;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_1200;28;1200;hoy;Íllimo | Huaraz | Moyobamba;1057 | 1044 | 1156;1209 | 1192 | 1309
-monto_1200;28;1200;filtro_p50;Íllimo | Huaraz | Moyobamba;1057 | 1044 | 1156;1209 | 1192 | 1309
-monto_1200;28;1200;filtro_p80;Huaraz | Tumbes | Miraflores;1044 | 1041 | 1036;1192 | 1191 | 1181
-monto_1200;29;1200;hoy;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_1200;29;1200;filtro_p50;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_1200;29;1200;filtro_p80;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_1200;30;1200;hoy;Huaraz | Íllimo | Moyobamba;1082 | 1075 | 1176;1232 | 1227 | 1330
-monto_1200;30;1200;filtro_p50;Huaraz | Íllimo | Moyobamba;1082 | 1075 | 1176;1232 | 1227 | 1330
-monto_1200;30;1200;filtro_p80;Los Órganos | Tumbes | Cajamarca;864 | 936 | 1012;1008 | 1084 | 1160
-monto_1200;31;1200;hoy;Miraflores | Mazán | Nauta;1473 | 642 | 618;1677 | 752 | 725
-monto_1200;31;1200;filtro_p50;Mazán | Nauta;642 | 618;752 | 725
-monto_1200;31;1200;filtro_p80;Mazán | Nauta;642 | 618;752 | 725
-monto_1200;32;1200;hoy;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_1200;32;1200;filtro_p50;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_1200;32;1200;filtro_p80;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_1200;33;1200;hoy;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_1200;33;1200;filtro_p50;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_1200;33;1200;filtro_p80;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_1200;34;1200;hoy;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_1200;34;1200;filtro_p50;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_1200;34;1200;filtro_p80;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_1200;35;1200;hoy;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_1200;35;1200;filtro_p50;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_1200;35;1200;filtro_p80;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_1200;36;1200;hoy;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_1200;36;1200;filtro_p50;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_1200;36;1200;filtro_p80;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_1200;37;1200;hoy;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_1200;37;1200;filtro_p50;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_1200;37;1200;filtro_p80;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_1200;38;1200;hoy;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_1200;38;1200;filtro_p50;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_1200;38;1200;filtro_p80;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_1200;39;1200;hoy;Moyobamba | Íllimo | Tingo María;822 | 969 | 840;940 | 1091 | 953
-monto_1200;39;1200;filtro_p50;Moyobamba | Íllimo | Tingo María;822 | 969 | 840;940 | 1091 | 953
-monto_1200;39;1200;filtro_p80;Moyobamba | Íllimo | Tingo María;822 | 969 | 840;940 | 1091 | 953
-monto_1200;40;1200;hoy;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_1200;40;1200;filtro_p50;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_1200;40;1200;filtro_p80;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_2000;1;2000;hoy;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_2000;1;2000;filtro_p50;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_2000;1;2000;filtro_p80;Huacho | Nasca | Huaraz;352 | 504 | 373;400 | 559 | 422
-monto_2000;2;2000;hoy;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_2000;2;2000;filtro_p50;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_2000;2;2000;filtro_p80;Huaraz | Huacho | La Merced;624 | 579 | 704;706 | 660 | 788
-monto_2000;3;2000;hoy;Cuzco | Arequipa | Nasca;1369 | 1497 | 988;1513 | 1697 | 1109
-monto_2000;3;2000;filtro_p50;Cuzco | Arequipa | Nasca;1369 | 1497 | 988;1513 | 1697 | 1109
-monto_2000;3;2000;filtro_p80;Cuzco | Arequipa | Nasca;1369 | 1497 | 988;1513 | 1697 | 1109
-monto_2000;4;2000;hoy;Cuzco | Los Órganos | Trujillo;1582 | 1701 | 982;1751 | 1926 | 1125
-monto_2000;4;2000;filtro_p50;Cuzco | Los Órganos | Trujillo;1582 | 1701 | 982;1751 | 1926 | 1125
-monto_2000;4;2000;filtro_p80;Cuzco | Los Órganos | Trujillo;1582 | 1701 | 982;1751 | 1926 | 1125
-monto_2000;5;2000;hoy;Cuzco | Arequipa | Puno;1750 | 1991 | 1997;1951 | 2234 | 2235
-monto_2000;5;2000;filtro_p50;Cuzco | Arequipa | Puno;1750 | 1991 | 1997;1951 | 2234 | 2235
-monto_2000;5;2000;filtro_p80;Cuzco | Nasca | Trujillo;1750 | 1443 | 1233;1951 | 1636 | 1412
-monto_2000;6;2000;hoy;Huaraz | Yanque | Iquitos;1463 | 2050 | 2117;1679 | 2318 | 2385
-monto_2000;6;2000;filtro_p50;Huaraz | Íllimo | Ilo;1463 | 1636 | 1993;1679 | 1862 | 2245
-monto_2000;6;2000;filtro_p80;Huaraz | Íllimo | La Merced;1463 | 1636 | 1565;1679 | 1862 | 1783
-monto_2000;7;2000;hoy;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_2000;7;2000;filtro_p50;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_2000;7;2000;filtro_p80;Huacho | Trujillo | Chincha Alta;574 | 629 | 665;655 | 709 | 751
-monto_2000;8;2000;hoy;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_2000;8;2000;filtro_p50;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_2000;8;2000;filtro_p80;Huacho | Huánuco | Chincha Alta;411 | 368 | 348;465 | 416 | 394
-monto_2000;9;2000;hoy;Cuzco | Trujillo | Nasca;1567 | 984 | 1198;1733 | 1128 | 1354
-monto_2000;9;2000;filtro_p50;Cuzco | Trujillo | Nasca;1567 | 984 | 1198;1733 | 1128 | 1354
-monto_2000;9;2000;filtro_p80;Cuzco | Trujillo | Nasca;1567 | 984 | 1198;1733 | 1128 | 1354
-monto_2000;10;2000;hoy;Cuzco | Trujillo | Íllimo;2101 | 1572 | 1841;2360 | 1816 | 2100
-monto_2000;10;2000;filtro_p50;Trujillo | Íllimo | Huancayo;1572 | 1841 | 1579;1816 | 2100 | 1826
-monto_2000;10;2000;filtro_p80;Trujillo | Huancayo | Cerro de Pasco;1572 | 1579 | 1559;1816 | 1826 | 1809
-monto_2000;11;2000;hoy;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_2000;11;2000;filtro_p50;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_2000;11;2000;filtro_p80;Íllimo | Huaraz | Jauja;984 | 824 | 789;1107 | 937 | 905
-monto_2000;12;2000;hoy;Cuzco | Puno | Arequipa;1766 | 1936 | 1801;1966 | 2174 | 2040
-monto_2000;12;2000;filtro_p50;Cuzco | Puno | Arequipa;1766 | 1936 | 1801;1966 | 2174 | 2040
-monto_2000;12;2000;filtro_p80;Cuzco | Trujillo | Cajamarca;1766 | 1241 | 1247;1966 | 1420 | 1425
-monto_2000;13;2000;hoy;Huaraz | Kimbiri | Íllimo;2069 | 1929 | 2230;2384 | 2245 | 2558
-monto_2000;13;2000;filtro_p50;Kimbiri;1929;2245
+monto_1200;25;1200;hoy;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_1200;25;1200;filtro_p50;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_1200;25;1200;filtro_p80;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_1200;26;1200;hoy;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_1200;26;1200;filtro_p50;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_1200;26;1200;filtro_p80;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_1200;27;1200;hoy;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_1200;27;1200;filtro_p50;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_1200;27;1200;filtro_p80;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_1200;28;1200;hoy;Íllimo | Huaraz | Moyobamba;1116 | 1092 | 1218;1270 | 1238 | 1370
+monto_1200;28;1200;filtro_p50;Íllimo | Huaraz | Tumbes;1116 | 1092 | 1088;1270 | 1238 | 1236
+monto_1200;28;1200;filtro_p80;Cajamarca | Trujillo;961 | 997;1105 | 1143
+monto_1200;29;1200;hoy;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_1200;29;1200;filtro_p50;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_1200;29;1200;filtro_p80;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_1200;30;1200;hoy;Huaraz | Íllimo | Moyobamba;1125 | 1115 | 1212;1271 | 1265 | 1365
+monto_1200;30;1200;filtro_p50;Huaraz | Íllimo | Los Órganos;1125 | 1115 | 922;1271 | 1265 | 1067
+monto_1200;30;1200;filtro_p80;Los Órganos | Tumbes;922 | 971;1067 | 1116
+monto_1200;31;1200;hoy;Miraflores | Nauta | Mazán;1519 | 676 | 701;1727 | 787 | 815
+monto_1200;31;1200;filtro_p50;Nauta | Mazán;676 | 701;787 | 815
+monto_1200;31;1200;filtro_p80;Nauta | Mazán;676 | 701;787 | 815
+monto_1200;32;1200;hoy;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_1200;32;1200;filtro_p50;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_1200;32;1200;filtro_p80;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_1200;33;1200;hoy;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_1200;33;1200;filtro_p50;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_1200;33;1200;filtro_p80;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_1200;34;1200;hoy;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_1200;34;1200;filtro_p50;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_1200;34;1200;filtro_p80;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_1200;35;1200;hoy;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_1200;35;1200;filtro_p50;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_1200;35;1200;filtro_p80;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_1200;36;1200;hoy;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_1200;36;1200;filtro_p50;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_1200;36;1200;filtro_p80;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_1200;37;1200;hoy;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_1200;37;1200;filtro_p50;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_1200;37;1200;filtro_p80;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_1200;38;1200;hoy;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_1200;38;1200;filtro_p50;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_1200;38;1200;filtro_p80;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_1200;39;1200;hoy;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_1200;39;1200;filtro_p50;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_1200;39;1200;filtro_p80;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_1200;40;1200;hoy;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_1200;40;1200;filtro_p50;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_1200;40;1200;filtro_p80;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_2000;1;2000;hoy;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_2000;1;2000;filtro_p50;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_2000;1;2000;filtro_p80;Paracas | Mala | Chincha Alta;393 | 378 | 354;453 | 439 | 413
+monto_2000;2;2000;hoy;Huaraz | Huacho | Cajamarca;674 | 619 | 1249;761 | 705 | 1416
+monto_2000;2;2000;filtro_p50;Huaraz | Huacho | Cajamarca;674 | 619 | 1249;761 | 705 | 1416
+monto_2000;2;2000;filtro_p80;Huaraz | Huacho | Cajamarca;674 | 619 | 1249;761 | 705 | 1416
+monto_2000;3;2000;hoy;Cuzco | Arequipa | Trujillo;1413 | 1554 | 906;1561 | 1760 | 1019
+monto_2000;3;2000;filtro_p50;Cuzco | Arequipa | Trujillo;1413 | 1554 | 906;1561 | 1760 | 1019
+monto_2000;3;2000;filtro_p80;Cuzco | Arequipa | Trujillo;1413 | 1554 | 906;1561 | 1760 | 1019
+monto_2000;4;2000;hoy;Cuzco | Puno | Los Órganos;1638 | 1839 | 1757;1812 | 2062 | 1983
+monto_2000;4;2000;filtro_p50;Cuzco | Puno | Los Órganos;1638 | 1839 | 1757;1812 | 2062 | 1983
+monto_2000;4;2000;filtro_p80;Cuzco | Los Órganos | Trujillo;1638 | 1757 | 1010;1812 | 1983 | 1152
+monto_2000;5;2000;hoy;Cuzco | Puno | Arequipa;1762 | 1998 | 2061;1961 | 2235 | 2311
+monto_2000;5;2000;filtro_p50;Cuzco | Puno | Nasca;1762 | 1998 | 1496;1961 | 2235 | 1691
+monto_2000;5;2000;filtro_p80;Cuzco | Nasca | Trujillo;1762 | 1496 | 1270;1961 | 1691 | 1447
+monto_2000;6;2000;hoy;Huaraz | Yanque | Iquitos;1513 | 2103 | 2178;1729 | 2374 | 2449
+monto_2000;6;2000;filtro_p50;Huaraz | Íllimo | La Merced;1513 | 1659 | 1621;1729 | 1882 | 1837
+monto_2000;6;2000;filtro_p80;Huaraz | Íllimo | La Merced;1513 | 1659 | 1621;1729 | 1882 | 1837
+monto_2000;7;2000;hoy;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_2000;7;2000;filtro_p50;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_2000;7;2000;filtro_p80;Huacho | Chincha Alta | Paracas;627 | 607 | 616;712 | 692 | 699
+monto_2000;8;2000;hoy;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_2000;8;2000;filtro_p50;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_2000;8;2000;filtro_p80;Chincha Alta | Chancay | Huacho;399 | 391 | 437;457 | 451 | 500
+monto_2000;9;2000;hoy;Cuzco | Trujillo | Nasca;1591 | 1031 | 1254;1766 | 1174 | 1414
+monto_2000;9;2000;filtro_p50;Cuzco | Trujillo | Nasca;1591 | 1031 | 1254;1766 | 1174 | 1414
+monto_2000;9;2000;filtro_p80;Cuzco | Trujillo | Nasca;1591 | 1031 | 1254;1766 | 1174 | 1414
+monto_2000;10;2000;hoy;Cuzco | Puno | Trujillo;2142 | 2442 | 1604;2395 | 2734 | 1844
+monto_2000;10;2000;filtro_p50;Trujillo | Íllimo | Huancayo;1604 | 1934 | 1614;1844 | 2195 | 1861
+monto_2000;10;2000;filtro_p80;Trujillo | Huancayo | Cerro de Pasco;1604 | 1614 | 1587;1844 | 1861 | 1834
+monto_2000;11;2000;hoy;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_2000;11;2000;filtro_p50;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_2000;11;2000;filtro_p80;Huaraz | Jauja | Paracas;875 | 844 | 843;989 | 960 | 957
+monto_2000;12;2000;hoy;Cuzco | Puno | Arequipa;1821 | 2001 | 1861;2021 | 2239 | 2104
+monto_2000;12;2000;filtro_p50;Cuzco | Arequipa | Trujillo;1821 | 1861 | 1257;2021 | 2104 | 1434
+monto_2000;12;2000;filtro_p80;Trujillo | Huaraz | Íllimo;1257 | 1288 | 1447;1434 | 1469 | 1636
+monto_2000;13;2000;hoy;Huaraz | Íllimo | Yanque;2117 | 2317 | 2685;2434 | 2645 | 3048
+monto_2000;13;2000;filtro_p50;;;
 monto_2000;13;2000;filtro_p80;;;
-monto_2000;14;2000;hoy;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_2000;14;2000;filtro_p50;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_2000;14;2000;filtro_p80;Trujillo | Huacho | Nasca;640 | 605 | 711;719 | 688 | 795
-monto_2000;15;2000;hoy;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_2000;15;2000;filtro_p50;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_2000;15;2000;filtro_p80;Huacho | Nasca | Paracas;352 | 504 | 330;400 | 559 | 377
-monto_2000;16;2000;hoy;Trujillo | Puno | Arequipa;1042 | 1749 | 1599;1189 | 1965 | 1818
-monto_2000;16;2000;filtro_p50;Trujillo | Puno | Arequipa;1042 | 1749 | 1599;1189 | 1965 | 1818
-monto_2000;16;2000;filtro_p80;Trujillo | Puno | Arequipa;1042 | 1749 | 1599;1189 | 1965 | 1818
-monto_2000;17;2000;hoy;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_2000;17;2000;filtro_p50;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_2000;17;2000;filtro_p80;Puno | Machupicchu Pueblo | Yanque;425 | 579 | 437;475 | 696 | 488
-monto_2000;18;2000;hoy;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_2000;18;2000;filtro_p50;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_2000;18;2000;filtro_p80;Yanque | Arequipa | Ilo;821 | 894 | 775;936 | 1012 | 889
-monto_2000;19;2000;hoy;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_2000;19;2000;filtro_p50;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_2000;19;2000;filtro_p80;Nasca | Ilo | Mollendo;745 | 610 | 594;830 | 693 | 675
-monto_2000;20;2000;hoy;Miraflores | Huacho | Urubamba;1352 | 1441 | 980;1520 | 1613 | 1123
-monto_2000;20;2000;filtro_p50;Miraflores | Huacho | Urubamba;1352 | 1441 | 980;1520 | 1613 | 1123
-monto_2000;20;2000;filtro_p80;Miraflores | Huacho | Urubamba;1352 | 1441 | 980;1520 | 1613 | 1123
-monto_2000;21;2000;hoy;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_2000;21;2000;filtro_p50;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_2000;21;2000;filtro_p80;Yanque | Ilo | Puno;582 | 484 | 562;663 | 560 | 642
-monto_2000;22;2000;hoy;Cuzco | Puno | Nasca;1161 | 900 | 1221;1308 | 1042 | 1376
-monto_2000;22;2000;filtro_p50;Cuzco | Puno | Nasca;1161 | 900 | 1221;1308 | 1042 | 1376
-monto_2000;22;2000;filtro_p80;Cuzco | Puno | Nasca;1161 | 900 | 1221;1308 | 1042 | 1376
-monto_2000;23;2000;hoy;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_2000;23;2000;filtro_p50;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_2000;23;2000;filtro_p80;Ilo | Mollendo | La Pampa;308 | 288 | 313;355 | 334 | 359
-monto_2000;24;2000;hoy;Yanque | Nasca | Cuzco;1162 | 1526 | 1466;1346 | 1728 | 1653
-monto_2000;24;2000;filtro_p50;Yanque | Nasca | Cuzco;1162 | 1526 | 1466;1346 | 1728 | 1653
-monto_2000;24;2000;filtro_p80;Yanque | Nasca | Cuzco;1162 | 1526 | 1466;1346 | 1728 | 1653
-monto_2000;25;2000;hoy;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_2000;25;2000;filtro_p50;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_2000;25;2000;filtro_p80;Miraflores | Cajamarca | Huacho;596 | 532 | 596;676 | 610 | 675
-monto_2000;26;2000;hoy;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_2000;26;2000;filtro_p50;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_2000;26;2000;filtro_p80;Íllimo | Miraflores | Huacho;823 | 797 | 776;939 | 910 | 889
-monto_2000;27;2000;hoy;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_2000;27;2000;filtro_p50;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_2000;27;2000;filtro_p80;Trujillo | Miraflores | Cajamarca;527 | 646 | 491;603 | 731 | 567
-monto_2000;28;2000;hoy;Íllimo | Huaraz | Moyobamba;1057 | 1044 | 1156;1209 | 1192 | 1309
-monto_2000;28;2000;filtro_p50;Íllimo | Huaraz | Moyobamba;1057 | 1044 | 1156;1209 | 1192 | 1309
-monto_2000;28;2000;filtro_p80;Íllimo | Huaraz | Moyobamba;1057 | 1044 | 1156;1209 | 1192 | 1309
-monto_2000;29;2000;hoy;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_2000;29;2000;filtro_p50;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_2000;29;2000;filtro_p80;Trujillo | Los Órganos | Íllimo;367 | 391 | 346;417 | 443 | 392
-monto_2000;30;2000;hoy;Huaraz | Íllimo | Moyobamba;1082 | 1075 | 1176;1232 | 1227 | 1330
-monto_2000;30;2000;filtro_p50;Huaraz | Íllimo | Moyobamba;1082 | 1075 | 1176;1232 | 1227 | 1330
-monto_2000;30;2000;filtro_p80;Huaraz | Íllimo | Moyobamba;1082 | 1075 | 1176;1232 | 1227 | 1330
-monto_2000;31;2000;hoy;Miraflores | Mazán | Nauta;1473 | 642 | 618;1677 | 752 | 725
-monto_2000;31;2000;filtro_p50;Miraflores | Mazán | Nauta;1473 | 642 | 618;1677 | 752 | 725
-monto_2000;31;2000;filtro_p80;Miraflores | Mazán | Nauta;1473 | 642 | 618;1677 | 752 | 725
-monto_2000;32;2000;hoy;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_2000;32;2000;filtro_p50;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_2000;32;2000;filtro_p80;Miraflores | Nasca | Cerro de Pasco;586 | 736 | 500;664 | 821 | 577
-monto_2000;33;2000;hoy;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_2000;33;2000;filtro_p50;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_2000;33;2000;filtro_p80;Jauja | Huaraz | Huacho;741 | 896 | 851;856 | 1013 | 968
-monto_2000;34;2000;hoy;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_2000;34;2000;filtro_p50;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_2000;34;2000;filtro_p80;Cuzco | Arequipa | Yanque;792 | 537 | 523;876 | 614 | 600
-monto_2000;35;2000;hoy;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_2000;35;2000;filtro_p50;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_2000;35;2000;filtro_p80;Ilo | Puno | Yanque;495 | 587 | 607;573 | 667 | 686
-monto_2000;36;2000;hoy;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_2000;36;2000;filtro_p50;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_2000;36;2000;filtro_p80;Cuzco | Miraflores | Nasca;1011 | 798 | 944;1126 | 908 | 1063
-monto_2000;37;2000;hoy;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_2000;37;2000;filtro_p50;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_2000;37;2000;filtro_p80;Huaraz | Trujillo | Íllimo;702 | 540 | 533;786 | 616 | 610
-monto_2000;38;2000;hoy;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_2000;38;2000;filtro_p50;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_2000;38;2000;filtro_p80;Íllimo | Huacho | La Merced;742 | 599 | 746;829 | 681 | 832
-monto_2000;39;2000;hoy;Moyobamba | Íllimo | Miraflores;822 | 969 | 1343;940 | 1091 | 1521
-monto_2000;39;2000;filtro_p50;Moyobamba | Íllimo | Miraflores;822 | 969 | 1343;940 | 1091 | 1521
-monto_2000;39;2000;filtro_p80;Moyobamba | Íllimo | Miraflores;822 | 969 | 1343;940 | 1091 | 1521
-monto_2000;40;2000;hoy;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_2000;40;2000;filtro_p50;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
-monto_2000;40;2000;filtro_p80;Puno | Cuzco | Juli;730 | 759 | 615;820 | 840 | 697
+monto_2000;14;2000;hoy;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_2000;14;2000;filtro_p50;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_2000;14;2000;filtro_p80;Huacho | Nasca | Huánuco;684 | 765 | 570;775 | 855 | 651
+monto_2000;15;2000;hoy;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_2000;15;2000;filtro_p50;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_2000;15;2000;filtro_p80;Paracas | Mala | Chancay;389 | 365 | 375;448 | 424 | 434
+monto_2000;16;2000;hoy;Puno | Trujillo | Arequipa;1761 | 1024 | 1680;1981 | 1167 | 1901
+monto_2000;16;2000;filtro_p50;Puno | Trujillo | Arequipa;1761 | 1024 | 1680;1981 | 1167 | 1901
+monto_2000;16;2000;filtro_p80;Puno | Trujillo | Arequipa;1761 | 1024 | 1680;1981 | 1167 | 1901
+monto_2000;17;2000;hoy;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_2000;17;2000;filtro_p50;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_2000;17;2000;filtro_p80;Machupicchu Pueblo | Urubamba | Ayaviri;627 | 494 | 451;747 | 554 | 512
+monto_2000;18;2000;hoy;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_2000;18;2000;filtro_p50;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_2000;18;2000;filtro_p80;Puno | Yanque | Arequipa;952 | 873 | 950;1069 | 988 | 1069
+monto_2000;19;2000;hoy;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_2000;19;2000;filtro_p50;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_2000;19;2000;filtro_p80;Puno | Yanque | Boca Manu;671 | 645 | 517;756 | 731 | 599
+monto_2000;20;2000;hoy;Puno | Miraflores | Huacho;1124 | 1397 | 1498;1275 | 1570 | 1671
+monto_2000;20;2000;filtro_p50;Puno | Miraflores | Huacho;1124 | 1397 | 1498;1275 | 1570 | 1671
+monto_2000;20;2000;filtro_p80;Puno | Miraflores | Huacho;1124 | 1397 | 1498;1275 | 1570 | 1671
+monto_2000;21;2000;hoy;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_2000;21;2000;filtro_p50;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_2000;21;2000;filtro_p80;Yanque | Ilo | Mollendo;595 | 539 | 577;678 | 620 | 659
+monto_2000;22;2000;hoy;Cuzco | Puno | Nasca;1199 | 907 | 1266;1344 | 1050 | 1423
+monto_2000;22;2000;filtro_p50;Cuzco | Puno | Nasca;1199 | 907 | 1266;1344 | 1050 | 1423
+monto_2000;22;2000;filtro_p80;Cuzco | Puno | Nasca;1199 | 907 | 1266;1344 | 1050 | 1423
+monto_2000;23;2000;hoy;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_2000;23;2000;filtro_p50;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_2000;23;2000;filtro_p80;Mollendo | Ilo | Moquegua;345 | 341 | 341;404 | 400 | 401
+monto_2000;24;2000;hoy;Yanque | Puno | Nasca;1205 | 1150 | 1574;1383 | 1327 | 1778
+monto_2000;24;2000;filtro_p50;Yanque | Puno | Nasca;1205 | 1150 | 1574;1383 | 1327 | 1778
+monto_2000;24;2000;filtro_p80;Yanque | Puno | Nasca;1205 | 1150 | 1574;1383 | 1327 | 1778
+monto_2000;25;2000;hoy;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_2000;25;2000;filtro_p50;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_2000;25;2000;filtro_p80;Huacho | Íllimo | Chiclayo;813 | 598 | 619;914 | 680 | 704
+monto_2000;26;2000;hoy;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_2000;26;2000;filtro_p50;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_2000;26;2000;filtro_p80;Íllimo | Miraflores | Los Órganos;784 | 803 | 878;897 | 915 | 995
+monto_2000;27;2000;hoy;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_2000;27;2000;filtro_p50;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_2000;27;2000;filtro_p80;Trujillo | Íllimo | Cajamarca;586 | 641 | 545;667 | 727 | 626
+monto_2000;28;2000;hoy;Íllimo | Huaraz | Moyobamba;1116 | 1092 | 1218;1270 | 1238 | 1370
+monto_2000;28;2000;filtro_p50;Íllimo | Huaraz | Moyobamba;1116 | 1092 | 1218;1270 | 1238 | 1370
+monto_2000;28;2000;filtro_p80;Íllimo | Huaraz | Moyobamba;1116 | 1092 | 1218;1270 | 1238 | 1370
+monto_2000;29;2000;hoy;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_2000;29;2000;filtro_p50;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_2000;29;2000;filtro_p80;Los Órganos | Colán | Chiclayo;365 | 406 | 382;425 | 469 | 442
+monto_2000;30;2000;hoy;Huaraz | Íllimo | Moyobamba;1125 | 1115 | 1212;1271 | 1265 | 1365
+monto_2000;30;2000;filtro_p50;Huaraz | Íllimo | Moyobamba;1125 | 1115 | 1212;1271 | 1265 | 1365
+monto_2000;30;2000;filtro_p80;Huaraz | Íllimo | Moyobamba;1125 | 1115 | 1212;1271 | 1265 | 1365
+monto_2000;31;2000;hoy;Miraflores | Nauta | Mazán;1519 | 676 | 701;1727 | 787 | 815
+monto_2000;31;2000;filtro_p50;Miraflores | Nauta | Mazán;1519 | 676 | 701;1727 | 787 | 815
+monto_2000;31;2000;filtro_p80;Miraflores | Nauta | Mazán;1519 | 676 | 701;1727 | 787 | 815
+monto_2000;32;2000;hoy;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_2000;32;2000;filtro_p50;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_2000;32;2000;filtro_p80;Miraflores | Ayacucho | Huánuco;603 | 638 | 674;685 | 723 | 761
+monto_2000;33;2000;hoy;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_2000;33;2000;filtro_p50;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_2000;33;2000;filtro_p80;Jauja | Huacho | La Merced;800 | 901 | 884;917 | 1018 | 1000
+monto_2000;34;2000;hoy;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_2000;34;2000;filtro_p50;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_2000;34;2000;filtro_p80;Cuzco | Yanque | Juli;843 | 562 | 609;933 | 643 | 694
+monto_2000;35;2000;hoy;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_2000;35;2000;filtro_p50;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_2000;35;2000;filtro_p80;Puno | Arequipa | Yanque;654 | 623 | 653;739 | 707 | 738
+monto_2000;36;2000;hoy;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_2000;36;2000;filtro_p50;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_2000;36;2000;filtro_p80;Cuzco | Miraflores | Nasca;1034 | 860 | 973;1148 | 972 | 1093
+monto_2000;37;2000;hoy;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_2000;37;2000;filtro_p50;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_2000;37;2000;filtro_p80;Piura | Pedro Ruiz Gallo | Chachapoyas;685 | 869 | 721;775 | 963 | 813
+monto_2000;38;2000;hoy;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_2000;38;2000;filtro_p50;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_2000;38;2000;filtro_p80;Huacho | Carhuaz | Huánuco;637 | 601 | 659;723 | 687 | 746
+monto_2000;39;2000;hoy;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_2000;39;2000;filtro_p50;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_2000;39;2000;filtro_p80;Moyobamba | Íllimo | Tingo María;882 | 1003 | 890;998 | 1126 | 1003
+monto_2000;40;2000;hoy;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_2000;40;2000;filtro_p50;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786
+monto_2000;40;2000;filtro_p80;Ayaviri | Iñapari | Combapata;699 | 597 | 697;788 | 684 | 786

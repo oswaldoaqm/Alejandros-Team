@@ -1,5 +1,5 @@
 {
-  "version_datos": "2026.11.1",
+  "version_datos": "2026.11.5",
   "consultas": 40,
   "cobertura": {
     "motor": {
@@ -7,21 +7,21 @@
       "zonas_distintas": 29,
       "de": 194,
       "fuera_del_circuito": 0.75,
-      "novedad_media": 0.427
+      "novedad_media": 0.4307
     },
     "guia": {
       "viajes": 120,
       "zonas_distintas": 36,
       "de": 194,
       "fuera_del_circuito": 0.6,
-      "novedad_media": 0.3732
+      "novedad_media": 0.3758
     },
     "variante": {
       "viajes": 120,
       "zonas_distintas": 33,
       "de": 194,
       "fuera_del_circuito": 0.8,
-      "novedad_media": 0.4597
+      "novedad_media": 0.4633
     }
   },
   "coinciden": {
