@@ -58,7 +58,7 @@ export const ARTICULOS_BLOG: ArticuloBlog[] = [
     parrafos: [
       "Cada febrero, la ciudad de Puno se convierte en el epicentro cultural y espiritual del continente con la celebración de la Virgen de la Candelaria, declarada Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO.",
       "Más de 40.000 danzantes y 200 bandas de música recorren las calles de la ciudad andina interpretando morenadas, diabladas, caporales, waca wacas y sikuris con trajes bordados a mano repletos de pedrería y plata.",
-      "Para quienes viajan por primera vez, es fundamental reservar pasajes y hospedaje con al menos tres meses de anticipación, ya que la capacidad hotelera de Puno y Juliaca suele alcanzar el 100% de ocupación.",
+      "Durante la fiesta puede aumentar la demanda de pasajes y hospedaje. Revisa la disponibilidad y los precios antes de cerrar tu plan.",
     ],
     imperdibles: [
       "Concurso de Danzas Autóctonas en el Estadio Enrique Torres Belón.",
@@ -67,7 +67,7 @@ export const ARTICULOS_BLOG: ArticuloBlog[] = [
       "Visita al mirador de Kuntur Wasi para una panorámica completa del lago Titicaca.",
     ],
     consejos: [
-      "La altitud supera los 3.820 metros: el primer día tómalo con calma y bebe mate de coca o muña.",
+      "En Puno estarás por encima de 3 800 m. Planea un primer día tranquilo y consulta recomendaciones de salud antes de viajar.",
       "Lleva ropa térmica para la noche y protector solar de alto factor para el mediodía.",
       "Lleva efectivo en moneda local para compras en ferias y puestos de comida tradicional.",
     ],

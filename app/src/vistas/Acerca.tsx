@@ -46,6 +46,31 @@ export function Acerca() {
       </header>
 
       <div className="acerca-contenedor">
+        <section className="acerca-seccion" aria-labelledby="titulo-modelo">
+          <div className="acerca-seccion__cabeza">
+            <h2 id="titulo-modelo" className="acerca-seccion__titulo">
+              Qué hace el modelo con tu viaje
+            </h2>
+            <p className="acerca-seccion__bajada">
+              Tus preferencias guían la recomendación. El sistema agrupa lugares cercanos, estima los tiempos
+              de traslado con una regresión ajustada a recorridos medidos y organiza las visitas dentro de los
+              días, el presupuesto y los límites de altura que elegiste.
+            </p>
+          </div>
+          <p>
+            El aprendizaje automático ayuda a estimar los tiempos. Las reglas de clima, las restricciones del
+            viaje y la optimización completan el itinerario. Al cambiar tus preferencias, el motor vuelve a
+            evaluar las opciones disponibles y explica los límites que encuentra.
+          </p>
+          <p>
+            El panel de uso permite observar qué se busca y dónde aparecen dificultades. Esas acciones todavía
+            no reentrenan ni cambian automáticamente las recomendaciones; el equipo debe evaluarlas antes de
+            ajustar el modelo.
+          </p>
+          <Enlace href={enlaces.planear()} className="boton boton--secundario">
+            Probar con mis preferencias
+          </Enlace>
+        </section>
         {/* ── Tour Guiado en Video por Pasos (Ventanita interactiva) ─────── */}
         <section className="acerca-seccion" aria-labelledby="titulo-tour-video">
           <div className="acerca-seccion__cabeza">
@@ -307,6 +332,12 @@ export function Acerca() {
                   Los viajes que guardas se almacenan únicamente en el almacenamiento local de tu navegador
                   (localStorage). De esta manera, tus preferencias y viajes guardados no necesitan almacenarse
                   en un servidor.
+                </p>
+                <p>
+                  Si activas «Compartir estadísticas anónimas» en el pie de la página, se registran acciones
+                  como buscar, abrir, guardar o compartir un viaje, además de filtros generales (origen,
+                  intereses, mes, días y presupuesto). No se envían tu nombre, correo, enlace completo ni los
+                  viajes que guardaste. El permiso empieza desactivado y puedes revocarlo en el mismo lugar.
                 </p>
               </div>
             </details>
