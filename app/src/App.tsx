@@ -152,7 +152,7 @@ export function App() {
         <p>
           <Enlace href={enlaces.indicadores()}>Actividad del sitio</Enlace>
           {" · "}
-          <a href="/tablero-negocio.html">Tablero de negocio (simulación)</a>
+          <a href="./tablero-negocio.html">Tablero de negocio (simulación)</a>
         </p>
         <PermisoUso registrarInicio={vista.tipo !== "indicadores" && vista.tipo !== "buzon-equipo"} />
       </footer>

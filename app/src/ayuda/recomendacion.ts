@@ -17,7 +17,7 @@ export function pideRecomendacion(texto: string): boolean {
   const frase = simple(texto);
   return (
     /\b(recomiend\w*|sugier\w*|suger\w*|propon\w*|propuest\w*)\b/.test(frase) ||
-    /\b(quiero|busco|necesito)\b.*\b(playa|naturaleza|historia|gastronomia|aventura|caminatas?|fiestas?|arquitectura)\b/.test(
+    /\b(quiero|busco|necesito)\b.*\b(playa|naturaleza|historia|gastronomia|aventura|caminatas?|fiestas?|arquitectura|vida\s+nocturna)\b/.test(
       frase,
     )
   );

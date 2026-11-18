@@ -14,7 +14,11 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, field_validator
 
 RAIZ = Path(__file__).resolve().parents[1]
-BASE_POR_DEFECTO = Path.home() / ".dreemgo" / "comentarios.sqlite3"
+BASE_POR_DEFECTO = (
+    Path("/tmp/dreemgo/comentarios.sqlite3")
+    if os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
+    else Path.home() / ".dreemgo" / "comentarios.sqlite3"
+)
 MAX_COMENTARIOS_POR_HORA = 3
 _PREPARAR_BASE = Lock()
 
@@ -63,6 +67,8 @@ class DemasiadosComentarios(Exception):
 def _ruta_base() -> Path:
     configurada = os.environ.get("DREEMGO_COMENTARIOS_DB")
     if not configurada:
+        if os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+            return Path("/tmp/dreemgo/comentarios.sqlite3")
         return BASE_POR_DEFECTO
     ruta = Path(configurada).expanduser()
     return ruta if ruta.is_absolute() else RAIZ / ruta

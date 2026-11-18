@@ -20,7 +20,7 @@ El botón de ayuda permite dejar una duda, una sugerencia o el aviso de un probl
 
 Configuren `DREEMGO_CLAVE_COMENTARIOS` en el servidor. Luego hagan `GET /v1/comentarios` con la cabecera `X-Clave-Comentarios` y esa clave. Se devuelven los últimos 50 mensajes; `?limite=10` cambia la cantidad entre 1 y 100. La clave no debe incluirse en el código del navegador ni compartirse con visitantes. Sin clave configurada, la lectura responde `403`.
 
-La base SQLite se guarda por defecto en `~/.dreemgo/comentarios.sqlite3`. Para elegir otra ruta, configuren `DREEMGO_COMENTARIOS_DB`. En un despliegue, esa ruta debe estar en almacenamiento persistente; de lo contrario los mensajes se perderán al recrear el servidor. No se guarda la dirección IP, el nombre ni el correo. La sesión aleatoria solo sirve para limitar envíos repetidos y no se devuelve en la consulta del equipo.
+La base SQLite se guarda por defecto en `~/.dreemgo/comentarios.sqlite3` (o en `/tmp/dreemgo/comentarios.sqlite3` si corre en AWS Lambda). Para elegir otra ruta, configuren `DREEMGO_COMENTARIOS_DB`. En un despliegue, esa ruta debe estar en almacenamiento persistente; de lo contrario los mensajes se perderán al recrear el servidor. No se guarda la dirección IP, el nombre ni el correo. La sesión aleatoria solo sirve para limitar envíos repetidos y no se devuelve en la consulta del equipo.
 
 ### Pantalla de lectura del equipo
 
