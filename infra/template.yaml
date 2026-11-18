@@ -15,6 +15,16 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: Clave que exige POST /v1/eventos (cabecera X-Clave-Publicador). Vacía, nadie publica.
+  ClaveAnalitica:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Clave que exige GET /v1/analitica/resumen?modo=real (X-Clave-Analitica). Vacía, queda cerrada.
+  ClaveComentarios:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Clave que exige GET /v1/comentarios (cabecera X-Clave-Comentarios). Vacía, el buzón no se lee.
 
 Globals:
   Function:
@@ -39,6 +49,8 @@ Resources:
           DREEMGO_CORS: !Ref OrigenesCors
           DREEMGO_TABLA_EVENTOS: !Ref TablaEventos
           DREEMGO_CLAVE_PUBLICADOR: !Ref ClavePublicador
+          DREEMGO_CLAVE_ANALITICA: !Ref ClaveAnalitica
+          DREEMGO_CLAVE_COMENTARIOS: !Ref ClaveComentarios
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TablaEventos

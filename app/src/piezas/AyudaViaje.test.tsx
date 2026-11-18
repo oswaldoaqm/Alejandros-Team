@@ -242,3 +242,24 @@ it("abre temas adicionales y deja la consulta sin respuesta lista para enviarse"
   );
   expect(pedidosA(api, "/v1/comentarios", "POST")).toEqual([]);
 });
+
+it("también interpreta vida nocturna como búsqueda de recomendaciones", async () => {
+  irA("/");
+  const api = ponerApi();
+  render(<App />);
+  const usuario = userEvent.setup();
+  await usuario.click(screen.getByRole("button", { name: "Abrir ayuda de viaje" }));
+  const dialogo = screen.getByRole("dialog");
+
+  await usuario.type(
+    within(dialogo).getByLabelText("Escribe tu pregunta"),
+    "Quiero vida nocturna desde Lima en julio",
+  );
+  await usuario.click(within(dialogo).getByRole("button", { name: "Preguntar" }));
+
+  await within(dialogo).findByText(/Consulta usada:/);
+  const consultas = pedidosA(api, "/v1/viajes");
+  expect(consultas).toHaveLength(1);
+  const parametros = new URL(consultas[0] ?? "", "http://localhost").searchParams;
+  expect(parametros.getAll("intereses")).toEqual(["vida_nocturna"]);
+});

@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import sqlite3
+from pathlib import Path
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
+from dreemgo import comentarios
 from dreemgo.api.app import app
 
 
@@ -84,3 +86,9 @@ def test_lectura_limita_filas_y_no_muestra_la_analitica(monkeypatch, tmp_path):
     assert respuesta.json()["total"] == 2
     assert len(respuesta.json()["comentarios"]) == 1
     assert cliente.get("/v1/comentarios?limite=101", headers={"X-Clave-Comentarios": "equipo"}).status_code == 422
+
+
+def test_en_lambda_usa_directorio_temporal_por_defecto(monkeypatch):
+    monkeypatch.delenv("DREEMGO_COMENTARIOS_DB", raising=False)
+    monkeypatch.setenv("AWS_LAMBDA_FUNCTION_NAME", "dreemgo-api")
+    assert comentarios._ruta_base() == Path("/tmp/dreemgo/comentarios.sqlite3")

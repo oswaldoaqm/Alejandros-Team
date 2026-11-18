@@ -60,6 +60,14 @@ test('los textos de sesiones distinguen simulación de actividad real', () => {
 test('el enlace de viajes conserva el origen servido y tiene alternativa local', () => {
   assert.equal(urlViajes({protocol:'http:',origin:'http://localhost:5174'}), 'http://localhost:5174/');
   assert.equal(urlViajes({protocol:'https:',origin:'https://ejemplo.test'}), 'https://ejemplo.test/');
+  assert.equal(
+    urlViajes({protocol:'https:',origin:'https://oswaldoaqm.github.io',href:'https://oswaldoaqm.github.io/Alejandros-Team/tablero-gerencial.html'}),
+    'https://oswaldoaqm.github.io/Alejandros-Team/',
+  );
+  assert.equal(
+    urlViajes({protocol:'https:',origin:'https://oswaldoaqm.github.io',pathname:'/Alejandros-Team/tablero-gerencial.html'}),
+    'https://oswaldoaqm.github.io/Alejandros-Team/',
+  );
   assert.equal(urlViajes({protocol:'file:',origin:'null'}), 'http://localhost:5173/');
 });
 test('CSV contiene solo 22 indicadores de la fuente y periodo, sin secretos', () => {

@@ -163,6 +163,8 @@ docker run -p 8080:8080 -e DREEMGO_CORS=http://localhost:5173 \
 | `DREEMGO_EVENTOS_ARCHIVO` | El archivo donde se guardan, una línea de JSON por evento. Lo pueden compartir varios procesos del API | Quedan en memoria y se pierden al reiniciar: sirve para desarrollar, con un solo proceso |
 | `DREEMGO_CLAVE_ANALITICA` | Clave de lectura de la actividad real del panel; se envía en `X-Clave-Analitica` | El panel solo puede mostrar la simulación |
 | `DREEMGO_ANALITICA_DB` | Ruta del SQLite de actividad anónima opcional | Se usa `~/.dreemgo/actividad.sqlite3` en un servidor normal, o `/tmp/dreemgo/actividad.sqlite3` en Lambda |
+| `DREEMGO_CLAVE_COMENTARIOS` | Clave de lectura del buzón en `GET /v1/comentarios`; se envía en `X-Clave-Comentarios` | El buzón recibe mensajes, pero nadie puede leerlos (`403`) |
+| `DREEMGO_COMENTARIOS_DB` | Ruta del SQLite de mensajes del buzón | Se usa `~/.dreemgo/comentarios.sqlite3` en un servidor normal, o `/tmp/dreemgo/comentarios.sqlite3` en Lambda |
 
 ### Datos del panel de uso
 

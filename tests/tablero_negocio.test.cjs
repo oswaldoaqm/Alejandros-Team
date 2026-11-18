@@ -115,3 +115,21 @@ test("el mapa de calor suma visitas y una celda filtra el tablero y se puede des
   assert.equal(doc.querySelector("#franja").value, "");
   dom.window.close();
 });
+
+test("los enlaces externos conservan la subruta en GitHub Pages y tienen respaldo local en file://", () => {
+  const gh = new JSDOM(html, {
+    url: "https://oswaldoaqm.github.io/Alejandros-Team/tablero-negocio.html",
+    runScripts: "dangerously",
+  });
+  assert.equal(gh.window.document.querySelector("#web-link").href, "https://oswaldoaqm.github.io/Alejandros-Team/");
+  assert.equal(
+    gh.window.document.querySelector("#activity-link").href,
+    "https://oswaldoaqm.github.io/Alejandros-Team/#/indicadores",
+  );
+  gh.window.close();
+
+  const local = new JSDOM(html, { url: "file:///tmp/tablero-negocio.html", runScripts: "dangerously" });
+  assert.equal(local.window.document.querySelector("#web-link").href, "http://localhost:5173/");
+  assert.equal(local.window.document.querySelector("#activity-link").href, "http://localhost:5173/#/indicadores");
+  local.window.close();
+});

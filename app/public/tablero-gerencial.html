@@ -585,9 +585,16 @@ function notaSesiones(modo) {
 		: "Sesiones anónimas con actividad; no personas únicas";
 }
 function urlViajes(ubicacion) {
-	return ["http:", "https:"].includes(ubicacion.protocol)
-		? `${ubicacion.origin}/`
-		: "http://localhost:5173/";
+	if (!["http:", "https:"].includes(ubicacion.protocol)) return "http://localhost:5173/";
+	let ruta = ubicacion.pathname;
+	if (typeof ruta !== "string" && typeof ubicacion.href === "string") {
+		ruta = ubicacion.href.replace(/^[a-z]+:\/\/[^/?#]*/i, "").split(/[?#]/)[0];
+	}
+	const base =
+		typeof ruta === "string" && ruta.startsWith("/")
+			? ruta.replace(/[^/]*$/, "")
+			: "/";
+	return `${ubicacion.origin}${base.endsWith("/") ? base : `${base}/`}`;
 }
 function crearCSV(resumen, supuestosFinancieros = null) {
 	const celda = (valor) => {
